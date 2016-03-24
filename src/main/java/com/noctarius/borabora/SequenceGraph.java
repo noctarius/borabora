@@ -18,23 +18,22 @@ package com.noctarius.borabora;
 
 final class SequenceGraph implements Graph {
 
-    private final int index;
+    private final int sequenceIndex;
 
-    SequenceGraph(int index) {
-        this.index = index;
+    SequenceGraph(int sequenceIndex) {
+        this.sequenceIndex = sequenceIndex;
     }
 
     @Override
-    public Decoder access(Decoder stream) {
-        Decoder substream = stream.subStream();
+    public long access(Decoder stream, long index) {
         // Skip unnecessary objects
-        for (int i = 0; i < index; i++) {
-            short head = substream.transientUint8();
+        for (int i = 0; i < sequenceIndex; i++) {
+            short head = stream.transientUint8(index);
             MajorType mt = MajorType.findMajorType(head);
-            substream.skip(mt);
+            index = stream.skip(mt, index);
         }
 
         // Read interesting head
-        return substream;
+        return index;
     }
 }

@@ -30,14 +30,13 @@ final class ParserImpl implements Parser {
 
     @Override
     public Value read(Graph graph) {
-        Decoder source = new Decoder(input, 0);
-        Decoder stream = graph.access(source);
-        short head = stream.transientUint8();
+        Decoder source = new Decoder(input);
+        long index = graph.access(source, 0);
+        short head = source.transientUint8(index);
         MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(stream, 0);
-        long index = stream.position();
-        long length = stream.length(mt, 0);
-        return new Value(mt, vt, stream, index, length, processors);
+        ValueType vt = ValueTypes.valueType(source, index);
+        long length = source.length(mt, index);
+        return new Value(mt, vt, source, index, length, processors);
     }
 
     @Override

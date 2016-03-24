@@ -132,11 +132,12 @@ final class ByteSizes implements Constants {
     }
 
     private static long untilBreakCode(Decoder stream, long index) {
+        long start = index;
         short uint;
         do {
             uint = stream.transientUint8(index++);
         } while ((uint & OPCODE_BREAK_MASK) != OPCODE_BREAK_MASK);
-        return index - stream.position();
+        return index - start;
     }
 
 }

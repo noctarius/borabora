@@ -25,15 +25,14 @@ final class DictionaryGraph implements Graph {
     }
 
     @Override
-    public Decoder access(Decoder stream) {
-        Decoder substream = stream.subStream();
-        short head = substream.transientUint8();
+    public long access(Decoder stream, long index) {
+        short head = stream.transientUint8(index);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
             throw new IllegalStateException("Not a dictionary");
         }
 
-        return null;
+        return -1;
     }
 
 }

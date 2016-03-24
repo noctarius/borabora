@@ -31,7 +31,8 @@ import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.Constants.TAG_URI;
 
-public enum ValueTypes implements ValueType, TagProcessor {
+public enum ValueTypes
+        implements ValueType, TagProcessor {
     Uint,
     Int,
     ByteString,
@@ -72,10 +73,6 @@ public enum ValueTypes implements ValueType, TagProcessor {
             return null;
         }
         return processor.process(stream, index, length);
-    }
-
-    static ValueType valueType(Decoder stream) {
-        return valueType(stream, stream.position());
     }
 
     static ValueType valueType(Decoder stream, long index) {

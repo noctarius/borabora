@@ -27,14 +27,13 @@ final class ChainGraph implements Graph {
     }
 
     @Override
-    public Decoder access(Decoder stream) {
-        Decoder substream = stream.subStream();
+    public long access(Decoder stream, long index) {
         for (Graph graph : graphs) {
-            substream = graph.access(substream);
-            if (substream == null) {
-                return null;
+            index = graph.access(stream, index);
+            if (index == -1) {
+                return -1;
             }
         }
-        return substream;
+        return index;
     }
 }

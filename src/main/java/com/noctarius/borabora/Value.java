@@ -91,7 +91,7 @@ public final class Value {
     }
 
     private <T> T extract(Supplier<T> supplier) {
-        short head = stream.transientUint8();
+        short head = stream.transientUint8(index);
         // Null is legal for all types
         if (stream.isNull(head)) {
             return null;

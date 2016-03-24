@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 public interface Graph {
 
-    Decoder access(Decoder stream);
+    long access(Decoder stream, long index);
 
     static GraphBuilder newBuilder() {
         return new GraphBuilderImpl();

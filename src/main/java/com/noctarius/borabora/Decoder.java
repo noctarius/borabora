@@ -26,12 +26,8 @@ final class Decoder implements Constants {
 
     private final Input input;
 
-    Decoder(Input input, long index) {
+    Decoder(Input input) {
         this.input = input;
-    }
-
-    Decoder subStream(long index) {
-        return new Decoder(input, index);
     }
 
     short transientUint8(long index) {
