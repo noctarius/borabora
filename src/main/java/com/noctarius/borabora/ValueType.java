@@ -20,4 +20,6 @@ public interface ValueType {
 
     String name();
 
+    ValueType identity();
+
 }

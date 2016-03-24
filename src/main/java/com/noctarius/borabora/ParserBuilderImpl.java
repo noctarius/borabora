@@ -26,6 +26,7 @@ final class ParserBuilderImpl implements ParserBuilder {
 
     public ParserBuilderImpl(Input input) {
         this.input = input;
+        this.processors.add(BuiltInSemanticTagProcessor.INSTANCE);
     }
 
     @Override

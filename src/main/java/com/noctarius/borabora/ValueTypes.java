@@ -31,10 +31,9 @@ import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.Constants.TAG_URI;
 
-public enum ValueTypes
-        implements ValueType, TagProcessor {
+public enum ValueTypes implements ValueType, TagProcessor {
     Uint,
-    Int,
+    NInt,
     ByteString,
     TextString,
     Sequence,
@@ -45,29 +44,41 @@ public enum ValueTypes
     Undefined,
     DateTime(TagProcessors::readDateTime),
     Timestamp,
-    UBigNum(TagProcessors::readUBigNum),
-    BigNum,
+    UBigNum(TagProcessors::readUBigNum, Uint),
+    NBigNum(TagProcessors::readNBigNum, NInt),
     Fraction,
     BigFloat,
     Base64Url,
     Base64Enc,
     Base16Enc,
     EncCBOR,
-    URI,
+    URI(TagProcessors::readURI),
     RegEx,
     Mime,
     Unknown;
 
     private final TagProcessor processor;
+    private final ValueType identity;
 
     ValueTypes() {
-        this(null);
+        this(null, null);
     }
 
     ValueTypes(TagProcessor processor) {
-        this.processor = processor;
+        this(processor, null);
     }
 
+    ValueTypes(TagProcessor processor, ValueType identity) {
+        this.processor = processor;
+        this.identity = identity;
+    }
+
+    @Override
+    public ValueType identity() {
+        return identity != null ? identity : this;
+    }
+
+    @Override
     public Object process(Decoder stream, long index, long length) {
         if (processor == null) {
             return null;
@@ -75,7 +86,7 @@ public enum ValueTypes
         return processor.process(stream, index, length);
     }
 
-    static ValueType valueType(Decoder stream, long index) {
+    static ValueTypes valueType(Decoder stream, long index) {
         short head = stream.transientUint8(index);
 
         // Read major type first
@@ -86,7 +97,7 @@ public enum ValueTypes
             case UnsignedInteger:
                 return Uint;
             case NegativeInteger:
-                return Int;
+                return NInt;
             case ByteString:
                 return ByteString;
             case TextString:
@@ -103,7 +114,7 @@ public enum ValueTypes
         throw new IllegalArgumentException("Illegal value type requested");
     }
 
-    private static ValueType floatNullOrBool(short head) {
+    private static ValueTypes floatNullOrBool(short head) {
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
             case FP_VALUE_NULL:
@@ -118,7 +129,7 @@ public enum ValueTypes
         }
     }
 
-    private static ValueType semanticTagType(Decoder stream, long index) {
+    private static ValueTypes semanticTagType(Decoder stream, long index) {
         Number tagType = stream.readUint(index);
         switch (tagType.intValue()) {
             case TAG_DATE_TIME:
@@ -128,7 +139,7 @@ public enum ValueTypes
             case TAG_UNSIGNED_BIGNUM:
                 return UBigNum;
             case TAG_SIGNED_BIGNUM:
-                return BigNum;
+                return NBigNum;
             case TAG_BIGFLOAT:
                 return BigFloat;
             case TAG_FRACTION:

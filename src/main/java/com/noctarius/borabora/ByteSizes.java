@@ -66,7 +66,7 @@ final class ByteSizes implements Constants {
         int byteSize = ByteSizes.intByteSize(head);
         short itemHead = stream.transientUint8(index + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
-        return byteSize + stream.length(majorType, itemHead);
+        return byteSize + stream.length(majorType, index + byteSize);
     }
 
     static long floatingPointOrSimpleByteSize(Decoder stream, long index) {
@@ -95,7 +95,7 @@ final class ByteSizes implements Constants {
     static long stringByteSize(Decoder stream, long index) {
         short head = stream.transientUint8(index);
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
-        long dataSize = stringDataSize(stream, index + 1);
+        long dataSize = addInfo == 0 ? 0 : stringDataSize(stream, index + 1);
         switch (addInfo) {
             case 24:
                 return dataSize + 1;

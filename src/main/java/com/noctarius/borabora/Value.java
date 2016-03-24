@@ -22,6 +22,10 @@ import java.util.function.Supplier;
 
 public final class Value {
 
+    public static final String VALUE_TYPE_DOES_NOT_MATCH = "Requested value type does not match the read value: %s != %s";
+    public static final String MAJOR_TYPE_DOES_NOT_MATCH = "Requested major type does not match the read value: %s != %s";
+    public static final String VALUE_TYPE_NOT_A_DOUBLE = "Requested value type does not match the read value: {%s|%s} != %s";
+
     private final Collection<SemanticTagProcessor> processors;
     private final MajorType majorType;
     private final ValueType valueType;
@@ -51,39 +55,23 @@ public final class Value {
     }
 
     public ValueType valueType() {
-        return valueType;
+        return valueType.identity();
     }
 
     public <V> V tag() {
-        return extract(() -> {
-            matchMajorType(MajorType.SemanticTag);
-            SemanticTagProcessor<V> processor = findProcessor();
-            if (processor == null) {
-                return null;
-            }
-            return processor.process(stream, index, length);
-        });
+        return extract(() -> matchMajorType(MajorType.SemanticTag), () -> tag0(index, length));
     }
 
-    public Number uint() {
-        return extract(() -> {
-            matchMajorType(MajorType.UnsignedInteger);
-            return stream.readUint(index);
-        });
+    public Number number() {
+        return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt), () -> stream.readInt(index));
     }
 
-    public Number sint() {
-        return extract(() -> {
-            matchMajorType(MajorType.NegativeInteger);
-            return stream.readSInt(index);
-        });
-    }
+    //public Number sint() {
+    //    return extract(() -> matchValueType(ValueTypes.NInt), () -> stream.readSInt(index));
+    //}
 
     public String string() {
-        return extract(() -> {
-            matchStringMajorType();
-            return stream.readString(index);
-        });
+        return extract(this::matchStringValueType, () -> stream.readString(index));
     }
 
     public Boolean bool() {
@@ -91,35 +79,72 @@ public final class Value {
     }
 
     private <T> T extract(Supplier<T> supplier) {
+        return extract(null, supplier);
+    }
+
+    private <T> T extract(Validator validator, Supplier<T> supplier) {
+        if (validator != null) {
+            validator.validate();
+        }
         short head = stream.transientUint8(index);
         // Null is legal for all types
         if (stream.isNull(head)) {
             return null;
+        }
+        if (MajorType.SemanticTag == majorType) {
+            return tag0(index, length);
         }
         return supplier.get();
     }
 
     private void matchMajorType(MajorType expected) {
         if (expected != majorType) {
-            String msg = String.format("Requested value type does not match the read value: %s != %s", expected, majorType);
+            String msg = String.format(MAJOR_TYPE_DOES_NOT_MATCH, expected, majorType);
             throw new IllegalStateException(msg);
         }
     }
 
-    private void matchStringMajorType() {
-        if (MajorType.ByteString != majorType
-                && MajorType.TextString != majorType) {
-
-            String msg = String.format("Requested value type does not match the read value: {%s|%s} != %s",
-                    MajorType.ByteString, MajorType.TextString, majorType);
-
+    private void matchValueType(ValueType expected) {
+        ValueType identity = valueType.identity();
+        if (expected != identity) {
+            String msg = String.format(VALUE_TYPE_DOES_NOT_MATCH, expected, identity);
             throw new IllegalStateException(msg);
         }
     }
 
-    private <V> SemanticTagProcessor<V> findProcessor() {
+    private void matchValueType(ValueType expected1, ValueType expected2) {
+        ValueType identity = valueType.identity();
+        if (expected1 != identity && expected2 != identity) {
+            String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, expected1, expected2, identity);
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    private void matchStringValueType() {
+        ValueType identity = valueType.identity();
+        if (ValueTypes.ByteString != identity
+                && ValueTypes.TextString != identity) {
+
+            String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, ValueTypes.ByteString, ValueTypes.TextString, identity);
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    private <V> SemanticTagProcessor<V> findProcessor(long index) {
         Optional<SemanticTagProcessor> optional = processors.stream().filter(p -> p.handles(stream, index)).findFirst();
         return optional.isPresent() ? optional.get() : null;
+    }
+
+    private <V> V tag0(long index, long length) {
+        SemanticTagProcessor<V> processor = findProcessor(index);
+        if (processor == null) {
+            return null;
+        }
+        return processor.process(stream, index, length);
+    }
+
+    private interface Validator {
+        void validate();
     }
 
 }

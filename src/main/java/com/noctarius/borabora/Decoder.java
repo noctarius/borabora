@@ -89,28 +89,29 @@ final class Decoder implements Constants {
         return new BigInteger(1, new byte[]{b1, b2, b3, b4, b5, b6, b7, b8});
     }
 
-    Number readSInt(long index) {
+    Number readInt(long index) {
         short head = transientUint8(index);
         if (isNull(head)) {
             return null;
         }
+        long mask = -((head & 0xff) >>> 5);
         int byteSize = ByteSizes.intByteSize(head);
         Number number;
         switch (byteSize) {
             case 2:
-                number = readInt8(index + 1);
+                number = mask ^ readUint8(index + 1);
                 break;
             case 3:
-                number = readInt16(index + 1);
+                number = mask ^ readUint16(index + 1);
                 break;
             case 5:
-                number = readInt32(index + 1);
+                number = mask ^ readUint32(index + 1);
                 break;
             case 9:
-                number = readInt64(index + 1);
+                number = BigInteger.valueOf(mask).xor(readUint64(index + 1));
                 break;
             default:
-                number = head & ADDITIONAL_INFORMATION_MASK;
+                number = mask ^ (head & ADDITIONAL_INFORMATION_MASK);
         }
         return number;
     }

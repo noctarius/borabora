@@ -18,6 +18,11 @@ package com.noctarius.borabora;
 
 final class BuiltInSemanticTagProcessor implements SemanticTagProcessor {
 
+    static final SemanticTagProcessor INSTANCE = new BuiltInSemanticTagProcessor();
+
+    private BuiltInSemanticTagProcessor() {
+    }
+
     @Override
     public boolean handles(Decoder stream, long index) {
         return ValueTypes.valueType(stream, index) != null;
@@ -30,7 +35,8 @@ final class BuiltInSemanticTagProcessor implements SemanticTagProcessor {
 
     @Override
     public Object process(Decoder stream, long index, long length) {
-        return null;
+        ValueTypes valueType = ValueTypes.valueType(stream, index);
+        return valueType.process(stream, index, length);
     }
 
 }

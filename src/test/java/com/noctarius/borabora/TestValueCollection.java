@@ -18,17 +18,10 @@ package com.noctarius.borabora;
 
 public final class TestValueCollection<V> {
 
-    private final MajorType majorType;
-
     private final TestValue<V>[] testValues;
 
-    public TestValueCollection(MajorType majorType, TestValue<V>... testValues) {
-        this.majorType = majorType;
+    public TestValueCollection(TestValue<V>... testValues) {
         this.testValues = testValues;
-    }
-
-    public MajorType getMajorType() {
-        return majorType;
     }
 
     public TestValue<V>[] getTestValues() {
