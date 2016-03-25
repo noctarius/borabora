@@ -31,7 +31,8 @@ import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.Constants.TAG_URI;
 
-public enum ValueTypes implements ValueType, TagProcessor {
+public enum ValueTypes
+        implements ValueType, TagProcessor {
     Uint,
     NInt,
     ByteString,

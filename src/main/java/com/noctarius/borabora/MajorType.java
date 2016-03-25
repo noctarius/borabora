@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.function.ToIntFunction;
-
 public enum MajorType {
     UnsignedInteger(0, 0b000, false, ByteSizes::uintByteSize, ElementCounts.SINGLE_ELEMENT),
     NegativeInteger(1, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT),
@@ -34,10 +32,10 @@ public enum MajorType {
     private final int mask;
     private final boolean indefinite;
     private final ObjectLongToLongFunction<Decoder> byteSize;
-    private final ToIntFunction<Decoder> elementCount;
+    private final ObjectLongToLongFunction<Decoder> elementCount;
 
-    MajorType(int typeId, int mask, boolean indefinite,
-              ObjectLongToLongFunction<Decoder> byteSize, ToIntFunction<Decoder> elementCount) {
+    MajorType(int typeId, int mask, boolean indefinite, ObjectLongToLongFunction<Decoder> byteSize,
+              ObjectLongToLongFunction<Decoder> elementCount) {
 
         this.typeId = typeId;
         this.mask = mask;
@@ -63,8 +61,8 @@ public enum MajorType {
         return byteSize.apply(stream, index);
     }
 
-    int elementCount(Decoder stream) {
-        return elementCount.applyAsInt(stream);
+    long elementCount(Decoder stream, long index) {
+        return elementCount.apply(stream, index);
     }
 
     public static MajorType findMajorType(short head) {

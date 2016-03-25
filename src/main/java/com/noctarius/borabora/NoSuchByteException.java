@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-public class NoSuchByteException extends RuntimeException {
+public class NoSuchByteException
+        extends RuntimeException {
 
     private final long index;
 
@@ -39,7 +40,8 @@ public class NoSuchByteException extends RuntimeException {
         this.index = index;
     }
 
-    public NoSuchByteException(long index, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public NoSuchByteException(long index, String message, Throwable cause, boolean enableSuppression,
+                               boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.index = index;
     }

@@ -19,7 +19,8 @@ package com.noctarius.borabora;
 import java.util.ArrayList;
 import java.util.List;
 
-final class ParserBuilderImpl implements ParserBuilder {
+final class ParserBuilderImpl
+        implements ParserBuilder {
 
     private final Input input;
     private final List<SemanticTagProcessor> processors = new ArrayList<>();

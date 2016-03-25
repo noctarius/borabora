@@ -19,7 +19,8 @@ package com.noctarius.borabora;
 import java.util.ArrayList;
 import java.util.List;
 
-final class GraphBuilderImpl implements GraphBuilder {
+final class GraphBuilderImpl
+        implements GraphBuilder {
 
     private List<Graph> graphs = new ArrayList<>();
 

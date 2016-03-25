@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-final class SequenceGraph implements Graph {
+final class SequenceGraph
+        implements Graph {
 
     private final int sequenceIndex;
 
@@ -26,14 +27,32 @@ final class SequenceGraph implements Graph {
 
     @Override
     public long access(Decoder stream, long index) {
+        short head = stream.transientUint8(index);
+        MajorType majorType = MajorType.findMajorType(head);
+
+        // Sequences need head skipped
+        if (MajorType.Sequence == majorType) {
+            // Sequence access
+            if (sequenceIndex == -1) {
+                return index;
+            }
+
+            // Element access
+            long headByteSize = ByteSizes.headByteSize(stream, index);
+            index += headByteSize;
+        }
+
+        // Stream objects
+        return skip(stream, index);
+    }
+
+    private long skip(Decoder stream, long index) {
         // Skip unnecessary objects
         for (int i = 0; i < sequenceIndex; i++) {
             short head = stream.transientUint8(index);
             MajorType mt = MajorType.findMajorType(head);
             index = stream.skip(mt, index);
         }
-
-        // Read interesting head
         return index;
     }
 }

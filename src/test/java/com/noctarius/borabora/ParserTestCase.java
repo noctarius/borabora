@@ -97,7 +97,7 @@ public class ParserTestCase {
 
     @Test
     public void test_parse_majortype1_signedinteger() throws Exception {
-        byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0100};
+        byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
         Value value = parser.read(new SequenceGraph(0));
@@ -127,18 +127,6 @@ public class ParserTestCase {
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());
-    }
-
-    @Test
-    public void test_parse_majortype4_sequence() throws Exception {
-        /*
-        Input input = Input.fromByteArray(array);
-        Parser parser = Parser.newParser(input);
-        Value value = parser.read(new SequenceGraph(0));
-
-        assertEquals(MajorType.TextString, value.majorType());
-        assertEquals(expected, value.string());
-        */
     }
 
     @Test
@@ -181,6 +169,18 @@ public class ParserTestCase {
         assertEquals(expected, value.string());
     }
 
+    @Test
+    public void test_parse_majortype4_sequence() throws Exception {
+        byte[] data = DatatypeConverter.parseHexBinary("8301820203820405");
+
+        Input input = Input.fromByteArray(data);
+        Parser parser = Parser.newBuilder(input).build();
+
+        Value value = parser.read(new SequenceGraph(-1));
+
+        value.sequence();
+    }
+
     private void assertEqualsNumber(Number n1, Number n2) {
         if (n1.getClass().equals(n2.getClass())) {
             assertEquals(n1, n2);
@@ -188,7 +188,7 @@ public class ParserTestCase {
 
         BigInteger b1 = n1 instanceof BigInteger ? (BigInteger) n1 : BigInteger.valueOf(n1.longValue());
         BigInteger b2 = n2 instanceof BigInteger ? (BigInteger) n2 : BigInteger.valueOf(n2.longValue());
-        assertEquals(b1, b1);
+        assertEquals(b1, b2);
     }
 
 }

@@ -19,7 +19,8 @@ package com.noctarius.borabora;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 
-final class Decoder implements Constants {
+final class Decoder
+        implements Constants {
 
     private static final Charset ASCII = Charset.forName("ASCII");
     private static final Charset UTF8 = Charset.forName("UTF8");
@@ -164,6 +165,16 @@ final class Decoder implements Constants {
         }
 
         return readString0(index);
+    }
+
+    SequenceImpl readSequence(long index) {
+        short head = transientUint8(index);
+        if (isNull(head)) {
+            return null;
+        }
+        long headByteSize = ByteSizes.headByteSize(this, index);
+        long size = ElementCounts.sequenceElementCount(this, index);
+        return new SequenceImpl(this, index + headByteSize, size);
     }
 
     long length(MajorType majorType, long index) {

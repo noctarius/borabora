@@ -18,7 +18,8 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
-final class ParserImpl implements Parser {
+final class ParserImpl
+        implements Parser {
 
     private final Input input;
     private final Collection<SemanticTagProcessor> processors;

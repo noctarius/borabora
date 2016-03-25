@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-final class ByteArrayInput implements Input {
+final class ByteArrayInput
+        implements Input {
 
     private final byte[] array;
 
@@ -25,7 +26,8 @@ final class ByteArrayInput implements Input {
     }
 
     @Override
-    public byte read(long index) throws NoSuchByteException {
+    public byte read(long index)
+            throws NoSuchByteException {
         if (index > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayInput can only handle indexes up to Integer.MAX_VALUE");
         }

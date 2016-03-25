@@ -16,19 +16,40 @@
  */
 package com.noctarius.borabora;
 
-import java.util.function.ToIntFunction;
+import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 
 final class ElementCounts {
 
-    static final ToIntFunction<Decoder> SINGLE_ELEMENT = (s) -> 1;
+    static final ObjectLongToLongFunction<Decoder> SINGLE_ELEMENT = (s, i) -> 1;
 
-    static int sequenceElementCount(Decoder stream) {
-        return -1;
+    static long sequenceElementCount(Decoder stream, long index) {
+        return elementCount(stream, index, "Sequence");
     }
 
-
-    static int dictionaryElementCount(Decoder stream) {
-        return -1;
+    static long dictionaryElementCount(Decoder stream, long index) {
+        return elementCount(stream, index, "Dictionary");
     }
-    
+
+    private static long elementCount(Decoder stream, long index, String elementType) {
+        short head = stream.transientUint8(index);
+        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        switch (addInfo) {
+            case 24:
+                return stream.readUint8(index);
+            case 25:
+                return stream.readUint16(index);
+            case 26:
+                return stream.readUint32(index);
+            case 27:
+                throw new IllegalStateException(elementType + " of 64bit sizesare not yet supported");
+            case 31:
+                // TODO Indefinite sizes
+                throw new IllegalStateException(elementType + " of indefinite sizes are not yet supported");
+                //return untilBreakCode(stream, index);
+            default:
+                return addInfo;
+        }
+
+    }
+
 }

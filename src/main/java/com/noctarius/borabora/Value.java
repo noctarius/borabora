@@ -66,9 +66,9 @@ public final class Value {
         return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt), () -> stream.readInt(index));
     }
 
-    //public Number sint() {
-    //    return extract(() -> matchValueType(ValueTypes.NInt), () -> stream.readSInt(index));
-    //}
+    public SequenceImpl sequence() {
+        return extract(() -> matchValueType(ValueTypes.Sequence), () -> stream.readSequence(index));
+    }
 
     public String string() {
         return extract(this::matchStringValueType, () -> stream.readString(index));
@@ -122,8 +122,7 @@ public final class Value {
 
     private void matchStringValueType() {
         ValueType identity = valueType.identity();
-        if (ValueTypes.ByteString != identity
-                && ValueTypes.TextString != identity) {
+        if (ValueTypes.ByteString != identity && ValueTypes.TextString != identity) {
 
             String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, ValueTypes.ByteString, ValueTypes.TextString, identity);
             throw new IllegalStateException(msg);

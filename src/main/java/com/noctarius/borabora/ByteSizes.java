@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-final class ByteSizes implements Constants {
+final class ByteSizes
+        implements Constants {
 
     static byte uintByteSize(Decoder stream, long index) {
         return intByteSize(stream.transientUint8(index));
@@ -46,14 +47,21 @@ final class ByteSizes implements Constants {
         return stringByteSize(stream, index);
     }
 
-
     static long textStringByteSize(Decoder stream, long index) {
         return stringByteSize(stream, index);
     }
 
     static long sequenceByteSize(Decoder stream, long index) {
-        // TODO
-        return -1;
+        long elementCount = ElementCounts.sequenceElementCount(stream, index);
+        long headByteSize = headByteSize(stream, index);
+
+        long position = index + headByteSize;
+        for (long i = 0; i < elementCount; i++) {
+            short head = stream.transientUint8(position);
+            MajorType majorType = MajorType.findMajorType(head);
+            position += majorType.byteSize(stream, position);
+        }
+        return position - index;
     }
 
     static long dictionaryByteSize(Decoder stream, long index) {
@@ -128,6 +136,23 @@ final class ByteSizes implements Constants {
                 return untilBreakCode(stream, index);
             default:
                 return addInfo;
+        }
+    }
+
+    static long headByteSize(Decoder stream, long index) {
+        short head = stream.transientUint8(index);
+        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        switch (addInfo) {
+            case 24:
+                return 2;
+            case 25:
+                return 3;
+            case 26:
+                return 5;
+            case 27:
+                return 9;
+            default:
+                return 1;
         }
     }
 

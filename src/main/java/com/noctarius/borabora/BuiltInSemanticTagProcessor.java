@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-final class BuiltInSemanticTagProcessor implements SemanticTagProcessor {
+final class BuiltInSemanticTagProcessor
+        implements SemanticTagProcessor {
 
     static final SemanticTagProcessor INSTANCE = new BuiltInSemanticTagProcessor();
 

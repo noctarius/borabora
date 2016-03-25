@@ -18,7 +18,8 @@ package com.noctarius.borabora;
 
 import java.util.List;
 
-final class ChainGraph implements Graph {
+final class ChainGraph
+        implements Graph {
 
     private final List<Graph> graphs;
 

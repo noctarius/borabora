@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-final class DictionaryGraph implements Graph {
+final class DictionaryGraph
+        implements Graph {
 
     private final String key;
 
