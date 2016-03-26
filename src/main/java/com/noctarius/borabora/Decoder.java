@@ -168,7 +168,7 @@ final class Decoder
         return readString0(index);
     }
 
-    SequenceImpl readSequence(long index, Collection<SemanticTagProcessor> processors) {
+    Sequence readSequence(long index, Collection<SemanticTagProcessor> processors) {
         short head = transientUint8(index);
         if (isNull(head)) {
             return null;

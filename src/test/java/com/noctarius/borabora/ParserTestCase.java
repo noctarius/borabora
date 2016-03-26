@@ -178,8 +178,17 @@ public class ParserTestCase {
 
         Value value = parser.read(new SequenceGraph(-1));
 
-        SequenceImpl sequence = value.sequence();
-        assertEqualsNumber(1, sequence.get(0).number());
+        Sequence sequence = value.sequence();
+
+        Value valueIndex0 = sequence.get(0);
+        Value valueIndex1 = sequence.get(1);
+        Value valueIndex2 = sequence.get(2);
+
+        assertEquals(ValueTypes.Uint, valueIndex0.valueType());
+        assertEquals(ValueTypes.Sequence, valueIndex1.valueType());
+        assertEquals(ValueTypes.Sequence, valueIndex2.valueType());
+
+        assertEqualsNumber(1, valueIndex0.number());
     }
 
     private void assertEqualsNumber(Number n1, Number n2) {
