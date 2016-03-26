@@ -164,7 +164,7 @@ public class ParserTestCase {
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
 
-        Value value = parser.read(new SequenceGraph(0));
+        Value value = parser.read(Graph.newBuilder().sequence(0).build());
 
         assertEquals(expected, value.string());
     }
@@ -189,6 +189,26 @@ public class ParserTestCase {
         assertEquals(ValueTypes.Sequence, valueIndex2.valueType());
 
         assertEqualsNumber(1, valueIndex0.number());
+
+        assertEqualsNumber(2, valueIndex1.sequence().get(0).number());
+        assertEqualsNumber(3, valueIndex1.sequence().get(1).number());
+
+        assertEqualsNumber(4, valueIndex2.sequence().get(0).number());
+        assertEqualsNumber(5, valueIndex2.sequence().get(1).number());
+    }
+
+
+    @Test
+    public void test_parse_majortype4_sequence_querygraph() throws Exception {
+        byte[] data = DatatypeConverter.parseHexBinary("8301820203820405");
+
+        Input input = Input.fromByteArray(data);
+        Parser parser = Parser.newBuilder(input).build();
+
+        Graph graph = Graph.newBuilder().sequence(1).sequence(1).build();
+        Value value = parser.read(graph);
+
+        assertEqualsNumber(3, value.number());
     }
 
     private void assertEqualsNumber(Number n1, Number n2) {
