@@ -19,7 +19,6 @@ package com.noctarius.borabora;
 import org.junit.Test;
 
 import javax.xml.bind.DatatypeConverter;
-import java.math.BigInteger;
 import java.net.URI;
 
 import static org.junit.Assert.assertEquals;
@@ -27,49 +26,10 @@ import static org.junit.Assert.assertEquals;
 public class ParserTestCase
         extends AbstractTestCase {
 
-    private static final TestValueCollection<Number> NUMBER_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>(0, (byte) 0x0), new TestValue<>(1, (byte) 0x1), new TestValue<>(10, (byte) 0x0a),
-            new TestValue<>(23, (byte) 0x17), new TestValue<>(24, (byte) 0x18, (byte) 0x18),
-            new TestValue<>(25, (byte) 0x18, (byte) 0x19), new TestValue<>(100, (byte) 0x18, (byte) 0x64),
-            new TestValue<>(1000, "1903e8"), new TestValue<>(1000000, "1a000f4240"),
-            new TestValue<>(1000000000000L, "1b000000e8d4a51000"),
-            new TestValue<>(new BigInteger("18446744073709551615"), "1bffffffffffffffff"),
-            new TestValue<>(new BigInteger("18446744073709551616"), "c249010000000000000000"),
-            new TestValue<>(new BigInteger("-18446744073709551616"), "3bffffffffffffffff"),
-            new TestValue<>(new BigInteger("-18446744073709551617"), "c349010000000000000000"), new TestValue<>(-1, (byte) 0x20),
-            new TestValue<>(-10, (byte) 0x29), new TestValue<>(-100, (byte) 0x38, (byte) 0x63), new TestValue<>(-1000, "3903e7"));
-
     private static final TestValueCollection<String> SPECIAL_TEST_VALUES = new TestValueCollection<>(
             new TestValue<>("1(1363896240)", "c11a514b67b0"), new TestValue<>("1(1363896240.5)", "c1fb41d452d9ec200000"),
             new TestValue<>("23(h'01020304')", "d74401020304"), new TestValue<>("24(h'6449455446')", "d818456449455446"),
             new TestValue<>("32(\"http://www.example.com\")", "d82076687474703a2f2f7777772e6578616d706c652e636f6d"));
-
-    @Test
-    public void test_parse_majortype0_majortype1_numbers()
-            throws Exception {
-
-        for (TestValue<Number> testValue : NUMBER_TEST_VALUES.getTestValues()) {
-            Input input = Input.fromByteArray(testValue.getInputData());
-            Parser parser = Parser.newBuilder(input).build();
-            Value value = parser.read(new SequenceGraph(0));
-
-            Number result = value.number();
-            assertEqualsNumber(testValue.getExpectedValue(), result);
-        }
-    }
-
-    @Test
-    public void test_parse_uri()
-            throws Exception {
-
-        byte[] data = DatatypeConverter.parseHexBinary("d82076687474703a2f2f7777772e6578616d706c652e636f6d");
-        Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraph(0));
-
-        assertEquals(ValueTypes.URI, value.valueType());
-        assertEquals(new URI("http://www.example.com"), value.tag());
-    }
 
     @Test
     public void test_parse_majortype1_signedinteger()
@@ -78,7 +38,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraph(0));
+        Value value = parser.read(new SequenceGraphQuery(0));
 
         assertEquals(MajorType.NegativeInteger, value.majorType());
         assertEqualsNumber(-500, value.number());
@@ -91,7 +51,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraph(1));
+        Value value = parser.read(new SequenceGraphQuery(1));
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());
@@ -105,8 +65,8 @@ public class ParserTestCase
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
 
-        Graph graph = Graph.newBuilder().sequence(1).build();
-        Value value = parser.read(graph);
+        GraphQuery graphQuery = GraphQuery.newBuilder().sequence(1).build();
+        Value value = parser.read(graphQuery);
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());

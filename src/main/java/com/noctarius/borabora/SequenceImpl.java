@@ -55,7 +55,7 @@ final class SequenceImpl
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(stream, position);
         long length = majorType.byteSize(stream, position);
-        return new Value(majorType, valueType, stream, position, length, processors);
+        return new StreamValue(majorType, valueType, stream, position, length, processors);
     }
 
 }

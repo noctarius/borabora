@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora;
 
-final class SequenceGraph
-        implements Graph {
+final class SequenceGraphQuery
+        implements GraphQuery {
 
     private final int sequenceIndex;
 
-    SequenceGraph(int sequenceIndex) {
+    SequenceGraphQuery(int sequenceIndex) {
         this.sequenceIndex = sequenceIndex;
     }
 

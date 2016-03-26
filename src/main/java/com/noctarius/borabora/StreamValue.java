@@ -1,0 +1,87 @@
+package com.noctarius.borabora;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+final class StreamValue
+        extends AbstractValue {
+
+    private final Collection<SemanticTagProcessor> processors;
+    private final Decoder stream;
+    private final long index;
+    private final long length;
+
+    StreamValue(MajorType majorType, ValueType valueType, Decoder stream, long index, long length,
+                Collection<SemanticTagProcessor> processors) {
+
+        super(majorType, valueType);
+
+        if (index == -1) {
+            throw new IllegalArgumentException("No index available for CBOR type");
+        }
+        if (length == -1) {
+            throw new IllegalArgumentException(String.format("Length calculation for CBOR type %s is not available", majorType));
+        }
+
+        this.stream = stream;
+        this.index = index;
+        this.length = length;
+        this.processors = processors;
+    }
+
+    @Override
+    public <V> V tag() {
+        return extract(() -> matchMajorType(MajorType.SemanticTag), () -> tag0(index, length));
+    }
+
+    @Override
+    public Number number() {
+        return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt), () -> stream.readInt(index));
+    }
+
+    @Override
+    public Sequence sequence() {
+        return extract(() -> matchValueType(ValueTypes.Sequence), () -> stream.readSequence(index, processors));
+    }
+
+    @Override
+    public String string() {
+        return extract(this::matchStringValueType, () -> stream.readString(index));
+    }
+
+    @Override
+    public Boolean bool() {
+        return extract(() -> stream.getBooleanValue(index));
+    }
+
+    @Override
+    protected <T> T extract(Validator validator, Supplier<T> supplier) {
+        if (validator != null) {
+            validator.validate();
+        }
+        short head = stream.transientUint8(index);
+        // Null is legal for all types
+        if (stream.isNull(head)) {
+            return null;
+        }
+        if (MajorType.SemanticTag == majorType()) {
+            return tag0(index, length);
+        }
+        return supplier.get();
+    }
+
+    private <V> SemanticTagProcessor<V> findProcessor(long index) {
+        Optional<SemanticTagProcessor> optional = processors.stream().filter(p -> p.handles(stream, index)).findFirst();
+        return optional.isPresent() ? optional.get() : null;
+    }
+
+    private <V> V tag0(long index, long length) {
+        SemanticTagProcessor<V> processor = findProcessor(index);
+        if (processor == null) {
+            return null;
+        }
+        return processor.process(stream, index, length);
+    }
+
+}

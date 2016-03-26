@@ -18,19 +18,19 @@ package com.noctarius.borabora;
 
 import java.util.List;
 
-final class ChainGraph
-        implements Graph {
+final class ChainGraphQuery
+        implements GraphQuery {
 
-    private final List<Graph> graphs;
+    private final List<GraphQuery> graphQueries;
 
-    ChainGraph(List<Graph> graphs) {
-        this.graphs = graphs;
+    ChainGraphQuery(List<GraphQuery> graphQueries) {
+        this.graphQueries = graphQueries;
     }
 
     @Override
     public long access(Decoder stream, long index) {
-        for (Graph graph : graphs) {
-            index = graph.access(stream, index);
+        for (GraphQuery graphQuery : graphQueries) {
+            index = graphQuery.access(stream, index);
             if (index == -1) {
                 return -1;
             }

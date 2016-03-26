@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora;
 
-public interface Graph {
+public interface GraphQuery {
 
     long access(Decoder stream, long index);
 
-    static GraphBuilder newBuilder() {
-        return new GraphBuilderImpl();
+    static GraphQueryBuilder newBuilder() {
+        return new GraphQueryQueryBuilderImpl();
     }
 
 }

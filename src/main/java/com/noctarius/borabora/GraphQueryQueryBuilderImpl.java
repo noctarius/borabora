@@ -16,24 +16,29 @@
  */
 package com.noctarius.borabora;
 
-final class DictionaryGraph
-        implements Graph {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final String key;
+final class GraphQueryQueryBuilderImpl
+        implements GraphQueryBuilder {
 
-    DictionaryGraph(String key) {
-        this.key = key;
+    private List<GraphQuery> graphQueries = new ArrayList<>();
+
+    @Override
+    public GraphQueryBuilder sequence(int index) {
+        graphQueries.add(new SequenceGraphQuery(index));
+        return this;
     }
 
     @Override
-    public long access(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
-        MajorType majorType = MajorType.findMajorType(head);
-        if (majorType != MajorType.Dictionary) {
-            throw new IllegalStateException("Not a dictionary");
-        }
+    public GraphQueryBuilder dictionary(String key) {
+        graphQueries.add(new DictionaryGraphQuery(key));
+        return this;
+    }
 
-        return -1;
+    @Override
+    public GraphQuery build() {
+        return new ChainGraphQuery(graphQueries);
     }
 
 }

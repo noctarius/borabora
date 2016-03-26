@@ -52,11 +52,11 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_graph(Parser parser) {
-        Graph i0e0 = Graph.newBuilder().sequence(0).build();
-        Graph i1e0 = Graph.newBuilder().sequence(1).sequence(0).build();
-        Graph i1e1 = Graph.newBuilder().sequence(1).sequence(1).build();
-        Graph i2e0 = Graph.newBuilder().sequence(2).sequence(0).build();
-        Graph i2e1 = Graph.newBuilder().sequence(2).sequence(1).build();
+        GraphQuery i0e0 = GraphQuery.newBuilder().sequence(0).build();
+        GraphQuery i1e0 = GraphQuery.newBuilder().sequence(1).sequence(0).build();
+        GraphQuery i1e1 = GraphQuery.newBuilder().sequence(1).sequence(1).build();
+        GraphQuery i2e0 = GraphQuery.newBuilder().sequence(2).sequence(0).build();
+        GraphQuery i2e1 = GraphQuery.newBuilder().sequence(2).sequence(1).build();
 
         Value v1 = parser.read(i0e0);
         Value v2 = parser.read(i1e0);
@@ -72,7 +72,7 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_traversal(Parser parser) {
-        Value value = parser.read(Graph.newBuilder().sequence(-1).build());
+        Value value = parser.read(GraphQuery.newBuilder().sequence(-1).build());
 
         Sequence sequence = value.sequence();
 

@@ -16,29 +16,12 @@
  */
 package com.noctarius.borabora;
 
-import java.util.ArrayList;
-import java.util.List;
+public interface GraphQueryBuilder {
 
-final class GraphBuilderImpl
-        implements GraphBuilder {
+    GraphQueryBuilder sequence(int index);
 
-    private List<Graph> graphs = new ArrayList<>();
+    GraphQueryBuilder dictionary(String key);
 
-    @Override
-    public GraphBuilder sequence(int index) {
-        graphs.add(new SequenceGraph(index));
-        return this;
-    }
-
-    @Override
-    public GraphBuilder dictionary(String key) {
-        graphs.add(new DictionaryGraph(key));
-        return this;
-    }
-
-    @Override
-    public Graph build() {
-        return new ChainGraph(graphs);
-    }
+    GraphQuery build();
 
 }

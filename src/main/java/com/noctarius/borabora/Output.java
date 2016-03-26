@@ -20,6 +20,10 @@ public interface Output {
 
     void write(long index, byte value);
 
-    boolean ensureCapacity(long length);
+    boolean ensureCapacity(long index, long length);
+
+    static Output toByteArray(byte[] array) {
+        return new ByteArrayOutput(array);
+    }
 
 }

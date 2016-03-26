@@ -16,12 +16,24 @@
  */
 package com.noctarius.borabora;
 
-public interface GraphBuilder {
+final class DictionaryGraphQuery
+        implements GraphQuery {
 
-    GraphBuilder sequence(int index);
+    private final String key;
 
-    GraphBuilder dictionary(String key);
+    DictionaryGraphQuery(String key) {
+        this.key = key;
+    }
 
-    Graph build();
+    @Override
+    public long access(Decoder stream, long index) {
+        short head = stream.transientUint8(index);
+        MajorType majorType = MajorType.findMajorType(head);
+        if (majorType != MajorType.Dictionary) {
+            throw new IllegalStateException("Not a dictionary");
+        }
+
+        return -1;
+    }
 
 }

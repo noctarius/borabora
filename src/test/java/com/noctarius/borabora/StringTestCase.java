@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
 
-public class ByteStringTestCase
+public class StringTestCase
         extends AbstractTestCase {
 
     private static final TestValueCollection<String> BYTE_STRING_TEST_VALUES = new TestValueCollection<>(
@@ -28,7 +28,7 @@ public class ByteStringTestCase
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder(input).build();
 
-        Value value = parser.read(Graph.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 
         assertEquals(expected, value.string());
     }
@@ -43,7 +43,7 @@ public class ByteStringTestCase
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder(input).build();
 
-        Value value = parser.read(Graph.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 
         assertEquals(expected, value.string());
     }
@@ -69,7 +69,7 @@ public class ByteStringTestCase
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getInputData());
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraph(0));
+        Value value = parser.read(new SequenceGraphQuery(0));
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());

@@ -30,14 +30,14 @@ final class ParserImpl
     }
 
     @Override
-    public Value read(Graph graph) {
+    public Value read(GraphQuery graphQuery) {
         Decoder source = new Decoder(input);
-        long index = graph.access(source, 0);
+        long index = graphQuery.access(source, 0);
         short head = source.transientUint8(index);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(source, index);
         long length = source.length(mt, index);
-        return new Value(mt, vt, source, index, length, processors);
+        return new StreamValue(mt, vt, source, index, length, processors);
     }
 
     @Override
