@@ -67,7 +67,7 @@ public final class Value {
     }
 
     public SequenceImpl sequence() {
-        return extract(() -> matchValueType(ValueTypes.Sequence), () -> stream.readSequence(index));
+        return extract(() -> matchValueType(ValueTypes.Sequence), () -> stream.readSequence(index, processors));
     }
 
     public String string() {

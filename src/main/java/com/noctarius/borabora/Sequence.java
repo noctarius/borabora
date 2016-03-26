@@ -15,6 +15,6 @@ public interface Sequence
 
     <T> T[] toArray(T[] a);
 
-    Value get(long index);
+    Value get(long sequenceIndex);
 
 }

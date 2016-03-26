@@ -19,28 +19,16 @@ package com.noctarius.borabora;
 final class ByteSizes
         implements Constants {
 
-    static byte uintByteSize(Decoder stream, long index) {
+    static int uintByteSize(Decoder stream, long index) {
         return intByteSize(stream.transientUint8(index));
     }
 
-    static byte intByteSize(Decoder stream, long index) {
+    static int intByteSize(Decoder stream, long index) {
         return intByteSize(stream.transientUint8(index));
     }
 
-    static byte intByteSize(short head) {
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
-        switch (addInfo) {
-            case 24:
-                return 2;
-            case 25:
-                return 3;
-            case 26:
-                return 5;
-            case 27:
-                return 9;
-            default:
-                return 1;
-        }
+    static int intByteSize(short head) {
+        return headByteSize(head);
     }
 
     static long byteStringByteSize(Decoder stream, long index) {
@@ -71,7 +59,7 @@ final class ByteSizes
 
     static long semanticTagByteSize(Decoder stream, long index) {
         short head = stream.transientUint8(index);
-        int byteSize = ByteSizes.intByteSize(head);
+        long byteSize = ByteSizes.intByteSize(head);
         short itemHead = stream.transientUint8(index + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
         return byteSize + stream.length(majorType, index + byteSize);
@@ -139,8 +127,12 @@ final class ByteSizes
         }
     }
 
-    static long headByteSize(Decoder stream, long index) {
+    static int headByteSize(Decoder stream, long index) {
         short head = stream.transientUint8(index);
+        return headByteSize(head);
+    }
+
+    static int headByteSize(short head) {
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
             case 24:

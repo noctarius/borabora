@@ -1,18 +1,24 @@
 package com.noctarius.borabora;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 final class SequenceImpl
         implements Sequence {
 
     private final Decoder stream;
-    private final long index;
+    private final long headIndex;
     private final long size;
+    private final long[][] elementIndexes;
+    private final Collection<SemanticTagProcessor> processors;
 
-    SequenceImpl(Decoder stream, long index, long size) {
+    SequenceImpl(Decoder stream, long headIndex, long size, long[][] elementIndexes,
+                 Collection<SemanticTagProcessor> processors) {
         this.stream = stream;
-        this.index = index;
+        this.headIndex = headIndex;
         this.size = size;
+        this.elementIndexes = elementIndexes;
+        this.processors = processors;
     }
 
     @Override
@@ -41,7 +47,14 @@ final class SequenceImpl
     }
 
     @Override
-    public Value get(long index) {
-        return null;
+    public Value get(long sequenceIndex) {
+        int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
+        int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);
+        long position = elementIndexes[baseIndex][elementIndex];
+        short head = stream.transientUint8(position);
+        MajorType majorType = MajorType.findMajorType(head);
+        ValueType valueType = ValueTypes.valueType(stream, position);
+        long length = majorType.byteSize(stream, position);
+        return new Value(majorType, valueType, stream, position, length, processors);
     }
 }

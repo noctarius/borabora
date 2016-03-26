@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 final class Decoder
         implements Constants {
@@ -167,14 +168,15 @@ final class Decoder
         return readString0(index);
     }
 
-    SequenceImpl readSequence(long index) {
+    SequenceImpl readSequence(long index, Collection<SemanticTagProcessor> processors) {
         short head = transientUint8(index);
         if (isNull(head)) {
             return null;
         }
         long headByteSize = ByteSizes.headByteSize(this, index);
         long size = ElementCounts.sequenceElementCount(this, index);
-        return new SequenceImpl(this, index + headByteSize, size);
+        long[][] elementIndexes = readElementIndexes(index + headByteSize, size);
+        return new SequenceImpl(this, index + headByteSize, size, elementIndexes, processors);
     }
 
     long length(MajorType majorType, long index) {
@@ -244,6 +246,28 @@ final class Decoder
             return new String(data, ASCII);
         }
         return new String(data, UTF8);
+    }
+
+    private long[][] readElementIndexes(long index, long elementSize) {
+        int baseSize = (int) (elementSize / Integer.MAX_VALUE) + 1;
+        long[][] elementIndexes = new long[baseSize][];
+
+        long position = index;
+        long remainingElements = elementSize;
+        for (int base = 0; base < baseSize; base++) {
+            int remain = (int) Math.min(Integer.MAX_VALUE, remainingElements);
+            elementIndexes[base] = new long[remain];
+            for (int elIndex = 0; elIndex < remain; elIndex++) {
+                // Store element position
+                elementIndexes[base][elIndex] = position;
+
+                // Skip elements content to next element
+                short head = transientUint8(position);
+                MajorType majorType = MajorType.findMajorType(head);
+                position += length(majorType, position);
+            }
+        }
+        return elementIndexes;
     }
 
 }
