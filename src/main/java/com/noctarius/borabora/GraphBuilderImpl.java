@@ -40,4 +40,5 @@ final class GraphBuilderImpl
     public Graph build() {
         return new ChainGraph(graphs);
     }
+
 }

@@ -23,4 +23,5 @@ public interface Graph {
     static GraphBuilder newBuilder() {
         return new GraphBuilderImpl();
     }
+
 }

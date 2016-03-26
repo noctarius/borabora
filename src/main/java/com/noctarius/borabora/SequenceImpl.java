@@ -57,4 +57,5 @@ final class SequenceImpl
         long length = majorType.byteSize(stream, position);
         return new Value(majorType, valueType, stream, position, length, processors);
     }
+
 }

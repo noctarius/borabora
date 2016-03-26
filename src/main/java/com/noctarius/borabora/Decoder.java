@@ -20,8 +20,13 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-final class Decoder
-        implements Constants {
+import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
+import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
+import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
+import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
+
+final class Decoder {
 
     private static final Charset ASCII = Charset.forName("ASCII");
     private static final Charset UTF8 = Charset.forName("UTF8");

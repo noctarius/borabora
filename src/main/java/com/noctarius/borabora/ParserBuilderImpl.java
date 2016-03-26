@@ -27,7 +27,7 @@ final class ParserBuilderImpl
 
     public ParserBuilderImpl(Input input) {
         this.input = input;
-        this.processors.add(BuiltInSemanticTagProcessor.INSTANCE);
+        semanticTagProcessor(BuiltInSemanticTagProcessor.INSTANCE);
     }
 
     @Override
@@ -40,4 +40,5 @@ final class ParserBuilderImpl
     public Parser build() {
         return new ParserImpl(input, processors);
     }
+
 }

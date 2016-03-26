@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 final class ElementCounts {
 
@@ -41,15 +42,31 @@ final class ElementCounts {
             case 26:
                 return stream.readUint32(index);
             case 27:
-                throw new IllegalStateException(elementType + " of 64bit sizesare not yet supported");
+                throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
             case 31:
-                // TODO Indefinite sizes
-                throw new IllegalStateException(elementType + " of indefinite sizes are not yet supported");
-                //return untilBreakCode(stream, index);
+                return untilBreakCode(stream, index);
             default:
                 return addInfo;
         }
 
+    }
+
+    private static long untilBreakCode(Decoder stream, long index) {
+        long headByteSize = ByteSizes.headByteSize(stream, index);
+        long position = index + headByteSize;
+
+        long elementCount = 0;
+        short head;
+        while (true) {
+            head = stream.transientUint8(position);
+            if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
+                break;
+            }
+            MajorType majorType = MajorType.findMajorType(head);
+            position += stream.length(majorType, position);
+            elementCount++;
+        }
+        return elementCount;
     }
 
 }

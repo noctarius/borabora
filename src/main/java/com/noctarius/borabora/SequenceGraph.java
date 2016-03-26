@@ -55,4 +55,5 @@ final class SequenceGraph
         }
         return index;
     }
+
 }
