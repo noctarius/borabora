@@ -25,4 +25,10 @@ public abstract class AbstractTestCase {
         return DatatypeConverter.parseHexBinary(hex);
     }
 
+    public static Parser buildParser(String hex) {
+        byte[] data = hexToBytes(hex);
+        Input input = Input.fromByteArray(data);
+        return Parser.newBuilder(input).build();
+    }
+
 }

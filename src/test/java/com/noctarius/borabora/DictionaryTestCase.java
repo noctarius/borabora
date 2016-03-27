@@ -13,11 +13,7 @@ public class DictionaryTestCase
     public void test_simple_map()
             throws Exception {
 
-        byte[] data = hexToBytes("0xa201020304");
-
-        Input input = Input.fromByteArray(data);
-
-        Parser parser = Parser.newBuilder(input).build();
+        Parser parser = buildParser("0xa201020304");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(MajorType.Dictionary, value.majorType());
@@ -30,11 +26,7 @@ public class DictionaryTestCase
     public void test_simple_map_graph_access()
             throws Exception {
 
-        byte[] data = hexToBytes("0xa201020304");
-
-        Input input = Input.fromByteArray(data);
-
-        Parser parser = Parser.newBuilder(input).build();
+        Parser parser = buildParser("0xa201020304");
         GraphQuery query = GraphQuery.newBuilder().dictionary(this::matchNumber).build();
         Value value = parser.read(query);
 
@@ -42,6 +34,16 @@ public class DictionaryTestCase
         assertEquals(ValueTypes.Uint, value.valueType());
 
         assertEqualsNumber(4, value.number());
+    }
+
+    @Test
+    public void test()
+            throws Exception {
+
+        Parser parser = buildParser("0x9fff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        assertEquals(0, value.sequence().size());
     }
 
     private boolean matchNumber(Value value) {

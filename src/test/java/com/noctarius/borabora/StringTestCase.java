@@ -10,23 +10,20 @@ public class StringTestCase
         extends AbstractTestCase {
 
     private static final TestValueCollection<String> BYTE_STRING_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("", (byte) 0x40), new TestValue<>("a", "4161"), new TestValue<>("IETF", "4449455446"),
-            new TestValue<>("\"\\", "42225c"));
+            new TestValue<>("", (byte) 0x40), new TestValue<>("a", "0x4161"), new TestValue<>("IETF", "0x4449455446"),
+            new TestValue<>("\"\\", "0x42225c"));
 
     private static final TestValueCollection<String> TEXT_STRING_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("", (byte) 0x60), new TestValue<>("a", "6161"), new TestValue<>("IETF", "6449455446"),
-            new TestValue<>("\"\\", "62225c"), new TestValue<>("\u00fc", "62c3bc"), new TestValue<>("\u6c34", "63e6b0b4"),
-            new TestValue<>("\ud800\udd51", "64f0908591"));
+            new TestValue<>("", (byte) 0x60), new TestValue<>("a", "0x6161"), new TestValue<>("IETF", "0x6449455446"),
+            new TestValue<>("\"\\", "0x62225c"), new TestValue<>("\u00fc", "0x62c3bc"), new TestValue<>("\u6c34", "0x63e6b0b4"),
+            new TestValue<>("\ud800\udd51", "0x64f0908591"), new TestValue<>("streaming", "0x7f657374726561646d696e67ff"));
 
     @Test
     public void test_indefinite_byte_string()
             throws Exception {
 
-        byte[] data = hexToBytes("0x5f44aabbccdd43eeff99ff");
         String expected = new String(hexToBytes("0xaabbccddeeff99"));
-
-        Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder(input).build();
+        Parser parser = buildParser("0x5f44aabbccdd43eeff99ff");
 
         Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 
@@ -37,11 +34,8 @@ public class StringTestCase
     public void test_indefinite_text_string()
             throws Exception {
 
-        byte[] data = hexToBytes("0x5f62c3bc63e6b0b464f0908591ff");
         String expected = new String(hexToBytes("0xc3bce6b0b4f0908591"), Charset.forName("UTF8"));
-
-        Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder(input).build();
+        Parser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
 
         Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 

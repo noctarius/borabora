@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import javax.xml.bind.DatatypeConverter;
-
 public final class TestValue<V> {
 
     private final V expectedValue;
@@ -31,7 +29,7 @@ public final class TestValue<V> {
 
     public TestValue(V expectedValue, String hexBytes) {
         this.expectedValue = expectedValue;
-        this.inputData = DatatypeConverter.parseHexBinary(hexBytes);
+        this.inputData = AbstractTestCase.hexToBytes(hexBytes);
     }
 
     public V getExpectedValue() {

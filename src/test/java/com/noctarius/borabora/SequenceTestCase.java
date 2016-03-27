@@ -8,6 +8,16 @@ public class SequenceTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_indefinite_empty_sequence()
+            throws Exception {
+
+        Parser parser = buildParser("0x9fff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        assertEquals(0, value.sequence().size());
+    }
+
+    @Test
     public void test_indefinite_sequence_nested_sequence_sequence()
             throws Exception {
 
@@ -38,15 +48,14 @@ public class SequenceTestCase
     @Test
     public void test_sequence_nested_indefinite_sequence_sequence()
             throws Exception {
+
         test_sequence("0x83019f0203ff820405");
     }
 
     private void test_sequence(String hex)
             throws Exception {
 
-        Input input = Input.fromByteArray(hexToBytes(hex));
-        Parser parser = Parser.newBuilder(input).build();
-
+        Parser parser = buildParser(hex);
         test_using_sequence_graph(parser);
         test_using_sequence_traversal(parser);
     }
