@@ -48,7 +48,7 @@ final class ByteSizes {
 
     static long dictionaryByteSize(Decoder stream, long index) {
         long elementCount = ElementCounts.sequenceElementCount(stream, index);
-        return containerByteSize(stream, index, elementCount * 2);
+        return containerByteSize(stream, index, elementCount / 2);
     }
 
     static long semanticTagByteSize(Decoder stream, long index) {

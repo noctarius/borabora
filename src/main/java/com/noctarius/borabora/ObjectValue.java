@@ -31,6 +31,11 @@ final class ObjectValue
     }
 
     @Override
+    public Dictionary dictionary() {
+        return null;
+    }
+
+    @Override
     public String string() {
         return null;
     }

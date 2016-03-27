@@ -46,6 +46,11 @@ final class StreamValue
     }
 
     @Override
+    public Dictionary dictionary() {
+        return extract(() -> matchValueType(ValueTypes.Dictionary), () -> stream.readDictionary(index, processors));
+    }
+
+    @Override
     public String string() {
         return extract(this::matchStringValueType, () -> stream.readString(index));
     }

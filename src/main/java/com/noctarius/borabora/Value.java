@@ -12,6 +12,8 @@ public interface Value {
 
     Sequence sequence();
 
+    Dictionary dictionary();
+
     String string();
 
     Boolean bool();

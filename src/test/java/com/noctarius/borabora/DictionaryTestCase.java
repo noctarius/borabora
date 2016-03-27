@@ -37,13 +37,15 @@ public class DictionaryTestCase
     }
 
     @Test
-    public void test()
+    public void test_mixed_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0x9fff");
+        Parser parser = buildParser("0xbf6346756ef563416d7421ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
-        assertEquals(0, value.sequence().size());
+        assertEquals(ValueTypes.Dictionary, value.valueType());
+
+        Dictionary dictionary = value.dictionary();
     }
 
     private boolean matchNumber(Value value) {

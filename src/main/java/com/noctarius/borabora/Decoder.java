@@ -184,6 +184,17 @@ final class Decoder {
         return new SequenceImpl(this, index + headByteSize, size, elementIndexes, processors);
     }
 
+    Dictionary readDictionary(long index, Collection<SemanticTagProcessor> processors) {
+        short head = transientUint8(index);
+        if (isNull(head)) {
+            return null;
+        }
+        long headByteSize = ByteSizes.headByteSize(this, index);
+        long size = ElementCounts.sequenceElementCount(this, index);
+        long[][] elementIndexes = readElementIndexes(index + headByteSize, size);
+        return new DictionaryImpl(this, index + headByteSize, size, elementIndexes, processors);
+    }
+
     long length(MajorType majorType, long index) {
         short head = transientUint8(index);
         switch (majorType) {

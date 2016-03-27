@@ -8,6 +8,26 @@ public class SequenceTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_indefinite_sequence()
+            throws Exception {
+
+        Parser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        for (int i = 1; i < 26; i++) {
+            Value element = sequence.get(i - 1);
+            assertEquals(ValueTypes.Uint, element.valueType());
+            assertEqualsNumber(i, element.number());
+
+            GraphQuery query = GraphQuery.newBuilder().sequence(i - 1).build();
+            element = parser.read(query);
+            assertEquals(ValueTypes.Uint, element.valueType());
+            assertEqualsNumber(i, element.number());
+        }
+    }
+
+    @Test
     public void test_indefinite_empty_sequence()
             throws Exception {
 
