@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
@@ -181,7 +182,7 @@ final class Decoder {
         long headByteSize = ByteSizes.headByteSize(this, index);
         long size = ElementCounts.sequenceElementCount(this, index);
         long[][] elementIndexes = readElementIndexes(index + headByteSize, size);
-        return new SequenceImpl(this, index + headByteSize, size, elementIndexes, processors);
+        return new SequenceImpl(this, size, elementIndexes, processors);
     }
 
     Dictionary readDictionary(long index, Collection<SemanticTagProcessor> processors) {
@@ -190,9 +191,9 @@ final class Decoder {
             return null;
         }
         long headByteSize = ByteSizes.headByteSize(this, index);
-        long size = ElementCounts.sequenceElementCount(this, index);
+        long size = ElementCounts.dictionaryElementCount(this, index);
         long[][] elementIndexes = readElementIndexes(index + headByteSize, size);
-        return new DictionaryImpl(this, index + headByteSize, size, elementIndexes, processors);
+        return new DictionaryImpl(this, size, elementIndexes, processors);
     }
 
     long length(MajorType majorType, long index) {
@@ -214,6 +215,12 @@ final class Decoder {
                 return ByteSizes.floatingPointOrSimpleByteSize(this, index);
         }
         throw new IllegalStateException("Illegal MajorType requested");
+    }
+
+    long skip(long index) {
+        short head = transientUint8(index);
+        MajorType majorType = MajorType.findMajorType(head);
+        return skip(majorType, index);
     }
 
     long skip(MajorType majorType, long index) {
@@ -244,6 +251,56 @@ final class Decoder {
             }
         }
         throw new IllegalStateException("Illegal boolean value");
+    }
+
+    long findByDictionaryKey(Predicate<Value> predicate, long index, long count, Collection<SemanticTagProcessor> processors) {
+        // Search for key element
+        long position = findByPredicate(predicate, index, count, processors);
+        if (position == -1) {
+            return -1;
+        }
+        return skip(position);
+    }
+
+    long findDictionaryKey(Predicate<Value> predicate, long index, long count, Collection<SemanticTagProcessor> processors) {
+        // Skip first key
+        long position = skip(index);
+
+        // Search for value element
+        return findByPredicate(predicate, position, count, processors);
+    }
+
+    long findDictionaryValue(Predicate<Value> predicate, long index, long count, Collection<SemanticTagProcessor> processors) {
+        // Skip first key
+        long position = skip(index);
+
+        // Search for value element
+        return findByPredicate(predicate, position, count, processors);
+    }
+
+    StreamValue readValue(long index, Collection<SemanticTagProcessor> processors) {
+        short head = transientUint8(index);
+        MajorType mt = MajorType.findMajorType(head);
+        ValueType vt = ValueTypes.valueType(this, index);
+        long length = length(mt, index);
+        return new StreamValue(mt, vt, this, index, length, processors);
+    }
+
+    private long findByPredicate(Predicate<Value> predicate, long index, long count,
+                                 Collection<SemanticTagProcessor> processors) {
+
+        for (int i = 0; i < count; i++) {
+            short head = transientUint8(index);
+            MajorType mt = MajorType.findMajorType(head);
+            ValueTypes vt = ValueTypes.valueType(this, index);
+            long l = length(mt, index);
+            if (predicate.test(new StreamValue(mt, vt, this, index, l, processors))) {
+                return index;
+            }
+            index = skip(index + l);
+        }
+        return -1;
+
     }
 
     private String readString0(long index) {

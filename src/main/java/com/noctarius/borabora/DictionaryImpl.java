@@ -1,67 +1,195 @@
 package com.noctarius.borabora;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 final class DictionaryImpl
         implements Dictionary {
-    //TODO
+
     private final Decoder stream;
-    private final long headIndex;
     private final long size;
     private final long[][] elementIndexes;
     private final Collection<SemanticTagProcessor> processors;
 
-    public DictionaryImpl(Decoder stream, long headIndex, long size, long[][] elementIndexes,
-                          Collection<SemanticTagProcessor> processors) {
-
+    public DictionaryImpl(Decoder stream, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
         this.stream = stream;
-        this.headIndex = headIndex;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.processors = processors;
     }
 
     @Override
-    public int size() {
-        return 0;
+    public long size() {
+        return size / 2;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public boolean containsKey(Predicate<Value> predicate) {
-        return false;
+        return findValueByPredicate(predicate, false) != null;
     }
 
     @Override
     public boolean containsValue(Predicate<Value> predicate) {
-        return false;
+        return findValueByPredicate(predicate, true) != null;
     }
 
     @Override
     public Value get(Predicate<Value> predicate) {
+        for (long i = 0; i < size; i = i + 2) {
+            long index = calculateArrayIndex(i);
+            Value value = stream.readValue(index, processors);
+            if (predicate.test(value)) {
+                long position = stream.skip(index);
+                return stream.readValue(position, processors);
+            }
+        }
         return null;
     }
 
     @Override
-    public Set<Value> keySet() {
-        return null;
+    public Iterable<Value> keys() {
+        return new DictionaryIterable(0);
     }
 
     @Override
-    public Collection<Value> values() {
-        return null;
+    public Iterable<Value> values() {
+        return new DictionaryIterable(1);
     }
 
     @Override
-    public Set<Map.Entry<Value, Value>> entrySet() {
+    public Iterable<Map.Entry<Value, Value>> entries() {
+        return new EntriesIterable();
+    }
+
+    private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
+        for (long i = findValue ? 1 : 0; i < size; i = i + 2) {
+            long index = calculateArrayIndex(i);
+            Value value = stream.readValue(index, processors);
+            if (predicate.test(value)) {
+                return value;
+            }
+        }
         return null;
+    }
+
+    private long calculateArrayIndex(long index) {
+        int baseIndex = (int) (index / Integer.MAX_VALUE);
+        int elementIndex = (int) (index % Integer.MAX_VALUE);
+        return elementIndexes[baseIndex][elementIndex];
+    }
+
+    private class DictionaryIterable
+            implements Iterable<Value> {
+
+        private final long initialArrayIndex;
+
+        private DictionaryIterable(long initialArrayIndex) {
+            this.initialArrayIndex = initialArrayIndex;
+        }
+
+        @Override
+        public Iterator<Value> iterator() {
+            return new DictionaryIterator(initialArrayIndex);
+        }
+    }
+
+    private class DictionaryIterator
+            implements Iterator<Value> {
+
+        private long arrayIndex;
+
+        private DictionaryIterator(long initialArrayIndex) {
+            this.arrayIndex = initialArrayIndex;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return arrayIndex + 2 >= elementIndexes.length;
+        }
+
+        @Override
+        public Value next() {
+            try {
+                if (arrayIndex >= elementIndexes.length) {
+                    throw new NoSuchElementException("No further element available");
+                }
+                long index = calculateArrayIndex(arrayIndex);
+                return stream.readValue(index, processors);
+
+            } finally {
+                arrayIndex += 2;
+            }
+        }
+    }
+
+    private class EntriesIterable
+            implements Iterable<Map.Entry<Value, Value>> {
+
+        @Override
+        public Iterator<Map.Entry<Value, Value>> iterator() {
+            return new EntriesIterator();
+        }
+    }
+
+    private class EntriesIterator
+            implements Iterator<Map.Entry<Value, Value>> {
+
+        private long arrayIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return arrayIndex + 2 >= elementIndexes.length;
+        }
+
+        @Override
+        public Map.Entry<Value, Value> next() {
+            try {
+                if (arrayIndex >= elementIndexes.length) {
+                    throw new NoSuchElementException("No further element available");
+                }
+                long keyIndex = calculateArrayIndex(arrayIndex);
+                long valueIndex = calculateArrayIndex(arrayIndex + 1);
+                return new SimpleEntry(keyIndex, valueIndex);
+
+            } finally {
+                arrayIndex += 2;
+            }
+        }
+    }
+
+    private class SimpleEntry
+            implements Map.Entry<Value, Value> {
+
+        private final long keyIndex;
+        private final long valueIndex;
+
+        private SimpleEntry(long keyIndex, long valueIndex) {
+            this.keyIndex = keyIndex;
+            this.valueIndex = valueIndex;
+        }
+
+        @Override
+        public Value getKey() {
+            return stream.readValue(keyIndex, processors);
+        }
+
+        @Override
+        public Value getValue() {
+            return stream.readValue(valueIndex, processors);
+        }
+
+        @Override
+        public Value setValue(Value value) {
+            throw new UnsupportedOperationException("setValue not supported");
+        }
     }
 
 }

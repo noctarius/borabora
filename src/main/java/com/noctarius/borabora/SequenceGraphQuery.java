@@ -51,9 +51,7 @@ final class SequenceGraphQuery
     private long skip(Decoder stream, long index) {
         // Skip unnecessary objects
         for (int i = 0; i < sequenceIndex; i++) {
-            short head = stream.transientUint8(index);
-            MajorType mt = MajorType.findMajorType(head);
-            index = stream.skip(mt, index);
+            index = stream.skip(index);
         }
         return index;
     }

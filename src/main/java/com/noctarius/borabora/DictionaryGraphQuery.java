@@ -38,32 +38,10 @@ final class DictionaryGraphQuery
 
         // Skip head
         long headByteSize = ByteSizes.headByteSize(stream, index);
+        long keyCount = ElementCounts.dictionaryElementCount(stream, index);
         index += headByteSize;
 
-        return findKey(stream, index, processors);
-    }
-
-    private long findKey(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
-        // Search for key element
-        long position = index;
-        while (true) {
-            short head = stream.transientUint8(position);
-            MajorType mt = MajorType.findMajorType(head);
-            ValueTypes vt = ValueTypes.valueType(stream, position);
-            long length = stream.length(mt, position);
-            if (predicate.test(new StreamValue(mt, vt, stream, position, length, processors))) {
-                position += length;
-                break;
-            }
-            position = skipValue(stream, position + length);
-        }
-        return position;
-    }
-
-    private long skipValue(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
-        MajorType mt = MajorType.findMajorType(head);
-        return index + stream.length(mt, index);
+        return stream.findByDictionaryKey(predicate, index, keyCount, processors);
     }
 
 }

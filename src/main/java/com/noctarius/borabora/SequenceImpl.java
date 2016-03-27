@@ -8,16 +8,12 @@ final class SequenceImpl
         implements Sequence {
 
     private final Decoder stream;
-    private final long headIndex;
     private final long size;
     private final long[][] elementIndexes;
     private final Collection<SemanticTagProcessor> processors;
 
-    SequenceImpl(Decoder stream, long headIndex, long size, long[][] elementIndexes,
-                 Collection<SemanticTagProcessor> processors) {
-
+    SequenceImpl(Decoder stream, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
         this.stream = stream;
-        this.headIndex = headIndex;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.processors = processors;

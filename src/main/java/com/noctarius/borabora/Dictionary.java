@@ -1,13 +1,11 @@
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public interface Dictionary {
 
-    int size();
+    long size();
 
     boolean isEmpty();
 
@@ -17,10 +15,10 @@ public interface Dictionary {
 
     Value get(Predicate<Value> predicate);
 
-    Set<Value> keySet();
+    Iterable<Value> keys();
 
-    Collection<Value> values();
+    Iterable<Value> values();
 
-    Set<Map.Entry<Value, Value>> entrySet();
+    Iterable<Map.Entry<Value, Value>> entries();
 
 }
