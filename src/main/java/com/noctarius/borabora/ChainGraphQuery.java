@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
 import java.util.List;
 
 final class ChainGraphQuery
@@ -28,9 +29,9 @@ final class ChainGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long index) {
+    public long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
         for (GraphQuery graphQuery : graphQueries) {
-            index = graphQuery.access(stream, index);
+            index = graphQuery.access(stream, index, processors);
             if (index == -1) {
                 return -1;
             }

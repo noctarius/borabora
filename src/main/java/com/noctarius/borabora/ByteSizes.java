@@ -43,23 +43,12 @@ final class ByteSizes {
 
     static long sequenceByteSize(Decoder stream, long index) {
         long elementCount = ElementCounts.sequenceElementCount(stream, index);
-        long headByteSize = headByteSize(stream, index);
-        short sequenceHead = stream.transientUint8(index);
-        int addInfo = sequenceHead & ADDITIONAL_INFORMATION_MASK;
-
-        long position = index + headByteSize;
-        for (long i = 0; i < elementCount; i++) {
-            short head = stream.transientUint8(position);
-            MajorType majorType = MajorType.findMajorType(head);
-            position += majorType.byteSize(stream, position);
-        }
-        // Indefinite length? -> +1
-        return position - index + (addInfo == 31 ? 1 : 0);
+        return containerByteSize(stream, index, elementCount);
     }
 
     static long dictionaryByteSize(Decoder stream, long index) {
-        // TODO
-        return -1;
+        long elementCount = ElementCounts.sequenceElementCount(stream, index);
+        return containerByteSize(stream, index, elementCount * 2);
     }
 
     static long semanticTagByteSize(Decoder stream, long index) {
@@ -160,6 +149,21 @@ final class ByteSizes {
             uint = stream.transientUint8(index++);
         } while ((uint & OPCODE_BREAK_MASK) != OPCODE_BREAK_MASK);
         return index - start;
+    }
+
+    private static long containerByteSize(Decoder stream, long index, long elementCount) {
+        long headByteSize = headByteSize(stream, index);
+        short sequenceHead = stream.transientUint8(index);
+        int addInfo = sequenceHead & ADDITIONAL_INFORMATION_MASK;
+
+        long position = index + headByteSize;
+        for (long i = 0; i < elementCount; i++) {
+            short head = stream.transientUint8(position);
+            MajorType majorType = MajorType.findMajorType(head);
+            position += majorType.byteSize(stream, position);
+        }
+        // Indefinite length? -> +1
+        return position - index + (addInfo == 31 ? 1 : 0);
     }
 
 }

@@ -18,8 +18,9 @@ package com.noctarius.borabora;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
-final class GraphQueryQueryBuilderImpl
+final class GraphQueryBuilderImpl
         implements GraphQueryBuilder {
 
     private List<GraphQuery> graphQueries = new ArrayList<>();
@@ -31,13 +32,16 @@ final class GraphQueryQueryBuilderImpl
     }
 
     @Override
-    public GraphQueryBuilder dictionary(String key) {
-        graphQueries.add(new DictionaryGraphQuery(key));
+    public GraphQueryBuilder dictionary(Predicate<Value> predicate) {
+        graphQueries.add(new DictionaryGraphQuery(predicate));
         return this;
     }
 
     @Override
     public GraphQuery build() {
+        if (graphQueries.size() == 0) {
+            return new SequenceGraphQuery(-1);
+        }
         return new ChainGraphQuery(graphQueries);
     }
 

@@ -28,9 +28,14 @@ final class ByteArrayInput
     @Override
     public byte read(long index)
             throws NoSuchByteException {
+
         if (index > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayInput can only handle indexes up to Integer.MAX_VALUE");
         }
+        if (index >= array.length) {
+            throw new NoSuchByteException(index, "Index " + index + " outside of available data");
+        }
         return array[(int) index];
     }
+
 }

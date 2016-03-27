@@ -32,7 +32,7 @@ final class ParserImpl
     @Override
     public Value read(GraphQuery graphQuery) {
         Decoder source = new Decoder(input);
-        long index = graphQuery.access(source, 0);
+        long index = graphQuery.access(source, 0, processors);
         short head = source.transientUint8(index);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(source, index);

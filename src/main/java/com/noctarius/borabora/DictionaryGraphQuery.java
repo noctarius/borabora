@@ -16,24 +16,54 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+import java.util.function.Predicate;
+
 final class DictionaryGraphQuery
         implements GraphQuery {
 
-    private final String key;
+    private final Predicate<Value> predicate;
 
-    DictionaryGraphQuery(String key) {
-        this.key = key;
+    DictionaryGraphQuery(Predicate<Value> predicate) {
+        this.predicate = predicate;
     }
 
     @Override
-    public long access(Decoder stream, long index) {
+    public long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(index);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
             throw new IllegalStateException("Not a dictionary");
         }
 
-        return -1;
+        // Skip head
+        long headByteSize = ByteSizes.headByteSize(stream, index);
+        index += headByteSize;
+
+        return findKey(stream, index, processors);
+    }
+
+    private long findKey(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
+        // Search for key element
+        long position = index;
+        while (true) {
+            short head = stream.transientUint8(position);
+            MajorType mt = MajorType.findMajorType(head);
+            ValueTypes vt = ValueTypes.valueType(stream, position);
+            long length = stream.length(mt, position);
+            if (predicate.test(new StreamValue(mt, vt, stream, position, length, processors))) {
+                position += length;
+                break;
+            }
+            position = skipValue(stream, position + length);
+        }
+        return position;
+    }
+
+    private long skipValue(Decoder stream, long index) {
+        short head = stream.transientUint8(index);
+        MajorType mt = MajorType.findMajorType(head);
+        return index + stream.length(mt, index);
     }
 
 }

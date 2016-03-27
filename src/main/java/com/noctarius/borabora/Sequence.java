@@ -1,6 +1,7 @@
 package com.noctarius.borabora;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public interface Sequence
         extends Iterable<Value> {
@@ -9,11 +10,11 @@ public interface Sequence
 
     boolean isEmpty();
 
+    boolean contains(Predicate<Value> predicate);
+
     Iterator<Value> iterator();
 
-    Object[] toArray();
-
-    <T> T[] toArray(T[] a);
+    Value[] toArray();
 
     Value get(long sequenceIndex);
 

@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 public interface GraphQuery {
 
-    long access(Decoder stream, long index);
+    long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors);
 
     static GraphQueryBuilder newBuilder() {
-        return new GraphQueryQueryBuilderImpl();
+        return new GraphQueryBuilderImpl();
     }
 
 }

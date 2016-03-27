@@ -16,11 +16,13 @@
  */
 package com.noctarius.borabora;
 
+import java.util.function.Predicate;
+
 public interface GraphQueryBuilder {
 
     GraphQueryBuilder sequence(int index);
 
-    GraphQueryBuilder dictionary(String key);
+    GraphQueryBuilder dictionary(Predicate<Value> predicate);
 
     GraphQuery build();
 

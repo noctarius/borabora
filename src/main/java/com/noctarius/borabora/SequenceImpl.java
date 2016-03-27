@@ -2,6 +2,7 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 final class SequenceImpl
         implements Sequence {
@@ -32,18 +33,18 @@ final class SequenceImpl
     }
 
     @Override
+    public boolean contains(Predicate<Value> predicate) {
+        return false;
+    }
+
+    @Override
     public Iterator<Value> iterator() {
         return null;
     }
 
     @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return null;
+    public Value[] toArray() {
+        return new Value[0];
     }
 
     @Override

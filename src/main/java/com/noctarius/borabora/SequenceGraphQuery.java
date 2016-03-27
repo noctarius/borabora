@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 final class SequenceGraphQuery
         implements GraphQuery {
 
@@ -26,7 +28,7 @@ final class SequenceGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long index) {
+    public long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(index);
         MajorType majorType = MajorType.findMajorType(head);
 
