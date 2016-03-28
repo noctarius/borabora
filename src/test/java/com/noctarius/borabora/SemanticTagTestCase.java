@@ -2,6 +2,7 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import javax.xml.bind.DatatypeConverter;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -63,6 +64,18 @@ public class SemanticTagTestCase
 
         assertEquals(ValueTypes.Timestamp, value.valueType());
         assertEquals((Double) 1363896240.5D, value.tag());
+    }
+
+    @Test
+    public void test_semantic_tag_enc_cbor()
+            throws Exception {
+
+        String expected = new String(hexToBytes("0x6449455446"));
+        Parser parser = buildParser("0xd818456449455446");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value enc = value.tag();
+        String actual = enc.string();
+        assertEquals(expected, actual);
     }
 
 }

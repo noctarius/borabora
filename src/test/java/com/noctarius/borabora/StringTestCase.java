@@ -19,6 +19,16 @@ public class StringTestCase
             new TestValue<>("\ud800\udd51", "0x64f0908591"), new TestValue<>("streaming", "0x7f657374726561646d696e67ff"));
 
     @Test
+    public void test_byte_string()
+            throws Exception {
+
+        String expected = new String(hexToBytes("0x01020304"));
+        Parser parser = buildParser("0x4401020304");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        assertEquals(expected, value.string());
+    }
+
+    @Test
     public void test_indefinite_byte_string_1()
             throws Exception {
 

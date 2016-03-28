@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
 import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
@@ -23,6 +25,7 @@ import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
 import static com.noctarius.borabora.Constants.FP_VALUE_UNDEF;
 import static com.noctarius.borabora.Constants.TAG_BIGFLOAT;
 import static com.noctarius.borabora.Constants.TAG_DATE_TIME;
+import static com.noctarius.borabora.Constants.TAG_ENCCBOR;
 import static com.noctarius.borabora.Constants.TAG_FRACTION;
 import static com.noctarius.borabora.Constants.TAG_MIME;
 import static com.noctarius.borabora.Constants.TAG_REGEX;
@@ -47,15 +50,15 @@ public enum ValueTypes
     Timestamp(TagProcessors::readTimestamp),
     UBigNum(TagProcessors::readUBigNum, Uint),
     NBigNum(TagProcessors::readNBigNum, NInt),
-    Fraction,
-    BigFloat,
-    Base64Url,
-    Base64Enc,
-    Base16Enc,
-    EncCBOR,
+    // Fraction,
+    // BigFloat,
+    // Base64Url,
+    // Base64Enc,
+    // Base16Enc,
+    EncCBOR(TagProcessors::readEncCBOR),
     URI(TagProcessors::readURI),
-    RegEx,
-    Mime,
+    // RegEx,
+    // Mime,
     Unknown;
 
     private final TagProcessor processor;
@@ -80,11 +83,11 @@ public enum ValueTypes
     }
 
     @Override
-    public Object process(Decoder stream, long index, long length) {
+    public Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         if (processor == null) {
             return null;
         }
-        return processor.process(stream, index, length);
+        return processor.process(stream, index, length, processors);
     }
 
     static ValueTypes valueType(Decoder stream, long index) {
@@ -142,17 +145,23 @@ public enum ValueTypes
             case TAG_SIGNED_BIGNUM:
                 return NBigNum;
             case TAG_BIGFLOAT:
-                return BigFloat;
+                // return BigFloat;
+                throw new IllegalStateException("BigFloat is not supported");
+            case TAG_ENCCBOR:
+                return EncCBOR;
             case TAG_FRACTION:
-                return Fraction;
+                //return Fraction;
+                throw new IllegalStateException("Fraction is not supported");
             case TAG_URI:
                 return URI;
             case TAG_REGEX:
-                return RegEx;
+                //return RegEx;
+                throw new IllegalStateException("RegEx is not supported");
             case TAG_MIME:
-                return Mime;
+                //return Mime;
+                throw new IllegalStateException("Mime is not supported");
         }
-        return null;
+        return Unknown;
     }
 
 }

@@ -16,8 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 interface TagProcessor {
 
-    Object process(Decoder stream, long index, long length);
+    Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors);
 
 }

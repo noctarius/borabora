@@ -32,6 +32,7 @@ interface Constants {
     int TAG_SIGNED_BIGNUM = 3;
     int TAG_FRACTION = 4;
     int TAG_BIGFLOAT = 5;
+    int TAG_ENCCBOR = 24;
     int TAG_URI = 32;
     int TAG_REGEX = 35;
     int TAG_MIME = 36;

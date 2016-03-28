@@ -16,8 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 final class BuiltInSemanticTagProcessor
-        implements SemanticTagProcessor {
+        implements SemanticTagProcessor<Object> {
 
     static final SemanticTagProcessor INSTANCE = new BuiltInSemanticTagProcessor();
 
@@ -35,9 +37,9 @@ final class BuiltInSemanticTagProcessor
     }
 
     @Override
-    public Object process(Decoder stream, long index, long length) {
+    public Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         ValueTypes valueType = ValueTypes.valueType(stream, index);
-        return valueType.process(stream, index, length);
+        return valueType.process(stream, index, length, processors);
     }
 
 }

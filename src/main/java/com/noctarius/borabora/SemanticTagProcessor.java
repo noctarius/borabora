@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Collection;
+
 public interface SemanticTagProcessor<V> {
 
     boolean handles(Decoder stream, long index);
 
     ValueType valueType(Decoder stream, long index);
 
-    V process(Decoder stream, long index, long length);
+    V process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors);
 
 }

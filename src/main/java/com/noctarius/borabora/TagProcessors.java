@@ -20,19 +20,20 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
 final class TagProcessors {
 
-    static Date readDateTime(Decoder stream, long index, long length) {
+    static Date readDateTime(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(index);
         int byteSize = ByteSizes.intByteSize(stream, head);
         String date = stream.readString(index + byteSize);
         return DateParser.parseDate(date, Locale.ENGLISH);
     }
 
-    static BigInteger readUBigNum(Decoder stream, long index, long length) {
+    static BigInteger readUBigNum(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(index);
         int byteSize = ByteSizes.intByteSize(stream, head);
         String bigNum = stream.readString(index + byteSize);
@@ -44,11 +45,11 @@ final class TagProcessors {
         }
     }
 
-    static BigInteger readNBigNum(Decoder stream, long index, long length) {
-        return BigInteger.valueOf(-1).xor(readUBigNum(stream, index, length));
+    static BigInteger readNBigNum(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
+        return BigInteger.valueOf(-1).xor(readUBigNum(stream, index, length, processors));
     }
 
-    static URI readURI(Decoder stream, long index, long length) {
+    static URI readURI(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(index);
         int byteSize = ByteSizes.intByteSize(stream, head);
         String uri = stream.readString(index + byteSize);
@@ -59,8 +60,19 @@ final class TagProcessors {
         }
     }
 
-    static Object readTimestamp(Decoder stream, long index, long length) {
+    static Number readTimestamp(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         ValueType valueType = ValueTypes.valueType(stream, index + 1);
         return stream.readNumber(valueType, index + 1);
+    }
+
+    static Value readEncCBOR(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
+        short tagHead = stream.transientUint8(index);
+        int headByteSize = ByteSizes.intByteSize(stream, tagHead);
+
+        index += headByteSize;
+        short head = stream.transientUint8(index);
+        MajorType majorType = MajorType.findMajorType(head);
+        ValueType valueType = ValueTypes.valueType(stream, index);
+        return new StreamValue(majorType, valueType, stream, index, length - headByteSize, processors);
     }
 }

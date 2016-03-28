@@ -94,7 +94,7 @@ final class StreamValue
         if (processor == null) {
             return null;
         }
-        return processor.process(stream, index, length);
+        return processor.process(stream, index, length, processors);
     }
 
 }
