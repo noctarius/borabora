@@ -288,10 +288,32 @@ public class DictionaryTestCase
     }
 
     @Test
+    public void test_indefinite_dictionary_isempty_false()
+            throws Exception {
+
+        Parser parser = buildParser("0xbf6161614161626142616361436164614461656145ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertFalse(dictionary.isEmpty());
+    }
+
+    @Test
     public void test_dictionary_isempty_true()
             throws Exception {
 
         Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertTrue(dictionary.isEmpty());
+    }
+
+    @Test
+    public void test_indefinite_dictionary_isempty_true()
+            throws Exception {
+
+        Parser parser = buildParser("0xbfff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();

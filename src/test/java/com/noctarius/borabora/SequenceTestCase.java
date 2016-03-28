@@ -19,17 +19,60 @@ package com.noctarius.borabora;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SequenceTestCase
         extends AbstractTestCase {
 
     @Test
-    public void test_empty_sequence() throws Exception {
+    public void test_empty_sequence()
+            throws Exception {
 
         Parser parser = buildParser("0x80");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertEquals(0, sequence.size());
+    }
+
+    @Test
+    public void test_sequence_isempty_true()
+            throws Exception {
+
+        Parser parser = buildParser("0x80");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertTrue(sequence.isEmpty());
+    }
+
+    @Test
+    public void test_indefinite_sequence_isempty_true()
+            throws Exception {
+
+        Parser parser = buildParser("0x9fff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertTrue(sequence.isEmpty());
+    }
+
+    @Test
+    public void test_sequence_isempty_false()
+            throws Exception {
+
+        Parser parser = buildParser("0x83010203");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertFalse(sequence.isEmpty());
+    }
+
+    @Test
+    public void test_indefinite_sequence_isempty_false()
+            throws Exception {
+
+        Parser parser = buildParser("0x9f010203ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertFalse(sequence.isEmpty());
     }
 
     @Test
@@ -127,7 +170,8 @@ public class SequenceTestCase
     }
 
     @Test
-    public void test_small_sequence() throws Exception {
+    public void test_small_sequence()
+            throws Exception {
 
         Parser parser = buildParser("0x83010203");
         Value value = parser.read(GraphQuery.newBuilder().build());
