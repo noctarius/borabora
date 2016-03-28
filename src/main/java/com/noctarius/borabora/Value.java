@@ -18,6 +18,8 @@ package com.noctarius.borabora;
 
 public interface Value {
 
+    Value NULL_VALUE = new NullValue();
+
     MajorType majorType();
 
     ValueType valueType();

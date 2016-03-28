@@ -24,7 +24,8 @@ public enum MajorType {
     Sequence(4, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts.SEQUENCE_ELEMENT_COUNT),
     Dictionary(5, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts.DICTIONARY_ELEMENT_COUNT),
     SemanticTag(6, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    FloatingPointOrSimple(7, 0b111, false, ByteSizes::floatingPointOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT);
+    FloatingPointOrSimple(7, 0b111, false, ByteSizes::floatingPointOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    Unknown(-1, -1, false, (s, i) -> 0, (s, i) -> 0);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;
 

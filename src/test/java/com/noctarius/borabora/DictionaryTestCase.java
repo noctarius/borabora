@@ -19,16 +19,22 @@ package com.noctarius.borabora;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class DictionaryTestCase
         extends AbstractTestCase {
 
     @Test
-    public void test_empty_dictionary() throws Exception {
+    public void test_empty_dictionary()
+            throws Exception {
 
         Parser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
@@ -50,6 +56,282 @@ public class DictionaryTestCase
         assertEquals("C", dictionary.get((v) -> "c".equals(v.string())).string());
         assertEquals("D", dictionary.get((v) -> "d".equals(v.string())).string());
         assertEquals("E", dictionary.get((v) -> "e".equals(v.string())).string());
+    }
+
+    @Test
+    public void test_dictionary_key_iterator()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> keys = dictionary.keys();
+        Iterator<Value> iterator = keys.iterator();
+
+        assertEquals("a", iterator.next().string());
+        assertEquals("b", iterator.next().string());
+        assertEquals("c", iterator.next().string());
+        assertEquals("d", iterator.next().string());
+        assertEquals("e", iterator.next().string());
+    }
+
+    @Test
+    public void test_dictionary_key_iterator_hasnext()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> keys = dictionary.keys();
+        Iterator<Value> iterator = keys.iterator();
+
+        assertTrue(iterator.hasNext());
+        assertEquals("a", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("b", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("c", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("d", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("e", iterator.next().string());
+
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void test_dictionary_key_iterator_next_nosuchelement()
+            throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> keys = dictionary.keys();
+        Iterator<Value> iterator = keys.iterator();
+        iterator.next();
+    }
+
+    @Test
+    public void test_dictionary_value_iterator()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> values = dictionary.values();
+        Iterator<Value> iterator = values.iterator();
+
+        assertEquals("A", iterator.next().string());
+        assertEquals("B", iterator.next().string());
+        assertEquals("C", iterator.next().string());
+        assertEquals("D", iterator.next().string());
+        assertEquals("E", iterator.next().string());
+    }
+
+    @Test
+    public void test_dictionary_value_iterator_hasnext()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> values = dictionary.values();
+        Iterator<Value> iterator = values.iterator();
+
+        assertTrue(iterator.hasNext());
+        assertEquals("A", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("B", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("C", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("D", iterator.next().string());
+
+        assertTrue(iterator.hasNext());
+        assertEquals("E", iterator.next().string());
+
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void test_dictionary_value_iterator_next_nosuchelement()
+            throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Value> values = dictionary.values();
+        Iterator<Value> iterator = values.iterator();
+        iterator.next();
+    }
+
+    @Test
+    public void test_dictionary_entries_iterator()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
+        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+
+        Map.Entry<Value, Value> entry = iterator.next();
+        assertEquals("a", entry.getKey().string());
+        assertEquals("A", entry.getValue().string());
+
+        entry = iterator.next();
+        assertEquals("b", entry.getKey().string());
+        assertEquals("B", entry.getValue().string());
+
+        entry = iterator.next();
+        assertEquals("c", entry.getKey().string());
+        assertEquals("C", entry.getValue().string());
+
+        entry = iterator.next();
+        assertEquals("d", entry.getKey().string());
+        assertEquals("D", entry.getValue().string());
+
+        entry = iterator.next();
+        assertEquals("e", entry.getKey().string());
+        assertEquals("E", entry.getValue().string());
+    }
+
+    @Test
+    public void test_dictionary_entries_iterator_hasnext()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
+        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+
+        assertTrue(iterator.hasNext());
+        Map.Entry<Value, Value> entry = iterator.next();
+        assertEquals("a", entry.getKey().string());
+        assertEquals("A", entry.getValue().string());
+
+        assertTrue(iterator.hasNext());
+        entry = iterator.next();
+        assertEquals("b", entry.getKey().string());
+        assertEquals("B", entry.getValue().string());
+
+        assertTrue(iterator.hasNext());
+        entry = iterator.next();
+        assertEquals("c", entry.getKey().string());
+        assertEquals("C", entry.getValue().string());
+
+        assertTrue(iterator.hasNext());
+        entry = iterator.next();
+        assertEquals("d", entry.getKey().string());
+        assertEquals("D", entry.getValue().string());
+
+        assertTrue(iterator.hasNext());
+        entry = iterator.next();
+        assertEquals("e", entry.getKey().string());
+        assertEquals("E", entry.getValue().string());
+
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void test_dictionary_entries_iterator_next_nosuchelement()
+            throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
+        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        iterator.next();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void test_dictionary_entries_iterator_next_setvalue_unsupportedoperation()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
+        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        Map.Entry<Value, Value> entry = iterator.next();
+        entry.setValue(null);
+    }
+
+    @Test
+    public void test_dictionary_isempty_false()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertFalse(dictionary.isEmpty());
+    }
+
+    @Test
+    public void test_dictionary_isempty_true()
+            throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertTrue(dictionary.isEmpty());
+    }
+
+    @Test
+    public void test_dictionary_get_null_result()
+            throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Dictionary dictionary = value.dictionary();
+        assertNull(dictionary.get((v) -> false));
+    }
+
+    @Test
+    public void test_dictionary_contains_key()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+
+        assertTrue(dictionary.containsKey((v) -> "b".equals(v.string())));
+        assertFalse(dictionary.containsKey((v) -> "z".equals(v.string())));
+    }
+
+    @Test
+    public void test_dictionary_contains_value()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+
+        assertTrue(dictionary.containsValue((v) -> "B".equals(v.string())));
+        assertFalse(dictionary.containsValue((v) -> "Z".equals(v.string())));
     }
 
     @Test

@@ -73,18 +73,6 @@ final class Decoder {
         return readInt32(index) & 0xffffffff;
     }
 
-    long readInt64(long index) {
-        byte b1 = readInt8(index);
-        byte b2 = readInt8(index + 1);
-        byte b3 = readInt8(index + 2);
-        byte b4 = readInt8(index + 3);
-        byte b5 = readInt8(index + 4);
-        byte b6 = readInt8(index + 5);
-        byte b7 = readInt8(index + 6);
-        byte b8 = readInt8(index + 7);
-        return (b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
-    }
-
     long readUint64(long index) {
         long b1 = readUint8(index);
         long b2 = readUint8(index + 1);

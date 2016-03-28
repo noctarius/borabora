@@ -60,7 +60,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0xaabbccddeeff99"));
         Parser parser = buildParser("0x5f44aabbccdd43eeff99ff");
-        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -70,7 +70,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0xc3bce6b0b4f0908591"), Charset.forName("UTF8"));
         Parser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
-        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -95,7 +95,7 @@ public class StringTestCase
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getInputData());
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());

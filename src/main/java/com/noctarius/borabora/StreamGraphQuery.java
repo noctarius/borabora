@@ -18,13 +18,13 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
-final class SequenceGraphQuery
+final class StreamGraphQuery
         implements GraphQuery {
 
-    private final int sequenceIndex;
+    private final int streamIndex;
 
-    SequenceGraphQuery(int sequenceIndex) {
-        this.sequenceIndex = sequenceIndex;
+    StreamGraphQuery(int streamIndex) {
+        this.streamIndex = streamIndex;
     }
 
     @Override
@@ -33,23 +33,9 @@ final class SequenceGraphQuery
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)
-        if (sequenceIndex == -1) {
+        if (streamIndex <= 0) {
             return index;
         }
-
-        if (MajorType.Sequence != majorType) {
-            throw new WrongTypeException("Not a sequence");
-        }
-
-        // Sequences need head skipped
-        long elementCount = majorType.elementCount(stream, index);
-        if (elementCount < sequenceIndex) {
-            return -1;
-        }
-
-        // Element access
-        long headByteSize = ByteSizes.headByteSize(stream, index);
-        index += headByteSize;
 
         // Stream objects
         return skip(stream, index);
@@ -57,7 +43,7 @@ final class SequenceGraphQuery
 
     private long skip(Decoder stream, long index) {
         // Skip unnecessary objects
-        for (int i = 0; i < sequenceIndex; i++) {
+        for (int i = 0; i < streamIndex; i++) {
             index = stream.skip(index);
         }
         return index;

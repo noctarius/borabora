@@ -18,6 +18,8 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
+import static com.noctarius.borabora.Value.NULL_VALUE;
+
 final class ParserImpl
         implements Parser {
 
@@ -33,6 +35,9 @@ final class ParserImpl
     public Value read(GraphQuery graphQuery) {
         Decoder source = new Decoder(input);
         long index = graphQuery.access(source, 0, processors);
+        if (index == -1) {
+            return NULL_VALUE;
+        }
         short head = source.transientUint8(index);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(source, index);

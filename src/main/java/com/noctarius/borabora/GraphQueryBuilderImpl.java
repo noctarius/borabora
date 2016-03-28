@@ -17,15 +17,22 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 final class GraphQueryBuilderImpl
-        implements GraphQueryBuilder {
+        implements StreamGraphQueryBuilder {
 
     private List<GraphQuery> graphQueries = new ArrayList<>();
+
+    @Override
+    public GraphQueryBuilder stream(int index) {
+        graphQueries.add(new StreamGraphQuery(index));
+        return this;
+    }
 
     @Override
     public GraphQueryBuilder sequence(int index) {
@@ -42,7 +49,7 @@ final class GraphQueryBuilderImpl
     @Override
     public GraphQuery build() {
         if (graphQueries.size() == 0) {
-            return new SequenceGraphQuery(-1);
+            return new StreamGraphQuery(-1);
         }
         return new ChainGraphQuery(graphQueries);
     }

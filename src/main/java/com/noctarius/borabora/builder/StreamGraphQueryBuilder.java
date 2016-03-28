@@ -14,18 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+public interface StreamGraphQueryBuilder
+        extends GraphQueryBuilder {
 
-import java.util.Collection;
-
-public interface GraphQuery {
-
-    long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors);
-
-    static StreamGraphQueryBuilder newBuilder() {
-        return new GraphQueryBuilderImpl();
-    }
+    GraphQueryBuilder stream(int index);
 
 }

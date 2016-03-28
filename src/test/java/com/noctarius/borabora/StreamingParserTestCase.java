@@ -20,13 +20,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ParserTestCase
+public class StreamingParserTestCase
         extends AbstractTestCase {
-
-    private static final TestValueCollection<String> SPECIAL_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("1(1363896240)", "c11a514b67b0"), new TestValue<>("1(1363896240.5)", "c1fb41d452d9ec200000"),
-            new TestValue<>("23(h'01020304')", "d74401020304"), new TestValue<>("24(h'6449455446')", "d818456449455446"),
-            new TestValue<>("32(\"http://www.example.com\")", "d82076687474703a2f2f7777772e6578616d706c652e636f6d"));
 
     @Test
     public void test_parse_majortype1_signedinteger()
@@ -35,7 +30,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
+        Value value = parser.read(GraphQuery.newBuilder().stream(0).build());
 
         assertEquals(MajorType.NegativeInteger, value.majorType());
         assertEqualsNumber(-500, value.number());
@@ -48,7 +43,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(GraphQuery.newBuilder().sequence(1).build());
+        Value value = parser.read(GraphQuery.newBuilder().stream(1).build());
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());
@@ -62,7 +57,7 @@ public class ParserTestCase
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
 
-        GraphQuery graphQuery = GraphQuery.newBuilder().sequence(1).build();
+        GraphQuery graphQuery = GraphQuery.newBuilder().stream(1).build();
         Value value = parser.read(graphQuery);
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());

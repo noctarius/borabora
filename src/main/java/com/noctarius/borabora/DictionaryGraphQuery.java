@@ -33,7 +33,7 @@ final class DictionaryGraphQuery
         short head = stream.transientUint8(index);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
-            throw new IllegalStateException("Not a dictionary");
+            throw new WrongTypeException("Not a dictionary");
         }
 
         // Skip head

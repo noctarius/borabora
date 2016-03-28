@@ -128,13 +128,13 @@ final class DictionaryImpl
 
         @Override
         public boolean hasNext() {
-            return arrayIndex + 2 >= elementIndexes.length;
+            return arrayIndex < size * 2;
         }
 
         @Override
         public Value next() {
             try {
-                if (arrayIndex >= elementIndexes.length) {
+                if (arrayIndex >= size * 2) {
                     throw new NoSuchElementException("No further element available");
                 }
                 long index = calculateArrayIndex(arrayIndex);
@@ -162,13 +162,13 @@ final class DictionaryImpl
 
         @Override
         public boolean hasNext() {
-            return arrayIndex + 2 >= elementIndexes.length;
+            return arrayIndex < size * 2;
         }
 
         @Override
         public Map.Entry<Value, Value> next() {
             try {
-                if (arrayIndex >= elementIndexes.length) {
+                if (arrayIndex >= size * 2) {
                     throw new NoSuchElementException("No further element available");
                 }
                 long keyIndex = calculateArrayIndex(arrayIndex);
