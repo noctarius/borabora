@@ -23,7 +23,7 @@ final class DictionaryImpl
 
     @Override
     public long size() {
-        return size / 2;
+        return size;
     }
 
     @Override
@@ -43,8 +43,8 @@ final class DictionaryImpl
 
     @Override
     public Value get(Predicate<Value> predicate) {
-        for (long i = 0; i < size; i = i + 2) {
-            long index = calculateArrayIndex(i);
+        for (long i = 0; i < size; i++) {
+            long index = calculateArrayIndex(i * 2);
             Value value = stream.readValue(index, processors);
             if (predicate.test(value)) {
                 long position = stream.skip(index);

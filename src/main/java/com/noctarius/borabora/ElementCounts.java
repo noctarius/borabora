@@ -28,14 +28,14 @@ final class ElementCounts {
     static final ObjectLongToLongFunction<Decoder> DICTIONARY_ELEMENT_COUNT = ElementCounts::dictionaryElementCount;
 
     static long sequenceElementCount(Decoder stream, long index) {
-        return elementCount(stream, index, "Sequence");
+        return elementCount(stream, index, "Sequence", false);
     }
 
     static long dictionaryElementCount(Decoder stream, long index) {
-        return elementCount(stream, index, "Dictionary");
+        return elementCount(stream, index, "Dictionary", true);
     }
 
-    private static long elementCount(Decoder stream, long index, String elementType) {
+    private static long elementCount(Decoder stream, long index, String elementType, boolean keyValue) {
         short head = stream.transientUint8(index);
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
@@ -48,14 +48,14 @@ final class ElementCounts {
             case 27:
                 throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
             case 31:
-                return untilBreakCode(stream, index);
+                return untilBreakCode(stream, index, keyValue);
             default:
                 return addInfo;
         }
 
     }
 
-    private static long untilBreakCode(Decoder stream, long index) {
+    private static long untilBreakCode(Decoder stream, long index, boolean keyValue) {
         long headByteSize = ByteSizes.headByteSize(stream, index);
         long position = index + headByteSize;
 
@@ -69,6 +69,9 @@ final class ElementCounts {
             MajorType majorType = MajorType.findMajorType(head);
             position += stream.length(majorType, position);
             elementCount++;
+        }
+        if (keyValue) {
+            return elementCount / 2;
         }
         return elementCount;
     }

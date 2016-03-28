@@ -192,7 +192,7 @@ final class Decoder {
         }
         long headByteSize = ByteSizes.headByteSize(this, index);
         long size = ElementCounts.dictionaryElementCount(this, index);
-        long[][] elementIndexes = readElementIndexes(index + headByteSize, size);
+        long[][] elementIndexes = readElementIndexes(index + headByteSize, size * 2);
         return new DictionaryImpl(this, size, elementIndexes, processors);
     }
 
