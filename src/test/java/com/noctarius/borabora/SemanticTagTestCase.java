@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.TimeZone;

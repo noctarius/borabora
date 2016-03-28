@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
+
+import com.noctarius.borabora.ObjectGraph;
 
 public interface ObjectGraphBuilder
         extends ValueBuilder<ObjectGraphBuilder> {

@@ -16,6 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.DictionaryBuilder;
+import com.noctarius.borabora.builder.SequenceBuilder;
+import com.noctarius.borabora.builder.ValueBuilder;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;

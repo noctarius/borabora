@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.GraphQueryBuilder;
+
 import java.util.Collection;
 
 public interface GraphQuery {

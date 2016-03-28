@@ -95,7 +95,7 @@ public class StringTestCase
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getInputData());
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraphQuery(0));
+        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());

@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.DictionaryBuilder;
+import com.noctarius.borabora.builder.DictionaryEntryBuilder;
+
 import java.util.Map;
 
 final class DictionaryEntryBuilderImpl<B>

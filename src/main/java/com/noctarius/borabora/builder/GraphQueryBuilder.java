@@ -14,11 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-public interface DictionaryEntryBuilder<B>
-        extends ValueBuilder<DictionaryEntryBuilder<B>> {
+import com.noctarius.borabora.GraphQuery;
+import com.noctarius.borabora.Value;
 
-    DictionaryBuilder<B> endEntry();
+import java.util.function.Predicate;
+
+public interface GraphQueryBuilder {
+
+    GraphQueryBuilder sequence(int index);
+
+    GraphQueryBuilder dictionary(Predicate<Value> predicate);
+
+    GraphQuery build();
 
 }

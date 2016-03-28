@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.ObjectGraphBuilder;
+
 public interface ObjectGraph {
 
     static ObjectGraphBuilder newBuilder() {

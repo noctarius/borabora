@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.WriterBuilder;
+
 public interface Writer {
 
     void write(ObjectGraph graph);

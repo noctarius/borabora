@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.ObjectGraphBuilder;
+
 final class ObjectGraphBuilderImpl
         extends AbstractValueBuilder<ObjectGraphBuilder>
         implements ObjectGraphBuilder {

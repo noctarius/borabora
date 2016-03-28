@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.GraphQueryBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

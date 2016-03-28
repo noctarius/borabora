@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.DictionaryBuilder;
+import com.noctarius.borabora.builder.DictionaryEntryBuilder;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

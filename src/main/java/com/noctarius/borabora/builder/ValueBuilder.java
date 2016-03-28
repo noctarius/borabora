@@ -14,12 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-public interface DictionaryBuilder<B> {
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
-    DictionaryEntryBuilder<B> putEntry();
+public interface ValueBuilder<B> {
 
-    B endDictionary();
+    B putNumber(byte value);
+
+    B putNumber(short value);
+
+    B putNumber(int value);
+
+    B putNumber(long value);
+
+    B putNumber(BigInteger value);
+
+    B putNumber(float value);
+
+    B putNumber(double value);
+
+    B putNumber(BigDecimal value);
+
+    B putString(String value);
+
+    B putBoolean(boolean value);
+
+    SequenceBuilder<B> putSequence();
+
+    SequenceBuilder<B> putSequence(int elements);
+
+    DictionaryBuilder<B> putDictionary();
+
+    DictionaryBuilder<B> putDictionary(int elements);
 
 }

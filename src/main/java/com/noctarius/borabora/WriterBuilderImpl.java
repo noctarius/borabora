@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.WriterBuilder;
+
 final class WriterBuilderImpl
         implements WriterBuilder {
 

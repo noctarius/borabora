@@ -108,7 +108,7 @@
                             com.noctarius.borabora.*
                         </Export-Package>
                         <Private-Package>
-                            com.noctarius.borabora.impl.*,
+                            com.noctarius.borabora.parser.impl.*,
                         </Private-Package>
                     </instructions>
                 </configuration>

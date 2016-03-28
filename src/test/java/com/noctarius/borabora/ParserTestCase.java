@@ -18,9 +18,6 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
-import java.net.URI;
-
 import static org.junit.Assert.assertEquals;
 
 public class ParserTestCase
@@ -38,7 +35,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraphQuery(0));
+        Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
 
         assertEquals(MajorType.NegativeInteger, value.majorType());
         assertEqualsNumber(-500, value.number());
@@ -51,7 +48,7 @@ public class ParserTestCase
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(new SequenceGraphQuery(1));
+        Value value = parser.read(GraphQuery.newBuilder().sequence(1).build());
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.ParserBuilder;
+
 public interface Parser {
 
     Value read(GraphQuery graphQuery);

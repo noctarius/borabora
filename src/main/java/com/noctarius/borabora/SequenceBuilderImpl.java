@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.SequenceBuilder;
+
 import java.util.List;
 
 final class SequenceBuilderImpl<B>

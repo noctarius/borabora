@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.ParserBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
