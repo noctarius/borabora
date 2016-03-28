@@ -12,7 +12,22 @@ public class DictionaryTestCase
         extends AbstractTestCase {
 
     @Test
-    public void test_simple_map()
+    public void test_multi_element_dictionary()
+            throws Exception {
+
+        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertEquals("A", dictionary.get((v) -> "a".equals(v.string())).string());
+        assertEquals("B", dictionary.get((v) -> "b".equals(v.string())).string());
+        assertEquals("C", dictionary.get((v) -> "c".equals(v.string())).string());
+        assertEquals("D", dictionary.get((v) -> "d".equals(v.string())).string());
+        assertEquals("E", dictionary.get((v) -> "e".equals(v.string())).string());
+    }
+
+    @Test
+    public void test_double_element_dictionary()
             throws Exception {
 
         Parser parser = buildParser("0xa201020304");
@@ -62,7 +77,18 @@ public class DictionaryTestCase
     public void test_indefinite_dictionary_uint_indefinite_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0xbf61610161629f0203ffff");
+        dictionary_uint_sequence("0xbf61610161629f0203ffff");
+    }
+
+    @Test
+    public void test_dictionary_uint_sequence()
+            throws Exception {
+
+        dictionary_uint_sequence("0xa26161016162820203");
+    }
+
+    private void dictionary_uint_sequence(String hex) {
+        Parser parser = buildParser(hex);
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.Dictionary, value.valueType());

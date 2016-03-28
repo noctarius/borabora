@@ -22,11 +22,6 @@ public final class TestValue<V> {
 
     private final byte[] inputData;
 
-    public TestValue(V expectedValue, byte... inputData) {
-        this.expectedValue = expectedValue;
-        this.inputData = inputData;
-    }
-
     public TestValue(V expectedValue, String hexBytes) {
         this.expectedValue = expectedValue;
         this.inputData = AbstractTestCase.hexToBytes(hexBytes);

@@ -28,6 +28,24 @@ public class SequenceTestCase
     }
 
     @Test
+    public void test_sequence_dictionary()
+            throws Exception {
+
+        Parser parser = buildParser("0x826161a161626163");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        assertEquals(2, sequence.size());
+
+        Value element1 = sequence.get(0);
+        assertEquals("a", element1.string());
+
+        Value element2 = sequence.get(1);
+        Dictionary dictionary = element2.dictionary();
+        assertEquals("c", dictionary.get((v) -> "b".equals(v.string())).string());
+    }
+
+    @Test
     public void test_indefinite_empty_sequence()
             throws Exception {
 

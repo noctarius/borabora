@@ -10,23 +10,31 @@ public class StringTestCase
         extends AbstractTestCase {
 
     private static final TestValueCollection<String> BYTE_STRING_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("", (byte) 0x40), new TestValue<>("a", "0x4161"), new TestValue<>("IETF", "0x4449455446"),
+            new TestValue<>("", "0x40"), new TestValue<>("a", "0x4161"), new TestValue<>("IETF", "0x4449455446"),
             new TestValue<>("\"\\", "0x42225c"));
 
     private static final TestValueCollection<String> TEXT_STRING_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("", (byte) 0x60), new TestValue<>("a", "0x6161"), new TestValue<>("IETF", "0x6449455446"),
+            new TestValue<>("", "0x60"), new TestValue<>("a", "0x6161"), new TestValue<>("IETF", "0x6449455446"),
             new TestValue<>("\"\\", "0x62225c"), new TestValue<>("\u00fc", "0x62c3bc"), new TestValue<>("\u6c34", "0x63e6b0b4"),
             new TestValue<>("\ud800\udd51", "0x64f0908591"), new TestValue<>("streaming", "0x7f657374726561646d696e67ff"));
 
     @Test
-    public void test_indefinite_byte_string()
+    public void test_indefinite_byte_string_1()
+            throws Exception {
+
+        String expected = new String(hexToBytes("0x0102030405"));
+        Parser parser = buildParser("0x5f42010243030405ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        assertEquals(expected, value.string());
+    }
+
+    @Test
+    public void test_indefinite_byte_string_2()
             throws Exception {
 
         String expected = new String(hexToBytes("0xaabbccddeeff99"));
         Parser parser = buildParser("0x5f44aabbccdd43eeff99ff");
-
         Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
-
         assertEquals(expected, value.string());
     }
 
@@ -36,9 +44,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0xc3bce6b0b4f0908591"), Charset.forName("UTF8"));
         Parser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
-
         Value value = parser.read(GraphQuery.newBuilder().sequence(0).build());
-
         assertEquals(expected, value.string());
     }
 

@@ -62,14 +62,16 @@ final class StreamValue
 
     @Override
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
-        if (validator != null) {
-            validator.validate();
-        }
         short head = stream.transientUint8(index);
         // Null is legal for all types
         if (stream.isNull(head)) {
             return null;
         }
+        // Not null? Validate value type
+        if (validator != null) {
+            validator.validate();
+        }
+        // Semantic tag? Extract real value
         if (MajorType.SemanticTag == majorType()) {
             return tag0(index, length);
         }
