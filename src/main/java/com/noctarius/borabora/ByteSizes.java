@@ -17,20 +17,28 @@
 package com.noctarius.borabora;
 
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
+import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
+import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
+import static com.noctarius.borabora.Constants.ADD_INFO_ONE_BYTE;
+import static com.noctarius.borabora.Constants.ADD_INFO_RESERVED_1;
+import static com.noctarius.borabora.Constants.ADD_INFO_RESERVED_2;
+import static com.noctarius.borabora.Constants.ADD_INFO_RESERVED_3;
+import static com.noctarius.borabora.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 final class ByteSizes {
 
     static int uintByteSize(Decoder stream, long index) {
-        return intByteSize(stream.transientUint8(index));
+        return intByteSize(stream, stream.transientUint8(index));
     }
 
     static int intByteSize(Decoder stream, long index) {
-        return intByteSize(stream.transientUint8(index));
+        return intByteSize(stream, stream.transientUint8(index));
     }
 
-    static int intByteSize(short head) {
-        return headByteSize(head);
+    static int intByteSize(Decoder stream, short head) {
+        return headByteSize(stream, head);
     }
 
     static long byteStringByteSize(Decoder stream, long index) {
@@ -53,29 +61,28 @@ final class ByteSizes {
 
     static long semanticTagByteSize(Decoder stream, long index) {
         short head = stream.transientUint8(index);
-        long byteSize = ByteSizes.intByteSize(head);
+        long byteSize = ByteSizes.intByteSize(stream, head);
         short itemHead = stream.transientUint8(index + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
         return byteSize + stream.length(majorType, index + byteSize);
     }
 
     static long floatingPointOrSimpleByteSize(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = stream.additionInfo(index);
         switch (addInfo) {
-            case 24:
+            case ADD_INFO_ONE_BYTE:
                 return 2;
-            case 25:
+            case ADD_INFO_TWO_BYTES:
                 return 3;
-            case 26:
+            case ADD_INFO_FOUR_BYTES:
                 return 5;
-            case 27:
+            case ADD_INFO_EIGHT_BYTES:
                 return 9;
-            case 28: // Unassigned
-            case 29: // Unassigned
-            case 30: // Unassigned
+            case ADD_INFO_RESERVED_1: // Unassigned
+            case ADD_INFO_RESERVED_2: // Unassigned
+            case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
-            case 31:
+            case ADD_INFO_INDEFINITE:
                 return untilBreakCode(stream, index) + 1;
             default:
                 return 1;
@@ -83,19 +90,22 @@ final class ByteSizes {
     }
 
     static long stringByteSize(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = stream.additionInfo(index);
         long dataSize = addInfo == 0 ? 0 : stringDataSize(stream, index + 1);
         switch (addInfo) {
-            case 24:
+            case ADD_INFO_ONE_BYTE:
                 return dataSize + 1;
-            case 25:
+            case ADD_INFO_TWO_BYTES:
                 return dataSize + 2;
-            case 26:
+            case ADD_INFO_FOUR_BYTES:
                 return dataSize + 4;
-            case 27:
+            case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
-            case 31:
+            case ADD_INFO_RESERVED_1: // Unassigned
+            case ADD_INFO_RESERVED_2: // Unassigned
+            case ADD_INFO_RESERVED_3: // Unassigned
+                throw new IllegalStateException("28|29|30 are unassigned");
+            case ADD_INFO_INDEFINITE:
                 return untilBreakCode(stream, index) + 1;
             default:
                 return addInfo + 1;
@@ -103,18 +113,21 @@ final class ByteSizes {
     }
 
     static long stringDataSize(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = stream.additionInfo(index);
         switch (addInfo) {
-            case 24:
+            case ADD_INFO_ONE_BYTE:
                 return stream.readUint8(index);
-            case 25:
+            case ADD_INFO_TWO_BYTES:
                 return stream.readUint16(index);
-            case 26:
+            case ADD_INFO_FOUR_BYTES:
                 return stream.readUint32(index);
-            case 27:
+            case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
-            case 31:
+            case ADD_INFO_RESERVED_1: // Unassigned
+            case ADD_INFO_RESERVED_2: // Unassigned
+            case ADD_INFO_RESERVED_3: // Unassigned
+                throw new IllegalStateException("28|29|30 are unassigned");
+            case ADD_INFO_INDEFINITE:
                 return untilBreakCode(stream, index);
             default:
                 return addInfo;
@@ -123,20 +136,24 @@ final class ByteSizes {
 
     static int headByteSize(Decoder stream, long index) {
         short head = stream.transientUint8(index);
-        return headByteSize(head);
+        return headByteSize(stream, head);
     }
 
-    static int headByteSize(short head) {
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+    static int headByteSize(Decoder stream, short head) {
+        int addInfo = stream.additionInfo(head);
         switch (addInfo) {
-            case 24:
+            case ADD_INFO_ONE_BYTE:
                 return 2;
-            case 25:
+            case ADD_INFO_TWO_BYTES:
                 return 3;
-            case 26:
+            case ADD_INFO_FOUR_BYTES:
                 return 5;
-            case 27:
+            case ADD_INFO_EIGHT_BYTES:
                 return 9;
+            case ADD_INFO_RESERVED_1: // Unassigned
+            case ADD_INFO_RESERVED_2: // Unassigned
+            case ADD_INFO_RESERVED_3: // Unassigned
+                throw new IllegalStateException("28|29|30 are unassigned");
             default:
                 return 1;
         }
@@ -153,8 +170,7 @@ final class ByteSizes {
 
     private static long containerByteSize(Decoder stream, long index, long elementCount) {
         long headByteSize = headByteSize(stream, index);
-        short sequenceHead = stream.transientUint8(index);
-        int addInfo = sequenceHead & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = stream.additionInfo(index);
 
         long position = index + headByteSize;
         for (long i = 0; i < elementCount; i++) {

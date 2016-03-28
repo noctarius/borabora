@@ -17,14 +17,14 @@
 package com.noctarius.borabora;
 
 public enum MajorType {
-    UnsignedInteger(0, 0b000, false, ByteSizes::uintByteSize, ElementCounts.SINGLE_ELEMENT),
-    NegativeInteger(1, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT),
-    ByteString(2, 0b010, true, ByteSizes::byteStringByteSize, ElementCounts.SINGLE_ELEMENT),
-    TextString(3, 0b011, true, ByteSizes::textStringByteSize, ElementCounts.SINGLE_ELEMENT),
-    Sequence(4, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts::sequenceElementCount),
-    Dictionary(5, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts::dictionaryElementCount),
-    SemanticTag(6, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT),
-    FloatingPointOrSimple(7, 0b111, false, ByteSizes::floatingPointOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT);
+    UnsignedInteger(0, 0b000, false, ByteSizes::uintByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    NegativeInteger(1, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    ByteString(2, 0b010, true, ByteSizes::byteStringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    TextString(3, 0b011, true, ByteSizes::textStringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    Sequence(4, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts.SEQUENCE_ELEMENT_COUNT),
+    Dictionary(5, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts.DICTIONARY_ELEMENT_COUNT),
+    SemanticTag(6, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    FloatingPointOrSimple(7, 0b111, false, ByteSizes::floatingPointOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;
 

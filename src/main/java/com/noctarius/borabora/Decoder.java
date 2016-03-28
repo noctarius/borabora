@@ -103,7 +103,7 @@ final class Decoder {
             return null;
         }
         long mask = -((head & 0xff) >>> 5);
-        int byteSize = ByteSizes.intByteSize(head);
+        int byteSize = ByteSizes.intByteSize(this, head);
         Number number;
         switch (byteSize) {
             case 2:
@@ -129,7 +129,7 @@ final class Decoder {
         if (isNull(head)) {
             return null;
         }
-        int byteSize = ByteSizes.intByteSize(head);
+        int byteSize = ByteSizes.intByteSize(this, head);
         Number number;
         switch (byteSize) {
             case 2:
@@ -201,7 +201,7 @@ final class Decoder {
         switch (majorType) {
             case UnsignedInteger:
             case NegativeInteger:
-                return ByteSizes.intByteSize(head);
+                return ByteSizes.intByteSize(this, head);
             case ByteString:
             case TextString:
                 return ByteSizes.stringByteSize(this, index);
@@ -284,6 +284,15 @@ final class Decoder {
         ValueType vt = ValueTypes.valueType(this, index);
         long length = length(mt, index);
         return new StreamValue(mt, vt, this, index, length, processors);
+    }
+
+    int additionInfo(long index) {
+        short head = transientUint8(index);
+        return additionInfo(head);
+    }
+
+    int additionInfo(short head) {
+        return head & ADDITIONAL_INFORMATION_MASK;
     }
 
     private long findByPredicate(Predicate<Value> predicate, long index, long count,

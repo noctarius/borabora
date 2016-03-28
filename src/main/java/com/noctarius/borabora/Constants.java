@@ -36,4 +36,13 @@ interface Constants {
     int TAG_REGEX = 35;
     int TAG_MIME = 36;
 
+    int ADD_INFO_ONE_BYTE = 24;
+    int ADD_INFO_TWO_BYTES = 25;
+    int ADD_INFO_FOUR_BYTES = 26;
+    int ADD_INFO_EIGHT_BYTES = 27;
+    int ADD_INFO_RESERVED_1 = 28;
+    int ADD_INFO_RESERVED_2 = 29;
+    int ADD_INFO_RESERVED_3 = 30;
+    int ADD_INFO_INDEFINITE = 31;
+
 }

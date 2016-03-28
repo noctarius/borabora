@@ -26,14 +26,14 @@ final class TagProcessors {
 
     static Object readDateTime(Decoder stream, long index, long length) {
         short head = stream.transientUint8(index);
-        int byteSize = ByteSizes.intByteSize(head);
+        int byteSize = ByteSizes.intByteSize(stream, head);
         String date = stream.readString(index + byteSize);
         return DateParser.parseDate(date, Locale.ENGLISH);
     }
 
     static BigInteger readUBigNum(Decoder stream, long index, long length) {
         short head = stream.transientUint8(index);
-        int byteSize = ByteSizes.intByteSize(head);
+        int byteSize = ByteSizes.intByteSize(stream, head);
         String bigNum = stream.readString(index + byteSize);
         try {
             byte[] bytes = bigNum.getBytes("ASCII");
@@ -49,7 +49,7 @@ final class TagProcessors {
 
     static Object readURI(Decoder stream, long index, long length) {
         short head = stream.transientUint8(index);
-        int byteSize = ByteSizes.intByteSize(head);
+        int byteSize = ByteSizes.intByteSize(stream, head);
         String uri = stream.readString(index + byteSize);
         try {
             return new URI(uri);

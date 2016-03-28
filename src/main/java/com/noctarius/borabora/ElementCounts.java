@@ -21,7 +21,11 @@ import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 final class ElementCounts {
 
-    static final ObjectLongToLongFunction<Decoder> SINGLE_ELEMENT = (s, i) -> 1;
+    static final ObjectLongToLongFunction<Decoder> SINGLE_ELEMENT_COUNT = (s, i) -> 1;
+
+    static final ObjectLongToLongFunction<Decoder> SEQUENCE_ELEMENT_COUNT = ElementCounts::sequenceElementCount;
+
+    static final ObjectLongToLongFunction<Decoder> DICTIONARY_ELEMENT_COUNT = ElementCounts::dictionaryElementCount;
 
     static long sequenceElementCount(Decoder stream, long index) {
         return elementCount(stream, index, "Sequence");
