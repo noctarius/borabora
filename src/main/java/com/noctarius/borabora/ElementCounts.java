@@ -40,11 +40,11 @@ final class ElementCounts {
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
             case 24:
-                return stream.readUint8(index);
+                return stream.readUint8(index + 1);
             case 25:
-                return stream.readUint16(index);
+                return stream.readUint16(index + 1);
             case 26:
-                return stream.readUint32(index);
+                return stream.readUint32(index + 1);
             case 27:
                 throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
             case 31:

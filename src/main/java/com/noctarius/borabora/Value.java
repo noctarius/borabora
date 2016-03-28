@@ -18,4 +18,6 @@ public interface Value {
 
     Boolean bool();
 
+    byte[] raw();
+
 }

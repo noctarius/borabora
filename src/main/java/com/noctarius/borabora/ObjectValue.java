@@ -46,6 +46,11 @@ final class ObjectValue
     }
 
     @Override
+    public byte[] raw() {
+        throw new UnsupportedOperationException("raw is not supported on ObjectValue");
+    }
+
+    @Override
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
         return null;
     }

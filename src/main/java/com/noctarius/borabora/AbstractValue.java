@@ -24,6 +24,7 @@ abstract class AbstractValue
     public static final String VALUE_TYPE_DOES_NOT_MATCH = "Requested value type does not match the read value: %s != %s";
     public static final String MAJOR_TYPE_DOES_NOT_MATCH = "Requested major type does not match the read value: %s != %s";
     public static final String VALUE_TYPE_NOT_A_DOUBLE = "Requested value type does not match the read value: {%s|%s} != %s";
+    public static final String VALUE_TYPE_NOT_A_TRIPPLE = "Requested value type does not match the read value: {%s|%s|%s} != %s";
 
     private final MajorType majorType;
     private final ValueType valueType;
@@ -60,6 +61,14 @@ abstract class AbstractValue
         ValueType identity = valueType.identity();
         if (expected1 != identity && expected2 != identity) {
             String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, expected1, expected2, identity);
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    protected void matchValueType(ValueType expected1, ValueType expected2, ValueType expected3) {
+        ValueType identity = valueType.identity();
+        if (expected1 != identity && expected2 != identity && expected3 != identity) {
+            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, expected1, expected2, expected3, identity);
             throw new IllegalStateException(msg);
         }
     }

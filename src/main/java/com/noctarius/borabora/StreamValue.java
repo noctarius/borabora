@@ -37,7 +37,8 @@ final class StreamValue
 
     @Override
     public Number number() {
-        return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt), () -> stream.readInt(index));
+        return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt, ValueTypes.Float),
+                () -> stream.readNumber(valueType(), index));
     }
 
     @Override
@@ -58,6 +59,11 @@ final class StreamValue
     @Override
     public Boolean bool() {
         return extract(() -> stream.getBooleanValue(index));
+    }
+
+    @Override
+    public byte[] raw() {
+        return extract(() -> stream.readRaw(index, length));
     }
 
     @Override

@@ -8,10 +8,30 @@ public class SequenceTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_empty_sequence() throws Exception {
+
+        Parser parser = buildParser("0x80");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertEquals(0, sequence.size());
+    }
+
+    @Test
+    public void test_sequence()
+            throws Exception {
+
+        long_sequence("0x98190102030405060708090a0b0c0d0e0f101112131415161718181819");
+    }
+
+    @Test
     public void test_indefinite_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        long_sequence("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+    }
+
+    private void long_sequence(String hex) {
+        Parser parser = buildParser(hex);
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Sequence sequence = value.sequence();
@@ -88,6 +108,18 @@ public class SequenceTestCase
             throws Exception {
 
         test_sequence("0x83019f0203ff820405");
+    }
+
+    @Test
+    public void test_small_sequence() throws Exception {
+
+        Parser parser = buildParser("0x83010203");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        for (int i = 0; i < 3; i++) {
+            assertEqualsNumber(i + 1, parser.read(GraphQuery.newBuilder().sequence(i).build()).number());
+            assertEqualsNumber(i + 1, sequence.get(i).number());
+        }
     }
 
     private void test_sequence(String hex)

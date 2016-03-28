@@ -20,11 +20,12 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Locale;
 
 final class TagProcessors {
 
-    static Object readDateTime(Decoder stream, long index, long length) {
+    static Date readDateTime(Decoder stream, long index, long length) {
         short head = stream.transientUint8(index);
         int byteSize = ByteSizes.intByteSize(stream, head);
         String date = stream.readString(index + byteSize);
@@ -47,7 +48,7 @@ final class TagProcessors {
         return BigInteger.valueOf(-1).xor(readUBigNum(stream, index, length));
     }
 
-    static Object readURI(Decoder stream, long index, long length) {
+    static URI readURI(Decoder stream, long index, long length) {
         short head = stream.transientUint8(index);
         int byteSize = ByteSizes.intByteSize(stream, head);
         String uri = stream.readString(index + byteSize);
@@ -58,4 +59,8 @@ final class TagProcessors {
         }
     }
 
+    static Object readTimestamp(Decoder stream, long index, long length) {
+        ValueType valueType = ValueTypes.valueType(stream, index + 1);
+        return stream.readNumber(valueType, index + 1);
+    }
 }

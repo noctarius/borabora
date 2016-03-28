@@ -12,6 +12,16 @@ public class DictionaryTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_empty_dictionary() throws Exception {
+
+        Parser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertEquals(0, dictionary.size());
+    }
+
+    @Test
     public void test_multi_element_dictionary()
             throws Exception {
 
@@ -90,7 +100,6 @@ public class DictionaryTestCase
     private void dictionary_uint_sequence(String hex) {
         Parser parser = buildParser(hex);
         Value value = parser.read(GraphQuery.newBuilder().build());
-
         assertEquals(ValueTypes.Dictionary, value.valueType());
 
         Dictionary dictionary = value.dictionary();

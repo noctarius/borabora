@@ -51,21 +51,21 @@ final class Decoder {
         return input.read(index);
     }
 
-    int readInt16(long index) {
-        int highByte = readUint8(index);
-        int lowByte = readUint8(index + 1);
-        return (highByte << 8) | lowByte;
+    short readInt16(long index) {
+        short b1 = readUint8(index);
+        short b2 = readUint8(index + 1);
+        return (short) ((b1 << 8) | b2);
     }
 
     int readUint16(long index) {
         return readInt16(index) & 0xffff;
     }
 
-    long readInt32(long index) {
-        long b1 = readUint8(index);
-        long b2 = readUint8(index + 1);
-        long b3 = readUint8(index + 2);
-        long b4 = readUint8(index + 3);
+    int readInt32(long index) {
+        int b1 = readUint8(index);
+        int b2 = readUint8(index + 1);
+        int b3 = readUint8(index + 2);
+        int b4 = readUint8(index + 3);
         return (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
     }
 
@@ -85,7 +85,19 @@ final class Decoder {
         return (b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
     }
 
-    BigInteger readUint64(long index) {
+    long readUint64(long index) {
+        long b1 = readUint8(index);
+        long b2 = readUint8(index + 1);
+        long b3 = readUint8(index + 2);
+        long b4 = readUint8(index + 3);
+        long b5 = readUint8(index + 4);
+        long b6 = readUint8(index + 5);
+        long b7 = readUint8(index + 6);
+        long b8 = readUint8(index + 7);
+        return (b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
+    }
+
+    BigInteger readUint64BigInt(long index) {
         byte b1 = readInt8(index);
         byte b2 = readInt8(index + 1);
         byte b3 = readInt8(index + 2);
@@ -116,7 +128,7 @@ final class Decoder {
                 number = mask ^ readUint32(index + 1);
                 break;
             case 9:
-                number = BigInteger.valueOf(mask).xor(readUint64(index + 1));
+                number = BigInteger.valueOf(mask).xor(readUint64BigInt(index + 1));
                 break;
             default:
                 number = mask ^ (head & ADDITIONAL_INFORMATION_MASK);
@@ -142,12 +154,37 @@ final class Decoder {
                 number = readUint32(index + 1);
                 break;
             case 9:
-                number = readUint64(index + 1);
+                number = readUint64BigInt(index + 1);
                 break;
             default:
                 number = head & ADDITIONAL_INFORMATION_MASK;
         }
         return number;
+    }
+
+    Number readFloat(long index) {
+        short head = transientUint8(index);
+        if (isNull(head)) {
+            return null;
+        }
+        int addInfo = additionInfo(head);
+        switch (addInfo) {
+            case 25:
+                return readHalfFloatValue(index + 1);
+            case 26:
+                return readSinglePrecisionFloat(index + 1);
+            case 27:
+                return readDoublePrecisionFloat(index + 1);
+            default:
+                throw new IllegalStateException("Additional Info '" + addInfo + "' is not a floating point value");
+        }
+    }
+
+    Number readNumber(ValueType valueType, long index) {
+        if (ValueTypes.Float.equals(valueType)) {
+            return readFloat(index);
+        }
+        return readInt(index);
     }
 
     String readString(long index) {
@@ -253,6 +290,30 @@ final class Decoder {
         throw new IllegalStateException("Illegal boolean value");
     }
 
+    float readHalfFloatValue(long index) {
+        int v = readUint16(index);
+
+        // based on http://stackoverflow.com/questions/5678432/decompressing-half-precision-floats-in-javascript/5684578#5684578
+        int s = (v & 0x8000) >> 15;
+        int e = (v & 0x7c00) >> 10;
+        int f = v & 0x03ff;
+
+        if (e == 0) {
+            return (float) ((s == 0 ? 1 : -1) * Math.pow(2, -14) * (f / Math.pow(2, 10)));
+        } else if (e == 0x1f) {
+            return f != 0 ? Float.NaN : (s == 0 ? 1 : -1) * Float.POSITIVE_INFINITY;
+        }
+        return (float) ((s == 0 ? 1 : -1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10)));
+    }
+
+    float readSinglePrecisionFloat(long index) {
+        return Float.intBitsToFloat((int) readUint32(index));
+    }
+
+    double readDoublePrecisionFloat(long index) {
+        return Double.longBitsToDouble(readUint64(index));
+    }
+
     long findByDictionaryKey(Predicate<Value> predicate, long index, long count, Collection<SemanticTagProcessor> processors) {
         // Search for key element
         long position = findByPredicate(predicate, index, count, processors);
@@ -293,6 +354,18 @@ final class Decoder {
 
     int additionInfo(short head) {
         return head & ADDITIONAL_INFORMATION_MASK;
+    }
+
+    byte[] readRaw(long index, long length) {
+        if (length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Extraction of huge data (> Integer.MAX_VALUE) is not supported");
+        }
+
+        byte[] data = new byte[(int) length];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = readInt8(index + i);
+        }
+        return data;
     }
 
     private long findByPredicate(Predicate<Value> predicate, long index, long count,

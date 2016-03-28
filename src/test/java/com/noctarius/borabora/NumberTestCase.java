@@ -20,7 +20,19 @@ public class NumberTestCase
             new TestValue<>(new BigInteger("18446744073709551616"), "c249010000000000000000"),
             new TestValue<>(new BigInteger("-18446744073709551616"), "3bffffffffffffffff"),
             new TestValue<>(new BigInteger("-18446744073709551617"), "c349010000000000000000"), new TestValue<>(-1, "0x20"),
-            new TestValue<>(-10, "0x29"), new TestValue<>(-100, "0x3863"), new TestValue<>(-1000, "3903e7"));
+            new TestValue<>(-10, "0x29"), new TestValue<>(-100, "0x3863"), new TestValue<>(-1000, "3903e7"),
+            new TestValue<>(0.0, "0xf90000"), new TestValue<>(-0.0, "0xf98000"), new TestValue<>(1.0, "0xf93c00"),
+            new TestValue<>(1.1, "0xfb3ff199999999999a"), new TestValue<>(1.5, "0xf93e00"), new TestValue<>(65504.0, "0xf97bff"),
+            new TestValue<>(100000.0, "0xfa47c35000"), new TestValue<>(3.4028234663852886e+38, "0xfa7f7fffff"),
+            new TestValue<>(1.0e+300, "0xfb7e37e43c8800759c"), new TestValue<>(5.960464477539063e-8, "0xf90001"),
+            new TestValue<>(0.00006103515625, "0xf90400"), new TestValue<>(-4.0, "0xf9c400"),
+            new TestValue<>(-4.1, "0xfbc010666666666666"), new TestValue<>(Float.POSITIVE_INFINITY, "0xf97c00"),
+            new TestValue<>(Float.NaN, "0xf97e00"), new TestValue<>(Float.NEGATIVE_INFINITY, "0xf9fc00"),
+            new TestValue<>(Float.POSITIVE_INFINITY, "0xfa7f800000"), new TestValue<>(Float.NaN, "0xfa7fc00000"),
+            new TestValue<>(Float.NEGATIVE_INFINITY, "0xfaff800000"),
+            new TestValue<>(Double.POSITIVE_INFINITY, "0xfb7ff0000000000000"),
+            new TestValue<>(Double.NaN, "0xfb7ff8000000000000"),
+            new TestValue<>(Double.NEGATIVE_INFINITY, "0xfbfff0000000000000"));
 
     @Parameterized.Parameters(name = "test_parse_number - expected {0}")
     public static Collection<Object[]> parameters() {

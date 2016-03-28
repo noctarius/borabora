@@ -44,7 +44,7 @@ public enum ValueTypes
     Null,
     Undefined,
     DateTime(TagProcessors::readDateTime),
-    Timestamp,
+    Timestamp(TagProcessors::readTimestamp),
     UBigNum(TagProcessors::readUBigNum, Uint),
     NBigNum(TagProcessors::readNBigNum, NInt),
     Fraction,
