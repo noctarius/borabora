@@ -76,12 +76,6 @@ class DateParser {
                                            "yyyy-MM-dd", "yyyy-MM", "yyyy"};
 
     /**
-     * Private constructor to avoid DateParser instances creation.
-     */
-    private DateParser() {
-    }
-
-    /**
      * Parses a Date out of a string using an array of masks.
      * <p/>
      * It uses the masks in order until one of them succedes or all fail.

@@ -26,23 +26,6 @@ public class NoSuchByteException
         this.index = index;
     }
 
-    public NoSuchByteException(long index, String message, Throwable cause) {
-        super(message, cause);
-        this.index = index;
-    }
-
-    public NoSuchByteException(long index, Throwable cause) {
-        super(cause);
-        this.index = index;
-    }
-
-    public NoSuchByteException(long index, String message, Throwable cause, boolean enableSuppression,
-                               boolean writableStackTrace) {
-
-        super(message, cause, enableSuppression, writableStackTrace);
-        this.index = index;
-    }
-
     public long getIndex() {
         return index;
     }

@@ -32,11 +32,6 @@ final class BuiltInSemanticTagProcessor
     }
 
     @Override
-    public ValueType valueType(Decoder stream, long index) {
-        return ValueTypes.valueType(stream, index);
-    }
-
-    @Override
     public Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
         ValueTypes valueType = ValueTypes.valueType(stream, index);
         return valueType.process(stream, index, length, processors);

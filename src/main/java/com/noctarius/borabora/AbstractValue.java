@@ -45,7 +45,7 @@ abstract class AbstractValue
     protected void matchMajorType(MajorType expected) {
         if (expected != majorType) {
             String msg = String.format(MAJOR_TYPE_DOES_NOT_MATCH, expected, majorType);
-            throw new IllegalStateException(msg);
+            throw new WrongTypeException(msg);
         }
     }
 
@@ -53,15 +53,7 @@ abstract class AbstractValue
         ValueType identity = valueType.identity();
         if (expected != identity) {
             String msg = String.format(VALUE_TYPE_DOES_NOT_MATCH, expected, identity);
-            throw new IllegalStateException(msg);
-        }
-    }
-
-    protected void matchValueType(ValueType expected1, ValueType expected2) {
-        ValueType identity = valueType.identity();
-        if (expected1 != identity && expected2 != identity) {
-            String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, expected1, expected2, identity);
-            throw new IllegalStateException(msg);
+            throw new WrongTypeException(msg);
         }
     }
 
@@ -69,7 +61,7 @@ abstract class AbstractValue
         ValueType identity = valueType.identity();
         if (expected1 != identity && expected2 != identity && expected3 != identity) {
             String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, expected1, expected2, expected3, identity);
-            throw new IllegalStateException(msg);
+            throw new WrongTypeException(msg);
         }
     }
 
@@ -78,7 +70,7 @@ abstract class AbstractValue
         if (ValueTypes.ByteString != identity && ValueTypes.TextString != identity) {
 
             String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, ValueTypes.ByteString, ValueTypes.TextString, identity);
-            throw new IllegalStateException(msg);
+            throw new WrongTypeException(msg);
         }
     }
 

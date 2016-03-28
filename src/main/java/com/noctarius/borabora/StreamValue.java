@@ -58,7 +58,7 @@ final class StreamValue
 
     @Override
     public Boolean bool() {
-        return extract(() -> stream.getBooleanValue(index));
+        return extract(() -> matchValueType(ValueTypes.Bool), () -> stream.getBooleanValue(index));
     }
 
     @Override
