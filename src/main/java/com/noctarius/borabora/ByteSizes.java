@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
