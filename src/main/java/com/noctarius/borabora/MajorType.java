@@ -58,12 +58,12 @@ public enum MajorType {
         return (highBits | mask) == mask;
     }
 
-    long byteSize(Decoder stream, long index) {
-        return byteSize.apply(stream, index);
+    long byteSize(Decoder stream, long offset) {
+        return byteSize.apply(stream, offset);
     }
 
-    long elementCount(Decoder stream, long index) {
-        return elementCount.apply(stream, index);
+    long elementCount(Decoder stream, long offset) {
+        return elementCount.apply(stream, offset);
     }
 
     public static MajorType findMajorType(short head) {

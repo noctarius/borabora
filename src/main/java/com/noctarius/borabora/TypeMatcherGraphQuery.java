@@ -18,47 +18,28 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
-final class SequenceGraphQuery
+class TypeMatcherGraphQuery
         implements GraphQuery {
 
-    private final long sequenceIndex;
+    private final TypeSpec typeSpec;
+    private final boolean required;
 
-    SequenceGraphQuery(long sequenceIndex) {
-        this.sequenceIndex = sequenceIndex;
+    TypeMatcherGraphQuery(TypeSpec typeSpec, boolean required) {
+        this.typeSpec = typeSpec;
+        this.required = required;
     }
 
     @Override
     public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
         short head = stream.transientUint8(offset);
         MajorType majorType = MajorType.findMajorType(head);
-
-        // Stream direct access (return actual object itself)
-        if (sequenceIndex == -1) {
+        ValueType valueType = ValueTypes.valueType(stream, offset);
+        if (typeSpec.valid(majorType, stream, offset)) {
             return offset;
         }
-
-        if (MajorType.Sequence != majorType) {
-            throw new WrongTypeException("Not a sequence");
-        }
-
-        // Sequences need head skipped
-        long elementCount = majorType.elementCount(stream, offset);
-        if (elementCount < sequenceIndex) {
-            return -1;
-        }
-
-        // Element access
-        long headByteSize = ByteSizes.headByteSize(stream, offset);
-        offset += headByteSize;
-
-        // Stream objects
-        return skip(stream, offset);
-    }
-
-    private long skip(Decoder stream, long offset) {
-        // Skip unnecessary objects
-        for (int i = 0; i < sequenceIndex; i++) {
-            offset = stream.skip(offset);
+        if (required) {
+            String msg = String.format("Element at offset %s is not of type %s but %s", offset, this.typeSpec, valueType);
+            throw new WrongTypeException(msg);
         }
         return offset;
     }

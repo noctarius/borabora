@@ -27,37 +27,37 @@ final class ElementCounts {
 
     static final ObjectLongToLongFunction<Decoder> DICTIONARY_ELEMENT_COUNT = ElementCounts::dictionaryElementCount;
 
-    static long sequenceElementCount(Decoder stream, long index) {
-        return elementCount(stream, index, "Sequence", false);
+    static long sequenceElementCount(Decoder stream, long offset) {
+        return elementCount(stream, offset, "Sequence", false);
     }
 
-    static long dictionaryElementCount(Decoder stream, long index) {
-        return elementCount(stream, index, "Dictionary", true);
+    static long dictionaryElementCount(Decoder stream, long offset) {
+        return elementCount(stream, offset, "Dictionary", true);
     }
 
-    private static long elementCount(Decoder stream, long index, String elementType, boolean keyValue) {
-        short head = stream.transientUint8(index);
+    private static long elementCount(Decoder stream, long offset, String elementType, boolean keyValue) {
+        short head = stream.transientUint8(offset);
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
             case 24:
-                return stream.readUint8(index + 1);
+                return stream.readUint8(offset + 1);
             case 25:
-                return stream.readUint16(index + 1);
+                return stream.readUint16(offset + 1);
             case 26:
-                return stream.readUint32(index + 1);
+                return stream.readUint32(offset + 1);
             case 27:
                 throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
             case 31:
-                return untilBreakCode(stream, index, keyValue);
+                return untilBreakCode(stream, offset, keyValue);
             default:
                 return addInfo;
         }
 
     }
 
-    private static long untilBreakCode(Decoder stream, long index, boolean keyValue) {
-        long headByteSize = ByteSizes.headByteSize(stream, index);
-        long position = index + headByteSize;
+    private static long untilBreakCode(Decoder stream, long offset, boolean keyValue) {
+        long headByteSize = ByteSizes.headByteSize(stream, offset);
+        long position = offset + headByteSize;
 
         long elementCount = 0;
         short head;

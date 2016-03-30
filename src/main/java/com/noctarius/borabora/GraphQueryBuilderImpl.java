@@ -29,8 +29,8 @@ final class GraphQueryBuilderImpl
     private List<GraphQuery> graphQueries = new ArrayList<>();
 
     @Override
-    public GraphQueryBuilder stream(long index) {
-        graphQueries.add(new StreamGraphQuery(index));
+    public GraphQueryBuilder stream(long offset) {
+        graphQueries.add(new StreamGraphQuery(offset));
         return this;
     }
 
@@ -43,6 +43,18 @@ final class GraphQueryBuilderImpl
     @Override
     public GraphQueryBuilder dictionary(Predicate<Value> predicate) {
         graphQueries.add(new DictionaryGraphQuery(predicate));
+        return this;
+    }
+
+    @Override
+    public GraphQueryBuilder nullOrType(TypeSpec typeSpec) {
+        graphQueries.add(new TypeMatcherGraphQuery(typeSpec, false));
+        return this;
+    }
+
+    @Override
+    public GraphQueryBuilder requireType(TypeSpec typeSpec) {
+        graphQueries.add(new TypeMatcherGraphQuery(typeSpec, true));
         return this;
     }
 

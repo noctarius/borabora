@@ -18,10 +18,20 @@ package com.noctarius.borabora;
 
 public interface ValueType {
 
+    TypeSpec typeSpec();
+
     String name();
+
+    String spec();
+
+    int tagId();
 
     ValueType identity();
 
     <T> T value(Value value);
+
+    boolean matches(ValueType other);
+
+    boolean matchesExact(ValueType other);
 
 }

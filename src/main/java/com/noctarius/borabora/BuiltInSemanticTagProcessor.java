@@ -27,14 +27,14 @@ final class BuiltInSemanticTagProcessor
     }
 
     @Override
-    public boolean handles(Decoder stream, long index) {
-        return ValueTypes.valueType(stream, index) != null;
+    public boolean handles(Decoder stream, long offset) {
+        return ValueTypes.valueType(stream, offset) != null;
     }
 
     @Override
-    public Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
-        ValueTypes valueType = ValueTypes.valueType(stream, index);
-        return valueType.process(stream, index, length, processors);
+    public Object process(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        ValueTypes valueType = ValueTypes.valueType(stream, offset);
+        return valueType.process(stream, offset, length, processors);
     }
 
 }

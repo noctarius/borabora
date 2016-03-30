@@ -7,17 +7,49 @@ PARSER_BEGIN(QueryParser)
     import com.noctarius.borabora.builder.*;
     import java.text.*;
     import java.util.Locale;
+    import java.util.Collection;
 
+    /**
+     * Query Language Definition:<br/>
+     * <tt>#</tt> Initial stream accessor, can be followed by an optional uint index <tt>#123</tt><br/>
+     * <tt>{}</tt> Dictionary query, must have identifier defined, legal types include string, int, float, number
+     * <tt>{"string"}, {1234}, {1234.56}</tt><br/>
+     * <tt>()</tt> Sequence query, must have identifier defined, legal types is uint <tt>(123)</tt><br/>
+     * <tt>-></tt> Type match, must have one of the following type information defined:
+     * <ul>
+     *   <li><tt>int</tt>: signed int (up to 64 bits)</li>
+     *   <li><tt>uint</tt>: unsigned int (up to 64 bits)</li>
+     *   <li><tt>nint</tt>: negative int (up to 64 bits)</li>
+     *   <li><tt>float/tt>: half, single or double precision signed float (up to 64 bits)</li>
+     *   <li><tt>ufloat</tt>: half, single or double precision unsigned float (up to 64 bits)</li>
+     *   <li><tt>nfloat</tt>: half, single or double precision negative float (up to 64 bits)</li>
+     *   <li><tt>number</tt>: any of types int, uint, float, ufloat</li>
+     *   <li><tt>string</tt>: ASCII or UTF8 encoded string</li>
+     *   <li><tt>dictionary</tt>: dictionary type</li>
+     *   <li><tt>sequence</tt>: sequence type</li>
+     *   <li><tt>tag</tt>: unspecified tag type</li>
+     *   <li><tt>tag$tagId</tt>: specific tag type, defined by tagId as uint</li>
+     *   <li><tt>bool</tt>: boolean type</li>
+     *   <li><tt>datetime</tt>: datetime type</li>
+     *   <li><tt>timestamp</tt>: epoch based linux timestamp type</li>
+     *   <li><tt>uri</tt>: URI type</li>
+     *   <li><tt>enccbor</tt>: CBOR encoded string</li>
+     * </ul>
+     */
     class QueryParser {
         private GraphQueryBuilder queryBuilder;
+        private Collection<SemanticTagProcessor> processors;
 
-        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder) {
+        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors) {
             this(reader);
             this.queryBuilder = queryBuilder;
+            this.processors = processors;
         }
 
-        static void parse(String query, GraphQueryBuilder queryBuilder) throws ParseException, TokenMgrError {
-            new QueryParser(new StringReader(query), queryBuilder).query();
+        static void parse(String query, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors)
+                throws ParseException, TokenMgrError {
+
+            new QueryParser(new StringReader(query), queryBuilder, processors).query();
         }
     }
 PARSER_END(QueryParser)
@@ -30,26 +62,47 @@ SKIP:  {
   | "\t"
   | " "
 }
+
 TOKEN: {
-    < FLOAT: (["0"-"9"])* "." (["0"-"9"])+ | (["0"-"9"])+ "." (["0"-"9"])* >
-  | < INT:    (["0"-"9"])+ >
-  | < STRING: "'" (~["'"])* "'" >
-  | < TYPE:   (["a"-"z", "A"-"Z", "0"-"9"])* >
-  | < HASH:   ("#") >
-  | < OBRA:   ("(") >
-  | < CBRA:   (")") >
-  | < OCBR:   ("{") >
-  | < CCBR:   ("}") >
-  | < TMAT:   ("->") >
-  | < OPT:    ("?") >
+       < UINT:   (["0"-"9"])+ >
+     | < INT:    (("-")? ["0"-"9"])+ >
+     | < UFLOAT: (["0"-"9"])* "." (["0"-"9"])+ | (["0"-"9"])+ "." (["0"-"9"])* >
+     | < FLOAT:  (("-")? ["0"-"9"])* "." (["0"-"9"])+ | (("-")? ["0"-"9"])+ "." (["0"-"9"])* >
+     | < STRING: "'" (~["'"])* "'" >
+     | < HASH:   ("#") >
+     | < OBRA:   ("(") >
+     | < CBRA:   (")") >
+     | < OCBR:   ("{") >
+     | < CCBR:   ("}") >
+     | < TMAT:   ("->") >
+     | < OPT:    ("?") >
+
+     | < TYPE:   (
+          "int"
+        | "uint"
+        | "nint"
+        | "float"
+        | "ufloat"
+        | "nfloat"
+        | "number"
+        | "string"
+        | "dictionary"
+        | "sequence"
+        | "tag"
+        | ("tag$") (<UINT>)
+        | "bool"
+        | "datetime"
+        | "timestamp"
+        | "uri"
+        | "enccbor"
+     ) >
 }
 
 void stream(): {
     Token intToken = null;
 }
 {
-    <HASH>
-    ( intToken = <INT> )?
+    <HASH> ( intToken = <UINT> )?
     {
         long index = intToken == null ? -1 : Long.parseLong(intToken.image);
         ((StreamGraphQueryBuilder) queryBuilder).stream(index);
@@ -65,7 +118,9 @@ void dictionary(): {
     (<OCBR>)
     (
         intToken = <INT> |
+        intToken = <UINT> |
         floatToken = <FLOAT> |
+        floatToken = <UFLOAT> |
         stringToken = <STRING>
     )
     (<CCBR>)
@@ -93,9 +148,7 @@ void sequence(): {
     Token intToken = null;
 }
 {
-    (<OBRA>)
-    ( intToken = <INT>)
-    (<CBRA>)
+    (<OBRA>) ( intToken = <UINT>) (<CBRA>)
     {
         long index = Long.parseLong(intToken.image);
         queryBuilder.sequence(index);
@@ -105,17 +158,29 @@ void sequence(): {
 void expression(): {
 }
 {
-    (dictionary() | sequence())
+    (dictionary() | sequence() | typematch())
 }
 
 void typematch(): {
+    Token optToken = null;
+    Token typeToken = null;
 }
 {
-    (<TMAT>) (<OPT>)? (<TYPE>)
+    (<TMAT>) (optToken = <OPT>)? (typeToken = <TYPE>)
+    {
+        boolean required = optToken == null;
+        String spec = typeToken.image;
+        TypeSpec typeSpec = TypeSpecs.typeSpec(spec, processors);
+        if (required) {
+            queryBuilder.requireType(typeSpec);
+        } else {
+            queryBuilder.nullOrType(typeSpec);
+        }
+    }
 }
 
 void query(): {
 }
 {
-    stream() (expression())* typematch() <EOF>
+    stream() (expression())* <EOF>
 }

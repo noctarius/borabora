@@ -19,6 +19,6 @@ package com.noctarius.borabora.builder;
 public interface StreamGraphQueryBuilder
         extends GraphQueryBuilder {
 
-    GraphQueryBuilder stream(long index);
+    GraphQueryBuilder stream(long offset);
 
 }

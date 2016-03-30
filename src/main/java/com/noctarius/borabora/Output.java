@@ -18,9 +18,9 @@ package com.noctarius.borabora;
 
 public interface Output {
 
-    void write(long index, byte value);
+    void write(long offset, byte value);
 
-    boolean ensureCapacity(long index, long length);
+    boolean ensureCapacity(long offset, long length);
 
     static Output toByteArray(byte[] array) {
         return new ByteArrayOutput(array);

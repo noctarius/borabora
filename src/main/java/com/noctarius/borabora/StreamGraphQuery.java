@@ -28,25 +28,25 @@ final class StreamGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(index);
+    public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
+        short head = stream.transientUint8(offset);
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)
         if (streamIndex <= 0) {
-            return index;
+            return offset;
         }
 
         // Stream objects
-        return skip(stream, index);
+        return skip(stream, offset);
     }
 
-    private long skip(Decoder stream, long index) {
+    private long skip(Decoder stream, long offset) {
         // Skip unnecessary objects
         for (int i = 0; i < streamIndex; i++) {
-            index = stream.skip(index);
+            offset = stream.skip(offset);
         }
-        return index;
+        return offset;
     }
 
 }

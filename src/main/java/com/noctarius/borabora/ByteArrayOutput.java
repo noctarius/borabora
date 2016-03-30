@@ -26,16 +26,16 @@ final class ByteArrayOutput
     }
 
     @Override
-    public void write(long index, byte value) {
-        array[(int) index] = value;
+    public void write(long offset, byte value) {
+        array[(int) offset] = value;
     }
 
     @Override
-    public boolean ensureCapacity(long index, long length) {
-        if (index >= array.length) {
+    public boolean ensureCapacity(long offset, long length) {
+        if (offset >= array.length) {
             return false;
         }
-        if (index + length >= array.length) {
+        if (offset + length >= array.length) {
             return false;
         }
         return true;

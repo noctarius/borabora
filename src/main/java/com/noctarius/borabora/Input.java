@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 public interface Input {
 
-    byte read(long index)
+    byte read(long offset)
             throws NoSuchByteException;
 
     static Input fromByteArray(byte[] array) {

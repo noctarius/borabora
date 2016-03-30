@@ -29,13 +29,13 @@ final class ChainGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long index, Collection<SemanticTagProcessor> processors) {
+    public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
         for (GraphQuery graphQuery : graphQueries) {
-            index = graphQuery.access(stream, index, processors);
-            if (index == -1) {
+            offset = graphQuery.access(stream, offset, processors);
+            if (offset == -1) {
                 return -1;
             }
         }
-        return index;
+        return offset;
     }
 }

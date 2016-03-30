@@ -60,10 +60,10 @@ final class DictionaryImpl
     @Override
     public Value get(Predicate<Value> predicate) {
         for (long i = 0; i < size; i++) {
-            long index = calculateArrayIndex(i * 2);
-            Value value = stream.readValue(index, processors);
+            long offset = calculateArrayIndex(i * 2);
+            Value value = stream.readValue(offset, processors);
             if (predicate.test(value)) {
-                long position = stream.skip(index);
+                long position = stream.skip(offset);
                 return stream.readValue(position, processors);
             }
         }
@@ -87,8 +87,8 @@ final class DictionaryImpl
 
     private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
         for (long i = findValue ? 1 : 0; i < size; i = i + 2) {
-            long index = calculateArrayIndex(i);
-            Value value = stream.readValue(index, processors);
+            long offset = calculateArrayIndex(i);
+            Value value = stream.readValue(offset, processors);
             if (predicate.test(value)) {
                 return value;
             }
@@ -96,9 +96,9 @@ final class DictionaryImpl
         return null;
     }
 
-    private long calculateArrayIndex(long index) {
-        int baseIndex = (int) (index / Integer.MAX_VALUE);
-        int elementIndex = (int) (index % Integer.MAX_VALUE);
+    private long calculateArrayIndex(long offset) {
+        int baseIndex = (int) (offset / Integer.MAX_VALUE);
+        int elementIndex = (int) (offset % Integer.MAX_VALUE);
         return elementIndexes[baseIndex][elementIndex];
     }
 
@@ -137,8 +137,8 @@ final class DictionaryImpl
                 if (arrayIndex >= size * 2) {
                     throw new NoSuchElementException("No further element available");
                 }
-                long index = calculateArrayIndex(arrayIndex);
-                return stream.readValue(index, processors);
+                long offset = calculateArrayIndex(arrayIndex);
+                return stream.readValue(offset, processors);
 
             } finally {
                 arrayIndex += 2;

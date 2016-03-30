@@ -35,50 +35,84 @@ import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.Constants.TAG_URI;
 
-public enum ValueTypes
+enum ValueTypes
         implements ValueType, TagProcessor {
 
-    Uint(Value::number),
-    NInt(Value::number),
-    ByteString(Value::string),
-    TextString(Value::string),
-    Sequence(Value::sequence),
-    Dictionary(Value::dictionary),
-    Float(Value::number),
-    Bool(Value::bool),
-    Null((v) -> null),
-    Undefined((v) -> null),
-    DateTime(TagProcessors::readDateTime, Value::tag),
-    Timestamp(TagProcessors::readTimestamp, Value::tag),
-    UBigNum(TagProcessors::readUBigNum, Value::tag, Uint),
-    NBigNum(TagProcessors::readNBigNum, Value::tag, NInt),
-    // Fraction,
-    // BigFloat,
-    // Base64Url,
-    // Base64Enc,
-    // Base16Enc,
-    EncCBOR(TagProcessors::readEncCBOR, Value::tag),
-    URI(TagProcessors::readURI, Value::tag),
-    // RegEx,
-    // Mime,
-    Unknown(Value::raw);
+    Number(TypeSpecs.Number, Value::number),
+    Int(TypeSpecs.Int, Value::number),
+    Uint(TypeSpecs.UInt, Value::number),
+    NInt(TypeSpecs.Int, Value::number),
+    ByteString(TypeSpecs.String, Value::string),
+    TextString(TypeSpecs.String, Value::string),
+    Sequence(TypeSpecs.Sequence, Value::sequence),
+    Dictionary(TypeSpecs.Dictionary, Value::dictionary),
+    NFloat(TypeSpecs.Float, Value::number),
+    Bool(TypeSpecs.Bool, Value::bool),
+    Null(null, (v) -> null),
+    Undefined(TypeSpecs.Null, (v) -> null),
+    DateTime(TypeSpecs.DateTime, TagProcessors::readDateTime, Value::tag),
+    Timestamp(TypeSpecs.Timstamp, TagProcessors::readTimestamp, Value::tag),
+    UBigNum(TypeSpecs.UInt, TagProcessors::readUBigNum, Value::tag, Uint),
+    NBigNum(TypeSpecs.NInt, TagProcessors::readNBigNum, Value::tag, NInt),
+    EncCBOR(TypeSpecs.EncCBOR, TagProcessors::readEncCBOR, Value::tag),
+    URI(TypeSpecs.URI, TagProcessors::readURI, Value::tag),
+    Unknown(TypeSpecs.Unknown, Value::raw);
 
     private final Function<Value, Object> byValueType;
     private final TagProcessor processor;
+    private final TypeSpec typeSpec;
     private final ValueType identity;
 
-    ValueTypes(Function<Value, Object> byValueType) {
-        this(null, byValueType, null);
+    ValueTypes(TypeSpec superType, Function<Value, Object> byValueType) {
+        this(superType, null, byValueType, null);
     }
 
-    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType) {
-        this(processor, byValueType, null);
+    ValueTypes(TypeSpec superType, TagProcessor processor, Function<Value, Object> byValueType) {
+        this(superType, processor, byValueType, null);
     }
 
-    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
+    ValueTypes(TypeSpec typeSpec, TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
         this.byValueType = byValueType;
         this.processor = processor;
+        this.typeSpec = typeSpec;
         this.identity = identity;
+    }
+
+    @Override
+    public TypeSpec typeSpec() {
+        return typeSpec;
+    }
+
+    @Override
+    public String spec() {
+        return typeSpec != null ? typeSpec.spec() : null;
+    }
+
+    @Override
+    public int tagId() {
+        return typeSpec != null ? typeSpec.tagId() : -1;
+    }
+
+    @Override
+    public boolean matches(ValueType other) {
+        if (matchesExact(other)) {
+            return true;
+        }
+        if (typeSpec == null) {
+            return false;
+        }
+        return typeSpec.matches(other.typeSpec());
+    }
+
+    @Override
+    public boolean matchesExact(ValueType other) {
+        if (this == other) {
+            return true;
+        }
+        if (typeSpec == null) {
+            return false;
+        }
+        return typeSpec.matchesExact(other.typeSpec());
     }
 
     @Override
@@ -92,15 +126,15 @@ public enum ValueTypes
     }
 
     @Override
-    public Object process(Decoder stream, long index, long length, Collection<SemanticTagProcessor> processors) {
+    public Object process(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
         if (processor == null) {
             return null;
         }
-        return processor.process(stream, index, length, processors);
+        return processor.process(stream, offset, length, processors);
     }
 
-    static ValueTypes valueType(Decoder stream, long index) {
-        short head = stream.transientUint8(index);
+    static ValueTypes valueType(Decoder stream, long offset) {
+        short head = stream.transientUint8(offset);
 
         // Read major type first
         MajorType majorType = MajorType.findMajorType(head);
@@ -122,7 +156,7 @@ public enum ValueTypes
             case FloatingPointOrSimple:
                 return floatNullOrBool(head);
             case SemanticTag:
-                return semanticTagType(stream, index);
+                return semanticTagType(stream, offset);
         }
         throw new IllegalArgumentException("Illegal value type requested");
     }
@@ -138,12 +172,12 @@ public enum ValueTypes
             case FP_VALUE_UNDEF:
                 return Undefined;
             default:
-                return Float;
+                return NFloat;
         }
     }
 
-    private static ValueTypes semanticTagType(Decoder stream, long index) {
-        Number tagType = stream.readUint(index);
+    private static ValueTypes semanticTagType(Decoder stream, long offset) {
+        Number tagType = stream.readUint(offset);
         switch (tagType.intValue()) {
             case TAG_DATE_TIME:
                 return DateTime;

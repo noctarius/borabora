@@ -16,26 +16,20 @@
  */
 package com.noctarius.borabora;
 
-final class ByteArrayInput
-        implements Input {
+public interface TypeSpec {
 
-    private final byte[] array;
+    TypeSpec superType();
 
-    ByteArrayInput(byte[] array) {
-        this.array = array;
-    }
+    String name();
 
-    @Override
-    public byte read(long offset)
-            throws NoSuchByteException {
+    String spec();
 
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
-        if (offset < 0 || offset >= array.length) {
-            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
-        }
-        return array[(int) offset];
-    }
+    int tagId();
+
+    boolean matches(TypeSpec other);
+
+    boolean matchesExact(TypeSpec other);
+
+    boolean valid(MajorType majorType, Decoder stream, long offset);
 
 }

@@ -36,15 +36,15 @@ final class ParserImpl
     @Override
     public Value read(GraphQuery graphQuery) {
         Decoder source = new Decoder(input);
-        long index = graphQuery.access(source, 0, processors);
-        if (index == -1) {
+        long offset = graphQuery.access(source, 0, processors);
+        if (offset == -1) {
             return NULL_VALUE;
         }
-        short head = source.transientUint8(index);
+        short head = source.transientUint8(offset);
         MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(source, index);
-        long length = source.length(mt, index);
-        return new StreamValue(mt, vt, source, index, length, processors);
+        ValueType vt = ValueTypes.valueType(source, offset);
+        long length = source.length(mt, offset);
+        return new StreamValue(mt, vt, source, offset, length, processors);
     }
 
     @Override
@@ -63,7 +63,7 @@ final class ParserImpl
         try {
 
             GraphQueryBuilder queryBuilder = GraphQuery.newBuilder();
-            QueryParser.parse(query, queryBuilder);
+            QueryParser.parse(query, queryBuilder, processors);
             return queryBuilder.build();
 
         } catch (Exception e) {

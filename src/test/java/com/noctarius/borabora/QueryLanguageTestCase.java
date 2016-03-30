@@ -25,7 +25,7 @@ public class QueryLanguageTestCase
     public void test_simple_sequence_access()
             throws Exception {
 
-        String query = "#{'b'}(1)->number";
+        String query = "#{'b'}->sequence(1)->number";
         Input input = Input.fromByteArray(hexToBytes("0xbf61610161629f0203ffff"));
         Parser parser = Parser.newBuilder(input).build();
         Value value = parser.read(query);

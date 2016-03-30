@@ -19,15 +19,15 @@ package com.noctarius.borabora;
 public class NoSuchByteException
         extends RuntimeException {
 
-    private final long index;
+    private final long offset;
 
-    public NoSuchByteException(long index, String message) {
+    public NoSuchByteException(long offset, String message) {
         super(message);
-        this.index = index;
+        this.offset = offset;
     }
 
-    public long getIndex() {
-        return index;
+    public long getOffset() {
+        return offset;
     }
 
 }
