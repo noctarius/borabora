@@ -38,59 +38,44 @@ import static com.noctarius.borabora.Constants.TAG_URI;
 enum ValueTypes
         implements ValueType, TagProcessor {
 
-    Number(TypeSpecs.Number, Value::number),
-    Int(TypeSpecs.Int, Value::number),
-    Uint(TypeSpecs.UInt, Value::number),
-    NInt(TypeSpecs.Int, Value::number),
-    ByteString(TypeSpecs.String, Value::string),
-    TextString(TypeSpecs.String, Value::string),
-    Sequence(TypeSpecs.Sequence, Value::sequence),
-    Dictionary(TypeSpecs.Dictionary, Value::dictionary),
-    NFloat(TypeSpecs.Float, Value::number),
-    Bool(TypeSpecs.Bool, Value::bool),
-    Null(null, (v) -> null),
-    Undefined(TypeSpecs.Null, (v) -> null),
-    DateTime(TypeSpecs.DateTime, TagProcessors::readDateTime, Value::tag),
-    Timestamp(TypeSpecs.Timstamp, TagProcessors::readTimestamp, Value::tag),
-    UBigNum(TypeSpecs.UInt, TagProcessors::readUBigNum, Value::tag, Uint),
-    NBigNum(TypeSpecs.NInt, TagProcessors::readNBigNum, Value::tag, NInt),
-    EncCBOR(TypeSpecs.EncCBOR, TagProcessors::readEncCBOR, Value::tag),
-    URI(TypeSpecs.URI, TagProcessors::readURI, Value::tag),
-    Unknown(TypeSpecs.Unknown, Value::raw);
+    Number(Value::number),
+    Int(Value::number),
+    UInt(Value::number),
+    NInt(Value::number),
+    ByteString(Value::string),
+    TextString(Value::string),
+    Sequence(Value::sequence),
+    Dictionary(Value::dictionary),
+    Float(Value::number),
+    UFloat(Value::number),
+    NFloat(Value::number),
+    Bool(Value::bool),
+    Null((v) -> null),
+    Undefined((v) -> null),
+    DateTime(TagProcessors::readDateTime, Value::tag),
+    Timestamp(TagProcessors::readTimestamp, Value::tag),
+    UBigNum(TagProcessors::readUBigNum, Value::tag, UInt),
+    NBigNum(TagProcessors::readNBigNum, Value::tag, NInt),
+    EncCBOR(TagProcessors::readEncCBOR, Value::tag),
+    URI(TagProcessors::readURI, Value::tag),
+    Unknown(Value::raw);
 
     private final Function<Value, Object> byValueType;
     private final TagProcessor processor;
-    private final TypeSpec typeSpec;
     private final ValueType identity;
 
-    ValueTypes(TypeSpec superType, Function<Value, Object> byValueType) {
-        this(superType, null, byValueType, null);
+    ValueTypes(Function<Value, Object> byValueType) {
+        this(null, byValueType, null);
     }
 
-    ValueTypes(TypeSpec superType, TagProcessor processor, Function<Value, Object> byValueType) {
-        this(superType, processor, byValueType, null);
+    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType) {
+        this(processor, byValueType, null);
     }
 
-    ValueTypes(TypeSpec typeSpec, TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
+    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
         this.byValueType = byValueType;
         this.processor = processor;
-        this.typeSpec = typeSpec;
         this.identity = identity;
-    }
-
-    @Override
-    public TypeSpec typeSpec() {
-        return typeSpec;
-    }
-
-    @Override
-    public String spec() {
-        return typeSpec != null ? typeSpec.spec() : null;
-    }
-
-    @Override
-    public int tagId() {
-        return typeSpec != null ? typeSpec.tagId() : -1;
     }
 
     @Override
@@ -98,10 +83,13 @@ enum ValueTypes
         if (matchesExact(other)) {
             return true;
         }
-        if (typeSpec == null) {
+        if (identity == other.identity()) {
+            return true;
+        }
+        if (identity == null) {
             return false;
         }
-        return typeSpec.matches(other.typeSpec());
+        return identity.matches(other);
     }
 
     @Override
@@ -109,10 +97,7 @@ enum ValueTypes
         if (this == other) {
             return true;
         }
-        if (typeSpec == null) {
-            return false;
-        }
-        return typeSpec.matchesExact(other.typeSpec());
+        return false;
     }
 
     @Override
@@ -142,7 +127,7 @@ enum ValueTypes
         // Simple major types are assigned directly
         switch (majorType) {
             case UnsignedInteger:
-                return Uint;
+                return UInt;
             case NegativeInteger:
                 return NInt;
             case ByteString:

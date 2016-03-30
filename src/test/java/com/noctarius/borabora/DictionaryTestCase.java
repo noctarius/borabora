@@ -381,7 +381,7 @@ public class DictionaryTestCase
         Value value = parser.read(query);
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
-        assertEquals(ValueTypes.Uint, value.valueType());
+        assertEquals(ValueTypes.UInt, value.valueType());
 
         assertEqualsNumber(4, value.number());
     }
@@ -434,7 +434,7 @@ public class DictionaryTestCase
     }
 
     private boolean matchNumber(Value value) {
-        if (ValueTypes.Uint != value.valueType()) {
+        if (ValueTypes.UInt != value.valueType()) {
             return false;
         }
         Number number = value.number();
@@ -446,7 +446,7 @@ public class DictionaryTestCase
 
     private Predicate<Value> matchNumber(long v) {
         return (value) -> {
-            if (ValueTypes.Uint != value.valueType()) {
+            if (ValueTypes.UInt != value.valueType()) {
                 return false;
             }
             Number number = value.number();

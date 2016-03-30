@@ -18,13 +18,7 @@ package com.noctarius.borabora;
 
 public interface ValueType {
 
-    TypeSpec typeSpec();
-
     String name();
-
-    String spec();
-
-    int tagId();
 
     ValueType identity();
 

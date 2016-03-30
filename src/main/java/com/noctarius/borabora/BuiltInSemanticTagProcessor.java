@@ -37,4 +37,14 @@ final class BuiltInSemanticTagProcessor
         return valueType.process(stream, offset, length, processors);
     }
 
+    @Override
+    public TypeSpec handles(int tagId) {
+        for (TypeSpec typeSpec : TypeSpecs.values()) {
+            if (typeSpec.tagId() == tagId) {
+                return typeSpec;
+            }
+        }
+        return null;
+    }
+
 }

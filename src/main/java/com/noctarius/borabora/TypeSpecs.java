@@ -21,39 +21,42 @@ import java.util.Collection;
 public enum TypeSpecs
         implements TypeSpec {
 
-    Number("number"),
-    Int("int", Number),
-    UInt("uint", Number),
-    NInt("nint", Number),
-    Float("float", Number),
-    UFloat("ufloat", Number),
-    NFloat("nfloat", Number),
-    String("string"),
-    Dictionary("dictionary"),
-    Sequence("sequence"),
-    SemanticTag("tag"),
-    SpecializedSemanticTag("tag$", SemanticTag),
-    Bool("bool"),
-    DateTime("datetime", SpecializedSemanticTag),
-    Timstamp("timestamp", SpecializedSemanticTag),
-    URI("uri", SpecializedSemanticTag),
-    EncCBOR("enccbor", SpecializedSemanticTag),
-    Unknown("unknown"),
-    Null("null");
+    Number("number", ValueTypes.Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, //
+            ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float),
+    Int("int", Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int),
+    UInt("uint", Number, ValueTypes.UInt, ValueTypes.UBigNum),
+    NInt("nint", Number, ValueTypes.NInt, ValueTypes.NBigNum),
+    Float("float", Number, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float),
+    UFloat("ufloat", Number, ValueTypes.UFloat),
+    NFloat("nfloat", Number, ValueTypes.NFloat),
+    String("string", ValueTypes.ByteString, ValueTypes.TextString),
+    Dictionary("dictionary", ValueTypes.Dictionary),
+    Sequence("sequence", ValueTypes.Sequence),
+    SemanticTag("tag", ValueTypes.Unknown),
+    SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown),
+    Bool("bool", ValueTypes.Bool),
+    DateTime("datetime", SpecializedSemanticTag, ValueTypes.DateTime),
+    Timstamp("timestamp", SpecializedSemanticTag, ValueTypes.Timestamp),
+    URI("uri", SpecializedSemanticTag, ValueTypes.URI),
+    EncCBOR("enccbor", SpecializedSemanticTag, ValueTypes.EncCBOR),
+    Unknown("unknown", ValueTypes.Unknown),
+    Null("null", ValueTypes.Null);
 
+    private final ValueType[] legalValueTypes;
     private final TypeSpec superType;
     private final String spec;
     private final int tagId;
 
-    TypeSpecs(String spec) {
-        this(spec, null, -1);
+    TypeSpecs(String spec, ValueType... legalValueTypes) {
+        this(spec, null, -1, legalValueTypes);
     }
 
-    TypeSpecs(String spec, TypeSpec superType) {
-        this(spec, superType, -1);
+    TypeSpecs(String spec, TypeSpec superType, ValueType... legalValueTypes) {
+        this(spec, superType, -1, legalValueTypes);
     }
 
-    TypeSpecs(String spec, TypeSpec superType, int tagId) {
+    TypeSpecs(String spec, TypeSpec superType, int tagId, ValueType... legalValueTypes) {
+        this.legalValueTypes = legalValueTypes;
         this.superType = superType;
         this.tagId = tagId;
         this.spec = spec;
@@ -99,7 +102,12 @@ public enum TypeSpecs
 
     @Override
     public boolean valid(MajorType majorType, Decoder stream, long offset) {
-        // TODO
+        ValueType valueType = ValueTypes.valueType(stream, offset);
+        for (ValueType legalValueType : legalValueTypes) {
+            if (valueType.matches(legalValueType)) {
+                return true;
+            }
+        }
         return false;
     }
 

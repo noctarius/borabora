@@ -53,7 +53,7 @@ final class StreamValue
 
     @Override
     public Number number() {
-        return extract(() -> matchValueType(ValueTypes.Uint, ValueTypes.NInt, ValueTypes.NFloat),
+        return extract(() -> matchValueType(ValueTypes.UInt, ValueTypes.NInt, ValueTypes.NFloat),
                 () -> stream.readNumber(valueType(), offset));
     }
 

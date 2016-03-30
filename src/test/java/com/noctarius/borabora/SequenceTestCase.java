@@ -96,12 +96,12 @@ public class SequenceTestCase
         Sequence sequence = value.sequence();
         for (int i = 1; i < 26; i++) {
             Value element = sequence.get(i - 1);
-            assertEquals(ValueTypes.Uint, element.valueType());
+            assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
 
             GraphQuery query = GraphQuery.newBuilder().sequence(i - 1).build();
             element = parser.read(query);
-            assertEquals(ValueTypes.Uint, element.valueType());
+            assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
         }
     }
@@ -219,7 +219,7 @@ public class SequenceTestCase
         Value valueIndex1 = sequence.get(1);
         Value valueIndex2 = sequence.get(2);
 
-        assertEquals(ValueTypes.Uint, valueIndex0.valueType());
+        assertEquals(ValueTypes.UInt, valueIndex0.valueType());
         assertEquals(ValueTypes.Sequence, valueIndex1.valueType());
         assertEquals(ValueTypes.Sequence, valueIndex2.valueType());
 
