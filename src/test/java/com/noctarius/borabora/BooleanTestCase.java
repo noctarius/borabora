@@ -27,7 +27,7 @@ public class BooleanTestCase
     public void test_boolean_false()
             throws Exception {
 
-        Parser parser = buildParser("0xf4");
+        SimplifiedTestParser parser = buildParser("0xf4");
 
         Value value = parser.read(GraphQuery.newBuilder().build());
 
@@ -39,7 +39,7 @@ public class BooleanTestCase
     public void test_boolean_true()
             throws Exception {
 
-        Parser parser = buildParser("0xf5");
+        SimplifiedTestParser parser = buildParser("0xf5");
 
         Value value = parser.read(GraphQuery.newBuilder().build());
 

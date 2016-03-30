@@ -51,7 +51,7 @@ public class NullTestCase
     public void test_null()
             throws Exception {
 
-        Parser parser = buildParser("0xf6");
+        SimplifiedTestParser parser = buildParser("0xf6");
 
         Value value = parser.read(GraphQuery.newBuilder().build());
 

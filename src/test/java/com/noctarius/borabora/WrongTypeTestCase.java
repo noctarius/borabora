@@ -25,7 +25,7 @@ public class WrongTypeTestCase
     public void test_wrong_major_type_on_semantic_tag()
             throws Exception {
 
-        Parser parser = buildParser("0xf7");
+        SimplifiedTestParser parser = buildParser("0xf7");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.tag();
     }
@@ -34,7 +34,7 @@ public class WrongTypeTestCase
     public void test_wrong_value_type_on_number()
             throws Exception {
 
-        Parser parser = buildParser("0xf7");
+        SimplifiedTestParser parser = buildParser("0xf7");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.number();
     }
@@ -43,7 +43,7 @@ public class WrongTypeTestCase
     public void test_wrong_value_type_on_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0xf7");
+        SimplifiedTestParser parser = buildParser("0xf7");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.sequence();
     }
@@ -52,7 +52,7 @@ public class WrongTypeTestCase
     public void test_wrong_value_type_on_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0xf7");
+        SimplifiedTestParser parser = buildParser("0xf7");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.dictionary();
     }
@@ -61,7 +61,7 @@ public class WrongTypeTestCase
     public void test_wrong_value_type_on_string()
             throws Exception {
 
-        Parser parser = buildParser("0xf7");
+        SimplifiedTestParser parser = buildParser("0xf7");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.string();
     }
@@ -70,7 +70,7 @@ public class WrongTypeTestCase
     public void test_wrong_value_type_on_bool()
             throws Exception {
 
-        Parser parser = buildParser("0x40");
+        SimplifiedTestParser parser = buildParser("0x40");
         Value value = parser.read(GraphQuery.newBuilder().build());
         value.bool();
     }

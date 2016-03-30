@@ -39,7 +39,7 @@ public class StringTestCase
             throws Exception {
 
         String expected = new String(hexToBytes("0x01020304"));
-        Parser parser = buildParser("0x4401020304");
+        SimplifiedTestParser parser = buildParser("0x4401020304");
         Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
@@ -49,7 +49,7 @@ public class StringTestCase
             throws Exception {
 
         String expected = new String(hexToBytes("0x0102030405"));
-        Parser parser = buildParser("0x5f42010243030405ff");
+        SimplifiedTestParser parser = buildParser("0x5f42010243030405ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
@@ -59,7 +59,7 @@ public class StringTestCase
             throws Exception {
 
         String expected = new String(hexToBytes("0xaabbccddeeff99"));
-        Parser parser = buildParser("0x5f44aabbccdd43eeff99ff");
+        SimplifiedTestParser parser = buildParser("0x5f44aabbccdd43eeff99ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
@@ -69,7 +69,7 @@ public class StringTestCase
             throws Exception {
 
         String expected = new String(hexToBytes("0xc3bce6b0b4f0908591"), Charset.forName("UTF8"));
-        Parser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
+        SimplifiedTestParser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(expected, value.string());
     }
@@ -94,8 +94,8 @@ public class StringTestCase
 
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getInputData());
-        Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Parser parser = Parser.newBuilder().build();
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());

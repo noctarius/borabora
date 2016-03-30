@@ -75,8 +75,8 @@ public class NumberTestCase
             throws Exception {
 
         Input input = Input.fromByteArray(this.input);
-        Parser parser = Parser.newBuilder(input).build();
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Parser parser = Parser.newBuilder().build();
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
 
         Number result = value.number();
         assertEqualsNumber(this.expected, result);

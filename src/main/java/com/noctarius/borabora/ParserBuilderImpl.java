@@ -24,11 +24,9 @@ import java.util.List;
 final class ParserBuilderImpl
         implements ParserBuilder {
 
-    private final Input input;
     private final List<SemanticTagProcessor> processors = new ArrayList<>();
 
-    public ParserBuilderImpl(Input input) {
-        this.input = input;
+    public ParserBuilderImpl() {
         semanticTagProcessor(BuiltInSemanticTagProcessor.INSTANCE);
     }
 
@@ -40,7 +38,7 @@ final class ParserBuilderImpl
 
     @Override
     public Parser build() {
-        return new ParserImpl(input, processors);
+        return new ParserImpl(processors);
     }
 
 }

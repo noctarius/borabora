@@ -41,10 +41,34 @@ public abstract class AbstractTestCase {
         return DatatypeConverter.parseHexBinary(hex);
     }
 
-    public static Parser buildParser(String hex) {
+    public static SimplifiedTestParser buildParser(String hex) {
         byte[] data = hexToBytes(hex);
         Input input = Input.fromByteArray(data);
-        return Parser.newBuilder(input).build();
+        return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
+    }
+
+    protected static class SimplifiedTestParser {
+
+        private final com.noctarius.borabora.Parser parser;
+        private final Input input;
+
+        private SimplifiedTestParser(com.noctarius.borabora.Parser parser, Input input) {
+            this.parser = parser;
+            this.input = input;
+        }
+
+        Value read(GraphQuery graphQuery) {
+            return parser.read(input, graphQuery);
+        }
+
+        Value read(String query) {
+            return parser.read(input, query);
+        }
+
+        GraphQuery prepareQuery(String query) {
+            return parser.prepareQuery(query);
+        }
+
     }
 
 }

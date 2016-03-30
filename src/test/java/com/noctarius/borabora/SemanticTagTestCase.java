@@ -31,7 +31,7 @@ public class SemanticTagTestCase
     public void test_semantic_tag_uri()
             throws Exception {
 
-        Parser parser = buildParser("0xd82076687474703a2f2f7777772e6578616d706c652e636f6d");
+        SimplifiedTestParser parser = buildParser("0xd82076687474703a2f2f7777772e6578616d706c652e636f6d");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.URI, value.valueType());
@@ -52,7 +52,7 @@ public class SemanticTagTestCase
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        Parser parser = buildParser("0xc074323031332d30332d32315432303a30343a30305a");
+        SimplifiedTestParser parser = buildParser("0xc074323031332d30332d32315432303a30343a30305a");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.DateTime, value.valueType());
@@ -63,7 +63,7 @@ public class SemanticTagTestCase
     public void test_semantic_tag_timestamp_uint()
             throws Exception {
 
-        Parser parser = buildParser("0xc11a514b67b0");
+        SimplifiedTestParser parser = buildParser("0xc11a514b67b0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.Timestamp, value.valueType());
@@ -74,7 +74,7 @@ public class SemanticTagTestCase
     public void test_semantic_tag_timestamp_float()
             throws Exception {
 
-        Parser parser = buildParser("0xc1fb41d452d9ec200000");
+        SimplifiedTestParser parser = buildParser("0xc1fb41d452d9ec200000");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.Timestamp, value.valueType());
@@ -86,7 +86,7 @@ public class SemanticTagTestCase
             throws Exception {
 
         String expected = new String(hexToBytes("0x6449455446"));
-        Parser parser = buildParser("0xd818456449455446");
+        SimplifiedTestParser parser = buildParser("0xd818456449455446");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Value enc = value.tag();
         String actual = enc.string();

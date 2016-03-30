@@ -29,7 +29,7 @@ public class SequenceTestCase
     public void test_empty_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0x80");
+        SimplifiedTestParser parser = buildParser("0x80");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertEquals(0, sequence.size());
@@ -39,7 +39,7 @@ public class SequenceTestCase
     public void test_sequence_isempty_true()
             throws Exception {
 
-        Parser parser = buildParser("0x80");
+        SimplifiedTestParser parser = buildParser("0x80");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
@@ -49,7 +49,7 @@ public class SequenceTestCase
     public void test_indefinite_sequence_isempty_true()
             throws Exception {
 
-        Parser parser = buildParser("0x9fff");
+        SimplifiedTestParser parser = buildParser("0x9fff");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
@@ -59,7 +59,7 @@ public class SequenceTestCase
     public void test_sequence_isempty_false()
             throws Exception {
 
-        Parser parser = buildParser("0x83010203");
+        SimplifiedTestParser parser = buildParser("0x83010203");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
@@ -69,7 +69,7 @@ public class SequenceTestCase
     public void test_indefinite_sequence_isempty_false()
             throws Exception {
 
-        Parser parser = buildParser("0x9f010203ff");
+        SimplifiedTestParser parser = buildParser("0x9f010203ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
@@ -90,7 +90,7 @@ public class SequenceTestCase
     }
 
     private void long_sequence(String hex) {
-        Parser parser = buildParser(hex);
+        SimplifiedTestParser parser = buildParser(hex);
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Sequence sequence = value.sequence();
@@ -110,7 +110,7 @@ public class SequenceTestCase
     public void test_sequence_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0x826161a161626163");
+        SimplifiedTestParser parser = buildParser("0x826161a161626163");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Sequence sequence = value.sequence();
@@ -128,7 +128,7 @@ public class SequenceTestCase
     public void test_indefinite_empty_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0x9fff");
+        SimplifiedTestParser parser = buildParser("0x9fff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(0, value.sequence().size());
@@ -173,7 +173,7 @@ public class SequenceTestCase
     public void test_small_sequence()
             throws Exception {
 
-        Parser parser = buildParser("0x83010203");
+        SimplifiedTestParser parser = buildParser("0x83010203");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         for (int i = 0; i < 3; i++) {
@@ -185,12 +185,12 @@ public class SequenceTestCase
     private void test_sequence(String hex)
             throws Exception {
 
-        Parser parser = buildParser(hex);
+        SimplifiedTestParser parser = buildParser(hex);
         test_using_sequence_graph(parser);
         test_using_sequence_traversal(parser);
     }
 
-    private void test_using_sequence_graph(Parser parser) {
+    private void test_using_sequence_graph(SimplifiedTestParser parser) {
         GraphQuery i0e0 = GraphQuery.newBuilder().sequence(0).build();
         GraphQuery i1e0 = GraphQuery.newBuilder().sequence(1).sequence(0).build();
         GraphQuery i1e1 = GraphQuery.newBuilder().sequence(1).sequence(1).build();
@@ -210,7 +210,7 @@ public class SequenceTestCase
         assertEqualsNumber(5, v5.number());
     }
 
-    private void test_using_sequence_traversal(Parser parser) {
+    private void test_using_sequence_traversal(SimplifiedTestParser parser) {
         Value value = parser.read(GraphQuery.newBuilder().sequence(-1).build());
 
         Sequence sequence = value.sequence();

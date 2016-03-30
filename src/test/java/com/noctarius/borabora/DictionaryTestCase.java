@@ -36,7 +36,7 @@ public class DictionaryTestCase
     public void test_empty_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -47,7 +47,7 @@ public class DictionaryTestCase
     public void test_multi_element_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -62,7 +62,7 @@ public class DictionaryTestCase
     public void test_dictionary_key_iterator()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -80,7 +80,7 @@ public class DictionaryTestCase
     public void test_dictionary_key_iterator_hasnext()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -109,7 +109,7 @@ public class DictionaryTestCase
     public void test_dictionary_key_iterator_next_nosuchelement()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -122,7 +122,7 @@ public class DictionaryTestCase
     public void test_dictionary_value_iterator()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -140,7 +140,7 @@ public class DictionaryTestCase
     public void test_dictionary_value_iterator_hasnext()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -169,7 +169,7 @@ public class DictionaryTestCase
     public void test_dictionary_value_iterator_next_nosuchelement()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -182,7 +182,7 @@ public class DictionaryTestCase
     public void test_dictionary_entries_iterator()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -214,7 +214,7 @@ public class DictionaryTestCase
     public void test_dictionary_entries_iterator_hasnext()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -253,7 +253,7 @@ public class DictionaryTestCase
     public void test_dictionary_entries_iterator_next_nosuchelement()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -266,7 +266,7 @@ public class DictionaryTestCase
     public void test_dictionary_entries_iterator_next_setvalue_unsupportedoperation()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -280,7 +280,7 @@ public class DictionaryTestCase
     public void test_dictionary_isempty_false()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -291,7 +291,7 @@ public class DictionaryTestCase
     public void test_indefinite_dictionary_isempty_false()
             throws Exception {
 
-        Parser parser = buildParser("0xbf6161614161626142616361436164614461656145ff");
+        SimplifiedTestParser parser = buildParser("0xbf6161614161626142616361436164614461656145ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -302,7 +302,7 @@ public class DictionaryTestCase
     public void test_dictionary_isempty_true()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -313,7 +313,7 @@ public class DictionaryTestCase
     public void test_indefinite_dictionary_isempty_true()
             throws Exception {
 
-        Parser parser = buildParser("0xbfff");
+        SimplifiedTestParser parser = buildParser("0xbfff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -324,7 +324,7 @@ public class DictionaryTestCase
     public void test_dictionary_get_null_result()
             throws Exception {
 
-        Parser parser = buildParser("0xa0");
+        SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Dictionary dictionary = value.dictionary();
         assertNull(dictionary.get((v) -> false));
@@ -334,7 +334,7 @@ public class DictionaryTestCase
     public void test_dictionary_contains_key()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -347,7 +347,7 @@ public class DictionaryTestCase
     public void test_dictionary_contains_value()
             throws Exception {
 
-        Parser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
@@ -360,7 +360,7 @@ public class DictionaryTestCase
     public void test_double_element_dictionary()
             throws Exception {
 
-        Parser parser = buildParser("0xa201020304");
+        SimplifiedTestParser parser = buildParser("0xa201020304");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(MajorType.Dictionary, value.majorType());
@@ -376,7 +376,7 @@ public class DictionaryTestCase
     public void test_simple_map_graph_access()
             throws Exception {
 
-        Parser parser = buildParser("0xa201020304");
+        SimplifiedTestParser parser = buildParser("0xa201020304");
         GraphQuery query = GraphQuery.newBuilder().dictionary(this::matchNumber).build();
         Value value = parser.read(query);
 
@@ -390,7 +390,7 @@ public class DictionaryTestCase
     public void test_indefinite_dictionary_bool_number()
             throws Exception {
 
-        Parser parser = buildParser("0xbf6346756ef563416d7421ff");
+        SimplifiedTestParser parser = buildParser("0xbf6346756ef563416d7421ff");
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         assertEquals(ValueTypes.Dictionary, value.valueType());
@@ -418,7 +418,7 @@ public class DictionaryTestCase
     }
 
     private void dictionary_uint_sequence(String hex) {
-        Parser parser = buildParser(hex);
+        SimplifiedTestParser parser = buildParser(hex);
         Value value = parser.read(GraphQuery.newBuilder().build());
         assertEquals(ValueTypes.Dictionary, value.valueType());
 

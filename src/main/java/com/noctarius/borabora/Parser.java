@@ -20,14 +20,14 @@ import com.noctarius.borabora.builder.ParserBuilder;
 
 public interface Parser {
 
-    Value read(GraphQuery graphQuery);
+    Value read(Input input, GraphQuery graphQuery);
 
-    Value read(String query);
+    Value read(Input input, String query);
 
     GraphQuery prepareQuery(String query);
 
-    static ParserBuilder newBuilder(Input input) {
-        return new ParserBuilderImpl(input);
+    static ParserBuilder newBuilder() {
+        return new ParserBuilderImpl();
     }
 
 }

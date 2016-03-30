@@ -25,16 +25,14 @@ import static com.noctarius.borabora.Value.NULL_VALUE;
 final class ParserImpl
         implements Parser {
 
-    private final Input input;
     private final Collection<SemanticTagProcessor> processors;
 
-    ParserImpl(Input input, Collection<SemanticTagProcessor> processors) {
-        this.input = input;
+    ParserImpl(Collection<SemanticTagProcessor> processors) {
         this.processors = processors;
     }
 
     @Override
-    public Value read(GraphQuery graphQuery) {
+    public Value read(Input input, GraphQuery graphQuery) {
         Decoder source = new Decoder(input);
         long offset = graphQuery.access(source, 0, processors);
         if (offset == -1) {
@@ -48,14 +46,14 @@ final class ParserImpl
     }
 
     @Override
-    public Value read(String query) {
+    public Value read(Input input, String query) {
         // #{'b'}(1)->?number
         // \#([0-9]+)? <- stream identifier and optional index, if no index defined then index=-1
         // \{(\'[^\}]+\')\} <- dictionary identifier and key spec
         // \(([0-9]+)\) <- sequence identifier and sequence index
         // ->(\?)?(.+){1} <- expected result type, if ? is defined and type does not match result=null, otherwise exception
 
-        return read(prepareQuery(query));
+        return read(input, prepareQuery(query));
     }
 
     @Override

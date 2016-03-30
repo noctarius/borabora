@@ -26,8 +26,7 @@ public class QueryLanguageTestCase
             throws Exception {
 
         String query = "#{'b'}->sequence(1)->number";
-        Input input = Input.fromByteArray(hexToBytes("0xbf61610161629f0203ffff"));
-        Parser parser = Parser.newBuilder(input).build();
+        SimplifiedTestParser parser = buildParser("0xbf61610161629f0203ffff");
         Value value = parser.read(query);
         assertEqualsNumber(3, value.number());
     }
