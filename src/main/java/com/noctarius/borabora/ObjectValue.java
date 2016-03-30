@@ -67,6 +67,11 @@ final class ObjectValue
     }
 
     @Override
+    public <V> V byValueType() {
+        return (V) value;
+    }
+
+    @Override
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
         return null;
     }

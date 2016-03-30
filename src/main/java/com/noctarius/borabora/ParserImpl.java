@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.GraphQueryBuilder;
+
 import java.util.Collection;
 
 import static com.noctarius.borabora.Value.NULL_VALUE;
@@ -47,8 +49,26 @@ final class ParserImpl
 
     @Override
     public Value read(String query) {
-        //TODO Parse query into Graph nodes
-        return null;
+        // #{'b'}(1)->?number
+        // \#([0-9]+)? <- stream identifier and optional index, if no index defined then index=-1
+        // \{(\'[^\}]+\')\} <- dictionary identifier and key spec
+        // \(([0-9]+)\) <- sequence identifier and sequence index
+        // ->(\?)?(.+){1} <- expected result type, if ? is defined and type does not match result=null, otherwise exception
+
+        return read(prepareQuery(query));
+    }
+
+    @Override
+    public GraphQuery prepareQuery(String query) {
+        try {
+
+            GraphQueryBuilder queryBuilder = GraphQuery.newBuilder();
+            QueryParser.parse(query, queryBuilder);
+            return queryBuilder.build();
+
+        } catch (Exception e) {
+            throw new QueryParserException(e);
+        }
     }
 
 }

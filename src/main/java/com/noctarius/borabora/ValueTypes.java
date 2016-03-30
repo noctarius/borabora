@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
@@ -36,43 +37,46 @@ import static com.noctarius.borabora.Constants.TAG_URI;
 
 public enum ValueTypes
         implements ValueType, TagProcessor {
-    Uint,
-    NInt,
-    ByteString,
-    TextString,
-    Sequence,
-    Dictionary,
-    Float,
-    Bool,
-    Null,
-    Undefined,
-    DateTime(TagProcessors::readDateTime),
-    Timestamp(TagProcessors::readTimestamp),
-    UBigNum(TagProcessors::readUBigNum, Uint),
-    NBigNum(TagProcessors::readNBigNum, NInt),
+
+    Uint(Value::number),
+    NInt(Value::number),
+    ByteString(Value::string),
+    TextString(Value::string),
+    Sequence(Value::sequence),
+    Dictionary(Value::dictionary),
+    Float(Value::number),
+    Bool(Value::bool),
+    Null((v) -> null),
+    Undefined((v) -> null),
+    DateTime(TagProcessors::readDateTime, Value::tag),
+    Timestamp(TagProcessors::readTimestamp, Value::tag),
+    UBigNum(TagProcessors::readUBigNum, Value::tag, Uint),
+    NBigNum(TagProcessors::readNBigNum, Value::tag, NInt),
     // Fraction,
     // BigFloat,
     // Base64Url,
     // Base64Enc,
     // Base16Enc,
-    EncCBOR(TagProcessors::readEncCBOR),
-    URI(TagProcessors::readURI),
+    EncCBOR(TagProcessors::readEncCBOR, Value::tag),
+    URI(TagProcessors::readURI, Value::tag),
     // RegEx,
     // Mime,
-    Unknown;
+    Unknown(Value::raw);
 
+    private final Function<Value, Object> byValueType;
     private final TagProcessor processor;
     private final ValueType identity;
 
-    ValueTypes() {
-        this(null, null);
+    ValueTypes(Function<Value, Object> byValueType) {
+        this(null, byValueType, null);
     }
 
-    ValueTypes(TagProcessor processor) {
-        this(processor, null);
+    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType) {
+        this(processor, byValueType, null);
     }
 
-    ValueTypes(TagProcessor processor, ValueType identity) {
+    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
+        this.byValueType = byValueType;
         this.processor = processor;
         this.identity = identity;
     }
@@ -80,6 +84,11 @@ public enum ValueTypes
     @Override
     public ValueType identity() {
         return identity != null ? identity : this;
+    }
+
+    @Override
+    public <T> T value(Value value) {
+        return (T) byValueType.apply(value);
     }
 
     @Override

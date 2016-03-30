@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -42,6 +44,30 @@ final class DictionaryGraphQuery
         index += headByteSize;
 
         return stream.findByDictionaryKey(predicate, index, keyCount, processors);
+    }
+
+    static Predicate<Value> matchInt(long value) {
+        return (v) -> {
+            Number n = v.number();
+            if (n instanceof BigInteger) {
+                return n.equals(BigInteger.valueOf(value));
+            }
+            return value == n.longValue();
+        };
+    }
+
+    static Predicate<Value> matchFloat(double value) {
+        return (v) -> {
+            Number n = v.number();
+            if (n instanceof BigDecimal) {
+                return n.equals(BigDecimal.valueOf(value));
+            }
+            return value == n.doubleValue();
+        };
+    }
+
+    static Predicate<Value> matchString(String value) {
+        return (v) -> v.string().equals(value);
     }
 
 }

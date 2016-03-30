@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 
 public interface GraphQueryBuilder {
 
-    GraphQueryBuilder sequence(int index);
+    GraphQueryBuilder sequence(long index);
 
     GraphQueryBuilder dictionary(Predicate<Value> predicate);
 

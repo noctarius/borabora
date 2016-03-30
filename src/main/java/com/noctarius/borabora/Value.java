@@ -38,4 +38,6 @@ public interface Value {
 
     byte[] raw();
 
+    <V> V byValueType();
+
 }

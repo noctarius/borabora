@@ -83,6 +83,11 @@ final class StreamValue
     }
 
     @Override
+    public <V> V byValueType() {
+        return valueType().value(this);
+    }
+
+    @Override
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
         short head = stream.transientUint8(index);
         // Null is legal for all types

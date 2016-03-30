@@ -14,11 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora;
 
-public interface StreamGraphQueryBuilder
-        extends GraphQueryBuilder {
+import org.junit.Test;
 
-    GraphQueryBuilder stream(long index);
+public class QueryLanguageTestCase
+        extends AbstractTestCase {
+
+    @Test
+    public void test_simple_sequence_access()
+            throws Exception {
+
+        String query = "#{'b'}(1)->number";
+        Input input = Input.fromByteArray(hexToBytes("0xbf61610161629f0203ffff"));
+        Parser parser = Parser.newBuilder(input).build();
+        Value value = parser.read(query);
+        assertEqualsNumber(3, value.number());
+    }
 
 }

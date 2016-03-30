@@ -1,0 +1,121 @@
+options {
+    STATIC = false;
+}
+PARSER_BEGIN(QueryParser)
+    package com.noctarius.borabora;
+    import java.io.*;
+    import com.noctarius.borabora.builder.*;
+    import java.text.*;
+    import java.util.Locale;
+
+    class QueryParser {
+        private GraphQueryBuilder queryBuilder;
+
+        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder) {
+            this(reader);
+            this.queryBuilder = queryBuilder;
+        }
+
+        static void parse(String query, GraphQueryBuilder queryBuilder) throws ParseException, TokenMgrError {
+            new QueryParser(new StringReader(query), queryBuilder).query();
+        }
+    }
+PARSER_END(QueryParser)
+
+SKIP:  {
+    "\n"
+  | "\r"
+  | "\r\n"
+  | "\\"
+  | "\t"
+  | " "
+}
+TOKEN: {
+    < FLOAT: (["0"-"9"])* "." (["0"-"9"])+ | (["0"-"9"])+ "." (["0"-"9"])* >
+  | < INT:    (["0"-"9"])+ >
+  | < STRING: "'" (~["'"])* "'" >
+  | < TYPE:   (["a"-"z", "A"-"Z", "0"-"9"])* >
+  | < HASH:   ("#") >
+  | < OBRA:   ("(") >
+  | < CBRA:   (")") >
+  | < OCBR:   ("{") >
+  | < CCBR:   ("}") >
+  | < TMAT:   ("->") >
+  | < OPT:    ("?") >
+}
+
+void stream(): {
+    Token intToken = null;
+}
+{
+    <HASH>
+    ( intToken = <INT> )?
+    {
+        long index = intToken == null ? -1 : Long.parseLong(intToken.image);
+        ((StreamGraphQueryBuilder) queryBuilder).stream(index);
+    }
+}
+
+void dictionary(): {
+    Token intToken = null;
+    Token floatToken = null;
+    Token stringToken = null;
+}
+{
+    (<OCBR>)
+    (
+        intToken = <INT> |
+        floatToken = <FLOAT> |
+        stringToken = <STRING>
+    )
+    (<CCBR>)
+    {
+        if (intToken != null) {
+            long value = Long.parseLong(intToken.image);
+            queryBuilder.dictionary(DictionaryGraphQuery.matchInt(value));
+        } else if (floatToken != null) {
+            try {
+                NumberFormat format = DecimalFormat.getInstance(Locale.ENGLISH);
+                double value = format.parse(floatToken.image).doubleValue();
+                queryBuilder.dictionary(DictionaryGraphQuery.matchFloat(value));
+            } catch (java.text.ParseException e) {
+                throw new QueryParserException(e);
+            }
+        } else if (stringToken != null) {
+            String string = stringToken.image;
+            string = string.substring(1, string.length() - 1);
+            queryBuilder.dictionary(DictionaryGraphQuery.matchString(string));
+        }
+    }
+}
+
+void sequence(): {
+    Token intToken = null;
+}
+{
+    (<OBRA>)
+    ( intToken = <INT>)
+    (<CBRA>)
+    {
+        long index = Long.parseLong(intToken.image);
+        queryBuilder.sequence(index);
+    }
+}
+
+void expression(): {
+}
+{
+    (dictionary() | sequence())
+}
+
+void typematch(): {
+}
+{
+    (<TMAT>) (<OPT>)? (<TYPE>)
+}
+
+void query(): {
+}
+{
+    stream() (expression())* typematch() <EOF>
+}

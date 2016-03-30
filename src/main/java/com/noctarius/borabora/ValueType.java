@@ -22,4 +22,6 @@ public interface ValueType {
 
     ValueType identity();
 
+    <T> T value(Value value);
+
 }

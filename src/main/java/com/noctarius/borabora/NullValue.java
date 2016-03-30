@@ -67,4 +67,9 @@ final class NullValue
         return new byte[0];
     }
 
+    @Override
+    public <V> V byValueType() {
+        return null;
+    }
+
 }

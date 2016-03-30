@@ -24,6 +24,8 @@ public interface Parser {
 
     Value read(String query);
 
+    GraphQuery prepareQuery(String query);
+
     static ParserBuilder newBuilder(Input input) {
         return new ParserBuilderImpl(input);
     }

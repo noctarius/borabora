@@ -21,9 +21,9 @@ import java.util.Collection;
 final class SequenceGraphQuery
         implements GraphQuery {
 
-    private final int sequenceIndex;
+    private final long sequenceIndex;
 
-    SequenceGraphQuery(int sequenceIndex) {
+    SequenceGraphQuery(long sequenceIndex) {
         this.sequenceIndex = sequenceIndex;
     }
 

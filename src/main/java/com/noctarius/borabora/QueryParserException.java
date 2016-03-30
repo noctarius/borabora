@@ -14,11 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora;
 
-public interface StreamGraphQueryBuilder
-        extends GraphQueryBuilder {
+public class QueryParserException
+        extends RuntimeException {
 
-    GraphQueryBuilder stream(long index);
+    public QueryParserException(String message) {
+        super(message);
+    }
+
+    public QueryParserException(Exception cause) {
+        super(cause);
+    }
 
 }

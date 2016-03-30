@@ -29,13 +29,13 @@ final class GraphQueryBuilderImpl
     private List<GraphQuery> graphQueries = new ArrayList<>();
 
     @Override
-    public GraphQueryBuilder stream(int index) {
+    public GraphQueryBuilder stream(long index) {
         graphQueries.add(new StreamGraphQuery(index));
         return this;
     }
 
     @Override
-    public GraphQueryBuilder sequence(int index) {
+    public GraphQueryBuilder sequence(long index) {
         graphQueries.add(new SequenceGraphQuery(index));
         return this;
     }

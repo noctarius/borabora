@@ -21,9 +21,9 @@ import java.util.Collection;
 final class StreamGraphQuery
         implements GraphQuery {
 
-    private final int streamIndex;
+    private final long streamIndex;
 
-    StreamGraphQuery(int streamIndex) {
+    StreamGraphQuery(long streamIndex) {
         this.streamIndex = streamIndex;
     }
 
