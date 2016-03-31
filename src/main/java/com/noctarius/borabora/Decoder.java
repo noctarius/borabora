@@ -99,9 +99,6 @@ final class Decoder {
 
     Number readInt(long offset) {
         short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
         long mask = -((head & 0xff) >>> 5);
         int byteSize = ByteSizes.intByteSize(this, head);
         Number number;
@@ -126,9 +123,6 @@ final class Decoder {
 
     Number readUint(long offset) {
         short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
         int byteSize = ByteSizes.intByteSize(this, head);
         Number number;
         switch (byteSize) {
@@ -151,11 +145,7 @@ final class Decoder {
     }
 
     Number readFloat(long offset) {
-        short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
-        int addInfo = additionInfo(head);
+        int addInfo = additionInfo(offset);
         switch (addInfo) {
             case 25:
                 return readHalfFloatValue(offset + 1);
@@ -169,18 +159,14 @@ final class Decoder {
     }
 
     Number readNumber(ValueType valueType, long offset) {
-        if (ValueTypes.NFloat.equals(valueType)) {
+        if (valueType.matches(ValueTypes.Float)) {
             return readFloat(offset);
         }
         return readInt(offset);
     }
 
     String readString(long offset) {
-        short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = additionInfo(offset);
         if (addInfo == 31) {
             // Concatenated string!
             long position = offset + 1;
@@ -200,10 +186,6 @@ final class Decoder {
     }
 
     Sequence readSequence(long offset, Collection<SemanticTagProcessor> processors) {
-        short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
         long headByteSize = ByteSizes.headByteSize(this, offset);
         long size = ElementCounts.sequenceElementCount(this, offset);
         long[][] elementIndexes = readElementIndexes(offset + headByteSize, size);
@@ -211,10 +193,6 @@ final class Decoder {
     }
 
     Dictionary readDictionary(long offset, Collection<SemanticTagProcessor> processors) {
-        short head = transientUint8(offset);
-        if (isNull(head)) {
-            return null;
-        }
         long headByteSize = ByteSizes.headByteSize(this, offset);
         long size = ElementCounts.dictionaryElementCount(this, offset);
         long[][] elementIndexes = readElementIndexes(offset + headByteSize, size * 2);
@@ -264,7 +242,6 @@ final class Decoder {
 
     boolean getBooleanValue(long offset) {
         short head = transientUint8(offset);
-        // Null is legal for all types
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple == majorType) {
             int addInfo = head & ADDITIONAL_INFORMATION_MASK;

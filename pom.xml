@@ -195,6 +195,8 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Delegate.*</exclude>
+                        <exclude>com.noctarius.borabora.DateParser</exclude>
+                        <exclude>com.noctarius.borabora.TokenMgrError</exclude>
                     </excludes>
                 </configuration>
                 <executions>

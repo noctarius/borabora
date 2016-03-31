@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import java.util.Collection;
+import java.util.Objects;
 
 class TypeMatcherGraphQuery
         implements GraphQuery {
@@ -25,6 +26,7 @@ class TypeMatcherGraphQuery
     private final boolean required;
 
     TypeMatcherGraphQuery(TypeSpec typeSpec, boolean required) {
+        Objects.requireNonNull(typeSpec, "typeSpec cannot be null");
         this.typeSpec = typeSpec;
         this.required = required;
     }
@@ -42,6 +44,35 @@ class TypeMatcherGraphQuery
             throw new WrongTypeException(msg);
         }
         return offset;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TypeMatcherGraphQuery)) {
+            return false;
+        }
+
+        TypeMatcherGraphQuery that = (TypeMatcherGraphQuery) o;
+
+        if (required != that.required) {
+            return false;
+        }
+        return typeSpec != null ? typeSpec.equals(that.typeSpec) : that.typeSpec == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = typeSpec != null ? typeSpec.hashCode() : 0;
+        result = 31 * result + (required ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TypeMatcherGraphQuery{" + "typeSpec=" + typeSpec + ", required=" + required + '}';
     }
 
 }

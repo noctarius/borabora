@@ -35,10 +35,10 @@ public enum TypeSpecs
     SemanticTag("tag", ValueTypes.Unknown),
     SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown),
     Bool("bool", ValueTypes.Bool),
-    DateTime("datetime", SpecializedSemanticTag, ValueTypes.DateTime),
-    Timstamp("timestamp", SpecializedSemanticTag, ValueTypes.Timestamp),
-    URI("uri", SpecializedSemanticTag, ValueTypes.URI),
-    EncCBOR("enccbor", SpecializedSemanticTag, ValueTypes.EncCBOR),
+    DateTime("datetime", SpecializedSemanticTag, 0, ValueTypes.DateTime),
+    Timstamp("timestamp", SpecializedSemanticTag, 1, ValueTypes.Timestamp),
+    URI("uri", SpecializedSemanticTag, 32, ValueTypes.URI),
+    EncCBOR("enccbor", SpecializedSemanticTag, 24, ValueTypes.EncCBOR),
     Unknown("unknown", ValueTypes.Unknown),
     Null("null", ValueTypes.Null);
 
@@ -133,7 +133,7 @@ public enum TypeSpecs
                 return typeSpec;
             }
         }
-        throw new WrongTypeException("Not processor found for semantic tag with id " + tagId);
+        throw new WrongTypeException("No processor found for semantic tag with id " + tagId);
     }
 
 }

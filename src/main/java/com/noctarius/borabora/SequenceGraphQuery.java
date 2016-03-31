@@ -24,6 +24,9 @@ final class SequenceGraphQuery
     private final long sequenceIndex;
 
     SequenceGraphQuery(long sequenceIndex) {
+        if (sequenceIndex < 0) {
+            throw new IllegalArgumentException("sequenceIndex must be greater or equal to 0");
+        }
         this.sequenceIndex = sequenceIndex;
     }
 
@@ -53,6 +56,29 @@ final class SequenceGraphQuery
 
         // Stream objects
         return skip(stream, offset);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SequenceGraphQuery)) {
+            return false;
+        }
+
+        SequenceGraphQuery that = (SequenceGraphQuery) o;
+        return sequenceIndex == that.sequenceIndex;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (sequenceIndex ^ (sequenceIndex >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "SequenceGraphQuery{" + "sequenceIndex=" + sequenceIndex + '}';
     }
 
     private long skip(Decoder stream, long offset) {

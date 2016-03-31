@@ -29,9 +29,6 @@ final class StreamGraphQuery
 
     @Override
     public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
-        MajorType majorType = MajorType.findMajorType(head);
-
         // Stream direct access (return actual object itself)
         if (streamIndex <= 0) {
             return offset;
@@ -39,6 +36,29 @@ final class StreamGraphQuery
 
         // Stream objects
         return skip(stream, offset);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StreamGraphQuery)) {
+            return false;
+        }
+
+        StreamGraphQuery that = (StreamGraphQuery) o;
+        return streamIndex == that.streamIndex;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (streamIndex ^ (streamIndex >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "StreamGraphQuery{" + "streamIndex=" + streamIndex + '}';
     }
 
     private long skip(Decoder stream, long offset) {

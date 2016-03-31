@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 final class DictionaryGraphQuery
@@ -27,6 +28,7 @@ final class DictionaryGraphQuery
     private final Predicate<Value> predicate;
 
     DictionaryGraphQuery(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must be set");
         this.predicate = predicate;
     }
 
@@ -46,8 +48,42 @@ final class DictionaryGraphQuery
         return stream.findByDictionaryKey(predicate, offset, keyCount, processors);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DictionaryGraphQuery)) {
+            return false;
+        }
+
+        DictionaryGraphQuery that = (DictionaryGraphQuery) o;
+
+        String predicateClass = predicate.getClass().getName();
+        String otherPredicateClass = that.predicate.getClass().getName();
+
+        if (predicateClass.contains("$$Lambda$") && otherPredicateClass.contains("$$Lambda$")) {
+            return predicateClass.equals(otherPredicateClass);
+        }
+
+        return predicate != null ? predicate.equals(that.predicate) : that.predicate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return predicate != null ? predicate.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "DictionaryGraphQuery{" + "predicate=" + predicate + '}';
+    }
+
     static Predicate<Value> matchInt(long value) {
         return (v) -> {
+            if (!v.valueType().matches(ValueTypes.Number)) {
+                return false;
+            }
             Number n = v.number();
             if (n instanceof BigInteger) {
                 return n.equals(BigInteger.valueOf(value));

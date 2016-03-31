@@ -39,16 +39,16 @@ enum ValueTypes
         implements ValueType, TagProcessor {
 
     Number(Value::number),
-    Int(Value::number),
-    UInt(Value::number),
-    NInt(Value::number),
+    Int(Value::number, Number),
+    UInt(Value::number, Int),
+    NInt(Value::number, Int),
     ByteString(Value::string),
     TextString(Value::string),
     Sequence(Value::sequence),
     Dictionary(Value::dictionary),
-    Float(Value::number),
-    UFloat(Value::number),
-    NFloat(Value::number),
+    Float(Value::number, Number),
+    UFloat(Value::number, Float),
+    NFloat(Value::number, Float),
     Bool(Value::bool),
     Null((v) -> null),
     Undefined((v) -> null),
@@ -68,6 +68,10 @@ enum ValueTypes
         this(null, byValueType, null);
     }
 
+    ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
+        this(null, byValueType, identity);
+    }
+
     ValueTypes(TagProcessor processor, Function<Value, Object> byValueType) {
         this(processor, byValueType, null);
     }
@@ -83,7 +87,7 @@ enum ValueTypes
         if (matchesExact(other)) {
             return true;
         }
-        if (identity == other.identity()) {
+        if (identity == other) {
             return true;
         }
         if (identity == null) {

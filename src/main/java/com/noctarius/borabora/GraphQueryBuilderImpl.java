@@ -61,7 +61,9 @@ final class GraphQueryBuilderImpl
     @Override
     public GraphQuery build() {
         if (graphQueries.size() == 0) {
-            return new StreamGraphQuery(-1);
+            graphQueries.add(new StreamGraphQuery(-1));
+        } else if (!(graphQueries.get(0) instanceof StreamGraphQuery)) {
+            graphQueries.add(0, new StreamGraphQuery(-1));
         }
         return new ChainGraphQuery(graphQueries);
     }

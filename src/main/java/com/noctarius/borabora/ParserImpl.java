@@ -64,7 +64,7 @@ final class ParserImpl
             QueryParser.parse(query, queryBuilder, processors);
             return queryBuilder.build();
 
-        } catch (Exception e) {
+        } catch (Exception | TokenMgrError e) {
             throw new QueryParserException(e);
         }
     }

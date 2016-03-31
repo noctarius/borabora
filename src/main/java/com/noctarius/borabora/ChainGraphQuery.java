@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 final class ChainGraphQuery
@@ -38,4 +39,14 @@ final class ChainGraphQuery
         }
         return offset;
     }
+
+    @Override
+    public String toString() {
+        return "ChainGraphQuery{" + "graphQueries=" + graphQueries + '}';
+    }
+
+    List<GraphQuery> nodes() {
+        return Collections.unmodifiableList(graphQueries);
+    }
+
 }

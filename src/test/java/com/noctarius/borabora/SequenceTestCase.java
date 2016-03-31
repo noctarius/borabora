@@ -211,7 +211,7 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_traversal(SimplifiedTestParser parser) {
-        Value value = parser.read(GraphQuery.newBuilder().sequence(-1).build());
+        Value value = parser.read(GraphQuery.newBuilder().build());
 
         Sequence sequence = value.sequence();
 

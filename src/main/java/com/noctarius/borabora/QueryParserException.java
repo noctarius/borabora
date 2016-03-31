@@ -23,7 +23,7 @@ public class QueryParserException
         super(message);
     }
 
-    public QueryParserException(Exception cause) {
+    public QueryParserException(Throwable cause) {
         super(cause);
     }
 

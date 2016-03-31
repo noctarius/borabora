@@ -39,7 +39,7 @@ abstract class AbstractValue
     }
 
     public ValueType valueType() {
-        return valueType.identity();
+        return valueType;
     }
 
     protected void matchMajorType(MajorType expected) {
@@ -50,17 +50,15 @@ abstract class AbstractValue
     }
 
     protected void matchValueType(ValueType expected) {
-        ValueType identity = valueType.identity();
-        if (expected != identity) {
-            String msg = String.format(VALUE_TYPE_DOES_NOT_MATCH, expected, identity);
+        if (!valueType.matches(expected)) {
+            String msg = String.format(VALUE_TYPE_DOES_NOT_MATCH, expected, valueType);
             throw new WrongTypeException(msg);
         }
     }
 
     protected void matchValueType(ValueType expected1, ValueType expected2, ValueType expected3) {
-        ValueType identity = valueType.identity();
-        if (expected1 != identity && expected2 != identity && expected3 != identity) {
-            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, expected1, expected2, expected3, identity);
+        if (!valueType.matches(expected1) && !valueType.matches(expected2) && !valueType.matches(expected3)) {
+            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, expected1, expected2, expected3, valueType);
             throw new WrongTypeException(msg);
         }
     }
