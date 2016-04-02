@@ -18,12 +18,18 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class WriterTestCase {
 
     @Test
-    public void test_write() throws Exception {
-        byte[] data = new byte[20];
-        Output output = Output.toByteArray(data);
+    public void test_write_lazy() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
 
         Writer writer = Writer.newBuilder(output).build();
 
@@ -43,9 +49,42 @@ public class WriterTestCase {
                         .putString("key2")
                         .putBoolean(false)
                     .endEntry()
+                .endDictionary()
+                .putDictionary()
                 .endDictionary().build();
 
         writer.write(graph);
+    }
+
+
+    @Test
+    public void test_write_immediate() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+              .putString("foo")
+              .putString("äüö")
+              .putBoolean(false)
+              .putBoolean(true)
+              .finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        Parser parser = Parser.newBuilder().build();
+
+        Value value1 = parser.read(input, GraphQuery.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, GraphQuery.newBuilder().stream(1).build());
+        Value value3 = parser.read(input, GraphQuery.newBuilder().stream(2).build());
+        Value value4 = parser.read(input, GraphQuery.newBuilder().stream(3).build());
+
+        assertEquals("foo", value1.string());
+        assertEquals("äüö", value2.string());
+        assertFalse(value3.bool());
+        assertTrue(value4.bool());
     }
 
 }

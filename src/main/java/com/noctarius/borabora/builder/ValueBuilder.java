@@ -16,9 +16,6 @@
  */
 package com.noctarius.borabora.builder;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 public interface ValueBuilder<B> {
 
     B putNumber(byte value);
@@ -29,17 +26,17 @@ public interface ValueBuilder<B> {
 
     B putNumber(long value);
 
-    B putNumber(BigInteger value);
+    B putNumber(Number value);
 
     B putNumber(float value);
 
     B putNumber(double value);
 
-    B putNumber(BigDecimal value);
-
     B putString(String value);
 
     B putBoolean(boolean value);
+
+    B putBoolean(Object value);
 
     SequenceBuilder<B> putSequence();
 

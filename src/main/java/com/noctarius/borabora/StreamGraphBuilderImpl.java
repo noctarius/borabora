@@ -16,20 +16,21 @@
  */
 package com.noctarius.borabora;
 
-import java.io.ByteArrayOutputStream;
+import com.noctarius.borabora.builder.StreamGraphBuilder;
 
-public interface Output {
+final class StreamGraphBuilderImpl
+        extends AbstractStreamValueBuilder<StreamGraphBuilder>
+        implements StreamGraphBuilder {
 
-    void write(long offset, byte value);
+    private final Writer writer;
 
-    boolean ensureCapacity(long offset, long length);
-
-    static Output toByteArray(byte[] array) {
-        return new ByteArrayOutput(array);
+    StreamGraphBuilderImpl(Output output, Writer writer) {
+        super(output);
+        this.writer = writer;
     }
 
-    static Output toByteArrayOutputStream(ByteArrayOutputStream baos) {
-        return new ByteArrayOutputStreamOutput(baos);
+    @Override
+    public void finishStream() {
     }
 
 }

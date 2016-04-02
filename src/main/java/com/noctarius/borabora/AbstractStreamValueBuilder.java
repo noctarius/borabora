@@ -20,124 +20,99 @@ import com.noctarius.borabora.builder.DictionaryBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
-abstract class AbstractValueBuilder<B>
+abstract class AbstractStreamValueBuilder<B>
         implements ValueBuilder<B> {
 
-    private final List<Object> values = new ArrayList<>();
+    private final Output output;
     private final B builder;
 
-    protected AbstractValueBuilder() {
+    private long offset = 0;
+
+    AbstractStreamValueBuilder(Output output) {
+        this.output = output;
         this.builder = (B) this;
     }
 
     @Override
     public B putNumber(byte value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putNumber(short value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putNumber(int value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putNumber(long value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putNumber(Number value) {
-        validate();
-        put(value);
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            // TODO
+        }
         return builder;
     }
 
     @Override
     public B putNumber(float value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putNumber(double value) {
-        validate();
-        put(value);
         return builder;
     }
 
     @Override
     public B putString(String value) {
-        validate();
-        put(value);
+        offset = Encoder.putString(value, offset, output);
         return builder;
     }
 
     @Override
     public B putBoolean(boolean value) {
-        validate();
-        put(value);
+        offset = Encoder.putBoolean(value, offset, output);
         return builder;
     }
 
     @Override
     public B putBoolean(Object value) {
-        validate();
-        put(value);
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            putBoolean((boolean) value);
+        }
         return builder;
     }
 
     @Override
     public SequenceBuilder<B> putSequence() {
-        validate();
-        return new SequenceBuilderImpl<>(builder, values);
+        return null;
     }
 
     @Override
     public SequenceBuilder<B> putSequence(int elements) {
-        validate();
-        return new SequenceBuilderImpl<B>(elements, builder, values);
+        return null;
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary() {
-        validate();
-        return new DictionaryBuilderImpl<B>(builder, values);
+        return null;
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary(int elements) {
-        validate();
-        return new DictionaryBuilderImpl<B>(elements, builder, values);
-    }
-
-    protected List<Object> values() {
-        return values;
-    }
-
-    protected void validate() {
-    }
-
-    protected void put(Object value) {
-        values.add(value);
+        return null;
     }
 
 }

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.StreamGraphBuilder;
+
 final class WriterImpl
         implements Writer {
 
@@ -28,6 +30,11 @@ final class WriterImpl
     @Override
     public void write(ObjectGraph graph) {
 
+    }
+
+    @Override
+    public StreamGraphBuilder newStreamGraphBuilder() {
+        return new StreamGraphBuilderImpl(output, this);
     }
 
 }

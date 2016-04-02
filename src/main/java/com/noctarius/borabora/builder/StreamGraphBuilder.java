@@ -14,22 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-import java.io.ByteArrayOutputStream;
+public interface StreamGraphBuilder
+        extends ValueBuilder<StreamGraphBuilder> {
 
-public interface Output {
-
-    void write(long offset, byte value);
-
-    boolean ensureCapacity(long offset, long length);
-
-    static Output toByteArray(byte[] array) {
-        return new ByteArrayOutput(array);
-    }
-
-    static Output toByteArrayOutputStream(ByteArrayOutputStream baos) {
-        return new ByteArrayOutputStreamOutput(baos);
-    }
+    void finishStream();
 
 }

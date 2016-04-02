@@ -18,18 +18,23 @@ package com.noctarius.borabora;
 
 import java.io.ByteArrayOutputStream;
 
-public interface Output {
+final class ByteArrayOutputStreamOutput
+        implements Output {
 
-    void write(long offset, byte value);
+    private final ByteArrayOutputStream baos;
 
-    boolean ensureCapacity(long offset, long length);
-
-    static Output toByteArray(byte[] array) {
-        return new ByteArrayOutput(array);
+    ByteArrayOutputStreamOutput(ByteArrayOutputStream baos) {
+        this.baos = baos;
     }
 
-    static Output toByteArrayOutputStream(ByteArrayOutputStream baos) {
-        return new ByteArrayOutputStreamOutput(baos);
+    @Override
+    public void write(long offset, byte value) {
+        baos.write(value);
+    }
+
+    @Override
+    public boolean ensureCapacity(long offset, long length) {
+        return true;
     }
 
 }
