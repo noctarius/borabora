@@ -137,24 +137,28 @@ abstract class AbstractStreamValueBuilder<B>
     @Override
     public SequenceBuilder<B> putSequence() {
         validate();
+        offset = Encoder.encodeLength(MajorType.Sequence, -1, offset, output);
         return new SequenceBuilderImpl<>(-1, output, builder);
     }
 
     @Override
     public SequenceBuilder<B> putSequence(int elements) {
         validate();
+        offset = Encoder.encodeLength(MajorType.Sequence, elements, offset, output);
         return new SequenceBuilderImpl<>(elements, output, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary() {
         validate();
+        offset = Encoder.encodeLength(MajorType.Dictionary, -1, offset, output);
         return new DictionaryBuilderImpl<>(-1, output, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary(int elements) {
         validate();
+        offset = Encoder.encodeLength(MajorType.Dictionary, elements, offset, output);
         return new DictionaryBuilderImpl<>(elements, output, builder);
     }
 
@@ -218,6 +222,9 @@ abstract class AbstractStreamValueBuilder<B>
         @Override
         public B endSequence() {
             offset = offset();
+            if (maxElements == -1) {
+                output.write(offset++, (byte) OPCODE_BREAK_MASK);
+            }
             return builder;
         }
 
@@ -253,6 +260,9 @@ abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public B endDictionary() {
+            if (maxElements == -1) {
+                output.write(offset++, (byte) OPCODE_BREAK_MASK);
+            }
             return builder;
         }
 

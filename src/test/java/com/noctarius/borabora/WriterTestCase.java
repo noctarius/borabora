@@ -16,19 +16,28 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.DictionaryBuilder;
+import com.noctarius.borabora.builder.SequenceBuilder;
+import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.ValueBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import static com.noctarius.borabora.DictionaryGraphQuery.*;
+
 public class WriterTestCase {
 
     @Test
-    public void test_write_lazy() throws Exception {
+    public void test_write_lazy()
+            throws Exception {
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
@@ -42,14 +51,14 @@ public class WriterTestCase {
                     .putString("bar")
                 .endSequence()
                 .putSequence(2)
-                    .putIndefiniteByteString()
-                        .putString("uff")
-                        .putString("tata")
-                    .endIndefiniteString()
-                    .putIndefiniteByteString()
-                        .putString("lala")
-                        .putString("lulu")
-                    .endIndefiniteString()
+//                    .putIndefiniteByteString()
+//                        .putString("uff")
+//                        .putString("tata")
+//                    .endIndefiniteString()
+//                    .putIndefiniteByteString()
+//                        .putString("lala")
+//                        .putString("lulu")
+//                    .endIndefiniteString()
                     .putBoolean(true)
                 .endSequence()
                 .putDictionary(2)
@@ -70,7 +79,9 @@ public class WriterTestCase {
 
 
     @Test
-    public void test_write_immediate() throws Exception {
+    public void test_write_immediate()
+            throws Exception {
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
@@ -109,4 +120,180 @@ public class WriterTestCase {
         assertNull(valueN2.bool());
     }
 
+    @Test
+    public void test_write_indefinite_textstring()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+              .putIndefiniteTextString()
+                  .putString("abc")
+                  .putString("def")
+                  .putString("ghi")
+                  .putString("üöä")
+              .endIndefiniteString()
+              .finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        Parser parser = Parser.newBuilder().build();
+
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        assertEquals("abcdefghiüöä", value.string());
+    }
+
+    @Test
+    public void test_write_indefinite_bytestring()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+                .putIndefiniteByteString()
+                    .putString("abc")
+                    .putString("def")
+                    .putString("ghi")
+                .endIndefiniteString()
+                .finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        Parser parser = Parser.newBuilder().build();
+
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        assertEquals("abcdefghi", value.string());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_write_indefinite_bytestring_fail()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+              .putIndefiniteByteString()
+                  .putString("äöü");
+    }
+
+    @Test
+    public void test_write_indefinite_sequence()
+            throws Exception {
+
+        test_writing_sequence(ValueBuilder::putSequence);
+    }
+
+    @Test
+    public void test_write_sequence()
+            throws Exception {
+
+        test_writing_sequence(builder -> builder.putSequence(2));
+    }
+
+    private void test_writing_sequence(Function<StreamGraphBuilder, SequenceBuilder<StreamGraphBuilder>> function) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        function.apply(writer.newStreamGraphBuilder())
+                  .putString("a")
+                  .putString("b")
+              .endSequence()
+              .finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        Parser parser = Parser.newBuilder().build();
+
+        Value value1 = parser.read(input, GraphQuery.newBuilder().sequence(0).build());
+        Value value2 = parser.read(input, GraphQuery.newBuilder().sequence(1).build());
+
+        assertEquals("a", value1.string());
+        assertEquals("b", value2.string());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_sequence_fail_too_many_elements()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+              .putSequence(0)
+              .putString("a");
+    }
+
+    @Test
+    public void test_write_indefinite_dictionary()
+            throws Exception {
+
+        test_writing_dictionary(ValueBuilder::putDictionary);
+    }
+
+    @Test
+    public void test_write_dictionary()
+            throws Exception {
+
+        test_writing_dictionary(builder -> builder.putDictionary(2));
+    }
+
+    private void test_writing_dictionary(Function<StreamGraphBuilder, DictionaryBuilder<StreamGraphBuilder>> function) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        function.apply(writer.newStreamGraphBuilder())
+                .putEntry()
+                    .putString("a")
+                    .putString("A")
+                .endEntry()
+                .putEntry()
+                    .putString("b")
+                    .putString("B")
+                .endEntry()
+            .endDictionary()
+            .finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        Parser parser = Parser.newBuilder().build();
+
+        Value value1 = parser.read(input, GraphQuery.newBuilder().dictionary(matchString("a")).build());
+        Value value2 = parser.read(input, GraphQuery.newBuilder().dictionary(matchString("b")).build());
+
+        assertEquals("A", value1.string());
+        assertEquals("B", value2.string());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_dictionary_fail_too_many_elements()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        Writer writer = Writer.newBuilder(output).build();
+
+        writer.newStreamGraphBuilder()
+              .putDictionary(0)
+              .putEntry();
+    }
 }
