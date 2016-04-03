@@ -54,7 +54,7 @@ public class QueryLanguageTestCase
 
         SimplifiedTestParser parser = buildParser("0xa201020304");
         Value value = parser.read("#{1}");
-        System.out.println(value);
+        assertEqualsNumber(2, value.number());
     }
 
     @Test
