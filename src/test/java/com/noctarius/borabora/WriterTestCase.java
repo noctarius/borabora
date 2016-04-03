@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class WriterTestCase {
@@ -39,6 +40,17 @@ public class WriterTestCase {
                 .putSequence()
                     .putNumber(2)
                     .putString("bar")
+                .endSequence()
+                .putSequence(2)
+                    .putIndefiniteByteString()
+                        .putString("uff")
+                        .putString("tata")
+                    .endIndefiniteString()
+                    .putIndefiniteByteString()
+                        .putString("lala")
+                        .putString("lulu")
+                    .endIndefiniteString()
+                    .putBoolean(true)
                 .endSequence()
                 .putDictionary(2)
                     .putEntry()
@@ -69,6 +81,11 @@ public class WriterTestCase {
               .putString("äüö")
               .putBoolean(false)
               .putBoolean(true)
+
+              // nulls
+              .putString(null)
+              .putBoolean(null)
+
               .finishStream();
 
         byte[] bytes = baos.toByteArray();
@@ -80,11 +97,16 @@ public class WriterTestCase {
         Value value2 = parser.read(input, GraphQuery.newBuilder().stream(1).build());
         Value value3 = parser.read(input, GraphQuery.newBuilder().stream(2).build());
         Value value4 = parser.read(input, GraphQuery.newBuilder().stream(3).build());
+        Value valueN1 = parser.read(input, GraphQuery.newBuilder().stream(4).build());
+        Value valueN2 = parser.read(input, GraphQuery.newBuilder().stream(5).build());
 
         assertEquals("foo", value1.string());
         assertEquals("äüö", value2.string());
         assertFalse(value3.bool());
         assertTrue(value4.bool());
+
+        assertNull(valueN1.string());
+        assertNull(valueN2.bool());
     }
 
 }

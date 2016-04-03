@@ -22,6 +22,7 @@ import java.nio.charset.CharsetEncoder;
 
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
+import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
 import static com.noctarius.borabora.Constants.ADD_INFO_ONE_BYTE;
 import static com.noctarius.borabora.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
@@ -76,17 +77,12 @@ final class Encoder {
         return putString(data, ByteString, offset, output);
     }
 
-    private static long putString(byte[] data, MajorType majorType, long offset, Output output) {
-        offset = encodeLength(majorType, data.length, offset, output);
-        for (int i = 0; i < data.length; i++) {
-            output.write(offset++, data[i]);
-        }
-        return offset;
-    }
-
-    private static long encodeLength(MajorType majorType, long length, long offset, Output output) {
+    static long encodeLength(MajorType majorType, long length, long offset, Output output) {
         int head = majorType.typeId() << 5;
-        if (length <= 23) {
+        if (length == -1) {
+            output.write(offset++, (byte) (head | ADD_INFO_INDEFINITE));
+
+        } else if (length <= 23) {
             output.write(offset++, (byte) (head | length));
 
         } else if (length <= 255) {
@@ -121,6 +117,14 @@ final class Encoder {
             output.write(offset++, (byte) ((length >> 0) & 0xff));
         }
 
+        return offset;
+    }
+
+    private static long putString(byte[] data, MajorType majorType, long offset, Output output) {
+        offset = encodeLength(majorType, data.length, offset, output);
+        for (int i = 0; i < data.length; i++) {
+            output.write(offset++, data[i]);
+        }
         return offset;
     }
 

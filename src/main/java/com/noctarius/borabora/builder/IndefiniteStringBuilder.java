@@ -16,38 +16,10 @@
  */
 package com.noctarius.borabora.builder;
 
-public interface ValueBuilder<B> {
+public interface IndefiniteStringBuilder<B> {
 
-    B putNumber(byte value);
+    IndefiniteStringBuilder<B> putString(String value);
 
-    B putNumber(short value);
-
-    B putNumber(int value);
-
-    B putNumber(long value);
-
-    B putNumber(Number value);
-
-    B putNumber(float value);
-
-    B putNumber(double value);
-
-    B putString(String value);
-
-    IndefiniteStringBuilder<B> putIndefiniteByteString();
-
-    IndefiniteStringBuilder<B> putIndefiniteTextString();
-
-    B putBoolean(boolean value);
-
-    B putBoolean(Object value);
-
-    SequenceBuilder<B> putSequence();
-
-    SequenceBuilder<B> putSequence(int elements);
-
-    DictionaryBuilder<B> putDictionary();
-
-    DictionaryBuilder<B> putDictionary(int elements);
+    B endIndefiniteString();
 
 }

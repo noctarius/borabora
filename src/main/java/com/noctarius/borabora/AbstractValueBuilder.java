@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryBuilder;
+import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 
@@ -89,6 +90,18 @@ abstract class AbstractValueBuilder<B>
         validate();
         put(value);
         return builder;
+    }
+
+    @Override
+    public IndefiniteStringBuilder<B> putIndefiniteByteString() {
+        validate();
+        return null;
+    }
+
+    @Override
+    public IndefiniteStringBuilder<B> putIndefiniteTextString() {
+        validate();
+        return null;
     }
 
     @Override
