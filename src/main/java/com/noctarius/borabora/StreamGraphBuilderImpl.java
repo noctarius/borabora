@@ -22,11 +22,11 @@ final class StreamGraphBuilderImpl
         extends AbstractStreamValueBuilder<StreamGraphBuilder>
         implements StreamGraphBuilder {
 
-    private final Writer writer;
+    private final StreamWriter streamWriter;
 
-    StreamGraphBuilderImpl(Output output, Writer writer) {
+    StreamGraphBuilderImpl(Output output, StreamWriter streamWriter) {
         super(output);
-        this.writer = writer;
+        this.streamWriter = streamWriter;
     }
 
     @Override

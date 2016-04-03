@@ -16,12 +16,15 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.ObjectGraphBuilder;
+import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.WriterBuilder;
 
-public interface ObjectGraph {
+public interface StreamWriter {
 
-    static ObjectGraphBuilder newBuilder() {
-        return new ObjectGraphBuilderImpl();
+    StreamGraphBuilder newStreamGraphBuilder(Output output);
+
+    static WriterBuilder newBuilder() {
+        return new WriterBuilderImpl();
     }
 
 }

@@ -25,58 +25,13 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.util.function.Function;
 
+import static com.noctarius.borabora.DictionaryGraphQuery.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import static com.noctarius.borabora.DictionaryGraphQuery.*;
-
-public class WriterTestCase {
-
-    @Test
-    public void test_write_lazy()
-            throws Exception {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = Output.toByteArrayOutputStream(baos);
-
-        Writer writer = Writer.newBuilder(output).build();
-
-        ObjectGraph graph = ObjectGraph.newBuilder()
-                .putNumber(1)
-                    .putString("foo")
-                .putSequence()
-                    .putNumber(2)
-                    .putString("bar")
-                .endSequence()
-                .putSequence(2)
-//                    .putIndefiniteByteString()
-//                        .putString("uff")
-//                        .putString("tata")
-//                    .endIndefiniteString()
-//                    .putIndefiniteByteString()
-//                        .putString("lala")
-//                        .putString("lulu")
-//                    .endIndefiniteString()
-                    .putBoolean(true)
-                .endSequence()
-                .putDictionary(2)
-                    .putEntry()
-                        .putString("key1")
-                        .putBoolean(true)
-                    .endEntry()
-                    .putEntry()
-                        .putString("key2")
-                        .putBoolean(false)
-                    .endEntry()
-                .endDictionary()
-                .putDictionary()
-                .endDictionary().build();
-
-        writer.write(graph);
-    }
-
+public class StreamWriterTestCase {
 
     @Test
     public void test_write_immediate()
@@ -85,19 +40,20 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-              .putString("foo")
-              .putString("äüö")
-              .putBoolean(false)
-              .putBoolean(true)
+        streamWriter.newStreamGraphBuilder(output)
 
-              // nulls
-              .putString(null)
-              .putBoolean(null)
+                    .putString("foo") //
+                    .putString("äüö")
 
-              .finishStream();
+                    .putBoolean(false) //
+                    .putBoolean(true)
+
+                    // nulls
+                    .putString(null).putBoolean(null)
+
+                    .finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
@@ -127,16 +83,18 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-              .putIndefiniteTextString()
-                  .putString("abc")
-                  .putString("def")
-                  .putString("ghi")
-                  .putString("üöä")
-              .endIndefiniteString()
-              .finishStream();
+        streamWriter.newStreamGraphBuilder(output)
+
+                    .putIndefiniteTextString() //
+                    .putString("abc") //
+                    .putString("def") //
+                    .putString("ghi") //
+                    .putString("üöä") //
+                    .endIndefiniteString()
+
+                    .finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
@@ -154,15 +112,17 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-                .putIndefiniteByteString()
-                    .putString("abc")
-                    .putString("def")
-                    .putString("ghi")
-                .endIndefiniteString()
-                .finishStream();
+        streamWriter.newStreamGraphBuilder(output)
+
+                    .putIndefiniteByteString() //
+                    .putString("abc") //
+                    .putString("def") //
+                    .putString("ghi") //
+                    .endIndefiniteString()
+
+                    .finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
@@ -180,11 +140,12 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-              .putIndefiniteByteString()
-                  .putString("äöü");
+        streamWriter.newStreamGraphBuilder(output)
+
+                    .putIndefiniteByteString() //
+                    .putString("äöü");
     }
 
     @Test
@@ -205,13 +166,15 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        function.apply(writer.newStreamGraphBuilder())
-                  .putString("a")
-                  .putString("b")
-              .endSequence()
-              .finishStream();
+        function.apply(streamWriter.newStreamGraphBuilder(output))
+
+                .putString("a") //
+                .putString("b") //
+                .endSequence()
+
+                .finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
@@ -232,11 +195,12 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-              .putSequence(0)
-              .putString("a");
+        streamWriter.newStreamGraphBuilder(output)
+
+                    .putSequence(0) //
+                    .putString("a");
     }
 
     @Test
@@ -257,19 +221,23 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        function.apply(writer.newStreamGraphBuilder())
-                .putEntry()
-                    .putString("a")
-                    .putString("A")
+        function.apply(streamWriter.newStreamGraphBuilder(output))
+
+                .putEntry() //
+                .putString("a") //
+                .putString("A") //
                 .endEntry()
-                .putEntry()
-                    .putString("b")
-                    .putString("B")
+
+                .putEntry() //
+                .putString("b") //
+                .putString("B") //
                 .endEntry()
-            .endDictionary()
-            .finishStream();
+
+                .endDictionary()
+
+                .finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
@@ -290,10 +258,12 @@ public class WriterTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toByteArrayOutputStream(baos);
 
-        Writer writer = Writer.newBuilder(output).build();
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
 
-        writer.newStreamGraphBuilder()
-              .putDictionary(0)
-              .putEntry();
+        streamWriter.newStreamGraphBuilder(output)
+
+                    .putDictionary(0) //
+                    .putEntry();
     }
+
 }
