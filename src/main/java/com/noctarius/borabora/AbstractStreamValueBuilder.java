@@ -134,10 +134,20 @@ abstract class AbstractStreamValueBuilder<B>
             offset = Encoder.putNull(offset, output);
         } else if (value instanceof BigInteger) {
             offset = Encoder.putNumber((BigInteger) value, offset, output);
-
         } else if (value instanceof BigDecimal) {
             throw new IllegalArgumentException("BigDecimal is not supported");
-
+        } else if (value instanceof Byte) {
+            putNumber((byte) value);
+        } else if (value instanceof Short) {
+            putNumber((short) value);
+        } else if (value instanceof Integer) {
+            putNumber((int) value);
+        } else if (value instanceof Long) {
+            putNumber((long) value);
+        } else if (value instanceof Float) {
+            putNumber((float) value);
+        } else if (value instanceof Double) {
+            putNumber((double) value);
         } else {
             throw new IllegalArgumentException("Unknown Number type, cannot encode");
         }
@@ -283,7 +293,7 @@ abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public B putBoolean(Object value) {
+    public B putBoolean(Boolean value) {
         validate();
         if (value == null) {
             offset = Encoder.putNull(offset, output);

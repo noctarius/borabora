@@ -36,6 +36,9 @@ import static com.noctarius.borabora.Constants.BI_VAL_MAX_VALUE;
 import static com.noctarius.borabora.Constants.BI_VAL_MINUS_ONE;
 import static com.noctarius.borabora.Constants.COMPARATOR_LESS_THAN;
 import static com.noctarius.borabora.Constants.DATE_TIME_FORMAT;
+import static com.noctarius.borabora.Constants.FP_VALUE_DOUBLE_PRECISION;
+import static com.noctarius.borabora.Constants.FP_VALUE_HALF_PRECISION;
+import static com.noctarius.borabora.Constants.FP_VALUE_SINGLE_PRECISION;
 import static com.noctarius.borabora.Constants.SIMPLE_VALUE_FALSE_BYTE;
 import static com.noctarius.borabora.Constants.SIMPLE_VALUE_NULL_BYTE;
 import static com.noctarius.borabora.Constants.SIMPLE_VALUE_TRUE_BYTE;
@@ -105,17 +108,17 @@ final class Encoder {
 
     static long putHalfPrecision(float value, long offset, Output output) {
         int intValue = HalfPrecision.fromFloat(value);
-        return encodeLengthAndValue(MajorType.FloatingPointOrSimple, intValue, offset, output);
+        return encodeFloat(FP_VALUE_HALF_PRECISION, intValue, offset, output);
     }
 
     static long putFloat(float value, long offset, Output output) {
         int intValue = Float.floatToIntBits(value);
-        return encodeLengthAndValue(MajorType.FloatingPointOrSimple, intValue, offset, output);
+        return encodeFloat(FP_VALUE_SINGLE_PRECISION, intValue, offset, output);
     }
 
     static long putDouble(double value, long offset, Output output) {
         long longValue = Double.doubleToLongBits(value);
-        return encodeLengthAndValue(MajorType.FloatingPointOrSimple, longValue, offset, output);
+        return encodeFloat(FP_VALUE_DOUBLE_PRECISION, longValue, offset, output);
     }
 
     static long putSemanticTag(int tagId, long offset, Output output) {
@@ -137,6 +140,19 @@ final class Encoder {
     static long putTimestamp(long timestamp, long offset, Output output) {
         offset = putSemanticTag(TAG_TIMESTAMP, offset, output);
         return putNumber(timestamp, offset, output);
+    }
+
+    static long encodeFloat(int fpType, long bits, long offset, Output output) {
+        int head = MajorType.FloatingPointOrSimple.typeId() << 5;
+        offset = putInt8((byte) (head | fpType), offset, output);
+        switch (fpType) {
+            case FP_VALUE_HALF_PRECISION:
+                return putInt16((short) bits, offset, output);
+            case FP_VALUE_SINGLE_PRECISION:
+                return putInt32((int) bits, offset, output);
+            default:
+                return putInt64(bits, offset, output);
+        }
     }
 
     static long encodeLengthAndValue(MajorType majorType, long length, long offset, Output output) {

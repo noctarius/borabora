@@ -70,7 +70,7 @@ public interface ValueBuilder<B> {
 
     B putBoolean(boolean value);
 
-    B putBoolean(Object value);
+    B putBoolean(Boolean value);
 
     SequenceBuilder<B> putSequence();
 

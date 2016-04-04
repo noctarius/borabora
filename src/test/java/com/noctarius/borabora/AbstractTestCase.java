@@ -16,12 +16,32 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.StreamGraphBuilder;
+
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractTestCase {
+
+    public static SimplifiedTestParser executeStreamWriterTest(Consumer<StreamGraphBuilder> test) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+
+        StreamGraphBuilder streamGraphBuilder = streamWriter.newStreamGraphBuilder(output);
+        test.accept(streamGraphBuilder);
+        streamGraphBuilder.finishStream();
+
+        byte[] bytes = baos.toByteArray();
+        Input input = Input.fromByteArray(bytes);
+
+        return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
+    }
 
     public static void assertEqualsNumber(Number n1, Number n2) {
         if (n1.getClass().equals(n2.getClass())) {
