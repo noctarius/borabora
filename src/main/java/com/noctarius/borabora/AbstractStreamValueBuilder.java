@@ -22,10 +22,17 @@ import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.Constants.UTC;
 
 abstract class AbstractStreamValueBuilder<B>
         implements ValueBuilder<B> {
@@ -51,24 +58,72 @@ abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(byte value) {
         validate();
+        offset = Encoder.putNumber(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Byte value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putNumber(value.longValue(), offset, output);
+        }
         return builder;
     }
 
     @Override
     public B putNumber(short value) {
         validate();
+        offset = Encoder.putNumber(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Short value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putNumber(value.longValue(), offset, output);
+        }
         return builder;
     }
 
     @Override
     public B putNumber(int value) {
         validate();
+        offset = Encoder.putNumber(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Integer value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putNumber(value.longValue(), offset, output);
+        }
         return builder;
     }
 
     @Override
     public B putNumber(long value) {
         validate();
+        offset = Encoder.putNumber(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Long value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putNumber(value.longValue(), offset, output);
+        }
         return builder;
     }
 
@@ -77,8 +132,14 @@ abstract class AbstractStreamValueBuilder<B>
         validate();
         if (value == null) {
             offset = Encoder.putNull(offset, output);
+        } else if (value instanceof BigInteger) {
+            offset = Encoder.putNumber((BigInteger) value, offset, output);
+
+        } else if (value instanceof BigDecimal) {
+            throw new IllegalArgumentException("BigDecimal is not supported");
+
         } else {
-            // TODO
+            throw new IllegalArgumentException("Unknown Number type, cannot encode");
         }
         return builder;
     }
@@ -86,33 +147,131 @@ abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(float value) {
         validate();
+        offset = Encoder.putFloat(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Float value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            return putNumber(value.floatValue());
+        }
         return builder;
     }
 
     @Override
     public B putNumber(double value) {
         validate();
+        offset = Encoder.putDouble(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putNumber(Double value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            return putNumber(value.doubleValue());
+        }
+        return builder;
+    }
+
+    @Override
+    public B putHalfPrecision(float value) {
+        validate();
+        offset = Encoder.putHalfPrecision(value, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putHalfPrecision(Float value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            return putHalfPrecision(value.floatValue());
+        }
         return builder;
     }
 
     @Override
     public B putString(String value) {
         validate();
-        offset = Encoder.putString(value, offset, output);
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putString(value, offset, output);
+        }
         return builder;
+    }
+
+    @Override
+    public B putURI(URI uri) {
+        validate();
+        if (uri == null) {
+            offset = Encoder.putNull(offset, output);
+
+        } else {
+            offset = Encoder.putUri(uri, offset, output);
+        }
+        return builder;
+    }
+
+    @Override
+    public B putDateTime(Instant instant) {
+        validate();
+        if (instant == null) {
+            offset = Encoder.putNull(offset, output);
+
+        } else {
+            ZonedDateTime atUTC = instant.atZone(UTC);
+            offset = Encoder.putDateTime(atUTC, offset, output);
+        }
+        return builder;
+    }
+
+    @Override
+    public B putDateTime(Date date) {
+        validate();
+        if (date == null) {
+            offset = Encoder.putNull(offset, output);
+            return builder;
+        }
+        return putDateTime(date.toInstant());
+    }
+
+    @Override
+    public B putTimestamp(long timestamp) {
+        validate();
+        offset = Encoder.putTimestamp(timestamp, offset, output);
+        return builder;
+    }
+
+    @Override
+    public B putTimestamp(Instant instant) {
+        validate();
+        if (instant == null) {
+            offset = Encoder.putNull(offset, output);
+            return builder;
+        }
+        return putTimestamp(instant.getEpochSecond());
     }
 
     @Override
     public IndefiniteStringBuilder<B> putIndefiniteByteString() {
         validate();
-        offset = Encoder.encodeLength(MajorType.ByteString, -1, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.ByteString, -1, offset, output);
         return new IndefiniteStringBuilderImpl<>(true, builder);
     }
 
     @Override
     public IndefiniteStringBuilder<B> putIndefiniteTextString() {
         validate();
-        offset = Encoder.encodeLength(MajorType.TextString, -1, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.TextString, -1, offset, output);
         return new IndefiniteStringBuilderImpl<>(false, builder);
     }
 
@@ -137,28 +296,28 @@ abstract class AbstractStreamValueBuilder<B>
     @Override
     public SequenceBuilder<B> putSequence() {
         validate();
-        offset = Encoder.encodeLength(MajorType.Sequence, -1, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output);
         return new SequenceBuilderImpl<>(-1, output, builder);
     }
 
     @Override
     public SequenceBuilder<B> putSequence(int elements) {
         validate();
-        offset = Encoder.encodeLength(MajorType.Sequence, elements, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.Sequence, elements, offset, output);
         return new SequenceBuilderImpl<>(elements, output, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary() {
         validate();
-        offset = Encoder.encodeLength(MajorType.Dictionary, -1, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.Dictionary, -1, offset, output);
         return new DictionaryBuilderImpl<>(-1, output, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary(int elements) {
         validate();
-        offset = Encoder.encodeLength(MajorType.Dictionary, elements, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.Dictionary, elements, offset, output);
         return new DictionaryBuilderImpl<>(elements, output, builder);
     }
 

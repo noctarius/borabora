@@ -17,20 +17,21 @@
 package com.noctarius.borabora;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.function.Predicate;
 
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.Constants.ASCII;
+import static com.noctarius.borabora.Constants.FP_VALUE_DOUBLE_PRECISION;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
+import static com.noctarius.borabora.Constants.FP_VALUE_HALF_PRECISION;
 import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
+import static com.noctarius.borabora.Constants.FP_VALUE_SINGLE_PRECISION;
 import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.Constants.UTF8;
 
 final class Decoder {
-
-    private static final Charset ASCII = Charset.forName("ASCII");
-    private static final Charset UTF8 = Charset.forName("UTF8");
 
     private final Input input;
 
@@ -147,11 +148,11 @@ final class Decoder {
     Number readFloat(long offset) {
         int addInfo = additionInfo(offset);
         switch (addInfo) {
-            case 25:
+            case FP_VALUE_HALF_PRECISION:
                 return readHalfFloatValue(offset + 1);
-            case 26:
+            case FP_VALUE_SINGLE_PRECISION:
                 return readSinglePrecisionFloat(offset + 1);
-            case 27:
+            case FP_VALUE_DOUBLE_PRECISION:
                 return readDoublePrecisionFloat(offset + 1);
             default:
                 throw new IllegalStateException("Additional Info '" + addInfo + "' is not a floating point value");
@@ -256,19 +257,8 @@ final class Decoder {
     }
 
     float readHalfFloatValue(long offset) {
-        int v = readUint16(offset);
-
-        // based on http://stackoverflow.com/questions/5678432/decompressing-half-precision-floats-in-javascript/5684578#5684578
-        int s = (v & 0x8000) >> 15;
-        int e = (v & 0x7c00) >> 10;
-        int f = v & 0x03ff;
-
-        if (e == 0) {
-            return (float) ((s == 0 ? 1 : -1) * Math.pow(2, -14) * (f / Math.pow(2, 10)));
-        } else if (e == 0x1f) {
-            return f != 0 ? Float.NaN : (s == 0 ? 1 : -1) * Float.POSITIVE_INFINITY;
-        }
-        return (float) ((s == 0 ? 1 : -1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10)));
+        int value = readUint16(offset);
+        return HalfPrecision.toFloat(value);
     }
 
     float readSinglePrecisionFloat(long offset) {

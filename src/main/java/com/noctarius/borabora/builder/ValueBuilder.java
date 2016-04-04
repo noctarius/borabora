@@ -16,23 +16,53 @@
  */
 package com.noctarius.borabora.builder;
 
+import java.net.URI;
+import java.time.Instant;
+import java.util.Date;
+
 public interface ValueBuilder<B> {
 
     B putNumber(byte value);
 
+    B putNumber(Byte value);
+
     B putNumber(short value);
+
+    B putNumber(Short value);
 
     B putNumber(int value);
 
+    B putNumber(Integer value);
+
     B putNumber(long value);
+
+    B putNumber(Long value);
 
     B putNumber(Number value);
 
     B putNumber(float value);
 
+    B putNumber(Float value);
+
     B putNumber(double value);
 
+    B putNumber(Double value);
+
+    B putHalfPrecision(float value);
+
+    B putHalfPrecision(Float value);
+
     B putString(String value);
+
+    B putURI(URI uri);
+
+    B putDateTime(Instant instant);
+
+    B putDateTime(Date date);
+
+    B putTimestamp(long timestamp);
+
+    B putTimestamp(Instant instant);
 
     IndefiniteStringBuilder<B> putIndefiniteByteString();
 
