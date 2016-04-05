@@ -33,16 +33,15 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, GraphQuery graphQuery) {
-        Decoder source = new Decoder(input);
-        long offset = graphQuery.access(source, 0, processors);
+        long offset = graphQuery.access(input, 0, processors);
         if (offset == -1) {
             return NULL_VALUE;
         }
-        short head = source.transientUint8(offset);
+        short head = Decoder.transientUint8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(source, offset);
-        long length = source.length(mt, offset);
-        return new StreamValue(mt, vt, source, offset, length, processors);
+        ValueType vt = ValueTypes.valueType(input, offset);
+        long length = Decoder.length(input, mt, offset);
+        return new StreamValue(mt, vt, input, offset, length, processors);
     }
 
     @Override

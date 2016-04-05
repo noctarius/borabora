@@ -584,7 +584,7 @@ public class StreamWriterTestCase
         SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
             sgb.putDateTime(instant) //
                .putDateTime(date) //
-               .putURI(null);
+               .putDateTime((Instant) null).putDateTime((Date) null);
         });
 
         Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
@@ -594,6 +594,33 @@ public class StreamWriterTestCase
         assertEquals(date, value1.tag());
         assertEquals(date, value2.tag());
         assertNull(value3.tag());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_write_unknown_number_type()
+            throws Exception {
+
+        executeStreamWriterTest((sgb) -> sgb.putNumber(new Number() {
+            @Override
+            public int intValue() {
+                return 0;
+            }
+
+            @Override
+            public long longValue() {
+                return 0;
+            }
+
+            @Override
+            public float floatValue() {
+                return 0;
+            }
+
+            @Override
+            public double doubleValue() {
+                return 0;
+            }
+        }));
     }
 
 }

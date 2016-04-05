@@ -20,6 +20,6 @@ import java.util.Collection;
 
 interface TagProcessor {
 
-    Object process(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors);
+    Object process(Input input, long offset, long length, Collection<SemanticTagProcessor> processors);
 
 }

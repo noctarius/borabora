@@ -115,15 +115,15 @@ enum ValueTypes
     }
 
     @Override
-    public Object process(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    public Object process(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
         if (processor == null) {
             return null;
         }
-        return processor.process(stream, offset, length, processors);
+        return processor.process(input, offset, length, processors);
     }
 
-    static ValueTypes valueType(Decoder stream, long offset) {
-        short head = stream.transientUint8(offset);
+    static ValueTypes valueType(Input input, long offset) {
+        short head = Decoder.transientUint8(input, offset);
 
         // Read major type first
         MajorType majorType = MajorType.findMajorType(head);
@@ -145,7 +145,7 @@ enum ValueTypes
             case FloatingPointOrSimple:
                 return floatNullOrBool(head);
             case SemanticTag:
-                return semanticTagType(stream, offset);
+                return semanticTagType(input, offset);
         }
         throw new IllegalArgumentException("Illegal value type requested");
     }
@@ -165,8 +165,8 @@ enum ValueTypes
         }
     }
 
-    private static ValueTypes semanticTagType(Decoder stream, long offset) {
-        Number tagType = stream.readUint(offset);
+    private static ValueTypes semanticTagType(Input input, long offset) {
+        Number tagType = Decoder.readUint(input, offset);
         switch (tagType.intValue()) {
             case TAG_DATE_TIME:
                 return DateTime;

@@ -30,15 +30,4 @@ final class ByteArrayOutput
         array[(int) offset] = value;
     }
 
-    @Override
-    public boolean ensureCapacity(long offset, long length) {
-        if (offset >= array.length) {
-            return false;
-        }
-        if (offset + length >= array.length) {
-            return false;
-        }
-        return true;
-    }
-
 }

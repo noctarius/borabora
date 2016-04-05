@@ -23,13 +23,13 @@ import java.util.function.Predicate;
 final class SequenceImpl
         implements Sequence {
 
-    private final Decoder stream;
+    private final Input input;
     private final long size;
     private final long[][] elementIndexes;
     private final Collection<SemanticTagProcessor> processors;
 
-    SequenceImpl(Decoder stream, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
-        this.stream = stream;
+    SequenceImpl(Input input, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
+        this.input = input;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.processors = processors;
@@ -65,11 +65,11 @@ final class SequenceImpl
         int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
         int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);
         long position = elementIndexes[baseIndex][elementIndex];
-        short head = stream.transientUint8(position);
+        short head = Decoder.transientUint8(input, position);
         MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(stream, position);
-        long length = majorType.byteSize(stream, position);
-        return new StreamValue(majorType, valueType, stream, position, length, processors);
+        ValueType valueType = ValueTypes.valueType(input, position);
+        long length = majorType.byteSize(input, position);
+        return new StreamValue(majorType, valueType, input, position, length, processors);
     }
 
 }

@@ -106,8 +106,8 @@ public enum TypeSpecs
     }
 
     @Override
-    public boolean valid(MajorType majorType, Decoder stream, long offset) {
-        ValueType valueType = ValueTypes.valueType(stream, offset);
+    public boolean valid(MajorType majorType, Input input, long offset) {
+        ValueType valueType = ValueTypes.valueType(input, offset);
         for (ValueType legalValueType : legalValueTypes) {
             if (valueType.matches(legalValueType)) {
                 return true;

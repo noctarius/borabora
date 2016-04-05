@@ -32,11 +32,11 @@ class TypeMatcherGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
+    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        short head = Decoder.transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(stream, offset);
-        if (typeSpec.valid(majorType, stream, offset)) {
+        ValueType valueType = ValueTypes.valueType(input, offset);
+        if (typeSpec.valid(majorType, input, offset)) {
             return offset;
         }
         if (required) {

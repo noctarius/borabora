@@ -51,7 +51,7 @@ final class Bytes {
         return readInt32(input, offset) & 0xffffffff;
     }
 
-    static long readUint64(Input input, long offset) {
+    static long readUInt64(Input input, long offset) {
         long b1 = readUInt8(input, offset);
         long b2 = readUInt8(input, offset + 1);
         long b3 = readUInt8(input, offset + 2);
@@ -75,22 +75,35 @@ final class Bytes {
         return new BigInteger(1, new byte[]{b1, b2, b3, b4, b5, b6, b7, b8});
     }
 
-    static void writeUInt8(Output output, long offset, short value) {
-        if (value > 255 && value < 0) {
-            throw new IllegalArgumentException("outside legal uint8 range");
-        }
-        output.write(offset, (byte) value);
+    static long putInt8(byte value, long offset, Output output) {
+        output.write(offset++, value);
+        return offset;
     }
 
-    static void writeInt8(Output output, long offset, byte value) {
-        output.write(offset, value);
+    static long putInt16(short value, long offset, Output output) {
+        output.write(offset++, (byte) ((value >> 8) & 0xff));
+        output.write(offset++, (byte) ((value >> 0) & 0xff));
+        return offset;
     }
 
-    static void writeUInt16(Output output, long offset, short value) {
-        if (value > 255 && value < 0) {
-            throw new IllegalArgumentException("outside legal uint8 range");
-        }
-        output.write(offset, (byte) value);
+    static long putInt32(int value, long offset, Output output) {
+        output.write(offset++, (byte) ((value >> 24) & 0xff));
+        output.write(offset++, (byte) ((value >> 16) & 0xff));
+        output.write(offset++, (byte) ((value >> 8) & 0xff));
+        output.write(offset++, (byte) ((value >> 0) & 0xff));
+        return offset;
+    }
+
+    static long putInt64(long value, long offset, Output output) {
+        output.write(offset++, (byte) ((value >> 56) & 0xff));
+        output.write(offset++, (byte) ((value >> 48) & 0xff));
+        output.write(offset++, (byte) ((value >> 40) & 0xff));
+        output.write(offset++, (byte) ((value >> 32) & 0xff));
+        output.write(offset++, (byte) ((value >> 24) & 0xff));
+        output.write(offset++, (byte) ((value >> 16) & 0xff));
+        output.write(offset++, (byte) ((value >> 8) & 0xff));
+        output.write(offset++, (byte) ((value >> 0) & 0xff));
+        return offset;
     }
 
 }

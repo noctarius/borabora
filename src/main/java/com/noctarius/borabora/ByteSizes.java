@@ -28,46 +28,37 @@ import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 final class ByteSizes {
 
-    static int uintByteSize(Decoder stream, long offset) {
-        return intByteSize(stream, stream.transientUint8(offset));
+    static int intByteSize(Input input, long offset) {
+        return headByteSize(input, offset);
     }
 
-    static int intByteSize(Decoder stream, long offset) {
-        return intByteSize(stream, stream.transientUint8(offset));
+    static long byteStringByteSize(Input input, long offset) {
+        return stringByteSize(input, offset);
     }
 
-    static int intByteSize(Decoder stream, short head) {
-        return headByteSize(stream, head);
+    static long textStringByteSize(Input input, long offset) {
+        return stringByteSize(input, offset);
     }
 
-    static long byteStringByteSize(Decoder stream, long offset) {
-        return stringByteSize(stream, offset);
+    static long sequenceByteSize(Input input, long offset) {
+        long elementCount = ElementCounts.sequenceElementCount(input, offset);
+        return containerByteSize(input, offset, elementCount);
     }
 
-    static long textStringByteSize(Decoder stream, long offset) {
-        return stringByteSize(stream, offset);
+    static long dictionaryByteSize(Input input, long offset) {
+        long elementCount = ElementCounts.sequenceElementCount(input, offset);
+        return containerByteSize(input, offset, elementCount / 2);
     }
 
-    static long sequenceByteSize(Decoder stream, long offset) {
-        long elementCount = ElementCounts.sequenceElementCount(stream, offset);
-        return containerByteSize(stream, offset, elementCount);
-    }
-
-    static long dictionaryByteSize(Decoder stream, long offset) {
-        long elementCount = ElementCounts.sequenceElementCount(stream, offset);
-        return containerByteSize(stream, offset, elementCount / 2);
-    }
-
-    static long semanticTagByteSize(Decoder stream, long offset) {
-        short head = stream.transientUint8(offset);
-        long byteSize = ByteSizes.intByteSize(stream, head);
-        short itemHead = stream.transientUint8(offset + byteSize);
+    static long semanticTagByteSize(Input input, long offset) {
+        long byteSize = ByteSizes.intByteSize(input, offset);
+        short itemHead = Decoder.transientUint8(input, offset + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
-        return byteSize + stream.length(majorType, offset + byteSize);
+        return byteSize + Decoder.length(input, majorType, offset + byteSize);
     }
 
-    static long floatingPointOrSimpleByteSize(Decoder stream, long offset) {
-        int addInfo = stream.additionInfo(offset);
+    static long floatingPointOrSimpleByteSize(Input input, long offset) {
+        int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return 2;
@@ -82,21 +73,21 @@ final class ByteSizes {
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
             case ADD_INFO_INDEFINITE:
-                return untilBreakCode(stream, offset) + 1;
+                return untilBreakCode(input, offset) + 1;
             default:
                 return 1;
         }
     }
 
-    static long stringByteSize(Decoder stream, long offset) {
-        int addInfo = stream.additionInfo(offset);
+    static long stringByteSize(Input input, long offset) {
+        int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
-                return stringDataSize(stream, offset) + 2;
+                return stringDataSize(input, offset) + 2;
             case ADD_INFO_TWO_BYTES:
-                return stringDataSize(stream, offset) + 3;
+                return stringDataSize(input, offset) + 3;
             case ADD_INFO_FOUR_BYTES:
-                return stringDataSize(stream, offset) + 5;
+                return stringDataSize(input, offset) + 5;
             case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
             case ADD_INFO_RESERVED_1: // Unassigned
@@ -104,21 +95,21 @@ final class ByteSizes {
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
             case ADD_INFO_INDEFINITE:
-                return untilBreakCode(stream, offset) + 1;
+                return untilBreakCode(input, offset) + 1;
             default:
                 return addInfo + 1;
         }
     }
 
-    static long stringDataSize(Decoder stream, long offset) {
-        int addInfo = stream.additionInfo(offset);
+    static long stringDataSize(Input input, long offset) {
+        int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
-                return stream.readUint8(offset + 1);
+                return Bytes.readUInt8(input, offset + 1);
             case ADD_INFO_TWO_BYTES:
-                return stream.readUint16(offset + 1);
+                return Bytes.readUInt16(input, offset + 1);
             case ADD_INFO_FOUR_BYTES:
-                return stream.readUint32(offset + 1);
+                return Bytes.readUInt32(input, offset + 1);
             case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
             case ADD_INFO_RESERVED_1: // Unassigned
@@ -126,19 +117,15 @@ final class ByteSizes {
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
             case ADD_INFO_INDEFINITE:
-                return untilBreakCode(stream, offset);
+                return untilBreakCode(input, offset);
             default:
                 return addInfo;
         }
     }
 
-    static int headByteSize(Decoder stream, long offset) {
-        short head = stream.transientUint8(offset);
-        return headByteSize(stream, head);
-    }
-
-    static int headByteSize(Decoder stream, short head) {
-        int addInfo = stream.additionInfo(head);
+    static int headByteSize(Input input, long offset) {
+        short head = Decoder.transientUint8(input, offset);
+        int addInfo = Decoder.additionInfo(head);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return 2;
@@ -157,24 +144,24 @@ final class ByteSizes {
         }
     }
 
-    private static long untilBreakCode(Decoder stream, long offset) {
+    private static long untilBreakCode(Input input, long offset) {
         long start = offset;
         short uint;
         do {
-            uint = stream.transientUint8(offset++);
+            uint = Decoder.transientUint8(input, offset++);
         } while ((uint & OPCODE_BREAK_MASK) != OPCODE_BREAK_MASK);
         return offset - start;
     }
 
-    private static long containerByteSize(Decoder stream, long offset, long elementCount) {
-        long headByteSize = headByteSize(stream, offset);
-        int addInfo = stream.additionInfo(offset);
+    private static long containerByteSize(Input input, long offset, long elementCount) {
+        long headByteSize = headByteSize(input, offset);
+        int addInfo = Decoder.additionInfo(input, offset);
 
         long position = offset + headByteSize;
         for (long i = 0; i < elementCount; i++) {
-            short head = stream.transientUint8(position);
+            short head = Decoder.transientUint8(input, position);
             MajorType majorType = MajorType.findMajorType(head);
-            position += majorType.byteSize(stream, position);
+            position += majorType.byteSize(input, position);
         }
         // Indefinite length? -> +1
         return position - offset + (addInfo == 31 ? 1 : 0);

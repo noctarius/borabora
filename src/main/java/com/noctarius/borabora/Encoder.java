@@ -20,6 +20,10 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
+import static com.noctarius.borabora.Bytes.putInt16;
+import static com.noctarius.borabora.Bytes.putInt32;
+import static com.noctarius.borabora.Bytes.putInt64;
+import static com.noctarius.borabora.Bytes.putInt8;
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
@@ -234,37 +238,6 @@ final class Encoder {
         for (int i = 0; i < data.length; i++) {
             offset = putInt8(data[i], offset, output);
         }
-        return offset;
-    }
-
-    private static long putInt8(byte value, long offset, Output output) {
-        output.write(offset++, value);
-        return offset;
-    }
-
-    private static long putInt16(short value, long offset, Output output) {
-        output.write(offset++, (byte) ((value >> 8) & 0xff));
-        output.write(offset++, (byte) ((value >> 0) & 0xff));
-        return offset;
-    }
-
-    private static long putInt32(int value, long offset, Output output) {
-        output.write(offset++, (byte) ((value >> 24) & 0xff));
-        output.write(offset++, (byte) ((value >> 16) & 0xff));
-        output.write(offset++, (byte) ((value >> 8) & 0xff));
-        output.write(offset++, (byte) ((value >> 0) & 0xff));
-        return offset;
-    }
-
-    private static long putInt64(long value, long offset, Output output) {
-        output.write(offset++, (byte) ((value >> 56) & 0xff));
-        output.write(offset++, (byte) ((value >> 48) & 0xff));
-        output.write(offset++, (byte) ((value >> 40) & 0xff));
-        output.write(offset++, (byte) ((value >> 32) & 0xff));
-        output.write(offset++, (byte) ((value >> 24) & 0xff));
-        output.write(offset++, (byte) ((value >> 16) & 0xff));
-        output.write(offset++, (byte) ((value >> 8) & 0xff));
-        output.write(offset++, (byte) ((value >> 0) & 0xff));
         return offset;
     }
 

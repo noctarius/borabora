@@ -21,53 +21,53 @@ import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 final class ElementCounts {
 
-    static final ObjectLongToLongFunction<Decoder> SINGLE_ELEMENT_COUNT = (s, i) -> 1;
+    static final ObjectLongToLongFunction<Input> SINGLE_ELEMENT_COUNT = (s, i) -> 1;
 
-    static final ObjectLongToLongFunction<Decoder> SEQUENCE_ELEMENT_COUNT = ElementCounts::sequenceElementCount;
+    static final ObjectLongToLongFunction<Input> SEQUENCE_ELEMENT_COUNT = ElementCounts::sequenceElementCount;
 
-    static final ObjectLongToLongFunction<Decoder> DICTIONARY_ELEMENT_COUNT = ElementCounts::dictionaryElementCount;
+    static final ObjectLongToLongFunction<Input> DICTIONARY_ELEMENT_COUNT = ElementCounts::dictionaryElementCount;
 
-    static long sequenceElementCount(Decoder stream, long offset) {
-        return elementCount(stream, offset, "Sequence", false);
+    static long sequenceElementCount(Input input, long offset) {
+        return elementCount(input, offset, "Sequence", false);
     }
 
-    static long dictionaryElementCount(Decoder stream, long offset) {
-        return elementCount(stream, offset, "Dictionary", true);
+    static long dictionaryElementCount(Input input, long offset) {
+        return elementCount(input, offset, "Dictionary", true);
     }
 
-    private static long elementCount(Decoder stream, long offset, String elementType, boolean keyValue) {
-        short head = stream.transientUint8(offset);
+    private static long elementCount(Input input, long offset, String elementType, boolean keyValue) {
+        short head = Decoder.transientUint8(input, offset);
         int addInfo = head & ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
             case 24:
-                return stream.readUint8(offset + 1);
+                return Bytes.readUInt8(input, offset + 1);
             case 25:
-                return stream.readUint16(offset + 1);
+                return Bytes.readUInt16(input, offset + 1);
             case 26:
-                return stream.readUint32(offset + 1);
+                return Bytes.readUInt32(input, offset + 1);
             case 27:
                 throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
             case 31:
-                return untilBreakCode(stream, offset, keyValue);
+                return untilBreakCode(input, offset, keyValue);
             default:
                 return addInfo;
         }
 
     }
 
-    private static long untilBreakCode(Decoder stream, long offset, boolean keyValue) {
-        long headByteSize = ByteSizes.headByteSize(stream, offset);
+    private static long untilBreakCode(Input input, long offset, boolean keyValue) {
+        long headByteSize = ByteSizes.headByteSize(input, offset);
         long position = offset + headByteSize;
 
         long elementCount = 0;
         short head;
         while (true) {
-            head = stream.transientUint8(position);
+            head = Decoder.transientUint8(input, position);
             if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                 break;
             }
             MajorType majorType = MajorType.findMajorType(head);
-            position += stream.length(majorType, position);
+            position += Decoder.length(input, majorType, position);
             elementCount++;
         }
         if (keyValue) {

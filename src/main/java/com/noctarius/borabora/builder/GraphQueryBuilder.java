@@ -19,7 +19,6 @@ package com.noctarius.borabora.builder;
 import com.noctarius.borabora.GraphQuery;
 import com.noctarius.borabora.TypeSpec;
 import com.noctarius.borabora.Value;
-import com.noctarius.borabora.ValueType;
 
 import java.util.function.Predicate;
 

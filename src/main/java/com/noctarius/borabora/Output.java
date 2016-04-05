@@ -22,8 +22,6 @@ public interface Output {
 
     void write(long offset, byte value);
 
-    boolean ensureCapacity(long offset, long length);
-
     static Output toByteArray(byte[] array) {
         return new ByteArrayOutput(array);
     }

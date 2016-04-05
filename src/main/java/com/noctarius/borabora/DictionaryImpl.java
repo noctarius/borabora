@@ -25,13 +25,13 @@ import java.util.function.Predicate;
 final class DictionaryImpl
         implements Dictionary {
 
-    private final Decoder stream;
+    private final Input input;
     private final long size;
     private final long[][] elementIndexes;
     private final Collection<SemanticTagProcessor> processors;
 
-    public DictionaryImpl(Decoder stream, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
-        this.stream = stream;
+    public DictionaryImpl(Input input, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
+        this.input = input;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.processors = processors;
@@ -61,10 +61,10 @@ final class DictionaryImpl
     public Value get(Predicate<Value> predicate) {
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i * 2);
-            Value value = stream.readValue(offset, processors);
+            Value value = Decoder.readValue(input, offset, processors);
             if (predicate.test(value)) {
-                long position = stream.skip(offset);
-                return stream.readValue(position, processors);
+                long position = Decoder.skip(input, offset);
+                return Decoder.readValue(input, position, processors);
             }
         }
         return null;
@@ -88,7 +88,7 @@ final class DictionaryImpl
     private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
         for (long i = findValue ? 1 : 0; i < size; i = i + 2) {
             long offset = calculateArrayIndex(i);
-            Value value = stream.readValue(offset, processors);
+            Value value = Decoder.readValue(input, offset, processors);
             if (predicate.test(value)) {
                 return value;
             }
@@ -138,7 +138,7 @@ final class DictionaryImpl
                     throw new NoSuchElementException("No further element available");
                 }
                 long offset = calculateArrayIndex(arrayIndex);
-                return stream.readValue(offset, processors);
+                return Decoder.readValue(input, offset, processors);
 
             } finally {
                 arrayIndex += 2;
@@ -194,12 +194,12 @@ final class DictionaryImpl
 
         @Override
         public Value getKey() {
-            return stream.readValue(keyIndex, processors);
+            return Decoder.readValue(input, keyIndex, processors);
         }
 
         @Override
         public Value getValue() {
-            return stream.readValue(valueIndex, processors);
+            return Decoder.readValue(input, valueIndex, processors);
         }
 
         @Override

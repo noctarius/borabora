@@ -20,6 +20,12 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.Bytes.readInt8;
+import static com.noctarius.borabora.Bytes.readUInt16;
+import static com.noctarius.borabora.Bytes.readUInt32;
+import static com.noctarius.borabora.Bytes.readUInt64;
+import static com.noctarius.borabora.Bytes.readUInt64BigInt;
+import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.ASCII;
 import static com.noctarius.borabora.Constants.FP_VALUE_DOUBLE_PRECISION;
@@ -33,88 +39,27 @@ import static com.noctarius.borabora.Constants.UTF8;
 
 final class Decoder {
 
-    private final Input input;
-
-    Decoder(Input input) {
-        this.input = input;
+    static short transientUint8(Input input, long offset) {
+        return readUInt8(input, offset);
     }
 
-    short transientUint8(long offset) {
-        return readUint8(offset);
-    }
-
-    short readUint8(long offset) {
-        byte v = readInt8(offset);
-        return (short) (v & 0xFF);
-    }
-
-    byte readInt8(long offset) {
-        return input.read(offset);
-    }
-
-    short readInt16(long offset) {
-        short b1 = readUint8(offset);
-        short b2 = readUint8(offset + 1);
-        return (short) ((b1 << 8) | b2);
-    }
-
-    int readUint16(long offset) {
-        return readInt16(offset) & 0xffff;
-    }
-
-    int readInt32(long offset) {
-        int b1 = readUint8(offset);
-        int b2 = readUint8(offset + 1);
-        int b3 = readUint8(offset + 2);
-        int b4 = readUint8(offset + 3);
-        return (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
-    }
-
-    long readUint32(long offset) {
-        return readInt32(offset) & 0xffffffff;
-    }
-
-    long readUint64(long offset) {
-        long b1 = readUint8(offset);
-        long b2 = readUint8(offset + 1);
-        long b3 = readUint8(offset + 2);
-        long b4 = readUint8(offset + 3);
-        long b5 = readUint8(offset + 4);
-        long b6 = readUint8(offset + 5);
-        long b7 = readUint8(offset + 6);
-        long b8 = readUint8(offset + 7);
-        return (b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
-    }
-
-    BigInteger readUint64BigInt(long offset) {
-        byte b1 = readInt8(offset);
-        byte b2 = readInt8(offset + 1);
-        byte b3 = readInt8(offset + 2);
-        byte b4 = readInt8(offset + 3);
-        byte b5 = readInt8(offset + 4);
-        byte b6 = readInt8(offset + 5);
-        byte b7 = readInt8(offset + 6);
-        byte b8 = readInt8(offset + 7);
-        return new BigInteger(1, new byte[]{b1, b2, b3, b4, b5, b6, b7, b8});
-    }
-
-    Number readInt(long offset) {
-        short head = transientUint8(offset);
+    static Number readInt(Input input, long offset) {
+        short head = transientUint8(input, offset);
         long mask = -((head & 0xff) >>> 5);
-        int byteSize = ByteSizes.intByteSize(this, head);
+        int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
         switch (byteSize) {
             case 2:
-                number = mask ^ readUint8(offset + 1);
+                number = mask ^ readUInt8(input, offset + 1);
                 break;
             case 3:
-                number = mask ^ readUint16(offset + 1);
+                number = mask ^ readUInt16(input, offset + 1);
                 break;
             case 5:
-                number = mask ^ readUint32(offset + 1);
+                number = mask ^ readUInt32(input, offset + 1);
                 break;
             case 9:
-                number = BigInteger.valueOf(mask).xor(readUint64BigInt(offset + 1));
+                number = BigInteger.valueOf(mask).xor(readUInt64BigInt(input, offset + 1));
                 break;
             default:
                 number = mask ^ (head & ADDITIONAL_INFORMATION_MASK);
@@ -122,22 +67,22 @@ final class Decoder {
         return number;
     }
 
-    Number readUint(long offset) {
-        short head = transientUint8(offset);
-        int byteSize = ByteSizes.intByteSize(this, head);
+    static Number readUint(Input input, long offset) {
+        short head = transientUint8(input, offset);
+        int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
         switch (byteSize) {
             case 2:
-                number = readUint8(offset + 1);
+                number = readUInt8(input, offset + 1);
                 break;
             case 3:
-                number = readUint16(offset + 1);
+                number = readUInt16(input, offset + 1);
                 break;
             case 5:
-                number = readUint32(offset + 1);
+                number = readUInt32(input, offset + 1);
                 break;
             case 9:
-                number = readUint64BigInt(offset + 1);
+                number = readUInt64BigInt(input, offset + 1);
                 break;
             default:
                 number = head & ADDITIONAL_INFORMATION_MASK;
@@ -145,94 +90,93 @@ final class Decoder {
         return number;
     }
 
-    Number readFloat(long offset) {
-        int addInfo = additionInfo(offset);
+    static Number readFloat(Input input, long offset) {
+        int addInfo = additionInfo(input, offset);
         switch (addInfo) {
             case FP_VALUE_HALF_PRECISION:
-                return readHalfFloatValue(offset + 1);
+                return readHalfFloatValue(input, offset + 1);
             case FP_VALUE_SINGLE_PRECISION:
-                return readSinglePrecisionFloat(offset + 1);
+                return readSinglePrecisionFloat(input, offset + 1);
             case FP_VALUE_DOUBLE_PRECISION:
-                return readDoublePrecisionFloat(offset + 1);
+                return readDoublePrecisionFloat(input, offset + 1);
             default:
                 throw new IllegalStateException("Additional Info '" + addInfo + "' is not a floating point value");
         }
     }
 
-    Number readNumber(ValueType valueType, long offset) {
+    static Number readNumber(Input input, ValueType valueType, long offset) {
         if (valueType.matches(ValueTypes.Float)) {
-            return readFloat(offset);
+            return readFloat(input, offset);
         }
-        return readInt(offset);
+        return readInt(input, offset);
     }
 
-    String readString(long offset) {
-        int addInfo = additionInfo(offset);
+    static String readString(Input input, long offset) {
+        int addInfo = additionInfo(input, offset);
         if (addInfo == 31) {
             // Concatenated string!
             long position = offset + 1;
             StringBuilder sb = new StringBuilder();
             while (true) {
-                short h = transientUint8(position);
+                short h = transientUint8(input, position);
                 if ((h & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                     break;
                 }
-                sb.append(readString(position));
-                position += ByteSizes.textStringByteSize(this, position);
+                sb.append(readString(input, position));
+                position += ByteSizes.textStringByteSize(input, position);
             }
             return sb.toString();
         }
 
-        return readString0(offset);
+        return readString0(input, offset);
     }
 
-    Sequence readSequence(long offset, Collection<SemanticTagProcessor> processors) {
-        long headByteSize = ByteSizes.headByteSize(this, offset);
-        long size = ElementCounts.sequenceElementCount(this, offset);
-        long[][] elementIndexes = readElementIndexes(offset + headByteSize, size);
-        return new SequenceImpl(this, size, elementIndexes, processors);
+    static Sequence readSequence(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long size = ElementCounts.sequenceElementCount(input, offset);
+        long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size);
+        return new SequenceImpl(input, size, elementIndexes, processors);
     }
 
-    Dictionary readDictionary(long offset, Collection<SemanticTagProcessor> processors) {
-        long headByteSize = ByteSizes.headByteSize(this, offset);
-        long size = ElementCounts.dictionaryElementCount(this, offset);
-        long[][] elementIndexes = readElementIndexes(offset + headByteSize, size * 2);
-        return new DictionaryImpl(this, size, elementIndexes, processors);
+    static Dictionary readDictionary(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long size = ElementCounts.dictionaryElementCount(input, offset);
+        long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size * 2);
+        return new DictionaryImpl(input, size, elementIndexes, processors);
     }
 
-    long length(MajorType majorType, long offset) {
-        short head = transientUint8(offset);
+    static long length(Input input, MajorType majorType, long offset) {
         switch (majorType) {
             case UnsignedInteger:
             case NegativeInteger:
-                return ByteSizes.intByteSize(this, head);
+                return ByteSizes.intByteSize(input, offset);
             case ByteString:
             case TextString:
-                return ByteSizes.stringByteSize(this, offset);
+                return ByteSizes.stringByteSize(input, offset);
             case Sequence:
-                return ByteSizes.sequenceByteSize(this, offset);
+                return ByteSizes.sequenceByteSize(input, offset);
             case Dictionary:
-                return ByteSizes.dictionaryByteSize(this, offset);
+                return ByteSizes.dictionaryByteSize(input, offset);
             case SemanticTag:
-                return ByteSizes.semanticTagByteSize(this, offset);
+                return ByteSizes.semanticTagByteSize(input, offset);
             case FloatingPointOrSimple:
-                return ByteSizes.floatingPointOrSimpleByteSize(this, offset);
+                return ByteSizes.floatingPointOrSimpleByteSize(input, offset);
         }
         throw new IllegalStateException("Illegal MajorType requested");
     }
 
-    long skip(long offset) {
-        short head = transientUint8(offset);
+    static long skip(Input input, long offset) {
+        short head = transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        return skip(majorType, offset);
+        return skip(input, majorType, offset);
     }
 
-    long skip(MajorType majorType, long offset) {
-        long size = length(majorType, offset);
+    static long skip(Input input, MajorType majorType, long offset) {
+        long size = length(input, majorType, offset);
         return offset + size;
     }
 
-    boolean isNull(short head) {
+    static boolean isNull(short head) {
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple != majorType) {
             return false;
@@ -241,8 +185,8 @@ final class Decoder {
         return addInfo == FP_VALUE_NULL;
     }
 
-    boolean getBooleanValue(long offset) {
-        short head = transientUint8(offset);
+    static boolean getBooleanValue(Input input, long offset) {
+        short head = transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple == majorType) {
             int addInfo = head & ADDITIONAL_INFORMATION_MASK;
@@ -256,86 +200,87 @@ final class Decoder {
         throw new IllegalStateException("Illegal boolean value");
     }
 
-    float readHalfFloatValue(long offset) {
-        int value = readUint16(offset);
+    static float readHalfFloatValue(Input input, long offset) {
+        int value = readUInt16(input, offset);
         return HalfPrecision.toFloat(value);
     }
 
-    float readSinglePrecisionFloat(long offset) {
-        return Float.intBitsToFloat((int) readUint32(offset));
+    static float readSinglePrecisionFloat(Input input, long offset) {
+        return Float.intBitsToFloat((int) readUInt32(input, offset));
     }
 
-    double readDoublePrecisionFloat(long offset) {
-        return Double.longBitsToDouble(readUint64(offset));
+    static double readDoublePrecisionFloat(Input input, long offset) {
+        return Double.longBitsToDouble(readUInt64(input, offset));
     }
 
-    long findByDictionaryKey(Predicate<Value> predicate, long offset, long count, Collection<SemanticTagProcessor> processors) {
+    static long findByDictionaryKey(Input input, Predicate<Value> predicate, long offset, long count,
+                                    Collection<SemanticTagProcessor> processors) {
         // Search for key element
-        long position = findByPredicate(predicate, offset, count, processors);
+        long position = findByPredicate(input, predicate, offset, count, processors);
         if (position == -1) {
             return -1;
         }
-        return skip(position);
+        return skip(input, position);
     }
 
-    StreamValue readValue(long offset, Collection<SemanticTagProcessor> processors) {
-        short head = transientUint8(offset);
+    static StreamValue readValue(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        short head = transientUint8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(this, offset);
-        long length = length(mt, offset);
-        return new StreamValue(mt, vt, this, offset, length, processors);
+        ValueType vt = ValueTypes.valueType(input, offset);
+        long length = length(input, mt, offset);
+        return new StreamValue(mt, vt, input, offset, length, processors);
     }
 
-    int additionInfo(long offset) {
-        short head = transientUint8(offset);
+    static int additionInfo(Input input, long offset) {
+        short head = transientUint8(input, offset);
         return additionInfo(head);
     }
 
-    int additionInfo(short head) {
+    static int additionInfo(short head) {
         return head & ADDITIONAL_INFORMATION_MASK;
     }
 
-    byte[] readRaw(long offset, long length) {
+    static byte[] readRaw(Input input, long offset, long length) {
         if (length > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Extraction of huge data (> Integer.MAX_VALUE) is not supported");
         }
 
         byte[] data = new byte[(int) length];
         for (int i = 0; i < data.length; i++) {
-            data[i] = readInt8(offset + i);
+            data[i] = readInt8(input, offset + i);
         }
         return data;
     }
 
-    private long findByPredicate(Predicate<Value> predicate, long offset, long count,
-                                 Collection<SemanticTagProcessor> processors) {
+    private static long findByPredicate(Input input, Predicate<Value> predicate, long offset, long count,
+                                        Collection<SemanticTagProcessor> processors) {
 
         for (int i = 0; i < count; i++) {
-            short head = transientUint8(offset);
+            short head = transientUint8(input, offset);
             MajorType mt = MajorType.findMajorType(head);
-            ValueTypes vt = ValueTypes.valueType(this, offset);
-            long l = length(mt, offset);
-            if (predicate.test(new StreamValue(mt, vt, this, offset, l, processors))) {
+            ValueTypes vt = ValueTypes.valueType(input, offset);
+            long l = length(input, mt, offset);
+            if (predicate.test(new StreamValue(mt, vt, input, offset, l, processors))) {
                 return offset;
             }
-            offset = skip(offset + l);
+            offset = skip(input, offset + l);
         }
         return -1;
 
     }
 
-    private String readString0(long offset) {
-        short head = transientUint8(offset);
+    private static String readString0(Input input, long offset) {
+        short head = transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        long byteSize = ByteSizes.textStringByteSize(this, offset);
+        long byteSize = ByteSizes.textStringByteSize(input, offset);
         if (byteSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("Strings of size > Integer.MAX_VALUE are not implemented");
         }
-        int headByteSize = ByteSizes.headByteSize(this, offset);
-        int dataSize = (int) ByteSizes.stringDataSize(this, offset);
+        int headByteSize = ByteSizes.headByteSize(input, offset);
+        int dataSize = (int) ByteSizes.stringDataSize(input, offset);
         byte[] data = new byte[dataSize];
         for (int i = 0; i < dataSize; i++) {
-            data[i] = readInt8(offset + headByteSize + i);
+            data[i] = readInt8(input, offset + headByteSize + i);
         }
         if (MajorType.ByteString == majorType) {
             return new String(data, ASCII);
@@ -343,7 +288,7 @@ final class Decoder {
         return new String(data, UTF8);
     }
 
-    private long[][] readElementIndexes(long offset, long elementSize) {
+    private static long[][] readElementIndexes(Input input, long offset, long elementSize) {
         int baseSize = (int) (elementSize / Integer.MAX_VALUE) + 1;
         long[][] elementIndexes = new long[baseSize][];
 
@@ -357,9 +302,9 @@ final class Decoder {
                 elementIndexes[base][elIndex] = position;
 
                 // Skip elements content to next element
-                short head = transientUint8(position);
+                short head = transientUint8(input, position);
                 MajorType majorType = MajorType.findMajorType(head);
-                position += length(majorType, position);
+                position += length(input, majorType, position);
             }
         }
         return elementIndexes;

@@ -33,19 +33,19 @@ final class DictionaryGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
+    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        short head = Decoder.transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
             throw new WrongTypeException("Not a dictionary");
         }
 
         // Skip head
-        long headByteSize = ByteSizes.headByteSize(stream, offset);
-        long keyCount = ElementCounts.dictionaryElementCount(stream, offset);
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long keyCount = ElementCounts.dictionaryElementCount(input, offset);
         offset += headByteSize;
 
-        return stream.findByDictionaryKey(predicate, offset, keyCount, processors);
+        return Decoder.findByDictionaryKey(input, predicate, offset, keyCount, processors);
     }
 
     @Override

@@ -20,9 +20,9 @@ import java.util.Collection;
 
 public interface SemanticTagProcessor<V> {
 
-    boolean handles(Decoder stream, long offset);
+    boolean handles(Input input, long offset);
 
-    V process(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors);
+    V process(Input input, long offset, long length, Collection<SemanticTagProcessor> processors);
 
     TypeSpec handles(int tagId);
 

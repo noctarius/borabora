@@ -26,17 +26,15 @@ import java.util.Locale;
 
 final class TagProcessors {
 
-    static Date readDateTime(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
-        int byteSize = ByteSizes.intByteSize(stream, head);
-        String date = stream.readString(offset + byteSize);
+    static Date readDateTime(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        int byteSize = ByteSizes.intByteSize(input, offset);
+        String date = Decoder.readString(input, offset + byteSize);
         return DateParser.parseDate(date, Locale.ENGLISH);
     }
 
-    static BigInteger readUBigNum(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
-        int byteSize = ByteSizes.intByteSize(stream, head);
-        String bigNum = stream.readString(offset + byteSize);
+    static BigInteger readUBigNum(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        int byteSize = ByteSizes.intByteSize(input, offset);
+        String bigNum = Decoder.readString(input, offset + byteSize);
         try {
             byte[] bytes = bigNum.getBytes("ASCII");
             return new BigInteger(1, bytes);
@@ -45,14 +43,13 @@ final class TagProcessors {
         }
     }
 
-    static BigInteger readNBigNum(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        return BigInteger.valueOf(-1).xor(readUBigNum(stream, offset, length, processors));
+    static BigInteger readNBigNum(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        return BigInteger.valueOf(-1).xor(readUBigNum(input, offset, length, processors));
     }
 
-    static URI readURI(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
-        int byteSize = ByteSizes.intByteSize(stream, head);
-        String uri = stream.readString(offset + byteSize);
+    static URI readURI(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        int byteSize = ByteSizes.intByteSize(input, offset);
+        String uri = Decoder.readString(input, offset + byteSize);
         try {
             return new URI(uri);
         } catch (URISyntaxException e) {
@@ -60,19 +57,18 @@ final class TagProcessors {
         }
     }
 
-    static Number readTimestamp(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        ValueType valueType = ValueTypes.valueType(stream, offset + 1);
-        return stream.readNumber(valueType, offset + 1);
+    static Number readTimestamp(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        ValueType valueType = ValueTypes.valueType(input, offset + 1);
+        return Decoder.readNumber(input, valueType, offset + 1);
     }
 
-    static Value readEncCBOR(Decoder stream, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        short tagHead = stream.transientUint8(offset);
-        int headByteSize = ByteSizes.intByteSize(stream, tagHead);
+    static Value readEncCBOR(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+        int headByteSize = ByteSizes.intByteSize(input, offset);
 
         offset += headByteSize;
-        short head = stream.transientUint8(offset);
+        short head = Decoder.transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(stream, offset);
-        return new StreamValue(majorType, valueType, stream, offset, length - headByteSize, processors);
+        ValueType valueType = ValueTypes.valueType(input, offset);
+        return new StreamValue(majorType, valueType, input, offset, length - headByteSize, processors);
     }
 }

@@ -32,9 +32,4 @@ final class ByteArrayOutputStreamOutput
         baos.write(value);
     }
 
-    @Override
-    public boolean ensureCapacity(long offset, long length) {
-        return true;
-    }
-
 }

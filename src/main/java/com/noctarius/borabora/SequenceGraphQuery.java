@@ -31,8 +31,8 @@ final class SequenceGraphQuery
     }
 
     @Override
-    public long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = stream.transientUint8(offset);
+    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+        short head = Decoder.transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)
@@ -45,17 +45,17 @@ final class SequenceGraphQuery
         }
 
         // Sequences need head skipped
-        long elementCount = majorType.elementCount(stream, offset);
+        long elementCount = majorType.elementCount(input, offset);
         if (elementCount < sequenceIndex) {
             return -1;
         }
 
         // Element access
-        long headByteSize = ByteSizes.headByteSize(stream, offset);
+        long headByteSize = ByteSizes.headByteSize(input, offset);
         offset += headByteSize;
 
         // Stream objects
-        return skip(stream, offset);
+        return skip(input, offset);
     }
 
     @Override
@@ -81,10 +81,10 @@ final class SequenceGraphQuery
         return "SequenceGraphQuery{" + "sequenceIndex=" + sequenceIndex + '}';
     }
 
-    private long skip(Decoder stream, long offset) {
+    private long skip(Input input, long offset) {
         // Skip unnecessary objects
         for (int i = 0; i < sequenceIndex; i++) {
-            offset = stream.skip(offset);
+            offset = Decoder.skip(input, offset);
         }
         return offset;
     }

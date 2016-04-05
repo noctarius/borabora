@@ -22,7 +22,7 @@ import java.util.Collection;
 
 public interface GraphQuery {
 
-    long access(Decoder stream, long offset, Collection<SemanticTagProcessor> processors);
+    long access(Input input, long offset, Collection<SemanticTagProcessor> processors);
 
     static StreamGraphQueryBuilder newBuilder() {
         return new GraphQueryBuilderImpl();

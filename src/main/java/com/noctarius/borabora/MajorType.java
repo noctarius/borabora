@@ -17,7 +17,7 @@
 package com.noctarius.borabora;
 
 public enum MajorType {
-    UnsignedInteger(0, 0b000, false, ByteSizes::uintByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    UnsignedInteger(0, 0b000, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
     NegativeInteger(1, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
     ByteString(2, 0b010, true, ByteSizes::byteStringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
     TextString(3, 0b011, true, ByteSizes::textStringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
@@ -32,11 +32,11 @@ public enum MajorType {
     private final int typeId;
     private final int mask;
     private final boolean indefinite;
-    private final ObjectLongToLongFunction<Decoder> byteSize;
-    private final ObjectLongToLongFunction<Decoder> elementCount;
+    private final ObjectLongToLongFunction<Input> byteSize;
+    private final ObjectLongToLongFunction<Input> elementCount;
 
-    MajorType(int typeId, int mask, boolean indefinite, ObjectLongToLongFunction<Decoder> byteSize,
-              ObjectLongToLongFunction<Decoder> elementCount) {
+    MajorType(int typeId, int mask, boolean indefinite, ObjectLongToLongFunction<Input> byteSize,
+              ObjectLongToLongFunction<Input> elementCount) {
 
         this.typeId = typeId;
         this.mask = mask;
@@ -58,12 +58,12 @@ public enum MajorType {
         return (highBits | mask) == mask;
     }
 
-    long byteSize(Decoder stream, long offset) {
-        return byteSize.apply(stream, offset);
+    long byteSize(Input input, long offset) {
+        return byteSize.apply(input, offset);
     }
 
-    long elementCount(Decoder stream, long offset) {
-        return elementCount.apply(stream, offset);
+    long elementCount(Input input, long offset) {
+        return elementCount.apply(input, offset);
     }
 
     public static MajorType findMajorType(short head) {

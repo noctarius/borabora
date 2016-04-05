@@ -24,11 +24,11 @@ final class StreamValue
         extends AbstractValue {
 
     private final Collection<SemanticTagProcessor> processors;
-    private final Decoder stream;
+    private final Input input;
     private final long offset;
     private final long length;
 
-    StreamValue(MajorType majorType, ValueType valueType, Decoder stream, long offset, long length,
+    StreamValue(MajorType majorType, ValueType valueType, Input input, long offset, long length,
                 Collection<SemanticTagProcessor> processors) {
 
         super(majorType, valueType);
@@ -40,7 +40,7 @@ final class StreamValue
             throw new IllegalArgumentException(String.format("Length calculation for CBOR type %s is not available", majorType));
         }
 
-        this.stream = stream;
+        this.input = input;
         this.offset = offset;
         this.length = length;
         this.processors = processors;
@@ -54,32 +54,32 @@ final class StreamValue
     @Override
     public Number number() {
         return extract(() -> matchValueType(ValueTypes.UInt, ValueTypes.NInt, ValueTypes.NFloat),
-                () -> stream.readNumber(valueType(), offset));
+                () -> Decoder.readNumber(input, valueType(), offset));
     }
 
     @Override
     public Sequence sequence() {
-        return extract(() -> matchValueType(ValueTypes.Sequence), () -> stream.readSequence(offset, processors));
+        return extract(() -> matchValueType(ValueTypes.Sequence), () -> Decoder.readSequence(input, offset, processors));
     }
 
     @Override
     public Dictionary dictionary() {
-        return extract(() -> matchValueType(ValueTypes.Dictionary), () -> stream.readDictionary(offset, processors));
+        return extract(() -> matchValueType(ValueTypes.Dictionary), () -> Decoder.readDictionary(input, offset, processors));
     }
 
     @Override
     public String string() {
-        return extract(this::matchStringValueType, () -> stream.readString(offset));
+        return extract(this::matchStringValueType, () -> Decoder.readString(input, offset));
     }
 
     @Override
     public Boolean bool() {
-        return extract(() -> matchValueType(ValueTypes.Bool), () -> stream.getBooleanValue(offset));
+        return extract(() -> matchValueType(ValueTypes.Bool), () -> Decoder.getBooleanValue(input, offset));
     }
 
     @Override
     public byte[] raw() {
-        return extract(() -> stream.readRaw(offset, length));
+        return extract(() -> Decoder.readRaw(input, offset, length));
     }
 
     @Override
@@ -89,9 +89,9 @@ final class StreamValue
 
     @Override
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
-        short head = stream.transientUint8(offset);
+        short head = Decoder.transientUint8(input, offset);
         // Null is legal for all types
-        if (stream.isNull(head)) {
+        if (Decoder.isNull(head)) {
             return null;
         }
         // Not null? Validate value type
@@ -106,7 +106,7 @@ final class StreamValue
     }
 
     private <V> SemanticTagProcessor<V> findProcessor(long offset) {
-        Optional<SemanticTagProcessor> optional = processors.stream().filter(p -> p.handles(stream, offset)).findFirst();
+        Optional<SemanticTagProcessor> optional = processors.stream().filter(p -> p.handles(input, offset)).findFirst();
         return optional.isPresent() ? optional.get() : null;
     }
 
@@ -115,7 +115,7 @@ final class StreamValue
         if (processor == null) {
             return null;
         }
-        return processor.process(stream, offset, length, processors);
+        return processor.process(input, offset, length, processors);
     }
 
 }

@@ -30,6 +30,6 @@ public interface TypeSpec {
 
     boolean matchesExact(TypeSpec other);
 
-    boolean valid(MajorType majorType, Decoder stream, long offset);
+    boolean valid(MajorType majorType, Input input, long offset);
 
 }
