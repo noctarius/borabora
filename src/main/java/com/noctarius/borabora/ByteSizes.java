@@ -26,7 +26,8 @@ import static com.noctarius.borabora.Constants.ADD_INFO_RESERVED_3;
 import static com.noctarius.borabora.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
-final class ByteSizes {
+enum ByteSizes {
+    ;
 
     static int intByteSize(Input input, long offset) {
         return headByteSize(input, offset);

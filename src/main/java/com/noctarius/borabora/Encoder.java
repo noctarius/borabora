@@ -55,7 +55,8 @@ import static com.noctarius.borabora.Constants.UTF8;
 import static com.noctarius.borabora.MajorType.ByteString;
 import static com.noctarius.borabora.MajorType.TextString;
 
-final class Encoder {
+enum Encoder {
+    ;
 
     static long putString(String value, long offset, Output output) {
         if (ASCII_ENCODER.canEncode(value)) {

@@ -18,7 +18,8 @@ package com.noctarius.borabora;
 
 import java.math.BigInteger;
 
-final class Bytes {
+enum Bytes {
+    ;
 
     static short readUInt8(Input input, long offset) {
         byte v = readInt8(input, offset);

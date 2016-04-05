@@ -38,7 +38,8 @@ import java.util.TimeZone;
  *
  * @author Alejandro Abdelnur
  */
-class DateParser {
+enum DateParser {
+    ;
 
     // order is like this because the SimpleDateFormat.parse does not fail with exception if it can
     // parse a valid date out of a substring of the full string given the mask so we have to check

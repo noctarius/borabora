@@ -37,7 +37,8 @@ import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.Constants.UTF8;
 
-final class Decoder {
+enum Decoder {
+    ;
 
     static short transientUint8(Input input, long offset) {
         return readUInt8(input, offset);

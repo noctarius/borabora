@@ -19,7 +19,8 @@ package com.noctarius.borabora;
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
-final class ElementCounts {
+enum ElementCounts {
+    ;
 
     static final ObjectLongToLongFunction<Input> SINGLE_ELEMENT_COUNT = (s, i) -> 1;
 
