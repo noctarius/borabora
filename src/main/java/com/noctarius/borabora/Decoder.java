@@ -278,22 +278,6 @@ final class Decoder {
         return skip(position);
     }
 
-    long findDictionaryKey(Predicate<Value> predicate, long offset, long count, Collection<SemanticTagProcessor> processors) {
-        // Skip first key
-        long position = skip(offset);
-
-        // Search for value element
-        return findByPredicate(predicate, position, count, processors);
-    }
-
-    long findDictionaryValue(Predicate<Value> predicate, long offset, long count, Collection<SemanticTagProcessor> processors) {
-        // Skip first key
-        long position = skip(offset);
-
-        // Search for value element
-        return findByPredicate(predicate, position, count, processors);
-    }
-
     StreamValue readValue(long offset, Collection<SemanticTagProcessor> processors) {
         short head = transientUint8(offset);
         MajorType mt = MajorType.findMajorType(head);
@@ -347,10 +331,11 @@ final class Decoder {
         if (byteSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("Strings of size > Integer.MAX_VALUE are not implemented");
         }
+        int headByteSize = ByteSizes.headByteSize(this, offset);
         int dataSize = (int) ByteSizes.stringDataSize(this, offset);
         byte[] data = new byte[dataSize];
         for (int i = 0; i < dataSize; i++) {
-            data[i] = readInt8(offset + 1 + i);
+            data[i] = readInt8(offset + headByteSize + i);
         }
         if (MajorType.ByteString == majorType) {
             return new String(data, ASCII);

@@ -90,14 +90,13 @@ final class ByteSizes {
 
     static long stringByteSize(Decoder stream, long offset) {
         int addInfo = stream.additionInfo(offset);
-        long dataSize = addInfo == 0 ? 0 : stringDataSize(stream, offset + 1);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
-                return dataSize + 1;
+                return stringDataSize(stream, offset) + 2;
             case ADD_INFO_TWO_BYTES:
-                return dataSize + 2;
+                return stringDataSize(stream, offset) + 3;
             case ADD_INFO_FOUR_BYTES:
-                return dataSize + 4;
+                return stringDataSize(stream, offset) + 5;
             case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
             case ADD_INFO_RESERVED_1: // Unassigned
@@ -115,11 +114,11 @@ final class ByteSizes {
         int addInfo = stream.additionInfo(offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
-                return stream.readUint8(offset);
+                return stream.readUint8(offset + 1);
             case ADD_INFO_TWO_BYTES:
-                return stream.readUint16(offset);
+                return stream.readUint16(offset + 1);
             case ADD_INFO_FOUR_BYTES:
-                return stream.readUint32(offset);
+                return stream.readUint32(offset + 1);
             case ADD_INFO_EIGHT_BYTES:
                 throw new IllegalStateException("String sizes of 64bit are not yet supported");
             case ADD_INFO_RESERVED_1: // Unassigned

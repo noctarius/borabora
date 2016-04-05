@@ -23,7 +23,9 @@ import com.noctarius.borabora.builder.ValueBuilder;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.Instant;
+import java.util.Date;
 import java.util.function.Function;
 
 import static com.noctarius.borabora.DictionaryGraphQuery.matchString;
@@ -551,6 +553,46 @@ public class StreamWriterTestCase
 
         assertEquals(expected, (long) value1.tag());
         assertEquals(expected, (long) value2.tag());
+        assertNull(value3.tag());
+    }
+
+    @Test
+    public void test_write_uri()
+            throws Exception {
+
+        URI expected = URI.create("file://test-äüö.dat");
+
+        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+            sgb.putURI(expected) //
+               .putURI(null);
+        });
+
+        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
+        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
+
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
+    }
+
+    @Test
+    public void test_write_datetime()
+            throws Exception {
+
+        Instant instant = Instant.now();
+        Date date = Date.from(instant);
+
+        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+            sgb.putDateTime(instant) //
+               .putDateTime(date) //
+               .putURI(null);
+        });
+
+        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
+        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
+        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
+
+        assertEquals(date, value1.tag());
+        assertEquals(date, value2.tag());
         assertNull(value3.tag());
     }
 

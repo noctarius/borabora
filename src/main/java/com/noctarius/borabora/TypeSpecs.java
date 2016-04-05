@@ -18,6 +18,11 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
+import static com.noctarius.borabora.Constants.TAG_DATE_TIME;
+import static com.noctarius.borabora.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
+import static com.noctarius.borabora.Constants.TAG_URI;
+
 public enum TypeSpecs
         implements TypeSpec {
 
@@ -35,10 +40,10 @@ public enum TypeSpecs
     SemanticTag("tag", ValueTypes.Unknown),
     SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown),
     Bool("bool", ValueTypes.Bool),
-    DateTime("datetime", SpecializedSemanticTag, 0, ValueTypes.DateTime),
-    Timstamp("timestamp", SpecializedSemanticTag, 1, ValueTypes.Timestamp),
-    URI("uri", SpecializedSemanticTag, 32, ValueTypes.URI),
-    EncCBOR("enccbor", SpecializedSemanticTag, 24, ValueTypes.EncCBOR),
+    DateTime("datetime", SpecializedSemanticTag, TAG_DATE_TIME, ValueTypes.DateTime),
+    Timstamp("timestamp", SpecializedSemanticTag, TAG_TIMESTAMP, ValueTypes.Timestamp),
+    URI("uri", SpecializedSemanticTag, TAG_URI, ValueTypes.URI),
+    EncCBOR("enccbor", SpecializedSemanticTag, TAG_ENCCBOR, ValueTypes.EncCBOR),
     Unknown("unknown", ValueTypes.Unknown),
     Null("null", ValueTypes.Null);
 
