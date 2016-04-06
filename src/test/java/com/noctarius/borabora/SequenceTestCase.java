@@ -18,6 +18,10 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -104,6 +108,94 @@ public class SequenceTestCase
             assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
         }
+    }
+
+    @Test
+    public void long_sequence_iterator()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        Iterator<Value> iterator = sequence.iterator();
+
+        int position = 1;
+        while (iterator.hasNext()) {
+            Value v = iterator.next();
+            assertEqualsNumber(position++, v.number());
+        }
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void long_sequence_iterator_no_such_element()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        Iterator<Value> iterator = sequence.iterator();
+
+        for (int i = 0; i < sequence.size(); i++) {
+            try {
+                Value v = iterator.next();
+                assertEqualsNumber(i + 1, v.number());
+            } catch (NoSuchElementException e) {
+                throw new AssertionError(e);
+            }
+        }
+
+        iterator.next();
+    }
+
+    @Test
+    public void sequence_to_array()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        Value[] values = sequence.toArray();
+
+        for (int i = 0; i < values.length; i++) {
+            assertEqualsNumber(i + 1, values[i].number());
+        }
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void sequence_to_array_size_to_large()
+            throws Exception {
+
+        Sequence sequence = new SequenceImpl( //
+                Input.fromByteArray(new byte[0]), Long.MAX_VALUE, new long[0][0], Collections.emptyList());
+
+        sequence.toArray();
+    }
+
+    @Test
+    public void test_contains_value_true()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+
+        assertTrue(sequence.contains((v) -> v.number().longValue() == 2));
+    }
+
+    @Test
+    public void test_contains_value_false()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+
+        assertFalse(sequence.contains((v) -> v.number().longValue() == 30));
     }
 
     @Test

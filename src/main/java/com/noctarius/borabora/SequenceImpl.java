@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 final class SequenceImpl
@@ -47,17 +48,30 @@ final class SequenceImpl
 
     @Override
     public boolean contains(Predicate<Value> predicate) {
+        for (long i = 0; i < size; i++) {
+            Value value = get(i);
+            if (predicate.test(value)) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public Iterator<Value> iterator() {
-        return null;
+        return new SequenceIterator();
     }
 
     @Override
     public Value[] toArray() {
-        return new Value[0];
+        if (size > Integer.MAX_VALUE) {
+            throw new IllegalStateException("Sequence size larger than Integer.MAX_VALUE, array cannot be created");
+        }
+        Value[] values = new Value[(int) size];
+        for (int i = 0; i < size; i++) {
+            values[i] = get(i);
+        }
+        return values;
     }
 
     @Override
@@ -70,6 +84,37 @@ final class SequenceImpl
         ValueType valueType = ValueTypes.valueType(input, position);
         long length = majorType.byteSize(input, position);
         return new StreamValue(majorType, valueType, input, position, length, processors);
+    }
+
+    private long calculateArrayIndex(long offset) {
+        int baseIndex = (int) (offset / Integer.MAX_VALUE);
+        int elementIndex = (int) (offset % Integer.MAX_VALUE);
+        return elementIndexes[baseIndex][elementIndex];
+    }
+
+    private class SequenceIterator
+            implements Iterator<Value> {
+
+        private long arrayIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return arrayIndex < size;
+        }
+
+        @Override
+        public Value next() {
+            try {
+                if (arrayIndex >= size) {
+                    throw new NoSuchElementException("No further element available");
+                }
+                long offset = calculateArrayIndex(arrayIndex);
+                return Decoder.readValue(input, offset, processors);
+
+            } finally {
+                arrayIndex++;
+            }
+        }
     }
 
 }

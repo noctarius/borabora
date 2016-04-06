@@ -18,6 +18,9 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.noctarius.borabora.DictionaryGraphQuery.matchFloat;
@@ -180,6 +183,39 @@ public class QueryLanguageTestCase
 
         assertEquals(n1.size(), n2.size());
         assertEquals(n1, n2);
+    }
+
+    @Test
+    public void code_coverage_for_unused_but_generated_methods()
+            throws Exception {
+
+        ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
+        QueryParser qp = new QueryParser(stream);
+        qp.ReInit(stream);
+
+        qp = new QueryParser(new StringReader(""));
+        Field token_source = QueryParser.class.getDeclaredField("token_source");
+        token_source.setAccessible(true);
+        token_source.set(qp, null);
+        qp.ReInit(new StringReader(""));
+
+        QueryParserTokenManager tm = new QueryParserTokenManager(new SimpleCharStream(new StringReader("")));
+        qp = new QueryParser(tm);
+        qp.ReInit(tm);
+        qp.enable_tracing();
+        qp.disable_tracing();
+
+        qp.ReInit(new StringReader("#"));
+        qp.getToken(0);
+        qp.getToken(1);
+
+        qp.ReInit(new StringReader("#"));
+        Token token;
+        while ((token = qp.getNextToken()) != null) {
+            if (token.next == null) {
+                break;
+            }
+        }
     }
 
 }
