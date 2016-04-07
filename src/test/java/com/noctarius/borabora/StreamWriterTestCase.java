@@ -374,7 +374,7 @@ public class StreamWriterTestCase
     public void test_write_number_bigdecimal()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        executeStreamWriterTest((sgb) -> {
             sgb.putNumber(BigDecimal.TEN);
         });
     }
@@ -410,16 +410,26 @@ public class StreamWriterTestCase
     public void test_write_indefinite_bytestring()
             throws Exception {
 
+        String a = buildString(3);
+        String b = buildString(24);
+        String c = buildString(256);
+        String d = buildString(65356);
+        String e = buildString(100000);
+
+        String expected = a + b + c + d + e;
+
         SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
             sgb.putIndefiniteByteString() //
-               .putString("abc") //
-               .putString("def") //
-               .putString("ghi") //
+               .putString(a) //
+               .putString(b) //
+               .putString(c) //
+               .putString(d) //
+               .putString(e) //
                .endIndefiniteString();
         });
 
         Value value = parser.read(GraphQuery.newBuilder().build());
-        assertEquals("abcdefghi", value.string());
+        assertEquals(expected, value.string());
     }
 
     @Test(expected = IllegalArgumentException.class)

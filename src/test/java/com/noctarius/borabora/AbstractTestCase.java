@@ -21,11 +21,22 @@ import com.noctarius.borabora.builder.StreamGraphBuilder;
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractTestCase {
+
+    private static final Random RANDOM = new Random();
+
+    public static String buildString(int nbOfLetters) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < nbOfLetters; i++) {
+            sb.append((char) (RANDOM.nextInt(91) + 32));
+        }
+        return sb.toString();
+    }
 
     public static SimplifiedTestParser executeStreamWriterTest(Consumer<StreamGraphBuilder> test) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
