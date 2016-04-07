@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
@@ -90,6 +91,29 @@ public class StringTestCase
         for (TestValue<String> testValue : TEXT_STRING_TEST_VALUES.getTestValues()) {
             testString(ValueTypes.TextString, testValue);
         }
+    }
+
+    @Test
+    public void test_multi_indefinite_bytestreams() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toByteArrayOutputStream(baos);
+        StreamWriter writer = StreamWriter.newBuilder().build();
+        writer.newStreamGraphBuilder(output)
+
+              .putIndefiniteByteString().putString("ab").putString("cd").endIndefiniteString()
+
+              .putIndefiniteByteString().putString("ef").putString("gh").endIndefiniteString()
+
+              .finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Parser parser = Parser.newBuilder().build();
+
+        Value value1 = parser.read(input, GraphQuery.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, GraphQuery.newBuilder().stream(1).build());
+
+        assertEquals("abcd", value1.string());
+        assertEquals("efgh", value2.string());
     }
 
     private void testString(ValueType valueType, TestValue<String> testValue) {

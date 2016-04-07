@@ -124,7 +124,7 @@ enum Decoder {
                     break;
                 }
                 sb.append(readString(input, position));
-                position += ByteSizes.textStringByteSize(input, position);
+                position += ByteSizes.stringByteSize(input, position);
             }
             return sb.toString();
         }
@@ -273,7 +273,7 @@ enum Decoder {
     private static String readString0(Input input, long offset) {
         short head = transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        long byteSize = ByteSizes.textStringByteSize(input, offset);
+        long byteSize = ByteSizes.stringByteSize(input, offset);
         if (byteSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("Strings of size > Integer.MAX_VALUE are not implemented");
         }

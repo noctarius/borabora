@@ -33,14 +33,6 @@ enum ByteSizes {
         return headByteSize(input, offset);
     }
 
-    static long byteStringByteSize(Input input, long offset) {
-        return stringByteSize(input, offset);
-    }
-
-    static long textStringByteSize(Input input, long offset) {
-        return stringByteSize(input, offset);
-    }
-
     static long sequenceByteSize(Input input, long offset) {
         long elementCount = ElementCounts.sequenceElementCount(input, offset);
         return containerByteSize(input, offset, elementCount);
@@ -74,7 +66,7 @@ enum ByteSizes {
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
             case ADD_INFO_INDEFINITE:
-                return untilBreakCode(input, offset) + 1;
+                return untilBreakCode(input, offset);
             default:
                 return 1;
         }
@@ -96,7 +88,7 @@ enum ByteSizes {
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
             case ADD_INFO_INDEFINITE:
-                return untilBreakCode(input, offset) + 1;
+                return untilBreakCode(input, offset);
             default:
                 return addInfo + 1;
         }
@@ -117,8 +109,6 @@ enum ByteSizes {
             case ADD_INFO_RESERVED_2: // Unassigned
             case ADD_INFO_RESERVED_3: // Unassigned
                 throw new IllegalStateException("28|29|30 are unassigned");
-            case ADD_INFO_INDEFINITE:
-                return untilBreakCode(input, offset);
             default:
                 return addInfo;
         }

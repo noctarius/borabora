@@ -49,7 +49,7 @@ enum Bytes {
     }
 
     static long readUInt32(Input input, long offset) {
-        return readInt32(input, offset) & 0xffffffff;
+        return readInt32(input, offset) & 0xffffffffL;
     }
 
     static long readUInt64(Input input, long offset) {

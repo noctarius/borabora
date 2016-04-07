@@ -222,36 +222,4 @@ enum DateParser {
         return date;
     }
 
-    /**
-     * create a RFC822 representation of a date.
-     * <p/>
-     * Refer to the java.text.SimpleDateFormat javadocs for details on the format of each element.
-     * <p/>
-     *
-     * @param date Date to parse
-     * @return the RFC822 represented by the given Date It returns <b>null</b> if it was not
-     * possible to parse the date.
-     */
-    static String formatRFC822(final Date date, final Locale locale) {
-        final SimpleDateFormat dateFormater = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", locale);
-        dateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return dateFormater.format(date);
-    }
-
-    /**
-     * create a W3C Date Time representation of a date.
-     * <p/>
-     * Refer to the java.text.SimpleDateFormat javadocs for details on the format of each element.
-     * <p/>
-     *
-     * @param date Date to parse
-     * @return the W3C Date Time represented by the given Date It returns <b>null</b> if it was not
-     * possible to parse the date.
-     */
-    static String formatW3CDateTime(final Date date, final Locale locale) {
-        final SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", locale);
-        dateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return dateFormater.format(date);
-    }
-
 }
