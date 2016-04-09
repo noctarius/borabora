@@ -129,10 +129,11 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putNumber(Number value) {
-        validate();
         if (value == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
         } else if (value instanceof BigInteger) {
+            validate();
             offset = Encoder.putNumber((BigInteger) value, offset, output);
         } else if (value instanceof BigDecimal) {
             throw new IllegalArgumentException("BigDecimal is not supported");
@@ -163,8 +164,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putNumber(Float value) {
-        validate();
         if (value == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
         } else {
             return putNumber(value.floatValue());
@@ -181,8 +182,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putNumber(Double value) {
-        validate();
         if (value == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
         } else {
             return putNumber(value.doubleValue());
@@ -199,8 +200,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putHalfPrecision(Float value) {
-        validate();
         if (value == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
         } else {
             return putHalfPrecision(value.floatValue());
@@ -246,8 +247,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putDateTime(Date date) {
-        validate();
         if (date == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
             return builder;
         }
@@ -263,8 +264,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putTimestamp(Instant instant) {
-        validate();
         if (instant == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
             return builder;
         }
@@ -294,8 +295,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putBoolean(Boolean value) {
-        validate();
         if (value == null) {
+            validate();
             offset = Encoder.putNull(offset, output);
         } else {
             putBoolean((boolean) value);
