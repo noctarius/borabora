@@ -81,6 +81,9 @@ final class SequenceImpl
 
     @Override
     public Value get(long sequenceIndex) {
+        if (sequenceIndex > size || sequenceIndex < 0) {
+            return null;
+        }
         long offset = calculateArrayIndex(sequenceIndex);
         return Decoder.readValue(input, offset, processors);
     }

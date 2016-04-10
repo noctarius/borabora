@@ -81,8 +81,8 @@ final class DictionaryImpl
     }
 
     @Override
-    public Iterable<Map.Entry<Value, Value>> entries() {
-        return new EntriesIterable();
+    public Iterator<Map.Entry<Value, Value>> iterator() {
+        return new EntriesIterator();
     }
 
     private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
@@ -147,15 +147,6 @@ final class DictionaryImpl
             } finally {
                 arrayIndex += 2;
             }
-        }
-    }
-
-    private class EntriesIterable
-            implements Iterable<Map.Entry<Value, Value>> {
-
-        @Override
-        public Iterator<Map.Entry<Value, Value>> iterator() {
-            return new EntriesIterator();
         }
     }
 

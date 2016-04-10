@@ -186,8 +186,7 @@ public class DictionaryTestCase
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
-        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
-        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
 
         Map.Entry<Value, Value> entry = iterator.next();
         assertEquals("a", entry.getKey().string());
@@ -218,8 +217,7 @@ public class DictionaryTestCase
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
-        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
-        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
 
         assertTrue(iterator.hasNext());
         Map.Entry<Value, Value> entry = iterator.next();
@@ -257,8 +255,7 @@ public class DictionaryTestCase
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
-        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
-        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
         iterator.next();
     }
 
@@ -270,8 +267,7 @@ public class DictionaryTestCase
         Value value = parser.read(GraphQuery.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
-        Iterable<Map.Entry<Value, Value>> entries = dictionary.entries();
-        Iterator<Map.Entry<Value, Value>> iterator = entries.iterator();
+        Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
         Map.Entry<Value, Value> entry = iterator.next();
         entry.setValue(null);
     }

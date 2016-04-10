@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class SequenceTestCase
@@ -37,6 +38,26 @@ public class SequenceTestCase
         Value value = parser.read(GraphQuery.newBuilder().build());
         Sequence sequence = value.sequence();
         assertEquals(0, sequence.size());
+    }
+
+    @Test
+    public void test_sequence_get_outside_range()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x80");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertNull(sequence.get(1));
+    }
+
+    @Test
+    public void test_sequence_get_negative_outside_range()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x80");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Sequence sequence = value.sequence();
+        assertNull(sequence.get(-1));
     }
 
     @Test
