@@ -38,4 +38,9 @@ final class ByteArrayInput
         return array[(int) offset];
     }
 
+    @Override
+    public boolean offsetValid(long offset) {
+        return offset < array.length;
+    }
+
 }

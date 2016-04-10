@@ -50,7 +50,7 @@ enum ByteSizes {
         return byteSize + Decoder.length(input, majorType, offset + byteSize);
     }
 
-    static long floatingPointOrSimpleByteSize(Input input, long offset) {
+    static long floatOrSimpleByteSize(Input input, long offset) {
         int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:

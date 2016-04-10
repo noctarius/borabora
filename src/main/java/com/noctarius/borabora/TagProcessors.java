@@ -69,6 +69,6 @@ final class TagProcessors {
         short head = Decoder.transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
-        return new StreamValue(majorType, valueType, input, offset, length - headByteSize, processors);
+        return new StreamValue(majorType, valueType, input, offset, processors);
     }
 }

@@ -21,6 +21,8 @@ public interface Input {
     byte read(long offset)
             throws NoSuchByteException;
 
+    boolean offsetValid(long offset);
+
     static Input fromByteArray(byte[] array) {
         return new ByteArrayInput(array);
     }

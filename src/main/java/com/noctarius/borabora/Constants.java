@@ -30,6 +30,15 @@ interface Constants {
     int ADDITIONAL_INFORMATION_MASK = 0b000_11111;
     int OPCODE_BREAK_MASK = 0b111_11111;
 
+    short MT_UNSINGED_INT = 0;
+    short MT_NEGATIVE_INT = 1;
+    short MT_BYTESTRING = 2;
+    short MT_TEXTSTRING = 3;
+    short MT_SEQUENCE = 4;
+    short MT_DICTIONARY = 5;
+    short MT_SEMANTIC_TAG = 6;
+    short MT_FLOAT_SIMPLE = 7;
+
     int FP_VALUE_FALSE = 20;
     int FP_VALUE_TRUE = 21;
     int FP_VALUE_NULL = 22;

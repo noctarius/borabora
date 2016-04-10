@@ -29,11 +29,11 @@ public enum TypeSpecs
     Number("number", ValueTypes.Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, //
             ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float),
     Int("int", Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int),
-    UInt("uint", Number, ValueTypes.UInt, ValueTypes.UBigNum),
-    NInt("nint", Number, ValueTypes.NInt, ValueTypes.NBigNum),
+    UInt("uint", Int, ValueTypes.UInt, ValueTypes.UBigNum),
+    NInt("nint", Int, ValueTypes.NInt, ValueTypes.NBigNum),
     Float("float", Number, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float),
-    UFloat("ufloat", Number, ValueTypes.UFloat),
-    NFloat("nfloat", Number, ValueTypes.NFloat),
+    UFloat("ufloat", Float, ValueTypes.UFloat),
+    NFloat("nfloat", Float, ValueTypes.NFloat),
     String("string", ValueTypes.ByteString, ValueTypes.TextString),
     Dictionary("dictionary", ValueTypes.Dictionary),
     Sequence("sequence", ValueTypes.Sequence),
@@ -46,6 +46,8 @@ public enum TypeSpecs
     EncCBOR("enccbor", SpecializedSemanticTag, TAG_ENCCBOR, ValueTypes.EncCBOR),
     Unknown("unknown", ValueTypes.Unknown),
     Null("null", ValueTypes.Null);
+
+    private static final TypeSpecs[] TYPE_SPECS_VALUES = values();
 
     private final ValueType[] legalValueTypes;
     private final TypeSpec superType;
@@ -87,13 +89,13 @@ public enum TypeSpecs
         if (matchesExact(other)) {
             return true;
         }
-        if (superType == null) {
+        if (superType() == null) {
             return false;
         }
         if (tagId != -1 && other.tagId() != -1 && tagId != other.tagId()) {
             return false;
         }
-        return superType.matches(other);
+        return superType().matches(other);
     }
 
     @Override
@@ -121,7 +123,7 @@ public enum TypeSpecs
             return specializedTag(spec, processors);
         }
 
-        for (TypeSpec typeSpec : values()) {
+        for (TypeSpec typeSpec : TYPE_SPECS_VALUES) {
             if (spec.equals(typeSpec.spec())) {
                 return typeSpec;
             }

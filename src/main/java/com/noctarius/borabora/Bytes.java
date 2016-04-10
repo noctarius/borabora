@@ -61,7 +61,7 @@ enum Bytes {
         long b6 = readUInt8(input, offset + 5);
         long b7 = readUInt8(input, offset + 6);
         long b8 = readUInt8(input, offset + 7);
-        return (b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
+        return ((b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8) & 0xffffffffffffffffL;
     }
 
     static BigInteger readUInt64BigInt(Input input, long offset) {

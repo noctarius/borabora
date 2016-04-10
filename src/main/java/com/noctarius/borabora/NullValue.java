@@ -19,6 +19,8 @@ package com.noctarius.borabora;
 final class NullValue
         implements Value {
 
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
     NullValue() {
     }
 
@@ -64,7 +66,7 @@ final class NullValue
 
     @Override
     public byte[] raw() {
-        return new byte[0];
+        return EMPTY_BYTE_ARRAY;
     }
 
     @Override

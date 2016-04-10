@@ -161,7 +161,7 @@ enum Decoder {
             case SemanticTag:
                 return ByteSizes.semanticTagByteSize(input, offset);
             case FloatingPointOrSimple:
-                return ByteSizes.floatingPointOrSimpleByteSize(input, offset);
+                return ByteSizes.floatOrSimpleByteSize(input, offset);
         }
         throw new IllegalStateException("Illegal MajorType requested");
     }
@@ -214,10 +214,10 @@ enum Decoder {
         return Double.longBitsToDouble(readUInt64(input, offset));
     }
 
-    static long findByDictionaryKey(Input input, Predicate<Value> predicate, long offset, long count,
+    static long findByDictionaryKey(Input input, Predicate<Value> predicate, long offset,
                                     Collection<SemanticTagProcessor> processors) {
         // Search for key element
-        long position = findByPredicate(input, predicate, offset, count, processors);
+        long position = findByPredicate(input, predicate, offset, processors);
         if (position == -1) {
             return -1;
         }
@@ -228,8 +228,7 @@ enum Decoder {
         short head = transientUint8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
-        long length = length(input, mt, offset);
-        return new StreamValue(mt, vt, input, offset, length, processors);
+        return new StreamValue(mt, vt, input, offset, processors);
     }
 
     static int additionInfo(Input input, long offset) {
@@ -241,11 +240,9 @@ enum Decoder {
         return head & ADDITIONAL_INFORMATION_MASK;
     }
 
-    static byte[] readRaw(Input input, long offset, long length) {
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("Extraction of huge data (> Integer.MAX_VALUE) is not supported");
-        }
-
+    static byte[] readRaw(Input input, MajorType majorType, long offset) {
+        long length = length(input, majorType, offset);
+        // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         byte[] data = new byte[(int) length];
         for (int i = 0; i < data.length; i++) {
             data[i] = readInt8(input, offset + i);
@@ -253,19 +250,21 @@ enum Decoder {
         return data;
     }
 
-    private static long findByPredicate(Input input, Predicate<Value> predicate, long offset, long count,
+    private static long findByPredicate(Input input, Predicate<Value> predicate, long offset,
                                         Collection<SemanticTagProcessor> processors) {
 
-        for (int i = 0; i < count; i++) {
+        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
+        do {
             short head = transientUint8(input, offset);
-            MajorType mt = MajorType.findMajorType(head);
-            ValueTypes vt = ValueTypes.valueType(input, offset);
-            long l = length(input, mt, offset);
-            if (predicate.test(new StreamValue(mt, vt, input, offset, l, processors))) {
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueTypes valueType = ValueTypes.valueType(input, offset);
+            streamValue.relocate(majorType, valueType, offset);
+            if (predicate.test(streamValue)) {
                 return offset;
             }
-            offset = skip(input, offset + l);
-        }
+            long length = length(input, majorType, offset);
+            offset = skip(input, offset + length);
+        } while (input.offsetValid(offset) && transientUint8(input, offset) != OPCODE_BREAK_MASK);
         return -1;
 
     }
@@ -273,11 +272,8 @@ enum Decoder {
     private static String readString0(Input input, long offset) {
         short head = transientUint8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        long byteSize = ByteSizes.stringByteSize(input, offset);
-        if (byteSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("Strings of size > Integer.MAX_VALUE are not implemented");
-        }
         int headByteSize = ByteSizes.headByteSize(input, offset);
+        // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         int dataSize = (int) ByteSizes.stringDataSize(input, offset);
         byte[] data = new byte[dataSize];
         for (int i = 0; i < dataSize; i++) {

@@ -42,10 +42,9 @@ final class DictionaryGraphQuery
 
         // Skip head
         long headByteSize = ByteSizes.headByteSize(input, offset);
-        long keyCount = ElementCounts.dictionaryElementCount(input, offset);
         offset += headByteSize;
 
-        return Decoder.findByDictionaryKey(input, predicate, offset, keyCount, processors);
+        return Decoder.findByDictionaryKey(input, predicate, offset, processors);
     }
 
     @Override

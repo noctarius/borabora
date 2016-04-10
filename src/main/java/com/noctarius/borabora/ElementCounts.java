@@ -16,7 +16,11 @@
  */
 package com.noctarius.borabora;
 
-import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
+import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
+import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
+import static com.noctarius.borabora.Constants.ADD_INFO_ONE_BYTE;
+import static com.noctarius.borabora.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
 
 enum ElementCounts {
@@ -37,18 +41,17 @@ enum ElementCounts {
     }
 
     private static long elementCount(Input input, long offset, String elementType, boolean keyValue) {
-        short head = Decoder.transientUint8(input, offset);
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
-            case 24:
+            case ADD_INFO_ONE_BYTE:
                 return Bytes.readUInt8(input, offset + 1);
-            case 25:
+            case ADD_INFO_TWO_BYTES:
                 return Bytes.readUInt16(input, offset + 1);
-            case 26:
+            case ADD_INFO_FOUR_BYTES:
                 return Bytes.readUInt32(input, offset + 1);
-            case 27:
-                throw new IllegalStateException(elementType + " of 64bit sizes are not yet supported");
-            case 31:
+            case ADD_INFO_EIGHT_BYTES:
+                return Bytes.readUInt64(input, offset + 1);
+            case ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset, keyValue);
             default:
                 return addInfo;

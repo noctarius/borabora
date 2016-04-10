@@ -40,8 +40,7 @@ final class ParserImpl
         short head = Decoder.transientUint8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
-        long length = Decoder.length(input, mt, offset);
-        return new StreamValue(mt, vt, input, offset, length, processors);
+        return new StreamValue(mt, vt, input, offset, processors);
     }
 
     @Override

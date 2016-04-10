@@ -19,16 +19,17 @@ package com.noctarius.borabora;
 import java.util.Collection;
 import java.util.Optional;
 
-final class StreamValue
+final class RelocatableStreamValue
         extends AbstractStreamValue {
 
     private final Collection<SemanticTagProcessor> processors;
-    private final MajorType majorType;
-    private final ValueType valueType;
-    private final Input input;
-    private final long offset;
 
-    StreamValue(MajorType majorType, ValueType valueType, Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    private MajorType majorType;
+    private ValueType valueType;
+    private Input input;
+    private long offset;
+
+    RelocatableStreamValue(Input input, Collection<SemanticTagProcessor> processors) {
         super(input, processors);
 
         if (offset == -1) {
@@ -36,9 +37,6 @@ final class StreamValue
         }
 
         this.input = input;
-        this.offset = offset;
-        this.majorType = majorType;
-        this.valueType = valueType;
         this.processors = processors;
     }
 
@@ -65,6 +63,12 @@ final class StreamValue
         }
         long length = Decoder.length(input, majorType(), offset);
         return processor.process(input, offset, length, processors);
+    }
+
+    void relocate(MajorType majorType, ValueType valueType, long offset) {
+        this.majorType = majorType;
+        this.valueType = valueType;
+        this.offset = offset;
     }
 
     private <V> SemanticTagProcessor<V> findProcessor(long offset) {

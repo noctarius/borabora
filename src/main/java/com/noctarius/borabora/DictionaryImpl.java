@@ -86,11 +86,15 @@ final class DictionaryImpl
     }
 
     private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
+        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         for (long i = findValue ? 1 : 0; i < size; i = i + 2) {
             long offset = calculateArrayIndex(i);
-            Value value = Decoder.readValue(input, offset, processors);
-            if (predicate.test(value)) {
-                return value;
+            short head = Decoder.transientUint8(input, offset);
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueType valueType = ValueTypes.valueType(input, offset);
+            streamValue.relocate(majorType, valueType, offset);
+            if (predicate.test(streamValue)) {
+                return streamValue;
             }
         }
         return null;

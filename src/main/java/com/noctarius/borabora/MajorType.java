@@ -16,20 +16,29 @@
  */
 package com.noctarius.borabora;
 
+import static com.noctarius.borabora.Constants.MT_BYTESTRING;
+import static com.noctarius.borabora.Constants.MT_DICTIONARY;
+import static com.noctarius.borabora.Constants.MT_FLOAT_SIMPLE;
+import static com.noctarius.borabora.Constants.MT_NEGATIVE_INT;
+import static com.noctarius.borabora.Constants.MT_SEMANTIC_TAG;
+import static com.noctarius.borabora.Constants.MT_SEQUENCE;
+import static com.noctarius.borabora.Constants.MT_TEXTSTRING;
+import static com.noctarius.borabora.Constants.MT_UNSINGED_INT;
+
 public enum MajorType {
-    UnsignedInteger(0, 0b000, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    NegativeInteger(1, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    ByteString(2, 0b010, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    TextString(3, 0b011, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    Sequence(4, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts.SEQUENCE_ELEMENT_COUNT),
-    Dictionary(5, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts.DICTIONARY_ELEMENT_COUNT),
-    SemanticTag(6, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    FloatingPointOrSimple(7, 0b111, false, ByteSizes::floatingPointOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    UnsignedInteger(MT_UNSINGED_INT, 0b000, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    NegativeInteger(MT_NEGATIVE_INT, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    ByteString(MT_BYTESTRING, 0b010, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    TextString(MT_TEXTSTRING, 0b011, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    Sequence(MT_SEQUENCE, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts.SEQUENCE_ELEMENT_COUNT),
+    Dictionary(MT_DICTIONARY, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts.DICTIONARY_ELEMENT_COUNT),
+    SemanticTag(MT_SEMANTIC_TAG, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
+    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false, ByteSizes::floatOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
     Unknown(-1, -1, false, (s, i) -> 0, (s, i) -> 0);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;
 
-    private final int typeId;
+    private final short typeId;
     private final int mask;
     private final boolean indefinite;
     private final ObjectLongToLongFunction<Input> byteSize;
@@ -38,14 +47,14 @@ public enum MajorType {
     MajorType(int typeId, int mask, boolean indefinite, ObjectLongToLongFunction<Input> byteSize,
               ObjectLongToLongFunction<Input> elementCount) {
 
-        this.typeId = typeId;
+        this.typeId = (short) typeId;
         this.mask = mask;
         this.indefinite = indefinite;
         this.byteSize = byteSize;
         this.elementCount = elementCount;
     }
 
-    public int typeId() {
+    public short typeId() {
         return typeId;
     }
 
@@ -67,12 +76,26 @@ public enum MajorType {
     }
 
     public static MajorType findMajorType(short head) {
-        for (MajorType mt : values()) {
-            if (mt.match(head)) {
-                return mt;
-            }
+        switch ((head & 0xff) >>> 5) {
+            case MT_UNSINGED_INT:
+                return UnsignedInteger;
+            case MT_NEGATIVE_INT:
+                return NegativeInteger;
+            case MT_BYTESTRING:
+                return ByteString;
+            case MT_TEXTSTRING:
+                return TextString;
+            case MT_SEQUENCE:
+                return Sequence;
+            case MT_DICTIONARY:
+                return Dictionary;
+            case MT_SEMANTIC_TAG:
+                return SemanticTag;
+            case MT_FLOAT_SIMPLE:
+                return FloatingPointOrSimple;
+            default:
+                throw new IllegalArgumentException("Unknown MajorType: " + ((head & HIGH_BITS_MASK) >>> 5));
         }
-        throw new IllegalArgumentException("Unknown MajorType: " + ((head & HIGH_BITS_MASK) >>> 5));
     }
 
 }

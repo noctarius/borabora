@@ -48,9 +48,14 @@ final class SequenceImpl
 
     @Override
     public boolean contains(Predicate<Value> predicate) {
+        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         for (long i = 0; i < size; i++) {
-            Value value = get(i);
-            if (predicate.test(value)) {
+            long offset = calculateArrayIndex(i);
+            short head = Decoder.transientUint8(input, offset);
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueType valueType = ValueTypes.valueType(input, offset);
+            streamValue.relocate(majorType, valueType, offset);
+            if (predicate.test(streamValue)) {
                 return true;
             }
         }
@@ -76,19 +81,13 @@ final class SequenceImpl
 
     @Override
     public Value get(long sequenceIndex) {
-        int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
-        int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);
-        long position = elementIndexes[baseIndex][elementIndex];
-        short head = Decoder.transientUint8(input, position);
-        MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(input, position);
-        long length = majorType.byteSize(input, position);
-        return new StreamValue(majorType, valueType, input, position, length, processors);
+        long offset = calculateArrayIndex(sequenceIndex);
+        return Decoder.readValue(input, offset, processors);
     }
 
-    private long calculateArrayIndex(long offset) {
-        int baseIndex = (int) (offset / Integer.MAX_VALUE);
-        int elementIndex = (int) (offset % Integer.MAX_VALUE);
+    private long calculateArrayIndex(long sequenceIndex) {
+        int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
+        int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);
         return elementIndexes[baseIndex][elementIndex];
     }
 

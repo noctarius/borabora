@@ -177,57 +177,57 @@ public class ByteSizesTestCase {
     @Test
     public void test_floatingpoint_or_simplebytesize_in_addinfo() {
         Input input = Input.fromByteArray(new byte[]{23});
-        assertEquals(1, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        assertEquals(1, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test
     public void test_floatingpoint_or_simplebytesize_one_byte() {
         Input input = Input.fromByteArray(new byte[]{24, (byte) 0xff});
-        assertEquals(2, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        assertEquals(2, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test
     public void test_floatingpoint_or_simplebytesize_two_byte() {
         Input input = Input.fromByteArray(new byte[]{25, (byte) 0xff, (byte) 0xff});
-        assertEquals(3, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        assertEquals(3, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test
     public void test_floatingpoint_or_simplebytesize_four_byte() {
         Input input = Input.fromByteArray(new byte[]{26, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff});
-        assertEquals(5, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        assertEquals(5, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test
     public void test_floatingpoint_or_simplebytesize_64bit() {
         Input input = Input.fromByteArray(new byte[]{27});
-        ByteSizes.floatingPointOrSimpleByteSize(input, 0);
-        assertEquals(9, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        ByteSizes.floatOrSimpleByteSize(input, 0);
+        assertEquals(9, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test
     public void test_floatingpoint_or_simplebytesize_indefinite() {
         Input input = Input.fromByteArray(new byte[]{31, 0, 0, 0, 0, 0, (byte) 0xff});
-        ByteSizes.floatingPointOrSimpleByteSize(input, 0);
-        assertEquals(7, ByteSizes.floatingPointOrSimpleByteSize(input, 0));
+        ByteSizes.floatOrSimpleByteSize(input, 0);
+        assertEquals(7, ByteSizes.floatOrSimpleByteSize(input, 0));
     }
 
     @Test(expected = IllegalStateException.class)
     public void test_floatingpoint_or_simplebytesize_reserved1() {
         Input input = Input.fromByteArray(new byte[]{28});
-        ByteSizes.floatingPointOrSimpleByteSize(input, 0);
+        ByteSizes.floatOrSimpleByteSize(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void test_floatingpoint_or_simplebytesize_reserved2() {
         Input input = Input.fromByteArray(new byte[]{29});
-        ByteSizes.floatingPointOrSimpleByteSize(input, 0);
+        ByteSizes.floatOrSimpleByteSize(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void test_floatingpoint_or_simplebytesize_reserved3() {
         Input input = Input.fromByteArray(new byte[]{30});
-        ByteSizes.floatingPointOrSimpleByteSize(input, 0);
+        ByteSizes.floatOrSimpleByteSize(input, 0);
     }
 
 }
