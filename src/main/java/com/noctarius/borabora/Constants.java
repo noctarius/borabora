@@ -89,4 +89,6 @@ interface Constants {
 
     DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd't'HH:mm:ss.SSSz", Locale.US);
 
+    byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
 }

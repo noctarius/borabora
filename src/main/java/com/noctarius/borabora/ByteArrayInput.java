@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import sun.misc.Unsafe;
+
 final class ByteArrayInput
         implements Input {
 
@@ -36,6 +38,22 @@ final class ByteArrayInput
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         return array[(int) offset];
+    }
+
+    @Override
+    public long read(byte[] array, long offset, long length)
+            throws NoSuchByteException {
+
+        if (offset > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
+        }
+        if (offset < 0 || length < 0 || offset >= this.array.length || offset + length > this.array.length) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
+        }
+
+        long l = Math.min(length, this.array.length - offset);
+        System.arraycopy(this.array, (int) offset, array, 0, (int) l);
+        return l;
     }
 
     @Override

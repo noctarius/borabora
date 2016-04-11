@@ -27,7 +27,27 @@ final class ByteArrayOutput
 
     @Override
     public void write(long offset, byte value) {
+        if (offset > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
+        }
+        if (offset < 0 || offset >= array.length) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
+        }
         array[(int) offset] = value;
+    }
+
+    @Override
+    public long write(byte[] array, long offset, long length) {
+        if (offset > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
+        }
+        if (offset < 0 || length < 0 || offset >= this.array.length || offset + length > this.array.length) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of writable data");
+        }
+
+        long l = Math.min(length, this.array.length - offset);
+        System.arraycopy(array, (int) offset, this.array, 0, (int) l);
+        return l;
     }
 
 }

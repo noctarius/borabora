@@ -32,4 +32,10 @@ final class ByteArrayOutputStreamOutput
         baos.write(value);
     }
 
+    @Override
+    public long write(byte[] array, long offset, long length) {
+        baos.write(array, 0, (int) length);
+        return length;
+    }
+
 }

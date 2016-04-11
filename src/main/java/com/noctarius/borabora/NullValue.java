@@ -16,10 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
+
 final class NullValue
         implements Value {
-
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     NullValue() {
     }

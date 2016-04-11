@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.Bytes.readInt8;
 import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
 import static com.noctarius.borabora.Bytes.readUInt64;
@@ -28,6 +27,7 @@ import static com.noctarius.borabora.Bytes.readUInt64BigInt;
 import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.ASCII;
+import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.Constants.FP_VALUE_DOUBLE_PRECISION;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
 import static com.noctarius.borabora.Constants.FP_VALUE_HALF_PRECISION;
@@ -242,11 +242,12 @@ enum Decoder {
 
     static byte[] readRaw(Input input, MajorType majorType, long offset) {
         long length = length(input, majorType, offset);
+        if (length == 0) {
+            return EMPTY_BYTE_ARRAY;
+        }
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         byte[] data = new byte[(int) length];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = readInt8(input, offset + i);
-        }
+        input.read(data, offset, length);
         return data;
     }
 
@@ -275,10 +276,12 @@ enum Decoder {
         int headByteSize = ByteSizes.headByteSize(input, offset);
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         int dataSize = (int) ByteSizes.stringDataSize(input, offset);
-        byte[] data = new byte[dataSize];
-        for (int i = 0; i < dataSize; i++) {
-            data[i] = readInt8(input, offset + headByteSize + i);
+        // Empty string
+        if (dataSize == 0) {
+            return "";
         }
+        byte[] data = new byte[dataSize];
+        input.read(data, offset + headByteSize, dataSize);
         if (MajorType.ByteString == majorType) {
             return new String(data, ASCII);
         }

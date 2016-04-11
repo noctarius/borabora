@@ -23,8 +23,14 @@ public interface Input {
 
     boolean offsetValid(long offset);
 
+    long read(byte[] array, long offset, long length);
+
     static Input fromByteArray(byte[] array) {
         return new ByteArrayInput(array);
+    }
+
+    static Input fromNative(long size) {
+        return new UnsafeByteInput(size);
     }
 
 }

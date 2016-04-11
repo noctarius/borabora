@@ -236,9 +236,7 @@ enum Encoder {
 
     private static long putString(byte[] data, MajorType majorType, long offset, Output output) {
         offset = encodeLengthAndValue(majorType, data.length, offset, output);
-        for (int i = 0; i < data.length; i++) {
-            offset = putInt8(data[i], offset, output);
-        }
+        offset += output.write(data, offset, data.length);
         return offset;
     }
 
