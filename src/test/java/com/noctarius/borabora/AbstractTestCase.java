@@ -40,7 +40,7 @@ public abstract class AbstractTestCase {
 
     public static SimplifiedTestParser executeStreamWriterTest(Consumer<StreamGraphBuilder> test) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = Output.toByteArrayOutputStream(baos);
+        Output output = Output.toOutputStream(baos);
 
         StreamWriter streamWriter = StreamWriter.newBuilder().build();
 

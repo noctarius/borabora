@@ -16,26 +16,35 @@
  */
 package com.noctarius.borabora;
 
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-final class ByteArrayOutputStreamOutput
+final class OutputStreamOutput
         implements Output {
 
-    private final ByteArrayOutputStream baos;
+    private final OutputStream out;
 
-    ByteArrayOutputStreamOutput(ByteArrayOutputStream baos) {
-        this.baos = baos;
+    OutputStreamOutput(OutputStream out) {
+        this.out = out;
     }
 
     @Override
     public void write(long offset, byte value) {
-        baos.write(value);
+        try {
+            out.write(value);
+        } catch (IOException e) {
+            throw new NoSuchByteException(offset, e);
+        }
     }
 
     @Override
     public long write(byte[] array, long offset, long length) {
-        baos.write(array, 0, (int) length);
-        return length;
+        try {
+            out.write(array, 0, (int) length);
+            return length;
+        } catch (IOException e) {
+            throw new NoSuchByteException(offset, e);
+        }
     }
 
 }

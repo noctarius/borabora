@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 public interface Output {
 
@@ -28,8 +28,8 @@ public interface Output {
         return new ByteArrayOutput(array);
     }
 
-    static Output toByteArrayOutputStream(ByteArrayOutputStream baos) {
-        return new ByteArrayOutputStreamOutput(baos);
+    static Output toOutputStream(OutputStream out) {
+        return new OutputStreamOutput(out);
     }
 
 }

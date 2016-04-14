@@ -96,7 +96,7 @@ public class StringTestCase
     @Test
     public void test_multi_indefinite_bytestreams() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = Output.toByteArrayOutputStream(baos);
+        Output output = Output.toOutputStream(baos);
         StreamWriter writer = StreamWriter.newBuilder().build();
         writer.newStreamGraphBuilder(output)
 
