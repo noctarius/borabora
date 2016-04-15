@@ -18,6 +18,9 @@ package com.noctarius.borabora;
 
 import java.util.function.Supplier;
 
+import static com.noctarius.borabora.ValueTypes.ByteString;
+import static com.noctarius.borabora.ValueTypes.TextString;
+
 abstract class AbstractValue
         implements Value {
 
@@ -49,9 +52,8 @@ abstract class AbstractValue
 
     protected void matchStringValueType(ValueType actual) {
         ValueType identity = actual.identity();
-        if (ValueTypes.ByteString != identity && ValueTypes.TextString != identity) {
-
-            String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, ValueTypes.ByteString, ValueTypes.TextString, identity);
+        if (ValueTypes.String != identity) {
+            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, ValueTypes.String, ByteString, TextString, identity);
             throw new WrongTypeException(msg);
         }
     }

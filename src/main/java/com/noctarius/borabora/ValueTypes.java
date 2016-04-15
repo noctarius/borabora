@@ -35,15 +35,16 @@ import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.Constants.TAG_URI;
 
-enum ValueTypes
+public enum ValueTypes
         implements ValueType, TagProcessor {
 
     Number(Value::number),
     Int(Value::number, Number),
     UInt(Value::number, Int),
     NInt(Value::number, Int),
-    ByteString(Value::string),
-    TextString(Value::string),
+    String(Value::string),
+    ByteString(Value::string, String),
+    TextString(Value::string, String),
     Sequence(Value::sequence),
     Dictionary(Value::dictionary),
     Float(Value::number, Number),

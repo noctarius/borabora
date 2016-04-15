@@ -312,7 +312,7 @@ abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public SequenceBuilder<B> putSequence(int elements) {
+    public SequenceBuilder<B> putSequence(long elements) {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Sequence, elements, offset, output);
         return new SequenceBuilderImpl<>(elements, output, builder);
@@ -326,7 +326,7 @@ abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public DictionaryBuilder<B> putDictionary(int elements) {
+    public DictionaryBuilder<B> putDictionary(long elements) {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Dictionary, elements, offset, output);
         return new DictionaryBuilderImpl<>(elements, output, builder);
@@ -379,11 +379,11 @@ abstract class AbstractStreamValueBuilder<B>
             implements SequenceBuilder<B> {
 
         private final B builder;
-        private final int maxElements;
+        private final long maxElements;
 
-        private int elements;
+        private long elements;
 
-        SequenceBuilderImpl(int maxElements, Output output, B builder) {
+        SequenceBuilderImpl(long maxElements, Output output, B builder) {
             super(offset, output);
             this.maxElements = maxElements;
             this.builder = builder;
@@ -412,11 +412,11 @@ abstract class AbstractStreamValueBuilder<B>
 
         private final Output output;
         private final B builder;
-        private final int maxElements;
+        private final long maxElements;
 
-        private int elements;
+        private long elements;
 
-        DictionaryBuilderImpl(int maxElements, Output output, B builder) {
+        DictionaryBuilderImpl(long maxElements, Output output, B builder) {
             this.output = output;
             this.builder = builder;
             this.maxElements = maxElements;

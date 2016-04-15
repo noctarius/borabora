@@ -74,10 +74,10 @@ public interface ValueBuilder<B> {
 
     SequenceBuilder<B> putSequence();
 
-    SequenceBuilder<B> putSequence(int elements);
+    SequenceBuilder<B> putSequence(long elements);
 
     DictionaryBuilder<B> putDictionary();
 
-    DictionaryBuilder<B> putDictionary(int elements);
+    DictionaryBuilder<B> putDictionary(long elements);
 
 }
