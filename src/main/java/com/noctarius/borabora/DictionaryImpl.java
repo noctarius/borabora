@@ -85,6 +85,17 @@ final class DictionaryImpl
         return new EntriesIterator();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (long i = 0; i < size; i += 2) {
+            Value key = Decoder.readValue(input, calculateArrayIndex(i), processors);
+            Value value = Decoder.readValue(input, calculateArrayIndex(i + 1), processors);
+            sb.append(key).append('=').append(value).append(", ");
+        }
+        return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+    }
+
     private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
         RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         for (long i = findValue ? 1 : 0; i < size; i = i + 2) {

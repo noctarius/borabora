@@ -88,6 +88,15 @@ final class SequenceImpl
         return Decoder.readValue(input, offset, processors);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (long i = 0; i < size; i++) {
+            sb.append(get(i)).append(", ");
+        }
+        return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+    }
+
     private long calculateArrayIndex(long sequenceIndex) {
         int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
         int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);

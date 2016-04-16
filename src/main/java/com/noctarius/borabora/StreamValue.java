@@ -53,6 +53,15 @@ final class StreamValue
     }
 
     @Override
+    public String toString() {
+        return "StreamValue{" +
+                "valueType=" + valueType +
+                ", offset=" + offset +
+                ", value=" + byValueType() +
+                '}';
+    }
+
+    @Override
     protected long offset() {
         return offset;
     }
