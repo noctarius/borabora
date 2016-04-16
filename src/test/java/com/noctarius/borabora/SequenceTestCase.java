@@ -16,8 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.StreamGraphBuilder;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -293,6 +295,84 @@ public class SequenceTestCase
             assertEqualsNumber(i + 1, parser.read(GraphQuery.newBuilder().sequence(i).build()).number());
             assertEqualsNumber(i + 1, sequence.get(i).number());
         }
+    }
+
+    @Test
+    public void test_indefinite_sequence_dictionary_indexes()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        StreamWriter writer = StreamWriter.newBuilder().build();
+        StreamGraphBuilder graphBuilder = writer.newStreamGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putSequence()
+
+                    .putDictionary(2) //
+                    .putEntry().putString("key-1").putString("value-1").endEntry() //
+                    .putEntry().putString("key-2").putString("value-2").endEntry() //
+                    .endDictionary()
+
+                    .putDictionary(2) //
+                    .putEntry().putString("key-3").putString("value-3").endEntry() //
+                    .putEntry().putString("key-4").putString("value-4").endEntry() //
+                    .endDictionary()
+
+                    .endSequence().finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Parser parser = Parser.newBuilder().build();
+
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        assertTrue(value.valueType().matches(ValueTypes.Sequence));
+
+        Sequence sequence = value.sequence();
+        assertEquals(2, sequence.size());
+
+        Value entry1 = sequence.get(0);
+        Value entry2 = sequence.get(1);
+
+        assertTrue(entry1.valueType().matches(ValueTypes.Dictionary));
+        assertTrue(entry2.valueType().matches(ValueTypes.Dictionary));
+    }
+
+    @Test
+    public void test_sequence_dictionary_indexes()
+            throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        StreamWriter writer = StreamWriter.newBuilder().build();
+        StreamGraphBuilder graphBuilder = writer.newStreamGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putSequence(2)
+
+                    .putDictionary(2) //
+                    .putEntry().putString("key-1").putString("value-1").endEntry() //
+                    .putEntry().putString("key-2").putString("value-2").endEntry() //
+                    .endDictionary()
+
+                    .putDictionary(2) //
+                    .putEntry().putString("key-3").putString("value-3").endEntry() //
+                    .putEntry().putString("key-4").putString("value-4").endEntry() //
+                    .endDictionary()
+
+                    .endSequence().finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Parser parser = Parser.newBuilder().build();
+
+        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        assertTrue(value.valueType().matches(ValueTypes.Sequence));
+
+        Sequence sequence = value.sequence();
+        assertEquals(2, sequence.size());
+
+        Value entry1 = sequence.get(0);
+        Value entry2 = sequence.get(1);
+
+        assertTrue(entry1.valueType().matches(ValueTypes.Dictionary));
+        assertTrue(entry2.valueType().matches(ValueTypes.Dictionary));
     }
 
     private void test_sequence(String hex)

@@ -40,7 +40,7 @@ enum ByteSizes {
 
     static long dictionaryByteSize(Input input, long offset) {
         long elementCount = ElementCounts.sequenceElementCount(input, offset);
-        return containerByteSize(input, offset, elementCount / 2);
+        return containerByteSize(input, offset, elementCount * 2);
     }
 
     static long semanticTagByteSize(Input input, long offset) {
