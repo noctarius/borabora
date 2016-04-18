@@ -62,7 +62,7 @@ final class StreamValue
     }
 
     @Override
-    protected long offset() {
+    public long offset() {
         return offset;
     }
 

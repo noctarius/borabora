@@ -51,7 +51,7 @@ final class RelocatableStreamValue
     }
 
     @Override
-    protected long offset() {
+    public long offset() {
         return offset;
     }
 

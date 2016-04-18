@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.GraphQueryBuilder;
 
 import java.util.Collection;
 
+import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.Value.NULL_VALUE;
 
 final class ParserImpl
@@ -52,6 +53,30 @@ final class ParserImpl
         // ->(\?)?(.+){1} <- expected result type, if ? is defined and type does not match result=null, otherwise exception
 
         return read(input, prepareQuery(query));
+    }
+
+    @Override
+    public Value read(Input input, long offset) {
+        short head = Decoder.transientUint8(input, offset);
+        MajorType mt = MajorType.findMajorType(head);
+        ValueType vt = ValueTypes.valueType(input, offset);
+        return new StreamValue(mt, vt, input, offset, processors);
+    }
+
+    @Override
+    public byte[] extract(Input input, GraphQuery graphQuery) {
+        Value value = read(input, graphQuery);
+        return value == null ? EMPTY_BYTE_ARRAY : value.raw();
+    }
+
+    @Override
+    public byte[] extract(Input input, String query) {
+        return extract(input, prepareQuery(query));
+    }
+
+    @Override
+    public byte[] extract(Input input, long offset) {
+        return read(input, offset).raw();
     }
 
     @Override

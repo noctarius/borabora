@@ -74,4 +74,9 @@ final class NullValue
         return null;
     }
 
+    @Override
+    public long offset() {
+        return -1;
+    }
+
 }

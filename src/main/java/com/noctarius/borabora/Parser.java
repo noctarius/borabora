@@ -24,6 +24,14 @@ public interface Parser {
 
     Value read(Input input, String query);
 
+    Value read(Input input, long offset);
+
+    byte[] extract(Input input, GraphQuery graphQuery);
+
+    byte[] extract(Input input, String query);
+
+    byte[] extract(Input input, long offset);
+
     GraphQuery prepareQuery(String query);
 
     static ParserBuilder newBuilder() {

@@ -40,4 +40,6 @@ public interface Value {
 
     <V> V byValueType();
 
+    long offset();
+
 }

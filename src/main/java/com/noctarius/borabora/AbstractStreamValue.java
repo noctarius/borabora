@@ -90,8 +90,6 @@ abstract class AbstractStreamValue
         return supplier.get();
     }
 
-    protected abstract long offset();
-
     protected abstract <T> T extractTag();
 
 }
