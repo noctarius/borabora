@@ -54,8 +54,24 @@ final class SequenceImpl
             short head = Decoder.transientUint8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
+
             streamValue.relocate(majorType, valueType, offset);
             if (predicate.test(streamValue)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean contains(StreamPredicate predicate) {
+        for (long i = 0; i < size; i++) {
+            long offset = calculateArrayIndex(i);
+            short head = Decoder.transientUint8(input, offset);
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueType valueType = ValueTypes.valueType(input, offset);
+
+            if (predicate.test(majorType, valueType, input, offset, processors)) {
                 return true;
             }
         }

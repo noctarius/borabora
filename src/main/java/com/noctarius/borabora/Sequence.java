@@ -63,6 +63,16 @@ public interface Sequence
     boolean contains(Predicate<Value> predicate);
 
     /**
+     * <p>Matches values of entries against the provided {@link StreamPredicate} matcher implementation and returns
+     * <tt>true</tt> if a match is found, otherwise <tt>false</tt>.</p>
+     * <p>This process is lazy and stops whenever the first value matches.</p>
+     *
+     * @param predicate the {@link StreamPredicate} to match the value
+     * @return <tt>true</tt> if the value if found, otherwise <tt>false</tt>
+     */
+    boolean contains(StreamPredicate predicate);
+
+    /**
      * <p>Returns a lazy evaluating {@link Iterator} implementation to traverse all values in the sequence
      * represented by this instance. That means, whenever the traversal ends, no more elements will be evaluated.</p>
      *
