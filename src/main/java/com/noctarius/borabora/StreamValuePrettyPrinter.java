@@ -58,7 +58,6 @@ public class StreamValuePrettyPrinter {
         }
     }
 
-
     private static void printIndentation(int indentation, StringBuilder sb) {
         for (int i = 0; i < indentation; i++) {
             sb.append("  ");

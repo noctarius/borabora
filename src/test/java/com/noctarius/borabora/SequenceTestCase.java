@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static com.noctarius.borabora.StreamPredicates.matchInt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -210,6 +211,18 @@ public class SequenceTestCase
     }
 
     @Test
+    public void test_stream_contains_value_true()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+
+        assertTrue(sequence.contains(matchInt(2)));
+    }
+
+    @Test
     public void test_contains_value_false()
             throws Exception {
 
@@ -219,6 +232,18 @@ public class SequenceTestCase
         Sequence sequence = value.sequence();
 
         assertFalse(sequence.contains((v) -> v.number().longValue() == 30));
+    }
+
+    @Test
+    public void test_stream_contains_value_false()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+
+        assertFalse(sequence.contains(matchInt(30)));
     }
 
     @Test

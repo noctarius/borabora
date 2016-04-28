@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * A helper class that parses Dates out of Strings with date time in RFC822 and W3CDateTime formats

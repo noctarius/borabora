@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.StreamPredicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -56,6 +57,21 @@ public class DictionaryTestCase
         assertEquals("C", dictionary.get((v) -> "c".equals(v.string())).string());
         assertEquals("D", dictionary.get((v) -> "d".equals(v.string())).string());
         assertEquals("E", dictionary.get((v) -> "e".equals(v.string())).string());
+    }
+
+    @Test
+    public void test_stream_multi_element_dictionary()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+        assertEquals("A", dictionary.get(matchString("a")).string());
+        assertEquals("B", dictionary.get(matchString("b")).string());
+        assertEquals("C", dictionary.get(matchString("c")).string());
+        assertEquals("D", dictionary.get(matchString("d")).string());
+        assertEquals("E", dictionary.get(matchString("e")).string());
     }
 
     @Test
@@ -327,6 +343,16 @@ public class DictionaryTestCase
     }
 
     @Test
+    public void test_dictionary_stream_get_null_result()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xa0");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+        Dictionary dictionary = value.dictionary();
+        assertNull(dictionary.get((m, v, i, o, p) -> false));
+    }
+
+    @Test
     public void test_dictionary_contains_key()
             throws Exception {
 
@@ -340,6 +366,19 @@ public class DictionaryTestCase
     }
 
     @Test
+    public void test_dictionary_stream_contains_key()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+
+        assertTrue(dictionary.containsKey(matchString("b")));
+        assertFalse(dictionary.containsKey(matchString("z")));
+    }
+
+    @Test
     public void test_dictionary_contains_value()
             throws Exception {
 
@@ -350,6 +389,19 @@ public class DictionaryTestCase
 
         assertTrue(dictionary.containsValue((v) -> "B".equals(v.string())));
         assertFalse(dictionary.containsValue((v) -> "Z".equals(v.string())));
+    }
+
+    @Test
+    public void test_dictionary_stream_contains_value()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+
+        assertTrue(dictionary.containsValue(matchString("B")));
+        assertFalse(dictionary.containsValue(matchString("Z")));
     }
 
     @Test
@@ -397,6 +449,23 @@ public class DictionaryTestCase
 
         assertTrue(dictionary.get((v) -> "Fun".equals(v.string())).bool());
         assertEqualsNumber(-2, dictionary.get((v) -> "Amt".equals(v.string())).number());
+    }
+
+    @Test
+    public void test_indefinite_dictionary_stream_bool_number()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xbf6346756ef563416d7421ff");
+        Value value = parser.read(GraphQuery.newBuilder().build());
+
+        assertEquals(ValueTypes.Dictionary, value.valueType());
+
+        Dictionary dictionary = value.dictionary();
+
+        assertEquals(2, dictionary.size());
+
+        assertTrue(dictionary.get(matchString("Fun")).bool());
+        assertEqualsNumber(-2, dictionary.get(matchString("Amt")).number());
     }
 
     @Test

@@ -30,7 +30,8 @@ import java.util.function.Predicate;
  * since objects are not eagerly deserialized / read. Additionally the dictionary
  * supports 64bit indexes sizes.</p>
  */
-public interface Dictionary extends Iterable<Map.Entry<Value, Value>> {
+public interface Dictionary
+        extends Iterable<Map.Entry<Value, Value>> {
 
     /**
      * Returns the size of the dictionary in number of key-value pairs (entries), not elements

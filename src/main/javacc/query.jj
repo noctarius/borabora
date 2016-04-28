@@ -33,7 +33,7 @@ PARSER_BEGIN(QueryParser)
      * <tt>#</tt> Initial stream accessor, can be followed by an optional uint index <tt>#123</tt><br/>
      * <tt>{}</tt> Dictionary query, must have identifier defined, legal types include string, int, float, number
      * <tt>{"string"}, {1234}, {1234.56}</tt><br/>
-     * <tt>()</tt> Sequence query, must have identifier defined, legal types is uint <tt>(123)</tt><br/>
+     * <tt>(index)</tt> Sequence query, must have identifier defined, legal types is uint <tt>(123)</tt><br/>
      * <tt>-></tt> Type match, must have one of the following type information defined:
      * <ul>
      *   <li><tt>int</tt>: signed int (up to 64 bits)</li>

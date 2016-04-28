@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import sun.misc.Unsafe;
-
 final class ByteArrayInput
         implements Input {
 
