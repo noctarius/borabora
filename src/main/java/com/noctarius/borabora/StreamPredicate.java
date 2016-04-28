@@ -14,30 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora;
 
-import com.noctarius.borabora.GraphQuery;
-import com.noctarius.borabora.TypeSpec;
-import com.noctarius.borabora.Value;
+import java.util.Collection;
 
-import java.util.function.Predicate;
+public interface StreamPredicate {
 
-public interface GraphQueryBuilder {
-
-    GraphQueryBuilder sequence(long index);
-
-    GraphQueryBuilder dictionary(Predicate<Value> predicate);
-
-    GraphQueryBuilder dictionary(String key);
-
-    GraphQueryBuilder dictionary(double key);
-
-    GraphQueryBuilder dictionary(long key);
-
-    GraphQueryBuilder nullOrType(TypeSpec typeSpec);
-
-    GraphQueryBuilder requireType(TypeSpec typeSpec);
-
-    GraphQuery build();
+    boolean test(MajorType majorType, ValueType valueType, Input input, long offset, Collection<SemanticTagProcessor> processors);
 
 }

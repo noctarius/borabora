@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
-import static com.noctarius.borabora.DictionaryGraphQuery.matchString;
 import static com.noctarius.borabora.Value.NULL_VALUE;
 import static org.junit.Assert.assertSame;
 
@@ -63,7 +62,7 @@ public class GraphQueryTestCase
     public void code_coverage_for_unused_but_generated_methods()
             throws Exception {
 
-        GraphQuery query = GraphQuery.newBuilder().stream(1).dictionary(matchString("b")).sequence(1).build();
+        GraphQuery query = GraphQuery.newBuilder().stream(1).dictionary("b").sequence(1).build();
         query.toString();
     }
 

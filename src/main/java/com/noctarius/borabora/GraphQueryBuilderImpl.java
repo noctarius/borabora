@@ -21,7 +21,13 @@ import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
+
+import static com.noctarius.borabora.DictionaryGraphQuery.floatMatcher;
+import static com.noctarius.borabora.DictionaryGraphQuery.intMatcher;
+import static com.noctarius.borabora.DictionaryGraphQuery.predicateMatcher;
+import static com.noctarius.borabora.DictionaryGraphQuery.stringMatcher;
 
 final class GraphQueryBuilderImpl
         implements StreamGraphQueryBuilder {
@@ -42,7 +48,27 @@ final class GraphQueryBuilderImpl
 
     @Override
     public GraphQueryBuilder dictionary(Predicate<Value> predicate) {
-        graphQueries.add(new DictionaryGraphQuery(predicate));
+        Objects.requireNonNull(predicate, "predicate must not be null");
+        graphQueries.add(predicateMatcher(predicate));
+        return this;
+    }
+
+    @Override
+    public GraphQueryBuilder dictionary(String key) {
+        Objects.requireNonNull(key, "key must not be null");
+        graphQueries.add(stringMatcher(key));
+        return this;
+    }
+
+    @Override
+    public GraphQueryBuilder dictionary(double key) {
+        graphQueries.add(floatMatcher(key));
+        return this;
+    }
+
+    @Override
+    public GraphQueryBuilder dictionary(long key) {
+        graphQueries.add(intMatcher(key));
         return this;
     }
 

@@ -146,19 +146,19 @@ void dictionary(): {
     {
         if (intToken != null) {
             long value = Long.parseLong(intToken.image);
-            queryBuilder.dictionary(DictionaryGraphQuery.matchInt(value));
+            queryBuilder.dictionary(value);
         } else if (floatToken != null) {
             try {
                 NumberFormat format = DecimalFormat.getInstance(Locale.ENGLISH);
                 double value = format.parse(floatToken.image).doubleValue();
-                queryBuilder.dictionary(DictionaryGraphQuery.matchFloat(value));
+                queryBuilder.dictionary(value);
             } catch (java.text.ParseException e) {
                 throw new QueryParserException(e);
             }
         } else if (stringToken != null) {
             String string = stringToken.image;
             string = string.substring(1, string.length() - 1);
-            queryBuilder.dictionary(DictionaryGraphQuery.matchString(string));
+            queryBuilder.dictionary(string);
         }
     }
 }

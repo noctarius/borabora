@@ -28,7 +28,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
 
-import static com.noctarius.borabora.DictionaryGraphQuery.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -515,8 +514,8 @@ public class StreamWriterTestCase
                     .endDictionary();
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().dictionary(matchString("a")).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().dictionary(matchString("b")).build());
+        Value value1 = parser.read(GraphQuery.newBuilder().dictionary("a").build());
+        Value value2 = parser.read(GraphQuery.newBuilder().dictionary("b").build());
 
         assertEquals("A", value1.string());
         assertEquals("B", value2.string());

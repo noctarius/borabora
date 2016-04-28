@@ -23,14 +23,17 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static com.noctarius.borabora.DictionaryGraphQuery.matchFloat;
-import static com.noctarius.borabora.DictionaryGraphQuery.matchInt;
-import static com.noctarius.borabora.DictionaryGraphQuery.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class QueryLanguageTestCase
         extends AbstractTestCase {
+
+    // >#{'b'}>>"foo", #{'c'}>>"bar"<
+    // select(#{'b'} as "foo", #{'c'} as "bar")
+    // select(foo: #{'b'}, bar: #{'c'})
+    // (foo: #{'b'}, bar: #{'c'})
+    // { "foo": ..., "bar": ... }
 
     @Test
     public void test_simple_sequence_access()
@@ -68,16 +71,16 @@ public class QueryLanguageTestCase
         GraphQuery stream_1 = GraphQuery.newBuilder().stream(1).build();
         GraphQuery stream_sequence_one = GraphQuery.newBuilder().sequence(1).build();
         GraphQuery stream_1_seq_1 = GraphQuery.newBuilder().stream(1).sequence(1).build();
-        GraphQuery stream_dic_1 = GraphQuery.newBuilder().dictionary(matchInt(1)).build();
-        GraphQuery stream_1_dic_1 = GraphQuery.newBuilder().stream(1).dictionary(matchInt(1)).build();
-        GraphQuery stream_dic_n1 = GraphQuery.newBuilder().dictionary(matchInt(-1)).build();
-        GraphQuery stream_1_dic_n1 = GraphQuery.newBuilder().stream(1).dictionary(matchInt(-1)).build();
-        GraphQuery stream_dic_11 = GraphQuery.newBuilder().dictionary(matchFloat(1.1)).build();
-        GraphQuery stream_1_dic_11 = GraphQuery.newBuilder().stream(1).dictionary(matchFloat(1.1)).build();
-        GraphQuery stream_dic_n11 = GraphQuery.newBuilder().dictionary(matchFloat(-1.1)).build();
-        GraphQuery stream_1_dic_n11 = GraphQuery.newBuilder().stream(1).dictionary(matchFloat(-1.1)).build();
-        GraphQuery stream_dic_s = GraphQuery.newBuilder().dictionary(matchString("test")).build();
-        GraphQuery stream_1_dic_s = GraphQuery.newBuilder().stream(1).dictionary(matchString("test")).build();
+        GraphQuery stream_dic_1 = GraphQuery.newBuilder().dictionary(1).build();
+        GraphQuery stream_1_dic_1 = GraphQuery.newBuilder().stream(1).dictionary(1).build();
+        GraphQuery stream_dic_n1 = GraphQuery.newBuilder().dictionary(-1).build();
+        GraphQuery stream_1_dic_n1 = GraphQuery.newBuilder().stream(1).dictionary(-1).build();
+        GraphQuery stream_dic_11 = GraphQuery.newBuilder().dictionary(1.1).build();
+        GraphQuery stream_1_dic_11 = GraphQuery.newBuilder().stream(1).dictionary(1.1).build();
+        GraphQuery stream_dic_n11 = GraphQuery.newBuilder().dictionary(-1.1).build();
+        GraphQuery stream_1_dic_n11 = GraphQuery.newBuilder().stream(1).dictionary(-1.1).build();
+        GraphQuery stream_dic_s = GraphQuery.newBuilder().dictionary("test").build();
+        GraphQuery stream_1_dic_s = GraphQuery.newBuilder().stream(1).dictionary("test").build();
 
         GraphQuery stream_tc_number = GraphQuery.newBuilder().requireType(TypeSpecs.Number).build();
         GraphQuery stream_tc_uint = GraphQuery.newBuilder().requireType(TypeSpecs.UInt).build();
@@ -183,6 +186,7 @@ public class QueryLanguageTestCase
 
         assertEquals(n1.size(), n2.size());
         assertEquals(n1, n2);
+        assertEquals(n1.hashCode(), n2.hashCode());
     }
 
     @Test

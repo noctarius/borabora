@@ -49,25 +49,34 @@ final class DictionaryImpl
 
     @Override
     public boolean containsKey(Predicate<Value> predicate) {
-        return findValueByPredicate(predicate, false) != null;
+        return findValueByPredicate(predicate, false) != -1;
+    }
+
+    @Override
+    public boolean containsKey(StreamPredicate predicate) {
+        return findValueByPredicate(predicate, false) != -1;
     }
 
     @Override
     public boolean containsValue(Predicate<Value> predicate) {
-        return findValueByPredicate(predicate, true) != null;
+        return findValueByPredicate(predicate, true) != -1;
+    }
+
+    @Override
+    public boolean containsValue(StreamPredicate predicate) {
+        return findValueByPredicate(predicate, true) != -1;
     }
 
     @Override
     public Value get(Predicate<Value> predicate) {
-        for (long i = 0; i < size; i++) {
-            long offset = calculateArrayIndex(i * 2);
-            Value value = Decoder.readValue(input, offset, processors);
-            if (predicate.test(value)) {
-                long position = Decoder.skip(input, offset);
-                return Decoder.readValue(input, position, processors);
-            }
-        }
-        return null;
+        long keyOffset = findValueByPredicate(predicate, false);
+        return get(keyOffset);
+    }
+
+    @Override
+    public Value get(StreamPredicate predicate) {
+        long keyOffset = findValueByPredicate(predicate, false);
+        return get(keyOffset);
     }
 
     @Override
@@ -96,19 +105,45 @@ final class DictionaryImpl
         return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
     }
 
-    private Value findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
+    private Value get(long keyOffset) {
+        if (keyOffset == -1) {
+            return null;
+        }
+        long valueOffset = Decoder.skip(input, keyOffset);
+        if (valueOffset == -1) {
+            return null;
+        }
+        return Decoder.readValue(input, valueOffset, processors);
+    }
+
+    private long findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
         RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
-        for (long i = findValue ? 1 : 0; i < size; i = i + 2) {
+        for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
             long offset = calculateArrayIndex(i);
             short head = Decoder.transientUint8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
+
             streamValue.relocate(majorType, valueType, offset);
             if (predicate.test(streamValue)) {
-                return streamValue;
+                return offset;
             }
         }
-        return null;
+        return -1;
+    }
+
+    private long findValueByPredicate(StreamPredicate predicate, boolean findValue) {
+        for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
+            long offset = calculateArrayIndex(i);
+            short head = Decoder.transientUint8(input, offset);
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueType valueType = ValueTypes.valueType(input, offset);
+
+            if (predicate.test(majorType, valueType, input, offset, processors)) {
+                return offset;
+            }
+        }
+        return -1;
     }
 
     private long calculateArrayIndex(long offset) {

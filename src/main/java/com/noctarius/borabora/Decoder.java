@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.function.Predicate;
 
 import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
@@ -214,7 +213,7 @@ enum Decoder {
         return Double.longBitsToDouble(readUInt64(input, offset));
     }
 
-    static long findByDictionaryKey(Input input, Predicate<Value> predicate, long offset,
+    static long findByDictionaryKey(Input input, StreamPredicate predicate, long offset,
                                     Collection<SemanticTagProcessor> processors) {
         // Search for key element
         long position = findByPredicate(input, predicate, offset, processors);
@@ -251,16 +250,14 @@ enum Decoder {
         return data;
     }
 
-    private static long findByPredicate(Input input, Predicate<Value> predicate, long offset,
+    private static long findByPredicate(Input input, StreamPredicate predicate, long offset,
                                         Collection<SemanticTagProcessor> processors) {
 
-        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         do {
             short head = transientUint8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
-            ValueTypes valueType = ValueTypes.valueType(input, offset);
-            streamValue.relocate(majorType, valueType, offset);
-            if (predicate.test(streamValue)) {
+            ValueType valueType = ValueTypes.valueType(input, offset);
+            if (predicate.test(majorType, valueType, input, offset, processors)) {
                 return offset;
             }
             long length = length(input, majorType, offset);
