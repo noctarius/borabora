@@ -34,11 +34,21 @@ enum ByteSizes {
     }
 
     static long sequenceByteSize(Input input, long offset) {
+        int addInfo = Decoder.additionInfo(input, offset);
+        if (addInfo == ADD_INFO_INDEFINITE) {
+            return indefiniteContainerByteSize(input, offset);
+        }
+
         long elementCount = ElementCounts.sequenceElementCount(input, offset);
         return containerByteSize(input, offset, elementCount);
     }
 
     static long dictionaryByteSize(Input input, long offset) {
+        int addInfo = Decoder.additionInfo(input, offset);
+        if (addInfo == ADD_INFO_INDEFINITE) {
+            return indefiniteContainerByteSize(input, offset);
+        }
+
         long elementCount = ElementCounts.dictionaryElementCount(input, offset);
         return containerByteSize(input, offset, elementCount * 2);
     }
@@ -156,6 +166,24 @@ enum ByteSizes {
         }
         // Indefinite length? -> +1
         return position - offset + (addInfo == 31 ? 1 : 0);
+    }
+
+    private static long indefiniteContainerByteSize(Input input, long offset) {
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long position = offset + headByteSize;
+
+        short head;
+        while (true) {
+            head = Decoder.transientUint8(input, position);
+            if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
+                break;
+            }
+            MajorType majorType = MajorType.findMajorType(head);
+            position += Decoder.length(input, majorType, position);
+        }
+
+        // Indefinite length? -> +1
+        return position - offset + 1;
     }
 
 }
