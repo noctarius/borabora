@@ -632,4 +632,26 @@ public class StreamWriterTestCase
         }));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void test_write_unfinished_sequence()
+            throws Exception {
+
+        executeStreamWriterTest((sgb) -> sgb.putSequence(2).putString("test").endSequence());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_unfinished_dictionary()
+            throws Exception {
+
+        executeStreamWriterTest(
+                (sgb) -> sgb.putDictionary(2).putEntry().putString("te").putString("st").endEntry().endDictionary());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_unfinished_dictionary_entry()
+            throws Exception {
+
+        executeStreamWriterTest((sgb) -> sgb.putDictionary(2).putEntry().putString("te").endEntry());
+    }
+
 }

@@ -23,6 +23,7 @@ import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
 import static com.noctarius.borabora.Bytes.readUInt64;
 import static com.noctarius.borabora.Bytes.readUInt64BigInt;
+import static com.noctarius.borabora.Bytes.readUInt64Long;
 import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.ASCII;
@@ -59,7 +60,12 @@ enum Decoder {
                 number = mask ^ readUInt32(input, offset + 1);
                 break;
             case 9:
-                number = BigInteger.valueOf(mask).xor(readUInt64BigInt(input, offset + 1));
+                long v = readUInt64Long(input, offset + 1);
+                if (v < 0) {
+                    number = BigInteger.valueOf(mask).xor(readUInt64BigInt(input, offset + 1));
+                } else {
+                    number = mask ^ v;
+                }
                 break;
             default:
                 number = mask ^ (head & ADDITIONAL_INFORMATION_MASK);
@@ -210,7 +216,7 @@ enum Decoder {
     }
 
     static double readDoublePrecisionFloat(Input input, long offset) {
-        return Double.longBitsToDouble(readUInt64(input, offset));
+        return Double.longBitsToDouble(readUInt64Long(input, offset));
     }
 
     static long findByDictionaryKey(Input input, StreamPredicate predicate, long offset,

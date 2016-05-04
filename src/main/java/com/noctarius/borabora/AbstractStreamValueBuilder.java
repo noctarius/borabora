@@ -391,6 +391,10 @@ abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public B endSequence() {
+            if (maxElements != -1 && maxElements != elements) {
+                String msg = String.format("Expected %s element but only %s elements written", maxElements, elements);
+                throw new IllegalStateException(msg);
+            }
             offset = offset();
             if (maxElements == -1) {
                 output.write(offset++, (byte) OPCODE_BREAK_MASK);
@@ -430,6 +434,10 @@ abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public B endDictionary() {
+            if (maxElements != -1 && maxElements != elements) {
+                String msg = String.format("Expected %s element but only %s elements written", maxElements, elements);
+                throw new IllegalStateException(msg);
+            }
             if (maxElements == -1) {
                 output.write(offset++, (byte) OPCODE_BREAK_MASK);
             }
@@ -460,6 +468,12 @@ abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public DictionaryBuilder<B> endEntry() {
+            if (!key) {
+                throw new IllegalStateException("Entry key not set");
+            }
+            if (!value) {
+                throw new IllegalStateException("Entry value not set");
+            }
             offset = offset();
             return builder;
         }

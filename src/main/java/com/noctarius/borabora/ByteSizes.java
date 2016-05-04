@@ -39,7 +39,7 @@ enum ByteSizes {
     }
 
     static long dictionaryByteSize(Input input, long offset) {
-        long elementCount = ElementCounts.sequenceElementCount(input, offset);
+        long elementCount = ElementCounts.dictionaryElementCount(input, offset);
         return containerByteSize(input, offset, elementCount * 2);
     }
 

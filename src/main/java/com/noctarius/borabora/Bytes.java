@@ -52,7 +52,15 @@ enum Bytes {
         return readInt32(input, offset) & 0xffffffffL;
     }
 
-    static long readUInt64(Input input, long offset) {
+    static Number readUInt64(Input input, long offset) {
+        long v = readUInt64Long(input, offset);
+        if (v < 0) {
+            return readUInt64BigInt(input, offset);
+        }
+        return v;
+    }
+
+    static long readUInt64Long(Input input, long offset) {
         long b1 = readUInt8(input, offset);
         long b2 = readUInt8(input, offset + 1);
         long b3 = readUInt8(input, offset + 2);

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import java.math.BigInteger;
+
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
@@ -50,7 +52,11 @@ enum ElementCounts {
             case ADD_INFO_FOUR_BYTES:
                 return Bytes.readUInt32(input, offset + 1);
             case ADD_INFO_EIGHT_BYTES:
-                return Bytes.readUInt64(input, offset + 1);
+                Number value = Bytes.readUInt64(input, offset + 1);
+                if (value instanceof BigInteger) {
+                    throw new IllegalStateException("Object sizes larger Long.MAX_VALUE are not supported");
+                }
+                return value.longValue();
             case ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset, keyValue);
             default:
