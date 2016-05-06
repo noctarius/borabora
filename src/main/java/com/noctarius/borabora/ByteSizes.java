@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
@@ -55,7 +56,7 @@ enum ByteSizes {
 
     static long semanticTagByteSize(Input input, long offset) {
         long byteSize = ByteSizes.intByteSize(input, offset);
-        short itemHead = Decoder.transientUint8(input, offset + byteSize);
+        short itemHead = readUInt8(input, offset + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
         return byteSize + Decoder.length(input, majorType, offset + byteSize);
     }
@@ -74,7 +75,7 @@ enum ByteSizes {
             case ADD_INFO_RESERVED_1: // Unassigned
             case ADD_INFO_RESERVED_2: // Unassigned
             case ADD_INFO_RESERVED_3: // Unassigned
-                throw new IllegalStateException("28|29|30 are unassigned");
+                throwUnassigned();
             case ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset);
             default:
@@ -92,11 +93,11 @@ enum ByteSizes {
             case ADD_INFO_FOUR_BYTES:
                 return stringDataSize(input, offset) + 5;
             case ADD_INFO_EIGHT_BYTES:
-                throw new IllegalStateException("String sizes of 64bit are not yet supported");
+                throwString64bitUnsupported();
             case ADD_INFO_RESERVED_1: // Unassigned
             case ADD_INFO_RESERVED_2: // Unassigned
             case ADD_INFO_RESERVED_3: // Unassigned
-                throw new IllegalStateException("28|29|30 are unassigned");
+                throwUnassigned();
             case ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset);
             default:
@@ -108,25 +109,24 @@ enum ByteSizes {
         int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
-                return Bytes.readUInt8(input, offset + 1);
+                return readUInt8(input, offset + 1);
             case ADD_INFO_TWO_BYTES:
                 return Bytes.readUInt16(input, offset + 1);
             case ADD_INFO_FOUR_BYTES:
                 return Bytes.readUInt32(input, offset + 1);
             case ADD_INFO_EIGHT_BYTES:
-                throw new IllegalStateException("String sizes of 64bit are not yet supported");
+                throwString64bitUnsupported();
             case ADD_INFO_RESERVED_1: // Unassigned
             case ADD_INFO_RESERVED_2: // Unassigned
             case ADD_INFO_RESERVED_3: // Unassigned
-                throw new IllegalStateException("28|29|30 are unassigned");
+                throwUnassigned();
             default:
                 return addInfo;
         }
     }
 
     static int headByteSize(Input input, long offset) {
-        short head = Decoder.transientUint8(input, offset);
-        int addInfo = Decoder.additionInfo(head);
+        int addInfo = Decoder.additionInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return 2;
@@ -139,17 +139,25 @@ enum ByteSizes {
             case ADD_INFO_RESERVED_1: // Unassigned
             case ADD_INFO_RESERVED_2: // Unassigned
             case ADD_INFO_RESERVED_3: // Unassigned
-                throw new IllegalStateException("28|29|30 are unassigned");
+                throwUnassigned();
             default:
                 return 1;
         }
+    }
+
+    private static void throwUnassigned() {
+        throw new IllegalStateException("28|29|30 are unassigned");
+    }
+
+    private static void throwString64bitUnsupported() {
+        throw new IllegalStateException("String sizes of 64bit are not yet supported");
     }
 
     private static long untilBreakCode(Input input, long offset) {
         long start = offset;
         short uint;
         do {
-            uint = Decoder.transientUint8(input, offset++);
+            uint = readUInt8(input, offset++);
         } while ((uint & OPCODE_BREAK_MASK) != OPCODE_BREAK_MASK);
         return offset - start;
     }
@@ -160,7 +168,7 @@ enum ByteSizes {
 
         long position = offset + headByteSize;
         for (long i = 0; i < elementCount; i++) {
-            short head = Decoder.transientUint8(input, position);
+            short head = readUInt8(input, position);
             MajorType majorType = MajorType.findMajorType(head);
             position += majorType.byteSize(input, position);
         }
@@ -174,7 +182,7 @@ enum ByteSizes {
 
         short head;
         while (true) {
-            head = Decoder.transientUint8(input, position);
+            head = readUInt8(input, position);
             if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                 break;
             }

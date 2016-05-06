@@ -22,8 +22,7 @@ enum Bytes {
     ;
 
     static short readUInt8(Input input, long offset) {
-        byte v = readInt8(input, offset);
-        return (short) (v & 0xFF);
+        return (short) (input.read(offset) & 0xFF);
     }
 
     static byte readInt8(Input input, long offset) {

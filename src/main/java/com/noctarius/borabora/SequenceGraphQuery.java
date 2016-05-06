@@ -18,6 +18,8 @@ package com.noctarius.borabora;
 
 import java.util.Collection;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 final class SequenceGraphQuery
         implements GraphQuery {
 
@@ -32,7 +34,7 @@ final class SequenceGraphQuery
 
     @Override
     public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)

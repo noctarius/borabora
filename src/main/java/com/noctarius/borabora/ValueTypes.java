@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import java.util.Collection;
 import java.util.function.Function;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
 import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
@@ -124,7 +125,7 @@ public enum ValueTypes
     }
 
     static ValueTypes valueType(Input input, long offset) {
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
 
         // Read major type first
         MajorType majorType = MajorType.findMajorType(head);

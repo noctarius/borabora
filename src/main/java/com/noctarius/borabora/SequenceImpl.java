@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 final class SequenceImpl
         implements Sequence {
 
@@ -51,7 +53,7 @@ final class SequenceImpl
         RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i);
-            short head = Decoder.transientUint8(input, offset);
+            short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
@@ -67,7 +69,7 @@ final class SequenceImpl
     public boolean contains(StreamPredicate predicate) {
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i);
-            short head = Decoder.transientUint8(input, offset);
+            short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 

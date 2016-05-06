@@ -19,6 +19,8 @@ package com.noctarius.borabora;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 abstract class AbstractStreamValue
         extends AbstractValue {
 
@@ -74,7 +76,7 @@ abstract class AbstractStreamValue
     }
 
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
-        short head = Decoder.transientUint8(input, offset());
+        short head = readUInt8(input, offset());
         // Null is legal for all types
         if (Decoder.isNull(head)) {
             return null;

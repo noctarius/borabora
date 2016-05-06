@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 abstract class DictionaryGraphQuery
         implements GraphQuery {
 
@@ -32,7 +34,7 @@ abstract class DictionaryGraphQuery
 
     @Override
     public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
             throw new WrongTypeException("Not a dictionary");

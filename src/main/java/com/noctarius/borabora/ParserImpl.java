@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.GraphQueryBuilder;
 
 import java.util.Collection;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.Value.NULL_VALUE;
 
@@ -38,7 +39,7 @@ final class ParserImpl
         if (offset == -1) {
             return NULL_VALUE;
         }
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, input, offset, processors);
@@ -57,7 +58,7 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, long offset) {
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, input, offset, processors);

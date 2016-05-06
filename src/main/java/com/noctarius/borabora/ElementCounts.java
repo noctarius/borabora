@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import java.math.BigInteger;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
@@ -72,7 +73,7 @@ enum ElementCounts {
         long elementCount = 0;
         short head;
         while (true) {
-            head = Decoder.transientUint8(input, position);
+            head = readUInt8(input, position);
             if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                 break;
             }

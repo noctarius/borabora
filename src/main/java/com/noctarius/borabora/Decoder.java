@@ -21,7 +21,6 @@ import java.util.Collection;
 
 import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
-import static com.noctarius.borabora.Bytes.readUInt64;
 import static com.noctarius.borabora.Bytes.readUInt64BigInt;
 import static com.noctarius.borabora.Bytes.readUInt64Long;
 import static com.noctarius.borabora.Bytes.readUInt8;
@@ -40,12 +39,8 @@ import static com.noctarius.borabora.Constants.UTF8;
 enum Decoder {
     ;
 
-    static short transientUint8(Input input, long offset) {
-        return readUInt8(input, offset);
-    }
-
     static Number readInt(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         long mask = -((head & 0xff) >>> 5);
         int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
@@ -74,7 +69,7 @@ enum Decoder {
     }
 
     static Number readUint(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
         switch (byteSize) {
@@ -124,7 +119,7 @@ enum Decoder {
             long position = offset + 1;
             StringBuilder sb = new StringBuilder();
             while (true) {
-                short h = transientUint8(input, position);
+                short h = readUInt8(input, position);
                 if ((h & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                     break;
                 }
@@ -172,7 +167,7 @@ enum Decoder {
     }
 
     static long skip(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         return skip(input, majorType, offset);
     }
@@ -192,7 +187,7 @@ enum Decoder {
     }
 
     static boolean getBooleanValue(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple == majorType) {
             int addInfo = head & ADDITIONAL_INFORMATION_MASK;
@@ -230,14 +225,14 @@ enum Decoder {
     }
 
     static StreamValue readValue(Input input, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, input, offset, processors);
     }
 
     static int additionInfo(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         return additionInfo(head);
     }
 
@@ -260,7 +255,7 @@ enum Decoder {
                                         Collection<SemanticTagProcessor> processors) {
 
         do {
-            short head = transientUint8(input, offset);
+            short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
             if (predicate.test(majorType, valueType, input, offset, processors)) {
@@ -268,13 +263,13 @@ enum Decoder {
             }
             long length = length(input, majorType, offset);
             offset = skip(input, offset + length);
-        } while (input.offsetValid(offset) && transientUint8(input, offset) != OPCODE_BREAK_MASK);
+        } while (input.offsetValid(offset) && readUInt8(input, offset) != OPCODE_BREAK_MASK);
         return -1;
 
     }
 
     private static String readString0(Input input, long offset) {
-        short head = transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         int headByteSize = ByteSizes.headByteSize(input, offset);
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
@@ -305,7 +300,7 @@ enum Decoder {
                 elementIndexes[base][elIndex] = position;
 
                 // Skip elements content to next element
-                short head = transientUint8(input, position);
+                short head = readUInt8(input, position);
                 MajorType majorType = MajorType.findMajorType(head);
                 position += length(input, majorType, position);
             }

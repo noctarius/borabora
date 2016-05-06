@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 final class DictionaryImpl
         implements Dictionary {
 
@@ -120,7 +122,7 @@ final class DictionaryImpl
         RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
         for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
             long offset = calculateArrayIndex(i);
-            short head = Decoder.transientUint8(input, offset);
+            short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
@@ -135,7 +137,7 @@ final class DictionaryImpl
     private long findValueByPredicate(StreamPredicate predicate, boolean findValue) {
         for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
             long offset = calculateArrayIndex(i);
-            short head = Decoder.transientUint8(input, offset);
+            short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 

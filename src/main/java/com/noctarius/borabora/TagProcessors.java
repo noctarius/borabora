@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.noctarius.borabora.Bytes.readUInt8;
+
 final class TagProcessors {
 
     static Date readDateTime(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
@@ -66,7 +68,7 @@ final class TagProcessors {
         int headByteSize = ByteSizes.intByteSize(input, offset);
 
         offset += headByteSize;
-        short head = Decoder.transientUint8(input, offset);
+        short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
         return new StreamValue(majorType, valueType, input, offset, processors);
