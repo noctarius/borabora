@@ -44,7 +44,7 @@ enum ElementCounts {
     }
 
     private static long elementCount(Input input, long offset, String elementType, boolean keyValue) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return Bytes.readUInt8(input, offset + 1);
@@ -66,25 +66,25 @@ enum ElementCounts {
 
     }
 
-    private static long untilBreakCode(Input input, long offset, boolean keyValue) {
-        long headByteSize = ByteSizes.headByteSize(input, offset);
-        long position = offset + headByteSize;
+        private static long untilBreakCode(Input input, long offset, boolean keyValue) {
+            long headByteSize = ByteSizes.headByteSize(input, offset);
+            long position = offset + headByteSize;
 
-        long elementCount = 0;
-        short head;
-        while (true) {
-            head = readUInt8(input, position);
-            if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
-                break;
+            long elementCount = 0;
+            short head;
+            while (true) {
+                head = readUInt8(input, position);
+                if ((head & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
+                    break;
+                }
+                MajorType majorType = MajorType.findMajorType(head);
+                position += Decoder.length(input, majorType, position);
+                elementCount++;
             }
-            MajorType majorType = MajorType.findMajorType(head);
-            position += Decoder.length(input, majorType, position);
-            elementCount++;
+            if (keyValue) {
+                return elementCount / 2;
+            }
+            return elementCount;
         }
-        if (keyValue) {
-            return elementCount / 2;
-        }
-        return elementCount;
-    }
 
 }

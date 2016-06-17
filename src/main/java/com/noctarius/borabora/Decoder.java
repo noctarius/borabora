@@ -92,7 +92,7 @@ enum Decoder {
     }
 
     static Number readFloat(Input input, long offset) {
-        int addInfo = additionInfo(input, offset);
+        int addInfo = additionalInfo(input, offset);
         switch (addInfo) {
             case FP_VALUE_HALF_PRECISION:
                 return readHalfFloatValue(input, offset + 1);
@@ -113,7 +113,7 @@ enum Decoder {
     }
 
     static String readString(Input input, long offset) {
-        int addInfo = additionInfo(input, offset);
+        int addInfo = additionalInfo(input, offset);
         if (addInfo == 31) {
             // Concatenated string!
             long position = offset + 1;
@@ -231,12 +231,12 @@ enum Decoder {
         return new StreamValue(mt, vt, input, offset, processors);
     }
 
-    static int additionInfo(Input input, long offset) {
+    static int additionalInfo(Input input, long offset) {
         short head = readUInt8(input, offset);
-        return additionInfo(head);
+        return additionalInfo(head);
     }
 
-    static int additionInfo(short head) {
+    static int additionalInfo(short head) {
         return head & ADDITIONAL_INFORMATION_MASK;
     }
 

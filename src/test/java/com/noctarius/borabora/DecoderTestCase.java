@@ -74,14 +74,14 @@ public class DecoderTestCase
     @Test(expected = NoSuchByteException.class)
     public void test_nosuchbyteexception() {
         Input input = Input.fromByteArray(new byte[0]);
-        Decoder.additionInfo(input, 0);
+        Decoder.additionalInfo(input, 0);
     }
 
     @Test
     public void test_nosuchbyteexception_offset() {
         Input input = Input.fromByteArray(new byte[0]);
         try {
-            Decoder.additionInfo(input, 0);
+            Decoder.additionalInfo(input, 0);
             fail();
         } catch (NoSuchByteException e) {
             assertEquals(0, e.getOffset());

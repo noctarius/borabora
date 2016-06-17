@@ -35,7 +35,7 @@ enum ByteSizes {
     }
 
     static long sequenceByteSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         if (addInfo == ADD_INFO_INDEFINITE) {
             return indefiniteContainerByteSize(input, offset);
         }
@@ -45,7 +45,7 @@ enum ByteSizes {
     }
 
     static long dictionaryByteSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         if (addInfo == ADD_INFO_INDEFINITE) {
             return indefiniteContainerByteSize(input, offset);
         }
@@ -62,7 +62,7 @@ enum ByteSizes {
     }
 
     static long floatOrSimpleByteSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return 2;
@@ -84,7 +84,7 @@ enum ByteSizes {
     }
 
     static long stringByteSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return stringDataSize(input, offset) + 2;
@@ -106,7 +106,7 @@ enum ByteSizes {
     }
 
     static long stringDataSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return readUInt8(input, offset + 1);
@@ -126,7 +126,7 @@ enum ByteSizes {
     }
 
     static int headByteSize(Input input, long offset) {
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
                 return 2;
@@ -164,7 +164,7 @@ enum ByteSizes {
 
     private static long containerByteSize(Input input, long offset, long elementCount) {
         long headByteSize = headByteSize(input, offset);
-        int addInfo = Decoder.additionInfo(input, offset);
+        int addInfo = Decoder.additionalInfo(input, offset);
 
         long position = offset + headByteSize;
         for (long i = 0; i < elementCount; i++) {
