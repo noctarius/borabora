@@ -17,7 +17,7 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.SemanticTagProcessor;
+import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 public interface ParserBuilder {
 

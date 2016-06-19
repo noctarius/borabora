@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-public interface SemanticTagProcessor<V> {
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
 
-    boolean handles(Input input, long offset);
+public interface QueryContext {
 
-    V process(long offset, long length, QueryContext queryContext);
+    Input input();
 
-    TypeSpec handles(int tagId);
+    <T> T applyProcessors(long offset, MajorType majorType);
 
 }

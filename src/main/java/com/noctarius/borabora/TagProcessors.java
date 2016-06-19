@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;

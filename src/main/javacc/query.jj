@@ -23,6 +23,7 @@ options {
 PARSER_BEGIN(QueryParser)
     package com.noctarius.borabora;
     import java.io.*;
+    import com.noctarius.borabora.spi.*;
     import com.noctarius.borabora.builder.*;
     import java.text.*;
     import java.util.Locale;
@@ -123,7 +124,7 @@ void stream(): {
 {
     <HASH> ( intToken = <UINT> )?
     {
-        long index = intToken == null ? -1 : Long.parseLong(intToken.image);
+        long index = intToken == null ? 0 : Long.parseLong(intToken.image);
         ((StreamGraphQueryBuilder) queryBuilder).stream(index);
     }
 }

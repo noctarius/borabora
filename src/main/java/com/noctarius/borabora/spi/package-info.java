@@ -14,22 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
 
-public interface TypeSpec {
-
-    TypeSpec superType();
-
-    String name();
-
-    String spec();
-
-    int tagId();
-
-    boolean matches(TypeSpec other);
-
-    boolean matchesExact(TypeSpec other);
-
-    boolean valid(MajorType majorType, Input input, long offset);
-
-}
+/**
+ * This package contains interfaces to extend borabora by additional types
+ * or special handling behavior.
+ */
+package com.noctarius.borabora.spi;

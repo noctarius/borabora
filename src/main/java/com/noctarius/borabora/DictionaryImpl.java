@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.QueryContext;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;

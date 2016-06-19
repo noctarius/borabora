@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 interface TagProcessor {
 
     Object process(long offset, long length, QueryContext queryContext);

@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.Sequence;
+
 import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
 
 final class NullValue

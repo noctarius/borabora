@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.Sequence;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;

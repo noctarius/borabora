@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.SemanticTagProcessor;
+import com.noctarius.borabora.spi.TypeSpec;
+
 import java.util.Collection;
 
 import static com.noctarius.borabora.Constants.TAG_DATE_TIME;

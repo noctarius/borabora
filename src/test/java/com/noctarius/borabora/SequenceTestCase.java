@@ -17,6 +17,9 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.Sequence;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -193,7 +196,7 @@ public class SequenceTestCase
             throws Exception {
 
         Sequence sequence = new SequenceImpl( //
-                Long.MAX_VALUE, new long[0][0], new QueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList()));
+                Long.MAX_VALUE, new long[0][0], new QueryContextImpl(Input.fromByteArray(new byte[0]), Collections.emptyList()));
 
         sequence.toArray();
     }

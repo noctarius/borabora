@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 import java.util.Objects;
 import java.util.function.Predicate;
 

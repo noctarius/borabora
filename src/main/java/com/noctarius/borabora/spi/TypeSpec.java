@@ -14,27 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.Value;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
 
-import java.util.function.Predicate;
+public interface TypeSpec {
 
-public interface GraphQueryTokenBuilder<T extends GraphQueryTokenBuilder<T>> {
+    TypeSpec superType();
 
-    T sequence(long index);
+    String name();
 
-    T dictionary(Predicate<Value> predicate);
+    String spec();
 
-    T dictionary(String key);
+    int tagId();
 
-    T dictionary(double key);
+    boolean matches(TypeSpec other);
 
-    T dictionary(long key);
+    boolean matchesExact(TypeSpec other);
 
-    T nullOrType(TypeSpec typeSpec);
-
-    T requireType(TypeSpec typeSpec);
+    boolean valid(MajorType majorType, Input input, long offset);
 
 }

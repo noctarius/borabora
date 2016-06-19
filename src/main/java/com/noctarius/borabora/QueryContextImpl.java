@@ -16,22 +16,28 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SemanticTagProcessor;
+
 import java.util.List;
 
-public final class QueryContext {
+final class QueryContextImpl
+        implements QueryContext {
 
     private final List<SemanticTagProcessor> semanticTagProcessors;
     private final Input input;
 
-    QueryContext(Input input, List<SemanticTagProcessor> semanticTagProcessors) {
+    QueryContextImpl(Input input, List<SemanticTagProcessor> semanticTagProcessors) {
         this.input = input;
         this.semanticTagProcessors = semanticTagProcessors;
     }
 
+    @Override
     public Input input() {
         return input;
     }
 
+    @Override
     public <T> T applyProcessors(long offset, MajorType majorType) {
         SemanticTagProcessor<T> processor = findProcessor(offset);
         if (processor == null) {

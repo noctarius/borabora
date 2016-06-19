@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.Sequence;
 import org.junit.Test;
 
 import java.math.BigInteger;

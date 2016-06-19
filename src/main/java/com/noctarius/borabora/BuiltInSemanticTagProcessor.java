@@ -16,6 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SemanticTagProcessor;
+import com.noctarius.borabora.spi.TypeSpec;
+
 final class BuiltInSemanticTagProcessor
         implements SemanticTagProcessor<Object> {
 

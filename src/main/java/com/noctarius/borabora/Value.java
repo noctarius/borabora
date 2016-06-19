@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.Sequence;
+
 public interface Value {
 
     Value NULL_VALUE = new NullValue();

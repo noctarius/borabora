@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.TypeSpec;
+
 import java.util.Objects;
 
 import static com.noctarius.borabora.Bytes.readUInt8;

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 final class StreamValue
         extends AbstractStreamValue {
 

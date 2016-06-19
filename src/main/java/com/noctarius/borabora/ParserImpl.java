@@ -17,6 +17,8 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 import java.util.List;
 
@@ -95,7 +97,7 @@ final class ParserImpl
     }
 
     private QueryContext newQueryContext(Input input) {
-        return new QueryContext(input, semanticTagProcessors);
+        return new QueryContextImpl(input, semanticTagProcessors);
     }
 
 }

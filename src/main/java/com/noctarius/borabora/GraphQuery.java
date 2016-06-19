@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.spi.QueryContext;
 
 public interface GraphQuery {
 

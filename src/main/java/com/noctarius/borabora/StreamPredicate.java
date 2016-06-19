@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 public interface StreamPredicate {
 
     boolean test(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext);

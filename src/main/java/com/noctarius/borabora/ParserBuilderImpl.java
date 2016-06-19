@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
+import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 import java.util.ArrayList;
 import java.util.List;

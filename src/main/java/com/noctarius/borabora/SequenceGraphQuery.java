@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 import static com.noctarius.borabora.Bytes.readUInt8;
 
 final class SequenceGraphQuery

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
 import java.util.function.Function;
 
 import static com.noctarius.borabora.Bytes.readUInt8;

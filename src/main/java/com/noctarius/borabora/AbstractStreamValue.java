@@ -16,6 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.Sequence;
+
 import java.util.function.Supplier;
 
 abstract class AbstractStreamValue

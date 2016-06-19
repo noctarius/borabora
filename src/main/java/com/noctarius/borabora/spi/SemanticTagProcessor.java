@@ -14,27 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.Value;
+import com.noctarius.borabora.Input;
 
-import java.util.function.Predicate;
+public interface SemanticTagProcessor<V> {
 
-public interface GraphQueryTokenBuilder<T extends GraphQueryTokenBuilder<T>> {
+    boolean handles(Input input, long offset);
 
-    T sequence(long index);
+    V process(long offset, long length, QueryContext queryContext);
 
-    T dictionary(Predicate<Value> predicate);
-
-    T dictionary(String key);
-
-    T dictionary(double key);
-
-    T dictionary(long key);
-
-    T nullOrType(TypeSpec typeSpec);
-
-    T requireType(TypeSpec typeSpec);
+    TypeSpec handles(int tagId);
 
 }
