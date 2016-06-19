@@ -349,7 +349,7 @@ public class DictionaryTestCase
         SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Dictionary dictionary = value.dictionary();
-        assertNull(dictionary.get((m, v, i, o, p) -> false));
+        assertNull(dictionary.get((m, v, o, q) -> false));
     }
 
     @Test

@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -27,16 +26,16 @@ import static com.noctarius.borabora.Bytes.readUInt8;
 final class DictionaryImpl
         implements Dictionary {
 
-    private final Input input;
     private final long size;
+    private final Input input;
     private final long[][] elementIndexes;
-    private final Collection<SemanticTagProcessor> processors;
+    private final QueryContext queryContext;
 
-    public DictionaryImpl(Input input, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
-        this.input = input;
+    public DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
         this.size = size;
         this.elementIndexes = elementIndexes;
-        this.processors = processors;
+        this.queryContext = queryContext;
+        this.input = queryContext.input();
     }
 
     @Override
@@ -100,8 +99,8 @@ final class DictionaryImpl
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         for (long i = 0; i < size; i += 2) {
-            Value key = Decoder.readValue(input, calculateArrayIndex(i), processors);
-            Value value = Decoder.readValue(input, calculateArrayIndex(i + 1), processors);
+            Value key = Decoder.readValue(calculateArrayIndex(i), queryContext);
+            Value value = Decoder.readValue(calculateArrayIndex(i + 1), queryContext);
             sb.append(key).append('=').append(value).append(", ");
         }
         return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
@@ -115,11 +114,11 @@ final class DictionaryImpl
         if (valueOffset == -1) {
             return null;
         }
-        return Decoder.readValue(input, valueOffset, processors);
+        return Decoder.readValue(valueOffset, queryContext);
     }
 
     private long findValueByPredicate(Predicate<Value> predicate, boolean findValue) {
-        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
+        RelocatableStreamValue streamValue = new RelocatableStreamValue(queryContext);
         for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
             long offset = calculateArrayIndex(i);
             short head = readUInt8(input, offset);
@@ -141,7 +140,7 @@ final class DictionaryImpl
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
-            if (predicate.test(majorType, valueType, input, offset, processors)) {
+            if (predicate.test(majorType, valueType, offset, queryContext)) {
                 return offset;
             }
         }
@@ -190,7 +189,7 @@ final class DictionaryImpl
                     throw new NoSuchElementException("No further element available");
                 }
                 long offset = calculateArrayIndex(arrayIndex);
-                return Decoder.readValue(input, offset, processors);
+                return Decoder.readValue(offset, queryContext);
 
             } finally {
                 arrayIndex += 2;
@@ -237,12 +236,12 @@ final class DictionaryImpl
 
         @Override
         public Value getKey() {
-            return Decoder.readValue(input, keyIndex, processors);
+            return Decoder.readValue(keyIndex, queryContext);
         }
 
         @Override
         public Value getValue() {
-            return Decoder.readValue(input, valueIndex, processors);
+            return Decoder.readValue(valueIndex, queryContext);
         }
 
         @Override

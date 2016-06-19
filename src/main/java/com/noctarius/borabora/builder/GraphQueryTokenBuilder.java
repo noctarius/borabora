@@ -14,7 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-public class Test2 {
+import com.noctarius.borabora.TypeSpec;
+import com.noctarius.borabora.Value;
+
+import java.util.function.Predicate;
+
+public interface GraphQueryTokenBuilder<T extends GraphQueryTokenBuilder<T>> {
+
+    T sequence(long index);
+
+    T dictionary(Predicate<Value> predicate);
+
+    T dictionary(String key);
+
+    T dictionary(double key);
+
+    T dictionary(long key);
+
+    T nullOrType(TypeSpec typeSpec);
+
+    T requireType(TypeSpec typeSpec);
+
 }

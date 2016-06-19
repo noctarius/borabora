@@ -193,7 +193,7 @@ public class SequenceTestCase
             throws Exception {
 
         Sequence sequence = new SequenceImpl( //
-                Input.fromByteArray(new byte[0]), Long.MAX_VALUE, new long[0][0], Collections.emptyList());
+                Long.MAX_VALUE, new long[0][0], new QueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList()));
 
         sequence.toArray();
     }

@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -29,13 +28,13 @@ final class SequenceImpl
     private final Input input;
     private final long size;
     private final long[][] elementIndexes;
-    private final Collection<SemanticTagProcessor> processors;
+    private final QueryContext queryContext;
 
-    SequenceImpl(Input input, long size, long[][] elementIndexes, Collection<SemanticTagProcessor> processors) {
-        this.input = input;
+    SequenceImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
         this.size = size;
         this.elementIndexes = elementIndexes;
-        this.processors = processors;
+        this.queryContext = queryContext;
+        this.input = queryContext.input();
     }
 
     @Override
@@ -50,7 +49,7 @@ final class SequenceImpl
 
     @Override
     public boolean contains(Predicate<Value> predicate) {
-        RelocatableStreamValue streamValue = new RelocatableStreamValue(input, processors);
+        RelocatableStreamValue streamValue = new RelocatableStreamValue(queryContext);
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i);
             short head = readUInt8(input, offset);
@@ -73,7 +72,7 @@ final class SequenceImpl
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
-            if (predicate.test(majorType, valueType, input, offset, processors)) {
+            if (predicate.test(majorType, valueType, offset, queryContext)) {
                 return true;
             }
         }
@@ -103,7 +102,7 @@ final class SequenceImpl
             return null;
         }
         long offset = calculateArrayIndex(sequenceIndex);
-        return Decoder.readValue(input, offset, processors);
+        return Decoder.readValue(offset, queryContext);
     }
 
     @Override
@@ -138,7 +137,7 @@ final class SequenceImpl
                     throw new NoSuchElementException("No further element available");
                 }
                 long offset = calculateArrayIndex(arrayIndex);
-                return Decoder.readValue(input, offset, processors);
+                return Decoder.readValue(offset, queryContext);
 
             } finally {
                 arrayIndex++;

@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.function.Predicate;
 
 public enum StreamPredicates {
@@ -46,11 +45,12 @@ public enum StreamPredicates {
         byte[] expected = baos.toByteArray();
         int expectedLength = expected.length;
 
-        return (majorType, valueType, input, offset, processors) -> {
+        return (majorType, valueType, offset, queryContext) -> {
             if (!valueType.matches(ValueTypes.String)) {
                 return false;
             }
 
+            Input input = queryContext.input();
             long length = Decoder.length(input, majorType, offset);
             if (length < expectedLength) {
                 return false;
@@ -64,7 +64,7 @@ public enum StreamPredicates {
                 }
             }
 
-            return slowPathPredicate.test(majorType, valueType, input, offset, processors);
+            return slowPathPredicate.test(majorType, valueType, offset, queryContext);
         };
     }
 
@@ -78,15 +78,13 @@ public enum StreamPredicates {
             private RelocatableStreamValue streamValue = null;
 
             @Override
-            public boolean test(MajorType majorType, ValueType valueType, Input input, long offset,
-                                Collection<SemanticTagProcessor> processors) {
-
+            public boolean test(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
                 if (vt != null && !valueType.matches(vt)) {
                     return false;
                 }
 
                 if (streamValue == null) {
-                    streamValue = new RelocatableStreamValue(input, processors);
+                    streamValue = new RelocatableStreamValue(queryContext);
                 }
 
                 streamValue.relocate(majorType, valueType, offset);

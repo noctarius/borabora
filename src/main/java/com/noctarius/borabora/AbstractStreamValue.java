@@ -16,18 +16,15 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.function.Supplier;
 
 abstract class AbstractStreamValue
         extends AbstractValue {
 
-    private final Collection<SemanticTagProcessor> processors;
-    private final Input input;
+    private final QueryContext queryContext;
 
-    protected AbstractStreamValue(Input input, Collection<SemanticTagProcessor> processors) {
-        this.input = input;
-        this.processors = processors;
+    protected AbstractStreamValue(QueryContext queryContext) {
+        this.queryContext = queryContext;
     }
 
     @Override
@@ -38,34 +35,34 @@ abstract class AbstractStreamValue
     @Override
     public Number number() {
         return extract(() -> matchValueType(valueType(), ValueTypes.UInt, ValueTypes.NInt, ValueTypes.NFloat),
-                () -> Decoder.readNumber(input, valueType(), offset()));
+                () -> Decoder.readNumber(input(), valueType(), offset()));
     }
 
     @Override
     public Sequence sequence() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Sequence), //
-                () -> Decoder.readSequence(input, offset(), processors));
+                () -> Decoder.readSequence(offset(), queryContext));
     }
 
     @Override
     public Dictionary dictionary() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Dictionary), //
-                () -> Decoder.readDictionary(input, offset(), processors));
+                () -> Decoder.readDictionary(offset(), queryContext));
     }
 
     @Override
     public String string() {
-        return extract(() -> matchStringValueType(valueType()), () -> Decoder.readString(input, offset()));
+        return extract(() -> matchStringValueType(valueType()), () -> Decoder.readString(input(), offset()));
     }
 
     @Override
     public Boolean bool() {
-        return extract(() -> matchValueType(valueType(), ValueTypes.Bool), () -> Decoder.getBooleanValue(input, offset()));
+        return extract(() -> matchValueType(valueType(), ValueTypes.Bool), () -> Decoder.getBooleanValue(input(), offset()));
     }
 
     @Override
     public byte[] raw() {
-        return extract(() -> Decoder.readRaw(input, majorType(), offset()));
+        return extract(() -> Decoder.readRaw(input(), majorType(), offset()));
     }
 
     @Override
@@ -73,8 +70,16 @@ abstract class AbstractStreamValue
         return valueType().value(this);
     }
 
+    protected QueryContext queryContext() {
+        return queryContext;
+    }
+
+    protected Input input() {
+        return queryContext.input();
+    }
+
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
-        short head = Bytes.readUInt8(input, offset());
+        short head = Bytes.readUInt8(input(), offset());
         // Null is legal for all types
         if (Decoder.isNull(head)) {
             return null;

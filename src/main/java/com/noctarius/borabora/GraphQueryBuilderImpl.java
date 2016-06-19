@@ -16,7 +16,9 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 
 import java.util.ArrayList;
@@ -32,12 +34,24 @@ import static com.noctarius.borabora.DictionaryGraphQuery.stringMatcher;
 final class GraphQueryBuilderImpl
         implements StreamGraphQueryBuilder {
 
+    private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(-1);
+
     private List<GraphQuery> graphQueries = new ArrayList<>();
 
     @Override
     public GraphQueryBuilder stream(long offset) {
         graphQueries.add(new StreamGraphQuery(offset));
         return this;
+    }
+
+    @Override
+    public DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary() {
+        return null;
+    }
+
+    @Override
+    public SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence() {
+        return null;
     }
 
     @Override
@@ -87,9 +101,9 @@ final class GraphQueryBuilderImpl
     @Override
     public GraphQuery build() {
         if (graphQueries.size() == 0) {
-            graphQueries.add(new StreamGraphQuery(-1));
+            graphQueries.add(STREAM_INDEX_ZERO_GRAPH_QUERY);
         } else if (!(graphQueries.get(0) instanceof StreamGraphQuery)) {
-            graphQueries.add(0, new StreamGraphQuery(-1));
+            graphQueries.add(0, STREAM_INDEX_ZERO_GRAPH_QUERY);
         }
         return new ChainGraphQuery(graphQueries);
     }

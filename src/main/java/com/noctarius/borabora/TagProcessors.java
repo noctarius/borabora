@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,13 +27,15 @@ import static com.noctarius.borabora.Bytes.readUInt8;
 
 final class TagProcessors {
 
-    static Date readDateTime(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    static Date readDateTime(long offset, long length, QueryContext queryContext) {
+        Input input = queryContext.input();
         int byteSize = ByteSizes.intByteSize(input, offset);
         String date = Decoder.readString(input, offset + byteSize);
         return DateParser.parseDate(date, Locale.ENGLISH);
     }
 
-    static BigInteger readUBigNum(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    static BigInteger readUBigNum(long offset, long length, QueryContext queryContext) {
+        Input input = queryContext.input();
         int byteSize = ByteSizes.intByteSize(input, offset);
         String bigNum = Decoder.readString(input, offset + byteSize);
         try {
@@ -45,11 +46,12 @@ final class TagProcessors {
         }
     }
 
-    static BigInteger readNBigNum(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
-        return BigInteger.valueOf(-1).xor(readUBigNum(input, offset, length, processors));
+    static BigInteger readNBigNum(long offset, long length, QueryContext queryContext) {
+        return BigInteger.valueOf(-1).xor(readUBigNum(offset, length, queryContext));
     }
 
-    static URI readURI(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    static URI readURI(long offset, long length, QueryContext queryContext) {
+        Input input = queryContext.input();
         int byteSize = ByteSizes.intByteSize(input, offset);
         String uri = Decoder.readString(input, offset + byteSize);
         try {
@@ -59,18 +61,20 @@ final class TagProcessors {
         }
     }
 
-    static Number readTimestamp(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    static Number readTimestamp(long offset, long length, QueryContext queryContext) {
+        Input input = queryContext.input();
         ValueType valueType = ValueTypes.valueType(input, offset + 1);
         return Decoder.readNumber(input, valueType, offset + 1);
     }
 
-    static Value readEncCBOR(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    static Value readEncCBOR(long offset, long length, QueryContext queryContext) {
+        Input input = queryContext.input();
         int headByteSize = ByteSizes.intByteSize(input, offset);
 
         offset += headByteSize;
         short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
-        return new StreamValue(majorType, valueType, input, offset, processors);
+        return new StreamValue(majorType, valueType, offset, queryContext);
     }
 }

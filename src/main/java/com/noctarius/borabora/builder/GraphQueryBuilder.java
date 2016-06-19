@@ -17,26 +17,9 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.GraphQuery;
-import com.noctarius.borabora.TypeSpec;
-import com.noctarius.borabora.Value;
 
-import java.util.function.Predicate;
-
-public interface GraphQueryBuilder {
-
-    GraphQueryBuilder sequence(long index);
-
-    GraphQueryBuilder dictionary(Predicate<Value> predicate);
-
-    GraphQueryBuilder dictionary(String key);
-
-    GraphQueryBuilder dictionary(double key);
-
-    GraphQueryBuilder dictionary(long key);
-
-    GraphQueryBuilder nullOrType(TypeSpec typeSpec);
-
-    GraphQueryBuilder requireType(TypeSpec typeSpec);
+public interface GraphQueryBuilder
+        extends GraphQueryTokenBuilder<GraphQueryBuilder> {
 
     GraphQuery build();
 
