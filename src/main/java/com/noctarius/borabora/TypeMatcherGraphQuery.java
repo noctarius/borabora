@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
@@ -34,7 +33,8 @@ class TypeMatcherGraphQuery
     }
 
     @Override
-    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    public long access(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
         short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);

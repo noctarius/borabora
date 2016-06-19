@@ -29,12 +29,6 @@ import static org.junit.Assert.assertSame;
 public class QueryLanguageTestCase
         extends AbstractTestCase {
 
-    // >#{'b'}>>"foo", #{'c'}>>"bar"<
-    // select(#{'b'} as "foo", #{'c'} as "bar")
-    // select(foo: #{'b'}, bar: #{'c'})
-    // (foo: #{'b'}, bar: #{'c'})
-    // { "foo": ..., "bar": ... }
-
     @Test
     public void test_simple_sequence_access()
             throws Exception {

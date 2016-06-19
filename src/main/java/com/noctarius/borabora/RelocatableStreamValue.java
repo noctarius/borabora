@@ -16,28 +16,19 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
-import java.util.Optional;
-
 final class RelocatableStreamValue
         extends AbstractStreamValue {
 
-    private final Collection<SemanticTagProcessor> processors;
-
     private MajorType majorType;
     private ValueType valueType;
-    private Input input;
     private long offset;
 
-    RelocatableStreamValue(Input input, Collection<SemanticTagProcessor> processors) {
-        super(input, processors);
+    RelocatableStreamValue(QueryContext queryContext) {
+        super(queryContext);
 
         if (offset == -1) {
             throw new IllegalArgumentException("No offset available for CBOR type");
         }
-
-        this.input = input;
-        this.processors = processors;
     }
 
     @Override
@@ -57,23 +48,13 @@ final class RelocatableStreamValue
 
     @Override
     protected <T> T extractTag() {
-        SemanticTagProcessor<T> processor = findProcessor(offset);
-        if (processor == null) {
-            return null;
-        }
-        long length = Decoder.length(input, majorType(), offset);
-        return processor.process(input, offset, length, processors);
+        return queryContext().applyProcessors(offset(), majorType());
     }
 
     void relocate(MajorType majorType, ValueType valueType, long offset) {
         this.majorType = majorType;
         this.valueType = valueType;
         this.offset = offset;
-    }
-
-    private <V> SemanticTagProcessor<V> findProcessor(long offset) {
-        Optional<SemanticTagProcessor> optional = processors.stream().filter(p -> p.handles(input, offset)).findFirst();
-        return optional.isPresent() ? optional.get() : null;
     }
 
 }

@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
-
 final class StreamGraphQuery
         implements GraphQuery {
 
@@ -28,14 +26,14 @@ final class StreamGraphQuery
     }
 
     @Override
-    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    public long access(long offset, QueryContext queryContext) {
         // Stream direct access (return actual object itself)
         if (streamIndex <= 0) {
             return offset;
         }
 
         // Stream objects
-        return skip(input, offset);
+        return skip(queryContext.input(), offset);
     }
 
     @Override

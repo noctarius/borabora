@@ -16,13 +16,11 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
-
 public interface SemanticTagProcessor<V> {
 
     boolean handles(Input input, long offset);
 
-    V process(Input input, long offset, long length, Collection<SemanticTagProcessor> processors);
+    V process(long offset, long length, QueryContext queryContext);
 
     TypeSpec handles(int tagId);
 

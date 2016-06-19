@@ -16,10 +16,8 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
-
 public interface StreamPredicate {
 
-    boolean test(MajorType majorType, ValueType valueType, Input input, long offset, Collection<SemanticTagProcessor> processors);
+    boolean test(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext);
 
 }

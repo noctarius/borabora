@@ -18,11 +18,9 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 
-import java.util.Collection;
-
 public interface GraphQuery {
 
-    long access(Input input, long offset, Collection<SemanticTagProcessor> processors);
+    long access(long offset, QueryContext queryContext);
 
     static StreamGraphQueryBuilder newBuilder() {
         return new GraphQueryBuilderImpl();

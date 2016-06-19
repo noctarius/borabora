@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphQueryBuilder;
 
-import java.util.Collection;
+import java.util.List;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
@@ -27,22 +27,23 @@ import static com.noctarius.borabora.Value.NULL_VALUE;
 final class ParserImpl
         implements Parser {
 
-    private final Collection<SemanticTagProcessor> processors;
+    private final List<SemanticTagProcessor> semanticTagProcessors;
 
-    ParserImpl(Collection<SemanticTagProcessor> processors) {
-        this.processors = processors;
+    ParserImpl(List<SemanticTagProcessor> semanticTagProcessors) {
+        this.semanticTagProcessors = semanticTagProcessors;
     }
 
     @Override
     public Value read(Input input, GraphQuery graphQuery) {
-        long offset = graphQuery.access(input, 0, processors);
+        QueryContext queryContext = newQueryContext(input);
+        long offset = graphQuery.access(0, queryContext);
         if (offset == -1) {
             return NULL_VALUE;
         }
         short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, input, offset, processors);
+        return new StreamValue(mt, vt, offset, queryContext);
     }
 
     @Override
@@ -61,7 +62,7 @@ final class ParserImpl
         short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, input, offset, processors);
+        return new StreamValue(mt, vt, offset, newQueryContext(input));
     }
 
     @Override
@@ -85,12 +86,16 @@ final class ParserImpl
         try {
 
             GraphQueryBuilder queryBuilder = GraphQuery.newBuilder();
-            QueryParser.parse(query, queryBuilder, processors);
+            QueryParser.parse(query, queryBuilder, semanticTagProcessors);
             return queryBuilder.build();
 
         } catch (Exception | TokenMgrError e) {
             throw new QueryParserException(e);
         }
+    }
+
+    private QueryContext newQueryContext(Input input) {
+        return new QueryContext(input, semanticTagProcessors);
     }
 
 }

@@ -21,4 +21,8 @@ public interface StreamGraphQueryBuilder
 
     GraphQueryBuilder stream(long offset);
 
+    DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary();
+
+    SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence();
+
 }

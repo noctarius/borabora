@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,9 +29,9 @@ final class ChainGraphQuery
     }
 
     @Override
-    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    public long access(long offset, QueryContext queryContext) {
         for (GraphQuery graphQuery : graphQueries) {
-            offset = graphQuery.access(input, offset, processors);
+            offset = graphQuery.access(offset, queryContext);
             if (offset == -1) {
                 return -1;
             }

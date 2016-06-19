@@ -14,10 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-interface TagProcessor {
+public interface StreamEntryGraphQueryBuilder<T>
+        extends EntryGraphQueryBuilder<T> {
 
-    Object process(long offset, long length, QueryContext queryContext);
+    EntryGraphQueryBuilder<T> stream(long offset);
+
+    DictionaryGraphQueryBuilder<EntryGraphQueryBuilder<T>> asDictionary();
+
+    SequenceGraphQueryBuilder<EntryGraphQueryBuilder<T>> asSequence();
 
 }

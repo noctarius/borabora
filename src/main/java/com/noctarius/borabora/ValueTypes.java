@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.function.Function;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
@@ -117,11 +116,11 @@ public enum ValueTypes
     }
 
     @Override
-    public Object process(Input input, long offset, long length, Collection<SemanticTagProcessor> processors) {
+    public Object process(long offset, long length, QueryContext queryContext) {
         if (processor == null) {
             return null;
         }
-        return processor.process(input, offset, length, processors);
+        return processor.process(offset, length, queryContext);
     }
 
     static ValueTypes valueType(Input input, long offset) {

@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -33,7 +32,8 @@ abstract class DictionaryGraphQuery
     }
 
     @Override
-    public long access(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    public long access(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
         short head = readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
@@ -44,7 +44,7 @@ abstract class DictionaryGraphQuery
         long headByteSize = ByteSizes.headByteSize(input, offset);
         offset += headByteSize;
 
-        return Decoder.findByDictionaryKey(input, predicate, offset, processors);
+        return Decoder.findByDictionaryKey(predicate, offset, queryContext);
     }
 
     @Override

@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import java.math.BigInteger;
-import java.util.Collection;
 
 import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
@@ -132,18 +131,20 @@ enum Decoder {
         return readString0(input, offset);
     }
 
-    static Sequence readSequence(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    static Sequence readSequence(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.sequenceElementCount(input, offset);
         long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size);
-        return new SequenceImpl(input, size, elementIndexes, processors);
+        return new SequenceImpl(size, elementIndexes, queryContext);
     }
 
-    static Dictionary readDictionary(Input input, long offset, Collection<SemanticTagProcessor> processors) {
+    static Dictionary readDictionary(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.dictionaryElementCount(input, offset);
         long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size * 2);
-        return new DictionaryImpl(input, size, elementIndexes, processors);
+        return new DictionaryImpl(size, elementIndexes, queryContext);
     }
 
     static long length(Input input, MajorType majorType, long offset) {
@@ -214,21 +215,20 @@ enum Decoder {
         return Double.longBitsToDouble(readUInt64Long(input, offset));
     }
 
-    static long findByDictionaryKey(Input input, StreamPredicate predicate, long offset,
-                                    Collection<SemanticTagProcessor> processors) {
+    static long findByDictionaryKey(StreamPredicate predicate, long offset, QueryContext queryContext) {
         // Search for key element
-        long position = findByPredicate(input, predicate, offset, processors);
+        long position = findByPredicate(predicate, offset, queryContext);
         if (position == -1) {
             return -1;
         }
-        return skip(input, position);
+        return skip(queryContext.input(), position);
     }
 
-    static StreamValue readValue(Input input, long offset, Collection<SemanticTagProcessor> processors) {
-        short head = readUInt8(input, offset);
+    static StreamValue readValue(long offset, QueryContext queryContext) {
+        short head = readUInt8(queryContext.input(), offset);
         MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, input, offset, processors);
+        ValueType vt = ValueTypes.valueType(queryContext.input(), offset);
+        return new StreamValue(mt, vt, offset, queryContext);
     }
 
     static int additionalInfo(Input input, long offset) {
@@ -251,14 +251,13 @@ enum Decoder {
         return data;
     }
 
-    private static long findByPredicate(Input input, StreamPredicate predicate, long offset,
-                                        Collection<SemanticTagProcessor> processors) {
-
+    private static long findByPredicate(StreamPredicate predicate, long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
         do {
             short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
-            if (predicate.test(majorType, valueType, input, offset, processors)) {
+            if (predicate.test(majorType, valueType, offset, queryContext)) {
                 return offset;
             }
             long length = length(input, majorType, offset);
