@@ -34,7 +34,7 @@ import static com.noctarius.borabora.DictionaryGraphQuery.stringMatcher;
 final class GraphQueryBuilderImpl
         implements StreamGraphQueryBuilder {
 
-    private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(-1);
+    private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(0);
 
     private List<GraphQuery> graphQueries = new ArrayList<>();
 
