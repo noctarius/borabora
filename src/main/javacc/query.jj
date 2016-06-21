@@ -69,7 +69,7 @@ PARSER_BEGIN(QueryParser)
         static void parse(String query, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors)
                 throws ParseException, TokenMgrError {
 
-            new QueryParser(new StringReader(query), queryBuilder, processors).query();
+            new QueryParser(new StringReader(query), queryBuilder, processors).select();
         }
     }
 PARSER_END(QueryParser)
@@ -96,6 +96,9 @@ TOKEN: {
      | < CCBR:   ("}") >
      | < TMAT:   ("->") >
      | < OPT:    ("?") >
+     | < COLON:  (":") >
+     | < COMMA:  (",") >
+     | < UNDER:  ("_") >
 
      | < TYPE:   (
           "int"
@@ -116,6 +119,56 @@ TOKEN: {
         | "uri"
         | "enccbor"
      ) >
+
+     | < IDENT:  ( (["a"-"z", "A"-"Z"]|<UNDER>)+ (["a"-"z", "A"-"Z", "0"-"9"]|<UNDER>)* ) >
+}
+
+void select(): {
+
+}
+{
+    ( query() | type() ) <EOF>
+}
+
+void element(): {
+}
+{
+    ( property() | stream() )
+}
+
+void type(): {
+}
+{
+    <OBRA> ( dictionaryType() | sequenceType() ) <CBRA>
+}
+
+void dictionaryType(): {
+}
+{
+    {
+        System.out.println("DictionaryType");
+    }
+    ( property() ( <COMMA> property() )* )
+}
+
+void sequenceType(): {
+}
+{
+    {
+        System.out.println("SequenceType");
+    }
+    ( stream() ( <COMMA> stream() )* )
+}
+
+void property(): {
+    Token identToken = null;
+}
+{
+    ( identToken = <IDENT> )
+    {
+        System.out.println(identToken);
+    }
+    <COLON> ( query() | type() )
 }
 
 void stream(): {
@@ -202,5 +255,5 @@ void typematch(): {
 void query(): {
 }
 {
-    stream() (expression())* <EOF>
+    stream() (expression())*
 }

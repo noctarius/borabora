@@ -16,9 +16,12 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -28,6 +31,44 @@ import static org.junit.Assert.assertSame;
 
 public class QueryLanguageTestCase
         extends AbstractTestCase {
+
+    // (foo: #{'b'}, bar: #{'c'})
+
+    @Test
+    public void test_select_statement()
+            throws Exception {
+
+        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StreamGraphBuilder graphBuilder = streamWriter.newStreamGraphBuilder(Output.toOutputStream(baos));
+        graphBuilder.putNumber(100).putNumber(101).putNumber(102).putNumber(103).putNumber(104).finishStream();
+
+        String query1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #0, g: (#0, #1, #2))";
+        String query2 = "(#0, #1, #2, #3)";
+
+        Parser parser = Parser.newBuilder().build();
+
+        GraphQuery graphQuery1 = parser.prepareQuery(query1);
+        GraphQuery graphQuery2 = parser.prepareQuery(query2);
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Value value1 = parser.read(input, graphQuery1);
+        Value value2 = parser.read(input, graphQuery2);
+
+        assertEquals(ValueTypes.Dictionary, value1.valueType());
+        assertEquals(ValueTypes.Sequence, value2.valueType());
+
+        StreamGraphQueryBuilder builder = GraphQuery.newBuilder();
+        GraphQuery graphQuery3 = builder.asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
+        GraphQuery graphQuery4 = builder.asSequence().putEntry().stream(0).endEntry().endSequence().build();
+
+        Value value3 = parser.read(input, graphQuery3);
+        Value value4 = parser.read(input, graphQuery4);
+
+        assertEquals(ValueTypes.Dictionary, value3.valueType());
+        assertEquals(ValueTypes.Sequence, value4.valueType());
+    }
 
     @Test
     public void test_simple_sequence_access()
