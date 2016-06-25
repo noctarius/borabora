@@ -41,6 +41,8 @@ final class ParserImpl
         long offset = graphQuery.access(0, queryContext);
         if (offset == -1) {
             return NULL_VALUE;
+        } else if (offset == -2) {
+            return queryContext.queryStackPop();
         }
         short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);

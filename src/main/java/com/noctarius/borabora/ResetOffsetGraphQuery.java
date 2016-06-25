@@ -14,21 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora;
 
-import com.noctarius.borabora.Input;
-import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.spi.QueryContext;
 
-public interface QueryContext {
+final class ResetOffsetGraphQuery
+        implements GraphQuery {
 
-    Input input();
+    static final GraphQuery INSTANCE = new ResetOffsetGraphQuery();
 
-    <T> T applyProcessors(long offset, MajorType majorType);
+    private ResetOffsetGraphQuery() {
+    }
 
-    <T> void queryStackPush(T element);
-
-    <T> T queryStackPop();
-
-    <T> T queryStackPeek();
+    @Override
+    public long access(long offset, QueryContext queryContext) {
+        return 0;
+    }
 
 }

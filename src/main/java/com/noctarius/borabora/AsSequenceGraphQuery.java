@@ -14,21 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora;
 
-import com.noctarius.borabora.Input;
-import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.spi.QueryContext;
 
-public interface QueryContext {
+import java.util.ArrayList;
+import java.util.List;
 
-    Input input();
+class AsSequenceGraphQuery
+        implements GraphQuery {
 
-    <T> T applyProcessors(long offset, MajorType majorType);
+    @Override
+    public long access(long offset, QueryContext queryContext) {
+        // Create a new List to store entries, thanks to thread-safetyness :)
+        List<Value> entries = new ArrayList<>();
 
-    <T> void queryStackPush(T element);
+        // Push to query context stack
+        queryContext.queryStackPush(entries);
 
-    <T> T queryStackPop();
-
-    <T> T queryStackPeek();
+        return offset;
+    }
 
 }

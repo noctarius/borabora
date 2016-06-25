@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 import java.util.Map;
 
-public class StreamValuePrettyPrinter {
+public class ValuePrettyPrinter {
 
     public static String prettyPrint(Value value) {
         StringBuilder sb = new StringBuilder();

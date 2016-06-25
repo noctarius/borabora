@@ -14,21 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora;
 
-import com.noctarius.borabora.Input;
-import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.spi.QueryContext;
 
-public interface QueryContext {
+import java.util.List;
 
-    Input input();
+class EndSequenceEntryGraphQuery
+        implements GraphQuery {
 
-    <T> T applyProcessors(long offset, MajorType majorType);
+    static final GraphQuery INSTANCE = new EndSequenceEntryGraphQuery();
 
-    <T> void queryStackPush(T element);
+    private EndSequenceEntryGraphQuery() {
+    }
 
-    <T> T queryStackPop();
+    @Override
+    public long access(long offset, QueryContext queryContext) {
+        Value value = Decoder.readValue(offset, queryContext);
 
-    <T> T queryStackPeek();
+        List<Value> entries = queryContext.queryStackPeek();
+        entries.add(value);
+
+        return offset;
+    }
 
 }

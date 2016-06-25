@@ -17,7 +17,8 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphBuilder;
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.spi.Dictionary;
+import com.noctarius.borabora.spi.Sequence;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -26,6 +27,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -44,30 +46,67 @@ public class QueryLanguageTestCase
         StreamGraphBuilder graphBuilder = streamWriter.newStreamGraphBuilder(Output.toOutputStream(baos));
         graphBuilder.putNumber(100).putNumber(101).putNumber(102).putNumber(103).putNumber(104).finishStream();
 
-        String query1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #0, g: (#0, #1, #2))";
-        String query2 = "(#0, #1, #2, #3)";
+        String queryString1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #4, g: (#0, #1, #2))";
+        String queryString2 = "(#0, #1, #2, #3)";
 
         Parser parser = Parser.newBuilder().build();
 
-        GraphQuery graphQuery1 = parser.prepareQuery(query1);
-        GraphQuery graphQuery2 = parser.prepareQuery(query2);
+        GraphQuery query1 = parser.prepareQuery(queryString1);
+        GraphQuery query2 = parser.prepareQuery(queryString2);
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Value value1 = parser.read(input, graphQuery1);
-        Value value2 = parser.read(input, graphQuery2);
+
+        GraphQuery query3 = GraphQuery.newBuilder().asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
+        GraphQuery query4 = GraphQuery.newBuilder().asSequence().putEntry().stream(0).endEntry().endSequence().build();
+
+        Value value3 = parser.read(input, query3);
+        Value value4 = parser.read(input, query4);
+
+        Value value1 = parser.read(input, query1);
+        Value value2 = parser.read(input, query2);
 
         assertEquals(ValueTypes.Dictionary, value1.valueType());
+
+        Dictionary v1 = value1.dictionary();
+        Value v1v1 = v1.get(matchString("a"));
+        Value v1v2 = v1.get(matchString("b"));
+        Value v1v3 = v1.get(matchString("c"));
+        Value v1v4 = v1.get(matchString("f"));
+        Value v1v5 = v1.get(matchString("g"));
+
+        assertEquals(ValueTypes.UInt, v1v1.valueType());
+        assertEquals(ValueTypes.UInt, v1v2.valueType());
+        assertEquals(ValueTypes.Dictionary, v1v3.valueType());
+        assertEquals(ValueTypes.UInt, v1v4.valueType());
+        assertEquals(ValueTypes.Sequence, v1v5.valueType());
+
+        assertEqualsNumber(100, v1v1.number());
+        assertEqualsNumber(100, v1v2.number());
+
+        Dictionary v1v3d = v1v3.dictionary();
+        Value v1v3v1 = v1v3d.get(matchString("d"));
+        Value v1v3v2 = v1v3d.get(matchString("e"));
+
+        assertEqualsNumber(100, v1v3v1.number());
+        assertEqualsNumber(100, v1v3v2.number());
+
+        assertEqualsNumber(104, v1v4.number());
+
+        Sequence v1v5s = v1v5.sequence();
+        Value v1v5v1 = v1v5s.get(0);
+        Value v1v5v2 = v1v5s.get(1);
+        Value v1v5v3 = v1v5s.get(2);
+
+        assertEqualsNumber(100, v1v5v1.number());
+        assertEqualsNumber(101, v1v5v2.number());
+        assertEqualsNumber(102, v1v5v3.number());
+
         assertEquals(ValueTypes.Sequence, value2.valueType());
-
-        StreamGraphQueryBuilder builder = GraphQuery.newBuilder();
-        GraphQuery graphQuery3 = builder.asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
-        GraphQuery graphQuery4 = builder.asSequence().putEntry().stream(0).endEntry().endSequence().build();
-
-        Value value3 = parser.read(input, graphQuery3);
-        Value value4 = parser.read(input, graphQuery4);
 
         assertEquals(ValueTypes.Dictionary, value3.valueType());
         assertEquals(ValueTypes.Sequence, value4.valueType());
+
+        System.out.println(ValuePrettyPrinter.prettyPrint(value1));
     }
 
     @Test

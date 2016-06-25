@@ -19,11 +19,15 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SemanticTagProcessor;
 
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 final class QueryContextImpl
         implements QueryContext {
 
+    // Queries are inherently thread-safe!
+    private final Deque<Object> stack = new LinkedList<>();
     private final List<SemanticTagProcessor> semanticTagProcessors;
     private final Input input;
 
@@ -45,6 +49,21 @@ final class QueryContextImpl
         }
         long length = Decoder.length(input, majorType, offset);
         return processor.process(offset, length, this);
+    }
+
+    @Override
+    public <T> void queryStackPush(T element) {
+        stack.addFirst(element);
+    }
+
+    @Override
+    public <T> T queryStackPop() {
+        return (T) stack.removeFirst();
+    }
+
+    @Override
+    public <T> T queryStackPeek() {
+        return (T) stack.peekFirst();
     }
 
     private <V> SemanticTagProcessor<V> findProcessor(long offset) {

@@ -26,8 +26,7 @@ PARSER_BEGIN(QueryParser)
     import com.noctarius.borabora.spi.*;
     import com.noctarius.borabora.builder.*;
     import java.text.*;
-    import java.util.Locale;
-    import java.util.Collection;
+    import java.util.*;
 
     /**
      * Query Language Definition:<br/>
@@ -59,6 +58,12 @@ PARSER_BEGIN(QueryParser)
     class QueryParser {
         private GraphQueryBuilder queryBuilder;
         private Collection<SemanticTagProcessor> processors;
+
+        private Deque generatorStack = new LinkedList();
+
+        private DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder;
+        private SequenceGraphQueryBuilder sequenceGraphQueryBuilder;
+        private StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder;
 
         private QueryParser(Reader reader, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors) {
             this(reader);
@@ -146,18 +151,41 @@ void dictionaryType(): {
 }
 {
     {
-        System.out.println("DictionaryType");
+        DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder = ((StreamGraphQueryBuilder) queryBuilder).asDictionary();
+        generatorStack.addFirst(dictionaryGraphQueryBuilder);
     }
     ( property() ( <COMMA> property() )* )
+    {
+        dictionaryGraphQueryBuilder.endDictionary();
+        generatorStack.removeFirst();
+    }
 }
 
 void sequenceType(): {
 }
 {
     {
-        System.out.println("SequenceType");
+        SequenceGraphQueryBuilder sequenceGraphQueryBuilder = ((StreamGraphQueryBuilder) queryBuilder).asSequence();
+        generatorStack.addFirst(sequenceGraphQueryBuilder);
     }
-    ( stream() ( <COMMA> stream() )* )
+    ( entry() ( <COMMA> entry() )* )
+    {
+        sequenceGraphQueryBuilder.endSequence();
+        generatorStack.removeFirst();
+    }
+}
+
+void entry(): {
+}
+{
+    {
+        SequenceGraphQueryBuilder sequenceGraphQueryBuilder = (SequenceGraphQueryBuilder) generatorStack.peekFirst();
+        StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder = sequenceGraphQueryBuilder.putEntry();
+    }
+    stream()
+    {
+        streamEntryGraphQueryBuilder.endEntry();
+    }
 }
 
 void property(): {
@@ -166,9 +194,13 @@ void property(): {
 {
     ( identToken = <IDENT> )
     {
-        System.out.println(identToken);
+        DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder = (DictionaryGraphQueryBuilder) generatorStack.peekFirst();
+        streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(identToken.image);
     }
     <COLON> ( query() | type() )
+    {
+        streamEntryGraphQueryBuilder.endEntry();
+    }
 }
 
 void stream(): {

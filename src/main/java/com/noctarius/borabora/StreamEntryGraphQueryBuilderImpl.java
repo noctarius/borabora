@@ -17,91 +17,91 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.builder.EntryGraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
 import com.noctarius.borabora.spi.TypeSpec;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
-final class GraphQueryBuilderImpl
+class StreamEntryGraphQueryBuilderImpl<T>
         extends AbstractGraphQueryBuilder
-        implements StreamGraphQueryBuilder {
+        implements StreamEntryGraphQueryBuilder<T> {
 
-    private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(0);
+    private final T queryBuilder;
+    private final List<GraphQuery> graphQueries;
+    private final GraphQuery endEntryGraphQuery;
 
-    GraphQueryBuilderImpl() {
-        super(new ArrayList<>());
+    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries, GraphQuery endEntryGraphQuery) {
+        super(graphQueries);
+        this.queryBuilder = queryBuilder;
+        this.graphQueries = graphQueries;
+        this.endEntryGraphQuery = endEntryGraphQuery;
     }
 
     @Override
-    public GraphQueryBuilder stream(long offset) {
+    public EntryGraphQueryBuilder<T> stream(long offset) {
         graphQueries.add(new StreamGraphQuery(offset));
         return this;
     }
 
     @Override
-    public DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary() {
-        graphQueries.add(new AsDictionaryGraphQuery());
+    public DictionaryGraphQueryBuilder<EntryGraphQueryBuilder<T>> asDictionary() {
         return new DictionaryGraphQueryBuilderImpl<>(this, graphQueries);
     }
 
     @Override
-    public SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence() {
-        graphQueries.add(new AsSequenceGraphQuery());
+    public SequenceGraphQueryBuilder<EntryGraphQueryBuilder<T>> asSequence() {
         return new SequenceGraphQueryBuilderImpl<>(this, graphQueries);
     }
 
     @Override
-    public GraphQuery build() {
-        if (graphQueries.size() == 0) {
-            graphQueries.add(STREAM_INDEX_ZERO_GRAPH_QUERY);
-        } else if (!(graphQueries.get(0) instanceof StreamGraphQuery)) {
-            graphQueries.add(0, STREAM_INDEX_ZERO_GRAPH_QUERY);
-        }
-        return new ChainGraphQuery(graphQueries);
+    public T endEntry() {
+        graphQueries.add(endEntryGraphQuery);
+        return queryBuilder;
     }
 
     @Override
-    public GraphQueryBuilder sequence(long index) {
+    public EntryGraphQueryBuilder<T> sequence(long index) {
         sequence0(index);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(Predicate<Value> predicate) {
+    public EntryGraphQueryBuilder<T> dictionary(Predicate<Value> predicate) {
         dictionary0(predicate);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(String key) {
+    public EntryGraphQueryBuilder<T> dictionary(String key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(double key) {
+    public EntryGraphQueryBuilder<T> dictionary(double key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(long key) {
+    public EntryGraphQueryBuilder<T> dictionary(long key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder nullOrType(TypeSpec typeSpec) {
+    public EntryGraphQueryBuilder<T> nullOrType(TypeSpec typeSpec) {
         nullOrType0(typeSpec);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder requireType(TypeSpec typeSpec) {
+    public EntryGraphQueryBuilder<T> requireType(TypeSpec typeSpec) {
         requireType0(typeSpec);
         return this;
     }
+
 }
