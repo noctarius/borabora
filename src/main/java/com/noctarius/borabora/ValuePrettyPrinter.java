@@ -17,23 +17,30 @@
 package com.noctarius.borabora;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class ValuePrettyPrinter {
 
-    public static String prettyPrint(Value value) {
+    public static String toStringPrettyPrint(Value value) {
         StringBuilder sb = new StringBuilder();
-        prettyPrint(value, 0, sb);
+        prettyPrint(value, 0, sb, Value::toString);
         return sb.toString();
     }
 
-    private static void prettyPrint(Value value, int indentation, StringBuilder sb) {
+    public static String asStringPrettyPrint(Value value) {
+        StringBuilder sb = new StringBuilder();
+        prettyPrint(value, 0, sb, Value::asString);
+        return sb.toString();
+    }
+
+    private static void prettyPrint(Value value, int indentation, StringBuilder sb, Function<Value, String> extractor) {
         if (value.valueType().matches(ValueTypes.Dictionary)) {
             sb.append("Dictionary [").append("\n");
             for (Map.Entry<Value, Value> entry : value.dictionary()) {
                 printIndentation(indentation + 1, sb);
-                prettyPrint(entry.getKey(), indentation + 1, sb);
+                prettyPrint(entry.getKey(), indentation + 1, sb, extractor);
                 sb.append("=");
-                prettyPrint(entry.getValue(), indentation + 1, sb);
+                prettyPrint(entry.getValue(), indentation + 1, sb, extractor);
                 sb.append(", \n");
             }
             // Remove last ", "
@@ -45,7 +52,7 @@ public class ValuePrettyPrinter {
             sb.append("Sequence [").append("\n");
             for (Value seqValue : value.sequence()) {
                 printIndentation(indentation + 1, sb);
-                prettyPrint(seqValue, indentation + 1, sb);
+                prettyPrint(seqValue, indentation + 1, sb, extractor);
                 sb.append(", \n");
             }
             // Remove last ", "
@@ -54,7 +61,7 @@ public class ValuePrettyPrinter {
             sb.append("]");
 
         } else {
-            sb.append(value);
+            sb.append(extractor.apply(value));
         }
     }
 

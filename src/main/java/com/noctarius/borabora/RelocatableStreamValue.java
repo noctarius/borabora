@@ -49,6 +49,20 @@ final class RelocatableStreamValue
     }
 
     @Override
+    public String toString() {
+        return "RelocatableStreamValue{" +
+                "valueType=" + valueType +
+                ", offset=" + offset +
+                ", value=" + byValueType() +
+                '}';
+    }
+
+    @Override
+    public String asString() {
+        return valueType + "{ " + byValueType() + " }";
+    }
+
+    @Override
     protected <T> T extractTag() {
         return queryContext().applyProcessors(offset(), majorType());
     }

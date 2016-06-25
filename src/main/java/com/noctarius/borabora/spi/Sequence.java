@@ -104,4 +104,6 @@ public interface Sequence
      */
     Value get(long sequenceIndex);
 
+    String asString();
+
 }

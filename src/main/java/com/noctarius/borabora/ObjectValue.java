@@ -103,4 +103,9 @@ class ObjectValue
                 '}';
     }
 
+    @Override
+    public String asString() {
+        return valueType + "{ " + byValueType() + " }";
+    }
+
 }

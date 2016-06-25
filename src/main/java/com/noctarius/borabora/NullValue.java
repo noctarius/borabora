@@ -82,4 +82,14 @@ final class NullValue
         return -1;
     }
 
+    @Override
+    public String toString() {
+        return "NullValue{valueType=Null, offset=-1, value=null}";
+    }
+
+    @Override
+    public String asString() {
+        return "Null{ null }";
+    }
+
 }

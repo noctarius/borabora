@@ -57,6 +57,11 @@ final class StreamValue
     }
 
     @Override
+    public String asString() {
+        return valueType + "{ " + byValueType() + " }";
+    }
+
+    @Override
     public long offset() {
         return offset;
     }

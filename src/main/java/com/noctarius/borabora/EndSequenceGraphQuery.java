@@ -100,6 +100,15 @@ class EndSequenceGraphQuery
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
         }
 
+        @Override
+        public String asString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (long i = 0; i < entries.size(); i++) {
+                sb.append(get(i).asString()).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+
         private Value findValue(Predicate<Value> predicate, Iterator<Value> iterator) {
             while (iterator.hasNext()) {
                 Value value = iterator.next();

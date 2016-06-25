@@ -159,4 +159,6 @@ public interface Dictionary
      */
     Iterator<Map.Entry<Value, Value>> iterator();
 
+    String asString();
+
 }

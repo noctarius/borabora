@@ -109,6 +109,17 @@ final class DictionaryImpl
         return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
     }
 
+    @Override
+    public String asString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (long i = 0; i < size; i += 2) {
+            Value key = Decoder.readValue(calculateArrayIndex(i), queryContext);
+            Value value = Decoder.readValue(calculateArrayIndex(i + 1), queryContext);
+            sb.append(key.asString()).append('=').append(value.asString()).append(", ");
+        }
+        return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+    }
+
     private Value get(long keyOffset) {
         if (keyOffset == -1) {
             return null;

@@ -45,4 +45,6 @@ public interface Value {
 
     long offset();
 
+    String asString();
+
 }

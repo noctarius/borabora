@@ -106,7 +106,7 @@ public class QueryLanguageTestCase
         assertEquals(ValueTypes.Dictionary, value3.valueType());
         assertEquals(ValueTypes.Sequence, value4.valueType());
 
-        System.out.println(ValuePrettyPrinter.prettyPrint(value1));
+        System.out.println(ValuePrettyPrinter.asStringPrettyPrint(value1));
     }
 
     @Test

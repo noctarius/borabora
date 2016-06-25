@@ -124,6 +124,17 @@ class EndDictionaryGraphQuery
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
         }
 
+        @Override
+        public String asString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (Map.Entry<Value, Value> entry : entries.entrySet()) {
+                Value key = entry.getKey();
+                Value value = entry.getValue();
+                sb.append(key.asString()).append('=').append(value.asString()).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+
         private Value findValue(Predicate<Value> predicate, Iterable<Value> iterable) {
             Iterator<Value> iterator = iterable.iterator();
             while (iterator.hasNext()) {
