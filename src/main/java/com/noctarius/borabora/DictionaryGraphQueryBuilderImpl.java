@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.List;
 
@@ -26,37 +27,34 @@ class DictionaryGraphQueryBuilderImpl<T>
 
     private final T queryBuilder;
     private final List<GraphQuery> graphQueries;
+    private SelectStatementStrategy selectStatementStrategy;
 
-    DictionaryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries) {
+    DictionaryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries,
+                                    SelectStatementStrategy selectStatementStrategy) {
+
         this.queryBuilder = queryBuilder;
         this.graphQueries = graphQueries;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
     public StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(String key) {
-        return putEntry(new PutEntryGraphQuery(key));
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
     }
 
     @Override
     public StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(double key) {
-        return putEntry(new PutEntryGraphQuery(key));
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
     }
 
     @Override
     public StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(long key) {
-        return putEntry(new PutEntryGraphQuery(key));
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
     }
 
     @Override
     public T endDictionary() {
-        graphQueries.add(EndDictionaryGraphQuery.INSTANCE);
-        return queryBuilder;
-    }
-
-    private StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(GraphQuery putKeyGraphQuery) {
-        graphQueries.add(putKeyGraphQuery);
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(this, graphQueries, EndDictionaryEntryGraphQuery.INSTANCE);
+        return selectStatementStrategy.endDictionary(queryBuilder, graphQueries);
     }
 
 }

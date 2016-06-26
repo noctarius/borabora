@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.GraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ final class GraphQueryBuilderImpl
 
     private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(0);
 
-    GraphQueryBuilderImpl() {
-        super(new ArrayList<>());
+    GraphQueryBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
+        super(new ArrayList<>(), selectStatementStrategy);
     }
 
     @Override
@@ -43,14 +44,12 @@ final class GraphQueryBuilderImpl
 
     @Override
     public DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary() {
-        graphQueries.add(new AsDictionaryGraphQuery());
-        return new DictionaryGraphQueryBuilderImpl<>(this, graphQueries);
+        return selectStatementStrategy.asDictionary(this, graphQueries);
     }
 
     @Override
     public SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence() {
-        graphQueries.add(new AsSequenceGraphQuery());
-        return new SequenceGraphQueryBuilderImpl<>(this, graphQueries);
+        return selectStatementStrategy.asSequence(this, graphQueries);
     }
 
     @Override

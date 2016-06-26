@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.EntryGraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.List;
@@ -33,8 +34,10 @@ class StreamEntryGraphQueryBuilderImpl<T>
     private final List<GraphQuery> graphQueries;
     private final GraphQuery endEntryGraphQuery;
 
-    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries, GraphQuery endEntryGraphQuery) {
-        super(graphQueries);
+    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries, GraphQuery endEntryGraphQuery,
+                                     SelectStatementStrategy selectStatementStrategy) {
+
+        super(graphQueries, selectStatementStrategy);
         this.queryBuilder = queryBuilder;
         this.graphQueries = graphQueries;
         this.endEntryGraphQuery = endEntryGraphQuery;
@@ -48,12 +51,12 @@ class StreamEntryGraphQueryBuilderImpl<T>
 
     @Override
     public DictionaryGraphQueryBuilder<EntryGraphQueryBuilder<T>> asDictionary() {
-        return new DictionaryGraphQueryBuilderImpl<>(this, graphQueries);
+        return new DictionaryGraphQueryBuilderImpl<>(this, graphQueries, selectStatementStrategy);
     }
 
     @Override
     public SequenceGraphQueryBuilder<EntryGraphQueryBuilder<T>> asSequence() {
-        return new SequenceGraphQueryBuilderImpl<>(this, graphQueries);
+        return new SequenceGraphQueryBuilderImpl<>(this, graphQueries, selectStatementStrategy);
     }
 
     @Override

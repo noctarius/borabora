@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 import java.util.List;
@@ -30,9 +31,11 @@ final class ParserImpl
         implements Parser {
 
     private final List<SemanticTagProcessor> semanticTagProcessors;
+    private final SelectStatementStrategy selectStatementStrategy;
 
-    ParserImpl(List<SemanticTagProcessor> semanticTagProcessors) {
+    ParserImpl(List<SemanticTagProcessor> semanticTagProcessors, SelectStatementStrategy selectStatementStrategy) {
         this.semanticTagProcessors = semanticTagProcessors;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
@@ -42,7 +45,7 @@ final class ParserImpl
         if (offset == -1) {
             return NULL_VALUE;
         } else if (offset == -2) {
-            return queryContext.queryStackPop();
+            return selectStatementStrategy.finalizeSelect(queryContext);
         }
         short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
@@ -89,7 +92,7 @@ final class ParserImpl
     public GraphQuery prepareQuery(String query) {
         try {
 
-            GraphQueryBuilder queryBuilder = GraphQuery.newBuilder();
+            GraphQueryBuilder queryBuilder = GraphQuery.newBuilder(selectStatementStrategy);
             QueryParser.parse(query, queryBuilder, semanticTagProcessors);
             return queryBuilder.build();
 
@@ -99,7 +102,7 @@ final class ParserImpl
     }
 
     private QueryContext newQueryContext(Input input) {
-        return new QueryContextImpl(input, semanticTagProcessors);
+        return new QueryContextImpl(input, semanticTagProcessors, selectStatementStrategy);
     }
 
 }

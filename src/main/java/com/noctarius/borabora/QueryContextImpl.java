@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 import java.util.Deque;
@@ -29,11 +30,15 @@ final class QueryContextImpl
     // Queries are inherently thread-safe!
     private final Deque<Object> stack = new LinkedList<>();
     private final List<SemanticTagProcessor> semanticTagProcessors;
+    private final SelectStatementStrategy selectStatementStrategy;
     private final Input input;
 
-    QueryContextImpl(Input input, List<SemanticTagProcessor> semanticTagProcessors) {
+    QueryContextImpl(Input input, List<SemanticTagProcessor> semanticTagProcessors,
+                     SelectStatementStrategy selectStatementStrategy) {
+
         this.input = input;
         this.semanticTagProcessors = semanticTagProcessors;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override

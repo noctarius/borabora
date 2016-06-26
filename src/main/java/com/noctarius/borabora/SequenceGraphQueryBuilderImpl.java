@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.List;
 
@@ -26,22 +27,24 @@ class SequenceGraphQueryBuilderImpl<T>
 
     private final T queryBuilder;
     private final List<GraphQuery> graphQueries;
+    private SelectStatementStrategy selectStatementStrategy;
 
-    SequenceGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries) {
+    SequenceGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries,
+                                  SelectStatementStrategy selectStatementStrategy) {
+
         this.queryBuilder = queryBuilder;
         this.graphQueries = graphQueries;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
     public StreamEntryGraphQueryBuilder<SequenceGraphQueryBuilder<T>> putEntry() {
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(this, graphQueries, EndSequenceEntryGraphQuery.INSTANCE);
+        return selectStatementStrategy.putSequenceEntry(this, graphQueries);
     }
 
     @Override
     public T endSequence() {
-        graphQueries.add(EndSequenceGraphQuery.INSTANCE);
-        return queryBuilder;
+        return selectStatementStrategy.endSequence(queryBuilder, graphQueries);
     }
 
 }

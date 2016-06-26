@@ -49,15 +49,18 @@ public class QueryLanguageTestCase
         String queryString1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #4, g: (#0, #1, #2))";
         String queryString2 = "(#0, #1, #2, #3)";
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newBuilder().asObjectSelectStatement().build();
 
         GraphQuery query1 = parser.prepareQuery(queryString1);
         GraphQuery query2 = parser.prepareQuery(queryString2);
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        GraphQuery query3 = GraphQuery.newBuilder().asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
-        GraphQuery query4 = GraphQuery.newBuilder().asSequence().putEntry().stream(0).endEntry().endSequence().build();
+        GraphQuery query3 = GraphQuery.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
+                                      .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
+
+        GraphQuery query4 = GraphQuery.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
+                                      .asSequence().putEntry().stream(0).endEntry().endSequence().build();
 
         Value value3 = parser.read(input, query3);
         Value value4 = parser.read(input, query4);

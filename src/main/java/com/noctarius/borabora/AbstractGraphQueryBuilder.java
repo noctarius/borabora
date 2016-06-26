@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.List;
@@ -30,9 +31,11 @@ import static com.noctarius.borabora.DictionaryGraphQuery.stringMatcher;
 abstract class AbstractGraphQueryBuilder {
 
     protected final List<GraphQuery> graphQueries;
+    protected final SelectStatementStrategy selectStatementStrategy;
 
-    protected AbstractGraphQueryBuilder(List<GraphQuery> graphQueries) {
+    protected AbstractGraphQueryBuilder(List<GraphQuery> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     public void sequence0(long index) {

@@ -18,13 +18,22 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 public interface GraphQuery {
 
     long access(long offset, QueryContext queryContext);
 
     static StreamGraphQueryBuilder newBuilder() {
-        return new GraphQueryBuilderImpl();
+        return newBuilder(true);
+    }
+
+    static StreamGraphQueryBuilder newBuilder(boolean binarySelectStatement) {
+        return newBuilder(binarySelectStatement ? new BinarySelectStatementStrategy() : ObjectSelectStatementStrategy.INSTANCE);
+    }
+
+    static StreamGraphQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
+        return new GraphQueryBuilderImpl(selectStatementStrategy);
     }
 
 }

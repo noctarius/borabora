@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.SemanticTagProcessor;
 
 import java.util.ArrayList;
@@ -26,20 +27,36 @@ final class ParserBuilderImpl
         implements ParserBuilder {
 
     private final List<SemanticTagProcessor> processors = new ArrayList<>();
+    private boolean binarySelectStatement = true;
 
     public ParserBuilderImpl() {
-        semanticTagProcessor(BuiltInSemanticTagProcessor.INSTANCE);
+        withSemanticTagProcessor(BuiltInSemanticTagProcessor.INSTANCE);
     }
 
     @Override
-    public <V> ParserBuilder semanticTagProcessor(SemanticTagProcessor<V> processor) {
+    public <V> ParserBuilder withSemanticTagProcessor(SemanticTagProcessor<V> processor) {
         processors.add(processor);
         return this;
     }
 
     @Override
+    public ParserBuilder asBinarySelectStatement() {
+        binarySelectStatement = true;
+        return this;
+    }
+
+    @Override
+    public ParserBuilder asObjectSelectStatement() {
+        binarySelectStatement = false;
+        return this;
+    }
+
+    @Override
     public Parser build() {
-        return new ParserImpl(processors);
+        SelectStatementStrategy selectStatementStrategy = binarySelectStatement
+                ? new BinarySelectStatementStrategy() : ObjectSelectStatementStrategy.INSTANCE;
+
+        return new ParserImpl(processors, selectStatementStrategy);
     }
 
 }
