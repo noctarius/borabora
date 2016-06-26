@@ -40,7 +40,14 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, GraphQuery graphQuery) {
-        QueryContext queryContext = newQueryContext(input);
+        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
+        if (graphQuery instanceof SelectStatementStrategyAware) {
+            selectStatementStrategy = ((SelectStatementStrategyAware) graphQuery).selectStatementStrategy();
+        }
+
+        QueryContext queryContext = newQueryContext(input, selectStatementStrategy);
+        selectStatementStrategy.beginSelect(queryContext);
+
         long offset = graphQuery.access(0, queryContext);
         if (offset == -1) {
             return NULL_VALUE;
@@ -69,7 +76,7 @@ final class ParserImpl
         short head = readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, offset, newQueryContext(input));
+        return new StreamValue(mt, vt, offset, newQueryContext(input, selectStatementStrategy));
     }
 
     @Override
@@ -101,7 +108,7 @@ final class ParserImpl
         }
     }
 
-    private QueryContext newQueryContext(Input input) {
+    private QueryContext newQueryContext(Input input, SelectStatementStrategy selectStatementStrategy) {
         return new QueryContextImpl(input, semanticTagProcessors, selectStatementStrategy);
     }
 

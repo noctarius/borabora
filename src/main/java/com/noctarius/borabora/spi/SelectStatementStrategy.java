@@ -27,6 +27,8 @@ import java.util.List;
 
 public interface SelectStatementStrategy {
 
+    void beginSelect(QueryContext queryContext);
+
     Value finalizeSelect(QueryContext queryContext);
 
     DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary(GraphQueryBuilder graphQueryBuilder,

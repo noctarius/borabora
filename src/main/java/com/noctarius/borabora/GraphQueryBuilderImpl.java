@@ -59,7 +59,7 @@ final class GraphQueryBuilderImpl
         } else if (!(graphQueries.get(0) instanceof StreamGraphQuery)) {
             graphQueries.add(0, STREAM_INDEX_ZERO_GRAPH_QUERY);
         }
-        return new ChainGraphQuery(graphQueries);
+        return new ChainGraphQuery(graphQueries, selectStatementStrategy);
     }
 
     @Override

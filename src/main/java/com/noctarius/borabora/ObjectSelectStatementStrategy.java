@@ -34,6 +34,10 @@ class ObjectSelectStatementStrategy
     }
 
     @Override
+    public void beginSelect(QueryContext queryContext) {
+    }
+
+    @Override
     public Value finalizeSelect(QueryContext queryContext) {
         return queryContext.queryStackPop();
     }

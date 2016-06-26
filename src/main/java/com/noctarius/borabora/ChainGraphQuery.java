@@ -17,17 +17,20 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.Collections;
 import java.util.List;
 
 final class ChainGraphQuery
-        implements GraphQuery {
+        implements GraphQuery, SelectStatementStrategyAware {
 
     private final List<GraphQuery> graphQueries;
+    private SelectStatementStrategy selectStatementStrategy;
 
-    ChainGraphQuery(List<GraphQuery> graphQueries) {
+    ChainGraphQuery(List<GraphQuery> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
@@ -44,6 +47,11 @@ final class ChainGraphQuery
     @Override
     public String toString() {
         return "ChainGraphQuery{" + "graphQueries=" + graphQueries + '}';
+    }
+
+    @Override
+    public SelectStatementStrategy selectStatementStrategy() {
+        return selectStatementStrategy;
     }
 
     List<GraphQuery> nodes() {

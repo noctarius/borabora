@@ -49,7 +49,7 @@ public class QueryLanguageTestCase
         String queryString1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #4, g: (#0, #1, #2))";
         String queryString2 = "(#0, #1, #2, #3)";
 
-        Parser parser = Parser.newBuilder().asObjectSelectStatement().build();
+        Parser parser = Parser.newBuilder()/*.asObjectSelectStatement()*/.build();
 
         GraphQuery query1 = parser.prepareQuery(queryString1);
         GraphQuery query2 = parser.prepareQuery(queryString2);

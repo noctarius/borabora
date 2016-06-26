@@ -41,6 +41,12 @@ final class QueryContextImpl
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
+    QueryContextImpl(Input input, QueryContextImpl queryContext) {
+        this.input = input;
+        this.semanticTagProcessors = queryContext.semanticTagProcessors;
+        this.selectStatementStrategy = queryContext.selectStatementStrategy;
+    }
+
     @Override
     public Input input() {
         return input;
