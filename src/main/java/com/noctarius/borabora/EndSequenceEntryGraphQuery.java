@@ -30,7 +30,12 @@ class EndSequenceEntryGraphQuery
 
     @Override
     public long access(long offset, QueryContext queryContext) {
-        Value value = Decoder.readValue(offset, queryContext);
+        Value value;
+        if (offset == -2) {
+            value = queryContext.queryStackPop();
+        } else {
+            value = Decoder.readValue(offset, queryContext);
+        }
 
         List<Value> entries = queryContext.queryStackPeek();
         entries.add(value);

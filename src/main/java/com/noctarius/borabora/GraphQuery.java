@@ -29,7 +29,8 @@ public interface GraphQuery {
     }
 
     static StreamGraphQueryBuilder newBuilder(boolean binarySelectStatement) {
-        return newBuilder(binarySelectStatement ? new BinarySelectStatementStrategy() : ObjectSelectStatementStrategy.INSTANCE);
+        return newBuilder(binarySelectStatement ?
+                BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE);
     }
 
     static StreamGraphQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {

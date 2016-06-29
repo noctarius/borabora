@@ -182,7 +182,7 @@ void entry(): {
         SequenceGraphQueryBuilder sequenceGraphQueryBuilder = (SequenceGraphQueryBuilder) generatorStack.peekFirst();
         StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder = sequenceGraphQueryBuilder.putEntry();
     }
-    stream()
+    ( stream() | type() )
     {
         streamEntryGraphQueryBuilder.endEntry();
     }

@@ -19,7 +19,6 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.GraphQuery;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.GraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
 
@@ -31,10 +30,9 @@ public interface SelectStatementStrategy {
 
     Value finalizeSelect(QueryContext queryContext);
 
-    DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary(GraphQueryBuilder graphQueryBuilder,
-                                                                List<GraphQuery> graphQueries);
+    <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<GraphQuery> graphQueries);
 
-    SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence(GraphQueryBuilder graphQueryBuilder, List<GraphQuery> graphQueries);
+    <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<GraphQuery> graphQueries);
 
     <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key, D queryBuilder,
                                                                                                      List<GraphQuery> graphQueries);

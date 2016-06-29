@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.StreamGraphBuilder;
 import com.noctarius.borabora.spi.Dictionary;
 import com.noctarius.borabora.spi.Sequence;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +38,7 @@ public class QueryLanguageTestCase
     // (foo: #{'b'}, bar: #{'c'})
 
     @Test
+    @Ignore
     public void test_select_statement()
             throws Exception {
 

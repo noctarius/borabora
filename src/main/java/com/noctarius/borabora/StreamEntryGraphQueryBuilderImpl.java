@@ -51,12 +51,12 @@ class StreamEntryGraphQueryBuilderImpl<T>
 
     @Override
     public DictionaryGraphQueryBuilder<EntryGraphQueryBuilder<T>> asDictionary() {
-        return new DictionaryGraphQueryBuilderImpl<>(this, graphQueries, selectStatementStrategy);
+        return selectStatementStrategy.asDictionary(this, graphQueries);
     }
 
     @Override
     public SequenceGraphQueryBuilder<EntryGraphQueryBuilder<T>> asSequence() {
-        return new SequenceGraphQueryBuilderImpl<>(this, graphQueries, selectStatementStrategy);
+        return selectStatementStrategy.asSequence(this, graphQueries);
     }
 
     @Override

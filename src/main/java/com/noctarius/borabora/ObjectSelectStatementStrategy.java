@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.GraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
@@ -28,7 +27,7 @@ import java.util.List;
 class ObjectSelectStatementStrategy
         implements SelectStatementStrategy {
 
-    static final SelectStatementStrategy INSTANCE = new ObjectSelectStatementStrategy();
+    public static final SelectStatementStrategy INSTANCE = new ObjectSelectStatementStrategy();
 
     private ObjectSelectStatementStrategy() {
     }
@@ -43,17 +42,13 @@ class ObjectSelectStatementStrategy
     }
 
     @Override
-    public DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary(GraphQueryBuilder graphQueryBuilder,
-                                                                       List<GraphQuery> graphQueries) {
-
+    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<GraphQuery> graphQueries) {
         graphQueries.add(new AsDictionaryGraphQuery());
         return new DictionaryGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence(GraphQueryBuilder graphQueryBuilder,
-                                                                   List<GraphQuery> graphQueries) {
-
+    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<GraphQuery> graphQueries) {
         graphQueries.add(new AsSequenceGraphQuery());
         return new SequenceGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }

@@ -27,10 +27,12 @@ final class ParserBuilderImpl
         implements ParserBuilder {
 
     private final List<SemanticTagProcessor> processors = new ArrayList<>();
+    private SelectStatementStrategy selectStatementStrategy;
     private boolean binarySelectStatement = true;
 
-    public ParserBuilderImpl() {
+    public ParserBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
         withSemanticTagProcessor(BuiltInSemanticTagProcessor.INSTANCE);
+        this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
@@ -53,8 +55,11 @@ final class ParserBuilderImpl
 
     @Override
     public Parser build() {
-        SelectStatementStrategy selectStatementStrategy = binarySelectStatement
-                ? new BinarySelectStatementStrategy() : ObjectSelectStatementStrategy.INSTANCE;
+        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
+        if (selectStatementStrategy == null) {
+            selectStatementStrategy = binarySelectStatement ? //
+                    BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE;
+        }
 
         return new ParserImpl(processors, selectStatementStrategy);
     }
