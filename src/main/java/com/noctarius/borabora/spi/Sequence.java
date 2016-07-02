@@ -21,6 +21,8 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 
 import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Predicate;
 
 /**
@@ -34,7 +36,7 @@ import java.util.function.Predicate;
  * the sequence supports 64bit indexes sizes.</p>
  */
 public interface Sequence
-        extends Iterable<Value> {
+        extends StreamableIterable<Value> {
 
     /**
      * Returns the size of the sequence in number of value elements. The parser is free
@@ -94,5 +96,10 @@ public interface Sequence
     Value get(long sequenceIndex);
 
     String asString();
+
+    @Override
+    default Spliterator<Value> spliterator() {
+        return Spliterators.spliterator(this.iterator(), this.size(), Spliterator.ORDERED);
+    }
 
 }

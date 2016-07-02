@@ -18,8 +18,11 @@ package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.Value;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
@@ -101,7 +104,7 @@ public interface Dictionary
      *
      * @return a a fully lazy, keys traversing {@link Iterable} instance
      */
-    Iterable<Value> keys();
+    StreamableIterable<Value> keys();
 
     /**
      * <p>Returns a lazy evaluating {@link Iterable} implementation to traverse all values in the dictionary
@@ -111,7 +114,9 @@ public interface Dictionary
      *
      * @return a a fully lazy, values traversing {@link Iterable} instance
      */
-    Iterable<Value> values();
+    StreamableIterable<Value> values();
+
+    StreamableIterable<Map.Entry<Value, Value>> entries();
 
     /**
      * <p>Returns a lazy evaluating {@link Iterator} implementation to traverse all entries in the dictionary
@@ -122,5 +127,20 @@ public interface Dictionary
     Iterator<Map.Entry<Value, Value>> iterator();
 
     String asString();
+
+    default void forEach(BiConsumer<Value, Value> action) {
+        Objects.requireNonNull(action);
+        for (Map.Entry<Value, Value> entry : entries()) {
+            Value k;
+            Value v;
+            try {
+                k = entry.getKey();
+                v = entry.getValue();
+            } catch (IllegalStateException e) {
+                throw new ConcurrentModificationException(e);
+            }
+            action.accept(k, v);
+        }
+    }
 
 }

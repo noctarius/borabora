@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Dictionary;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.StreamableIterable;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -68,13 +69,18 @@ final class DictionaryImpl
     }
 
     @Override
-    public Iterable<Value> keys() {
+    public StreamableIterable<Value> keys() {
         return new DictionaryIterable(0);
     }
 
     @Override
-    public Iterable<Value> values() {
+    public StreamableIterable<Value> values() {
         return new DictionaryIterable(1);
+    }
+
+    @Override
+    public StreamableIterable<Map.Entry<Value, Value>> entries() {
+        return new DictionaryEntryIterable();
     }
 
     @Override
@@ -137,8 +143,44 @@ final class DictionaryImpl
         return elementIndexes[baseIndex][elementIndex];
     }
 
+    private class DictionaryEntryIterable
+            implements StreamableIterable<Map.Entry<Value, Value>> {
+
+        @Override
+        public Iterator<Map.Entry<Value, Value>> iterator() {
+            return new DictionaryEntryIterator();
+        }
+    }
+
+    private class DictionaryEntryIterator
+            implements Iterator<Map.Entry<Value, Value>> {
+
+        private long arrayIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return arrayIndex < size * 2;
+        }
+
+        @Override
+        public Map.Entry<Value, Value> next() {
+            try {
+                if (arrayIndex >= size * 2) {
+                    throw new NoSuchElementException("No further element available");
+                }
+
+                long offsetKey = calculateArrayIndex(arrayIndex);
+                long offsetValue = calculateArrayIndex(arrayIndex);
+                return new SimpleEntry(offsetKey, offsetValue);
+
+            } finally {
+                arrayIndex += 2;
+            }
+        }
+    }
+
     private class DictionaryIterable
-            implements Iterable<Value> {
+            implements StreamableIterable<Value> {
 
         private final long initialArrayIndex;
 

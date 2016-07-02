@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Dictionary;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.StreamableIterable;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -84,13 +85,18 @@ class EndDictionaryGraphQuery
         }
 
         @Override
-        public Iterable<Value> keys() {
-            return entries.keySet();
+        public StreamableIterable<Value> keys() {
+            return new SimpleStreamableIterable<>(entries.keySet());
         }
 
         @Override
-        public Iterable<Value> values() {
-            return entries.values();
+        public StreamableIterable<Value> values() {
+            return new SimpleStreamableIterable<>(entries.values());
+        }
+
+        @Override
+        public StreamableIterable<Map.Entry<Value, Value>> entries() {
+            return new SimpleStreamableIterable<>(entries.entrySet());
         }
 
         @Override
@@ -118,6 +124,21 @@ class EndDictionaryGraphQuery
                 sb.append(key.asString()).append('=').append(value.asString()).append(", ");
             }
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+    }
+
+    private static class SimpleStreamableIterable<T>
+            implements StreamableIterable<T> {
+
+        private final Iterable<T> iterable;
+
+        private SimpleStreamableIterable(Iterable<T> iterable) {
+            this.iterable = iterable;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return iterable.iterator();
         }
     }
 
