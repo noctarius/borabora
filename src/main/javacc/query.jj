@@ -189,13 +189,36 @@ void entry(): {
 }
 
 void property(): {
-    Token identToken = null;
+    Token intToken = null;
+    Token floatToken = null;
+    Token stringToken = null;
 }
 {
-    ( identToken = <IDENT> )
+    (
+        intToken = <INT> |
+        intToken = <UINT> |
+        floatToken = <FLOAT> |
+        floatToken = <UFLOAT> |
+        stringToken = <IDENT>
+    )
     {
         DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder = (DictionaryGraphQueryBuilder) generatorStack.peekFirst();
-        streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(identToken.image);
+
+        if (intToken != null) {
+            long value = Long.parseLong(intToken.image);
+            streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(value);
+        } else if (floatToken != null) {
+            try {
+                NumberFormat format = DecimalFormat.getInstance(Locale.ENGLISH);
+                double value = format.parse(floatToken.image).doubleValue();
+                streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(value);
+            } catch (java.text.ParseException e) {
+                throw new QueryParserException(e);
+            }
+        } else if (stringToken != null) {
+            String string = stringToken.image;
+            streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(string);
+        }
     }
     <COLON> ( query() | type() )
     {

@@ -24,11 +24,19 @@ public enum Predicates {
     ;
 
     public static Predicate<Value> matchString(String value) {
-        return (v) -> v.string().equals(value);
+        return (v) -> {
+            if (!v.valueType().matches(ValueTypes.String)) {
+                return false;
+            }
+            return v.string().equals(value);
+        };
     }
 
     public static Predicate<Value> matchFloat(double value) {
         return (v) -> {
+            if (!v.valueType().matches(ValueTypes.Float)) {
+                return false;
+            }
             Number n = v.number();
             if (n instanceof BigDecimal) {
                 return n.equals(BigDecimal.valueOf(value));
@@ -39,6 +47,9 @@ public enum Predicates {
 
     public static Predicate<Value> matchInt(long value) {
         return (v) -> {
+            if (!v.valueType().matches(ValueTypes.Int)) {
+                return false;
+            }
             Number n = v.number();
             if (n instanceof BigInteger) {
                 return n.equals(BigInteger.valueOf(value));

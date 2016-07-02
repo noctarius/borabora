@@ -28,7 +28,9 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.noctarius.borabora.Predicates.matchFloat;
 import static com.noctarius.borabora.Predicates.matchString;
+import static com.noctarius.borabora.Predicates.matchInt;
 
 @RunWith(Parameterized.class)
 public class SelectStatementTestCase
@@ -82,16 +84,19 @@ public class SelectStatementTestCase
     @Test
     public void test_select_multiple_stream_elements_as_dictionary() {
         executeExercise( //
-                sgb -> sgb.putNumber(1).putNumber(2), //
-                () -> "(a: #1, b: #0)", //
+                sgb -> sgb.putNumber(1).putNumber(2).putNumber(3), //
+                () -> "(a: #1, 2: #0, 3.0: #2)", //
                 gqb -> gqb.asDictionary()
 
                           .putEntry("a").stream(1).endEntry()
 
-                          .putEntry("b").stream(0).endEntry().endDictionary(), //
+                          .putEntry(2).stream(0).endEntry()
+
+                          .putEntry(3.0).stream(2).endEntry().endDictionary(), //
                 v -> {
                     assertEqualsNumber(2, v.dictionary().get(matchString("a")).number());
-                    assertEqualsNumber(1, v.dictionary().get(matchString("b")).number());
+                    assertEqualsNumber(1, v.dictionary().get(matchInt(2)).number());
+                    assertEqualsNumber(3, v.dictionary().get(matchFloat(3.0)).number());
                 } //
         );
     }
