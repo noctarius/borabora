@@ -16,20 +16,62 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.QueryContext;
+
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum Predicates {
     ;
 
     public static Predicate<Value> matchString(String value) {
+        // If indefinite or large string or ObjectValue we have to go the slow path
+        Predicate<Value> slowPathPredicate = matchString0(value);
+        if (value.length() * 4L > Integer.MAX_VALUE) {
+            return slowPathPredicate;
+        }
+
+        // Pre-encode matching value
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(value.length() * 2);
+        Encoder.putString(value, 0, Output.toOutputStream(baos));
+
+        byte[] expected = baos.toByteArray();
+        int expectedLength = expected.length;
+
         return (v) -> {
             if (!v.valueType().matches(ValueTypes.String)) {
                 return false;
             }
-            return v.string().equals(value);
+
+            if (v instanceof AbstractStreamValue) {
+                QueryContext queryContext = ((AbstractStreamValue) v).queryContext();
+                MajorType majorType = v.majorType();
+                long offset = v.offset();
+
+                Input input = queryContext.input();
+                long length = Decoder.length(input, majorType, offset);
+                if (length < expectedLength) {
+                    return false;
+                }
+
+                if (length == expectedLength) {
+                    byte[] data = new byte[expectedLength];
+                    input.read(data, offset, expectedLength);
+                    if (Arrays.equals(expected, data)) {
+                        return true;
+                    }
+                }
+            }
+
+            return slowPathPredicate.test(v);
         };
+    }
+
+    private static Predicate<Value> matchString0(String value) {
+        return (v) -> v.string().equals(value);
     }
 
     public static Predicate<Value> matchFloat(double value) {

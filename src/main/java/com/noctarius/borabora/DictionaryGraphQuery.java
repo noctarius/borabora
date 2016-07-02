@@ -26,9 +26,9 @@ import static com.noctarius.borabora.Bytes.readUInt8;
 abstract class DictionaryGraphQuery
         implements GraphQuery {
 
-    protected final StreamPredicate predicate;
+    protected final Predicate<Value> predicate;
 
-    DictionaryGraphQuery(StreamPredicate predicate) {
+    DictionaryGraphQuery(Predicate<Value> predicate) {
         Objects.requireNonNull(predicate, "predicate must be set");
         this.predicate = predicate;
     }
@@ -84,7 +84,7 @@ abstract class DictionaryGraphQuery
         private final String value;
 
         private StringDictionaryGraphQuery(String value) {
-            super(StreamPredicates.matchString(value));
+            super(Predicates.matchString(value));
             this.value = value;
         }
 
@@ -121,7 +121,7 @@ abstract class DictionaryGraphQuery
         private final long value;
 
         private IntDictionaryGraphQuery(long value) {
-            super(StreamPredicates.matchInt(value));
+            super(Predicates.matchInt(value));
             this.value = value;
         }
 
@@ -158,7 +158,7 @@ abstract class DictionaryGraphQuery
         private final double value;
 
         private FloatDictionaryGraphQuery(double value) {
-            super(StreamPredicates.matchFloat(value));
+            super(Predicates.matchFloat(value));
             this.value = value;
         }
 
@@ -195,7 +195,7 @@ abstract class DictionaryGraphQuery
             extends DictionaryGraphQuery {
 
         private PredicateDictionaryGraphQuery(Predicate<Value> predicate) {
-            super(StreamPredicates.matchValue(predicate));
+            super(predicate);
         }
 
         @Override

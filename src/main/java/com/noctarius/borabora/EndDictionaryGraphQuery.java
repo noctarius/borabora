@@ -69,33 +69,17 @@ class EndDictionaryGraphQuery
 
         @Override
         public boolean containsKey(Predicate<Value> predicate) {
-            return findValue(predicate, keys().iterator()) != null;
-        }
-
-        @Override
-        public boolean containsKey(StreamPredicate predicate) {
-            throw new UnsupportedOperationException("No underlying stream available for a runtime generated dictionary");
+            return findValue(predicate, keys().iterator(), queryContext) != null;
         }
 
         @Override
         public boolean containsValue(Predicate<Value> predicate) {
-            return findValue(predicate, values().iterator()) != null;
-        }
-
-        @Override
-        public boolean containsValue(StreamPredicate predicate) {
-            return findStreamValue(predicate, values().iterator(), queryContext) != null;
+            return findValue(predicate, values().iterator(), queryContext) != null;
         }
 
         @Override
         public Value get(Predicate<Value> predicate) {
-            Value key = findValue(predicate, keys().iterator());
-            return entries.get(key);
-        }
-
-        @Override
-        public Value get(StreamPredicate predicate) {
-            Value key = findStreamValue(predicate, keys().iterator(), queryContext);
+            Value key = findValue(predicate, keys().iterator(), queryContext);
             return entries.get(key);
         }
 

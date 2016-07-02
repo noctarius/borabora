@@ -57,28 +57,12 @@ final class DictionaryImpl
     }
 
     @Override
-    public boolean containsKey(StreamPredicate predicate) {
-        return findValueByPredicate(predicate, false) != -1;
-    }
-
-    @Override
     public boolean containsValue(Predicate<Value> predicate) {
         return findValueByPredicate(predicate, true) != -1;
     }
 
     @Override
-    public boolean containsValue(StreamPredicate predicate) {
-        return findValueByPredicate(predicate, true) != -1;
-    }
-
-    @Override
     public Value get(Predicate<Value> predicate) {
-        long keyOffset = findValueByPredicate(predicate, false);
-        return get(keyOffset);
-    }
-
-    @Override
-    public Value get(StreamPredicate predicate) {
         long keyOffset = findValueByPredicate(predicate, false);
         return get(keyOffset);
     }
@@ -141,20 +125,6 @@ final class DictionaryImpl
 
             streamValue.relocate(queryContext, majorType, valueType, offset);
             if (predicate.test(streamValue)) {
-                return offset;
-            }
-        }
-        return -1;
-    }
-
-    private long findValueByPredicate(StreamPredicate predicate, boolean findValue) {
-        for (long i = findValue ? 1 : 0; i < size * 2; i = i + 2) {
-            long offset = calculateArrayIndex(i);
-            short head = readUInt8(input, offset);
-            MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
-
-            if (predicate.test(majorType, valueType, offset, queryContext)) {
                 return offset;
             }
         }

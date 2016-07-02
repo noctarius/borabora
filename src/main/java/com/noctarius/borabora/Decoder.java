@@ -21,6 +21,7 @@ import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.Sequence;
 
 import java.math.BigInteger;
+import java.util.function.Predicate;
 
 import static com.noctarius.borabora.Bytes.readUInt16;
 import static com.noctarius.borabora.Bytes.readUInt32;
@@ -219,7 +220,7 @@ enum Decoder {
         return Double.longBitsToDouble(readUInt64Long(input, offset));
     }
 
-    static long findByDictionaryKey(StreamPredicate predicate, long offset, QueryContext queryContext) {
+    static long findByDictionaryKey(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         // Search for key element
         long position = findByPredicate(predicate, offset, queryContext);
         if (position == -1) {
@@ -255,13 +256,16 @@ enum Decoder {
         return data;
     }
 
-    private static long findByPredicate(StreamPredicate predicate, long offset, QueryContext queryContext) {
+    private static long findByPredicate(Predicate<Value> predicate, long offset, QueryContext queryContext) {
+        RelocatableStreamValue streamValue = new RelocatableStreamValue();
         Input input = queryContext.input();
         do {
             short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
-            if (predicate.test(majorType, valueType, offset, queryContext)) {
+
+            streamValue.relocate(queryContext, majorType, valueType, offset);
+            if (predicate.test(streamValue)) {
                 return offset;
             }
             long length = length(input, majorType, offset);

@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.StreamPredicate;
 import com.noctarius.borabora.Value;
 
 import java.util.Iterator;
@@ -73,21 +72,6 @@ public interface Dictionary
     boolean containsKey(Predicate<Value> predicate);
 
     /**
-     * <p>Matches keys of entries against the provided {@link StreamPredicate} matcher implementation and returns
-     * <tt>true</tt> if a match is found, otherwise <tt>false</tt>.</p>
-     * <p>This process is lazy and stops whenever the first key matches. According to the CBOR
-     * specification, dictionaries are allowed to support the same key multiple times, the
-     * support on parser side, however, is not strictly required and skipped for this implementation.</p>
-     * <p>The scanning process can be pretty expensive and if the value is needed afterwards, it is
-     * recommended to use {@link #get(StreamPredicate)} directly as the cost is similar but since no caching
-     * takes place, using both methods after another, the cost is multiplied by the number of operations.</p>
-     *
-     * @param predicate the {@link Predicate} to match the key
-     * @return <tt>true</tt> if the key is found, otherwise <tt>false</tt>
-     */
-    boolean containsKey(StreamPredicate predicate);
-
-    /**
      * <p>Matches values of entries against the provided {@link Predicate} matcher implementation and returns
      * <tt>true</tt> if a match is found, otherwise <tt>false</tt>.</p>
      * <p>This process is lazy and stops whenever the first value matches.</p>
@@ -96,16 +80,6 @@ public interface Dictionary
      * @return <tt>true</tt> if the value if found, otherwise <tt>false</tt>
      */
     boolean containsValue(Predicate<Value> predicate);
-
-    /**
-     * <p>Matches values of entries against the provided {@link StreamPredicate} matcher implementation and returns
-     * <tt>true</tt> if a match is found, otherwise <tt>false</tt>.</p>
-     * <p>This process is lazy and stops whenever the first value matches.</p>
-     *
-     * @param predicate the {@link StreamPredicate} to match the value
-     * @return <tt>true</tt> if the value if found, otherwise <tt>false</tt>
-     */
-    boolean containsValue(StreamPredicate predicate);
 
     /**
      * <p>Matches keys of entries against the provided {@link Predicate} matcher implementation and returns
@@ -118,18 +92,6 @@ public interface Dictionary
      * @return <tt>true</tt> if the key is found, otherwise <tt>false</tt>
      */
     Value get(Predicate<Value> predicate);
-
-    /**
-     * <p>Matches keys of entries against the provided {@link StreamPredicate} matcher implementation and returns
-     * the value if a match is found, other <tt>null</tt>.</p>
-     * <p>This process is lazy and stops whenever the first key matches. According to the CBOR
-     * specification, dictionaries are allowed to support the same key multiple times, the
-     * support on parser side, however, is not strictly required and skipped for this implementation.</p>
-     *
-     * @param predicate the {@link StreamPredicate} to match the key
-     * @return <tt>true</tt> if the key is found, otherwise <tt>false</tt>
-     */
-    Value get(StreamPredicate predicate);
 
     /**
      * <p>Returns a lazy evaluating {@link Iterable} implementation to traverse all keys in the dictionary

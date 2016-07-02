@@ -69,12 +69,7 @@ class EndSequenceGraphQuery
 
         @Override
         public boolean contains(Predicate<Value> predicate) {
-            return findValue(predicate, iterator()) != null;
-        }
-
-        @Override
-        public boolean contains(StreamPredicate predicate) {
-            return findStreamValue(predicate, iterator(), queryContext) != null;
+            return findValue(predicate, iterator(), queryContext) != null;
         }
 
         @Override

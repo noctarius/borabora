@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.StreamPredicates.matchString;
+import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -351,7 +351,7 @@ public class DictionaryTestCase
         SimplifiedTestParser parser = buildParser("0xa0");
         Value value = parser.read(GraphQuery.newBuilder().build());
         Dictionary dictionary = value.dictionary();
-        assertNull(dictionary.get((m, v, o, q) -> false));
+        assertNull(dictionary.get((v) -> false));
     }
 
     @Test

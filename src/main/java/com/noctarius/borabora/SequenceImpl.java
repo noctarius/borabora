@@ -68,21 +68,6 @@ final class SequenceImpl
     }
 
     @Override
-    public boolean contains(StreamPredicate predicate) {
-        for (long i = 0; i < size; i++) {
-            long offset = calculateArrayIndex(i);
-            short head = readUInt8(input, offset);
-            MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
-
-            if (predicate.test(majorType, valueType, offset, queryContext)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public Iterator<Value> iterator() {
         return new SequenceIterator();
     }

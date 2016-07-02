@@ -23,28 +23,21 @@ import java.util.function.Predicate;
 
 abstract class AbstractJavaBackedDataStructure {
 
-    protected Value findValue(Predicate<Value> predicate, Iterator<Value> iterator) {
+    protected Value findValue(Predicate<Value> predicate, Iterator<Value> iterator, QueryContext queryContext) {
+        RelocatableStreamValue streamValue = new RelocatableStreamValue();
         while (iterator.hasNext()) {
             Value value = iterator.next();
-            if (predicate.test(value)) {
-                return value;
-            }
-        }
-        return Value.NULL_VALUE;
-    }
-
-    protected Value findStreamValue(StreamPredicate predicate, Iterator<Value> iterator, QueryContext queryContext) {
-        while (iterator.hasNext()) {
-            Value value = iterator.next();
-
-            if (value.offset() < 0) {
-                throw new IllegalStateException("At least one element is not a valid stream value");
-            }
 
             MajorType majorType = value.majorType();
             ValueType valueType = value.valueType();
 
-            if (predicate.test(majorType, valueType, value.offset(), queryContext)) {
+            Value candidate = value;
+            if (!(value instanceof ObjectValue)) {
+                streamValue.relocate(queryContext, majorType, valueType, value.offset());
+                candidate = streamValue;
+            }
+
+            if (predicate.test(candidate)) {
                 return value;
             }
         }
