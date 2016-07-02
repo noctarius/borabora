@@ -74,4 +74,144 @@ public class QueryLanguageAcceptanceTestCase {
         parser.prepareQuery("#->?number");
     }
 
+    @Test
+    public void test_dictionary_access_string() {
+        parser.prepareQuery("#{'test'}");
+    }
+
+    @Test
+    public void test_dictionary_access_uint() {
+        parser.prepareQuery("#{123}");
+    }
+
+    @Test
+    public void test_dictionary_access_nint() {
+        parser.prepareQuery("#{-123}");
+    }
+
+    @Test
+    public void test_dictionary_access_ufloat() {
+        parser.prepareQuery("#{123.0}");
+    }
+
+    @Test
+    public void test_dictionary_access_nfloar() {
+        parser.prepareQuery("#{-123.0}");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_dictionary_access_illegal_argument() {
+        parser.prepareQuery("#{test}");
+    }
+
+    @Test
+    public void test_sequence_access_uint() {
+        parser.prepareQuery("#(123)");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_sequence_access_nint() {
+        parser.prepareQuery("#(-123)");
+    }
+
+    @Test
+    public void test_sequence_select() {
+        parser.prepareQuery("(#, #)");
+    }
+
+    @Test
+    public void test_sequence_select_subsequence() {
+        parser.prepareQuery("(#, (#, #))");
+    }
+
+    @Test
+    public void test_sequence_select_subdictionary_string() {
+        parser.prepareQuery("(#, (a: #, b: #))");
+    }
+
+    @Test
+    public void test_sequence_select_subdictionary_float() {
+        parser.prepareQuery("(#, (1.0: #, 2.0: #))");
+    }
+
+    @Test
+    public void test_sequence_select_subdictionary_int() {
+        parser.prepareQuery("(#, (1: #, 2: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_sequence_dictionary_select_string_mixed() {
+        parser.prepareQuery("(#, c: (a: #, b: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_sequence_dictionary_select_float_mixed() {
+        parser.prepareQuery("(#, 3.0: (1.0: #, 2.0: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_sequence_dictionary_select_int_mixed() {
+        parser.prepareQuery("(#, 3: (1: #, 2: #))");
+    }
+
+    @Test
+    public void test_dictionary_select_string() {
+        parser.prepareQuery("(a: #, b: #)");
+    }
+
+    @Test
+    public void test_dictionary_select_float() {
+        parser.prepareQuery("(1.0: #, 2.0: #)");
+    }
+
+    @Test
+    public void test_dictionary_select_int() {
+        parser.prepareQuery("(1: #, 2: #)");
+    }
+
+    @Test
+    public void test_dictionary_select_string_subsequence() {
+        parser.prepareQuery("(a: #, b: (#, #))");
+    }
+
+   @Test
+    public void test_dictionary_select_float_subsequence() {
+        parser.prepareQuery("(1.0: #, 2.0: (#, #))");
+    }
+
+   @Test
+    public void test_dictionary_select_int_subsequence() {
+        parser.prepareQuery("(1: #, 2: (#, #))");
+    }
+
+    @Test
+    public void test_dictionary_select_string_subdictionary() {
+        parser.prepareQuery("(c: #, d: (a: #, b: #))");
+    }
+
+    @Test
+    public void test_dictionary_select_float_subdictionary() {
+        parser.prepareQuery("(3.0: #, 4.0: (1.0: #, 2.0: #))");
+    }
+
+    @Test
+    public void test_dictionary_select_int_subdictionary() {
+        parser.prepareQuery("(3: #, 4: (1: #, 2: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_dictionary_sequence_string_select_mixed() {
+        parser.prepareQuery("(c: #, (a: #, b: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_dictionary_sequence_float_select_mixed() {
+        parser.prepareQuery("(3.0: #, (1.0: #, 2.0: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_dictionary_sequence_int_select_mixed() {
+        parser.prepareQuery("(3: #, (1: #, 2: #))");
+    }
+
 }
