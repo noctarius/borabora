@@ -21,12 +21,13 @@ import com.noctarius.borabora.spi.QueryContext;
 final class RelocatableStreamValue
         extends AbstractStreamValue {
 
+    private QueryContext queryContext;
     private MajorType majorType;
     private ValueType valueType;
     private long offset;
 
-    RelocatableStreamValue(QueryContext queryContext) {
-        super(queryContext);
+    RelocatableStreamValue() {
+        super(null);
 
         if (offset == -1) {
             throw new IllegalArgumentException("No offset available for CBOR type");
@@ -67,10 +68,16 @@ final class RelocatableStreamValue
         return queryContext().applyProcessors(offset(), majorType());
     }
 
-    void relocate(MajorType majorType, ValueType valueType, long offset) {
+    void relocate(QueryContext queryContext, MajorType majorType, ValueType valueType, long offset) {
+        this.queryContext = queryContext;
         this.majorType = majorType;
         this.valueType = valueType;
         this.offset = offset;
+    }
+
+    @Override
+    protected QueryContext queryContext() {
+        return queryContext;
     }
 
 }

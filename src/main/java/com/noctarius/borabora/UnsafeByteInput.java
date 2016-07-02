@@ -31,7 +31,7 @@ final class UnsafeByteInput
     private static final long BYTE_ARRAY_BASE_OFFSET;
 
     static {
-        UNSAFE = findUnsafe();
+        UNSAFE = UnsafeUtils.findUnsafe();
         UNSAFE_AVAILABLE = UNSAFE == null ? false : true;
         BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset(byte[].class, UNSAFE);
     }
@@ -39,9 +39,9 @@ final class UnsafeByteInput
     private final long size;
     private final long address;
 
-    UnsafeByteInput(long size) {
+    UnsafeByteInput(long address, long size) {
         this.size = size;
-        this.address = UNSAFE.allocateMemory(size);
+        this.address = address;
     }
 
     @Override
@@ -78,36 +78,5 @@ final class UnsafeByteInput
 
     private static long arrayBaseOffset(Class<?> type, Unsafe unsafe) {
         return unsafe == null ? -1 : unsafe.arrayBaseOffset(type);
-    }
-
-    private static Unsafe findUnsafe() {
-        try {
-            return Unsafe.getUnsafe();
-        } catch (SecurityException se) {
-            return AccessController.doPrivileged(new PrivilegedAction<Unsafe>() {
-                @Override
-                public Unsafe run() {
-                    try {
-                        Class<Unsafe> type = Unsafe.class;
-                        try {
-                            Field field = type.getDeclaredField("theUnsafe");
-                            field.setAccessible(true);
-                            return type.cast(field.get(type));
-
-                        } catch (Exception e) {
-                            for (Field field : type.getDeclaredFields()) {
-                                if (type.isAssignableFrom(field.getType())) {
-                                    field.setAccessible(true);
-                                    return type.cast(field.get(type));
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException("Unsafe unavailable", e);
-                    }
-                    throw new RuntimeException("Unsafe unavailable");
-                }
-            });
-        }
     }
 }

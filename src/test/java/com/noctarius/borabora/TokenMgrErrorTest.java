@@ -1,6 +1,10 @@
+package com.noctarius.borabora;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 /*
- * Copyright (c) 2016, Christoph Engelbert (aka noctarius) and
- * contributors. All rights reserved.
+ * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +18,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
 
-public interface Input {
+public class TokenMgrErrorTest {
 
-    byte read(long offset)
-            throws NoSuchByteException;
+    @Test
+    public void testcoverage_addEscapes()
+            throws Exception {
 
-    boolean offsetValid(long offset);
-
-    long read(byte[] array, long offset, long length);
-
-    static Input fromByteArray(byte[] array) {
-        return new ByteArrayInput(array);
+        TokenMgrError.addEscapes("\b\t\n\f\r\"\'\\" + (char) 0x19 + (char) 0x7f);
     }
 
-    static Input fromNative(long address, long size) {
-        return new UnsafeByteInput(address, size);
+    @Test
+    public void testcoverage_useless_constructor() {
+        new TokenMgrError();
     }
 
 }

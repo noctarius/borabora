@@ -36,9 +36,11 @@ public class SelectStatementTestCase
 
     @Parameterized.Parameters(name = "{1}")
     public static Iterable<Object[]> parameters() {
-        return Arrays.asList(new Object[][]{ //
-                                             {BinarySelectStatementStrategy.INSTANCE, "BinarySelectStatementStrategy"}, //
-                                             {ObjectSelectStatementStrategy.INSTANCE, "ObjectSelectStatementStrategy"}});
+        return Arrays.asList( //
+                new Object[][]{ //
+                                {BinarySelectStatementStrategy.INSTANCE, "BinarySelectStatementStrategy"}, //
+                                {ObjectSelectStatementStrategy.INSTANCE, "ObjectSelectStatementStrategy"} //
+                });
     }
 
     private final SelectStatementStrategy selectStatementStrategy;
@@ -82,7 +84,10 @@ public class SelectStatementTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "(a: #1, b: #0)", //
-                gqb -> gqb.asDictionary().putEntry("a").stream(1).endEntry() //
+                gqb -> gqb.asDictionary()
+
+                          .putEntry("a").stream(1).endEntry()
+
                           .putEntry("b").stream(0).endEntry().endDictionary(), //
                 v -> {
                     assertEqualsNumber(2, v.dictionary().get(matchString("a")).number());
@@ -146,7 +151,11 @@ public class SelectStatementTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "(#1, #0)", //
-                gqb -> gqb.asSequence().putEntry().stream(1).endEntry().putEntry().stream(0).endEntry().endSequence(), //
+                gqb -> gqb.asSequence()
+
+                          .putEntry().stream(1).endEntry()
+
+                          .putEntry().stream(0).endEntry().endSequence(), //
                 v -> {
                     assertEqualsNumber(2, v.sequence().get(0).number());
                     assertEqualsNumber(1, v.sequence().get(1).number());

@@ -19,7 +19,8 @@ package com.noctarius.borabora;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ValuePrettyPrinter {
+public enum ValuePrettyPrinter {
+    ;
 
     public static String toStringPrettyPrint(Value value) {
         StringBuilder sb = new StringBuilder();

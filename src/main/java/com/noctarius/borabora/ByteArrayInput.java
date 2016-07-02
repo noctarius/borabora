@@ -33,7 +33,8 @@ final class ByteArrayInput
             throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
         }
         if (offset < 0 || offset >= array.length) {
-            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
+            throw new NoSuchByteException(offset, "Offset " + offset
+                    + " outside of available data (length: " + array.length + ", identity: " + this + ")");
         }
         return array[(int) offset];
     }

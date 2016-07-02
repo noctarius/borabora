@@ -45,13 +45,13 @@ abstract class AbstractStreamValue
     @Override
     public Sequence sequence() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Sequence), //
-                () -> Decoder.readSequence(offset(), queryContext));
+                () -> Decoder.readSequence(offset(), queryContext()));
     }
 
     @Override
     public Dictionary dictionary() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Dictionary), //
-                () -> Decoder.readDictionary(offset(), queryContext));
+                () -> Decoder.readDictionary(offset(), queryContext()));
     }
 
     @Override
@@ -79,7 +79,7 @@ abstract class AbstractStreamValue
     }
 
     protected Input input() {
-        return queryContext.input();
+        return queryContext().input();
     }
 
     protected <T> T extract(Validator validator, Supplier<T> supplier) {

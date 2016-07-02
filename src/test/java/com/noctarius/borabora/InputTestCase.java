@@ -17,18 +17,50 @@
 package com.noctarius.borabora;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import sun.misc.Unsafe;
+
+import java.util.Arrays;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 
-public class ByteArrayInputTestCase
+@RunWith(Parameterized.class)
+public class InputTestCase
         extends AbstractTestCase {
+
+    @Parameterized.Parameters(name = "{1}")
+    public static Iterable<Object[]> parameters() {
+        return Arrays.asList( //
+                new Object[][]{ //
+                                {input((d) -> Input.fromByteArray(d)), "ByteArrayInput"}, //
+                                {input(InputTestCase::unsafeInput), "UnsafeByteInput"}});
+    }
+
+    private static Function<byte[], Input> input(Function<byte[], Input> function) {
+        return function;
+    }
+
+    private static Input unsafeInput(byte[] data) {
+        Unsafe unsafe = UnsafeUtils.findUnsafe();
+        long address = unsafe.allocateMemory(data.length);
+        unsafe.copyMemory(data, Unsafe.ARRAY_BYTE_BASE_OFFSET, null, address, data.length);
+        return Input.fromNative(address, data.length);
+    }
+
+    private final Function<byte[], Input> function;
+
+    public InputTestCase(Function<byte[], Input> function, String name) {
+        this.function = function;
+    }
 
     @Test
     public void test_byte_extraction()
             throws Exception {
 
         byte[] data = new byte[]{(byte) 0xff};
-        Input input = Input.fromByteArray(data);
+        Input input = function.apply(data);
         assertEquals(data[0], input.read(0));
     }
 
@@ -37,7 +69,7 @@ public class ByteArrayInputTestCase
             throws Exception {
 
         byte[] data = new byte[0];
-        Input input = Input.fromByteArray(data);
+        Input input = function.apply(data);
         input.read(1);
     }
 
@@ -46,7 +78,7 @@ public class ByteArrayInputTestCase
             throws Exception {
 
         byte[] data = new byte[0];
-        Input input = Input.fromByteArray(data);
+        Input input = function.apply(data);
         input.read(-1);
     }
 
@@ -55,7 +87,7 @@ public class ByteArrayInputTestCase
             throws Exception {
 
         byte[] data = new byte[0];
-        Input input = Input.fromByteArray(data);
+        Input input = function.apply(data);
         input.read(Integer.MAX_VALUE + 1L);
     }
 

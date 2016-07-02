@@ -77,7 +77,12 @@ public enum StreamPredicates {
     public static StreamPredicate matchValue(ValueType vt, Predicate<Value> predicate) {
         return new StreamPredicate() {
 
-            private RelocatableStreamValue streamValue = null;
+            private ThreadLocal<RelocatableStreamValue> streamValue = new ThreadLocal<RelocatableStreamValue>() {
+                @Override
+                protected RelocatableStreamValue initialValue() {
+                    return new RelocatableStreamValue();
+                }
+            };
 
             @Override
             public boolean test(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
@@ -85,11 +90,8 @@ public enum StreamPredicates {
                     return false;
                 }
 
-                if (streamValue == null) {
-                    streamValue = new RelocatableStreamValue(queryContext);
-                }
-
-                streamValue.relocate(majorType, valueType, offset);
+                RelocatableStreamValue streamValue = this.streamValue.get();
+                streamValue.relocate(queryContext, majorType, valueType, offset);
                 return predicate.test(streamValue);
             }
         };

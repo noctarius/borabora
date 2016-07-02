@@ -52,14 +52,14 @@ final class SequenceImpl
 
     @Override
     public boolean contains(Predicate<Value> predicate) {
-        RelocatableStreamValue streamValue = new RelocatableStreamValue(queryContext);
+        RelocatableStreamValue streamValue = new RelocatableStreamValue();
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i);
             short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
-            streamValue.relocate(majorType, valueType, offset);
+            streamValue.relocate(queryContext, majorType, valueType, offset);
             if (predicate.test(streamValue)) {
                 return true;
             }
