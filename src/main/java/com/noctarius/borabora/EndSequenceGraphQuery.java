@@ -46,6 +46,7 @@ class EndSequenceGraphQuery
     }
 
     private static class ListBackedSequence
+            extends AbstractJavaBackedDataStructure
             implements Sequence {
 
         private final List<Value> entries;
@@ -73,7 +74,7 @@ class EndSequenceGraphQuery
 
         @Override
         public boolean contains(StreamPredicate predicate) {
-            return findStreamValue(predicate, iterator()) != null;
+            return findStreamValue(predicate, iterator(), queryContext) != null;
         }
 
         @Override
@@ -107,34 +108,6 @@ class EndSequenceGraphQuery
                 sb.append(get(i).asString()).append(", ");
             }
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
-        }
-
-        private Value findValue(Predicate<Value> predicate, Iterator<Value> iterator) {
-            while (iterator.hasNext()) {
-                Value value = iterator.next();
-                if (predicate.test(value)) {
-                    return value;
-                }
-            }
-            return Value.NULL_VALUE;
-        }
-
-        private Value findStreamValue(StreamPredicate predicate, Iterator<Value> iterator) {
-            while (iterator.hasNext()) {
-                Value value = iterator.next();
-
-                if (value.offset() < 0) {
-                    throw new IllegalStateException("At least one element is not a valid stream value");
-                }
-
-                MajorType majorType = value.majorType();
-                ValueType valueType = value.valueType();
-
-                if (predicate.test(majorType, valueType, value.offset(), queryContext)) {
-                    return value;
-                }
-            }
-            return Value.NULL_VALUE;
         }
     }
 

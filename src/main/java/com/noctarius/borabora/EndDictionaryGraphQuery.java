@@ -46,6 +46,7 @@ class EndDictionaryGraphQuery
     }
 
     private static class MapBackedDictionary
+            extends AbstractJavaBackedDataStructure
             implements Dictionary {
 
         private final Map<Value, Value> entries;
@@ -68,7 +69,7 @@ class EndDictionaryGraphQuery
 
         @Override
         public boolean containsKey(Predicate<Value> predicate) {
-            return findValue(predicate, keys()) != null;
+            return findValue(predicate, keys().iterator()) != null;
         }
 
         @Override
@@ -78,23 +79,23 @@ class EndDictionaryGraphQuery
 
         @Override
         public boolean containsValue(Predicate<Value> predicate) {
-            return findValue(predicate, values()) != null;
+            return findValue(predicate, values().iterator()) != null;
         }
 
         @Override
         public boolean containsValue(StreamPredicate predicate) {
-            return findStreamValue(predicate, values()) != null;
+            return findStreamValue(predicate, values().iterator(), queryContext) != null;
         }
 
         @Override
         public Value get(Predicate<Value> predicate) {
-            Value key = findValue(predicate, keys());
+            Value key = findValue(predicate, keys().iterator());
             return entries.get(key);
         }
 
         @Override
         public Value get(StreamPredicate predicate) {
-            Value key = findStreamValue(predicate, keys());
+            Value key = findStreamValue(predicate, keys().iterator(), queryContext);
             return entries.get(key);
         }
 
@@ -134,37 +135,6 @@ class EndDictionaryGraphQuery
             }
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
         }
-
-        private Value findValue(Predicate<Value> predicate, Iterable<Value> iterable) {
-            Iterator<Value> iterator = iterable.iterator();
-            while (iterator.hasNext()) {
-                Value value = iterator.next();
-                if (predicate.test(value)) {
-                    return value;
-                }
-            }
-            return Value.NULL_VALUE;
-        }
-
-        private Value findStreamValue(StreamPredicate predicate, Iterable<Value> iterable) {
-            Iterator<Value> iterator = iterable.iterator();
-            while (iterator.hasNext()) {
-                Value value = iterator.next();
-
-                if (value.offset() < 0) {
-                    throw new IllegalStateException("At least one element is not a valid stream value");
-                }
-
-                MajorType majorType = value.majorType();
-                ValueType valueType = value.valueType();
-
-                if (predicate.test(majorType, valueType, value.offset(), queryContext)) {
-                    return value;
-                }
-            }
-            return Value.NULL_VALUE;
-        }
-
     }
 
 }
