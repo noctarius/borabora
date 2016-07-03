@@ -16,14 +16,14 @@
  */
 package com.noctarius.borabora;
 
-import static com.noctarius.borabora.Constants.MT_BYTESTRING;
-import static com.noctarius.borabora.Constants.MT_DICTIONARY;
-import static com.noctarius.borabora.Constants.MT_FLOAT_SIMPLE;
-import static com.noctarius.borabora.Constants.MT_NEGATIVE_INT;
-import static com.noctarius.borabora.Constants.MT_SEMANTIC_TAG;
-import static com.noctarius.borabora.Constants.MT_SEQUENCE;
-import static com.noctarius.borabora.Constants.MT_TEXTSTRING;
-import static com.noctarius.borabora.Constants.MT_UNSINGED_INT;
+import static com.noctarius.borabora.spi.Constants.MT_BYTESTRING;
+import static com.noctarius.borabora.spi.Constants.MT_DICTIONARY;
+import static com.noctarius.borabora.spi.Constants.MT_FLOAT_SIMPLE;
+import static com.noctarius.borabora.spi.Constants.MT_NEGATIVE_INT;
+import static com.noctarius.borabora.spi.Constants.MT_SEMANTIC_TAG;
+import static com.noctarius.borabora.spi.Constants.MT_SEQUENCE;
+import static com.noctarius.borabora.spi.Constants.MT_TEXTSTRING;
+import static com.noctarius.borabora.spi.Constants.MT_UNSINGED_INT;
 
 public enum MajorType {
     UnsignedInteger(MT_UNSINGED_INT, 0b000, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),

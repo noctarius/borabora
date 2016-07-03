@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.DictionaryBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.StreamGraphBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
+import com.noctarius.borabora.spi.Constants;
 import org.junit.Test;
 
 import java.math.BigDecimal;

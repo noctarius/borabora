@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import static com.noctarius.borabora.MajorType.FloatingPointOrSimple;
 
-interface Constants {
+public interface Constants {
 
     int ADDITIONAL_INFORMATION_MASK = 0b000_11111;
     int OPCODE_BREAK_MASK = 0b111_11111;

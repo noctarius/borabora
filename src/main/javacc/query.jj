@@ -57,7 +57,7 @@ PARSER_BEGIN(QueryParser)
      */
     class QueryParser {
         private GraphQueryBuilder queryBuilder;
-        private Collection<SemanticTagProcessor> processors;
+        private Collection<TagDecoder> processors;
 
         private Deque generatorStack = new LinkedList();
 
@@ -65,13 +65,13 @@ PARSER_BEGIN(QueryParser)
         private SequenceGraphQueryBuilder sequenceGraphQueryBuilder;
         private StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder;
 
-        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors) {
+        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder, Collection<TagDecoder> processors) {
             this(reader);
             this.queryBuilder = queryBuilder;
             this.processors = processors;
         }
 
-        static void parse(String query, GraphQueryBuilder queryBuilder, Collection<SemanticTagProcessor> processors)
+        static void parse(String query, GraphQueryBuilder queryBuilder, Collection<TagDecoder> processors)
                 throws ParseException, TokenMgrError {
 
             new QueryParser(new StringReader(query), queryBuilder, processors).select();

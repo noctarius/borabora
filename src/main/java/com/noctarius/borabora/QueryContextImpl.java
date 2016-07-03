@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
-import com.noctarius.borabora.spi.SemanticTagProcessor;
+import com.noctarius.borabora.spi.TagDecoder;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -29,11 +29,11 @@ final class QueryContextImpl
 
     // Queries are inherently thread-safe!
     private final Deque<Object> stack = new LinkedList<>();
-    private final List<SemanticTagProcessor> semanticTagProcessors;
+    private final List<TagDecoder> semanticTagProcessors;
     private final SelectStatementStrategy selectStatementStrategy;
     private final Input input;
 
-    QueryContextImpl(Input input, List<SemanticTagProcessor> semanticTagProcessors,
+    QueryContextImpl(Input input, List<TagDecoder> semanticTagProcessors,
                      SelectStatementStrategy selectStatementStrategy) {
 
         this.input = input;
@@ -54,7 +54,7 @@ final class QueryContextImpl
 
     @Override
     public <T> T applyProcessors(long offset, MajorType majorType) {
-        SemanticTagProcessor<T> processor = findProcessor(offset);
+        TagDecoder<T> processor = findProcessor(offset);
         if (processor == null) {
             return null;
         }
@@ -77,9 +77,9 @@ final class QueryContextImpl
         return (T) stack.peekFirst();
     }
 
-    private <V> SemanticTagProcessor<V> findProcessor(long offset) {
+    private <V> TagDecoder<V> findProcessor(long offset) {
         for (int i = 0; i < semanticTagProcessors.size(); i++) {
-            SemanticTagProcessor<V> semanticTagProcessor = semanticTagProcessors.get(i);
+            TagDecoder<V> semanticTagProcessor = semanticTagProcessors.get(i);
             if (semanticTagProcessor.handles(input, offset)) {
                 return semanticTagProcessor;
             }

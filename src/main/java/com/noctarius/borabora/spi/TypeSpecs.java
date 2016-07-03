@@ -14,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.SemanticTagProcessor;
-import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.WrongTypeException;
 
 import java.util.Collection;
 
-import static com.noctarius.borabora.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.Constants.TAG_URI;
+import static com.noctarius.borabora.spi.Constants.TAG_DATE_TIME;
+import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
+import static com.noctarius.borabora.spi.Constants.TAG_URI;
 
 public enum TypeSpecs
         implements TypeSpec {
@@ -121,7 +124,7 @@ public enum TypeSpecs
         return false;
     }
 
-    static TypeSpec typeSpec(String spec, Collection<SemanticTagProcessor> processors) {
+    public static TypeSpec typeSpec(String spec, Collection<TagDecoder> processors) {
         if (spec.contains("$")) {
             return specializedTag(spec, processors);
         }
@@ -134,10 +137,10 @@ public enum TypeSpecs
         throw new WrongTypeException("Not type specification found for spec " + spec);
     }
 
-    private static TypeSpec specializedTag(String spec, Collection<SemanticTagProcessor> processors) {
+    private static TypeSpec specializedTag(String spec, Collection<TagDecoder> processors) {
         int tagId = Integer.parseInt(spec.substring(spec.indexOf("$") + 1));
 
-        for (SemanticTagProcessor processor : processors) {
+        for (TagDecoder processor : processors) {
             TypeSpec typeSpec = processor.handles(tagId);
             if (typeSpec != null) {
                 return typeSpec;

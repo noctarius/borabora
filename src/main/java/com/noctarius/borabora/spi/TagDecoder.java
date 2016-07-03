@@ -14,10 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-interface Validator {
+import com.noctarius.borabora.Input;
 
-    void validate();
+public interface TagDecoder<V> {
+
+    boolean handles(Input input, long offset);
+
+    V process(long offset, long length, QueryContext queryContext);
+
+    TypeSpec handles(int tagId);
 
 }

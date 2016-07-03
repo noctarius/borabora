@@ -28,17 +28,17 @@ import static com.noctarius.borabora.Bytes.readUInt32;
 import static com.noctarius.borabora.Bytes.readUInt64BigInt;
 import static com.noctarius.borabora.Bytes.readUInt64Long;
 import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
-import static com.noctarius.borabora.Constants.ASCII;
-import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
-import static com.noctarius.borabora.Constants.FP_VALUE_DOUBLE_PRECISION;
-import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
-import static com.noctarius.borabora.Constants.FP_VALUE_HALF_PRECISION;
-import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
-import static com.noctarius.borabora.Constants.FP_VALUE_SINGLE_PRECISION;
-import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
-import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.Constants.UTF8;
+import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.spi.Constants.ASCII;
+import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_DOUBLE_PRECISION;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_HALF_PRECISION;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_SINGLE_PRECISION;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
+import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.Constants.UTF8;
 
 enum Decoder {
     ;

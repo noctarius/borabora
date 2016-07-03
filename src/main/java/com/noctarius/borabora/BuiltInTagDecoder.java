@@ -17,6 +17,9 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.TypeSpecs;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -27,7 +30,34 @@ import java.util.Locale;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
 
-final class TagProcessors {
+final class BuiltInTagDecoder
+        implements TagDecoder<Object> {
+
+    static final TagDecoder INSTANCE = new BuiltInTagDecoder();
+
+    private BuiltInTagDecoder() {
+    }
+
+    @Override
+    public boolean handles(Input input, long offset) {
+        return ValueTypes.valueType(input, offset) != null;
+    }
+
+    @Override
+    public Object process(long offset, long length, QueryContext queryContext) {
+        ValueTypes valueType = ValueTypes.valueType(queryContext.input(), offset);
+        return valueType.process(offset, length, queryContext);
+    }
+
+    @Override
+    public TypeSpec handles(int tagId) {
+        for (TypeSpec typeSpec : TypeSpecs.values()) {
+            if (typeSpec.tagId() == tagId) {
+                return typeSpec;
+            }
+        }
+        return null;
+    }
 
     static Date readDateTime(long offset, long length, QueryContext queryContext) {
         Input input = queryContext.input();
@@ -79,4 +109,9 @@ final class TagProcessors {
         ValueType valueType = ValueTypes.valueType(input, offset);
         return new StreamValue(majorType, valueType, offset, queryContext);
     }
+
+    interface TagProcessor {
+        Object process(long offset, long length, QueryContext queryContext);
+    }
+
 }

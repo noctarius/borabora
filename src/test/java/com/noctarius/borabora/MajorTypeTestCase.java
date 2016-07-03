@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Constants;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

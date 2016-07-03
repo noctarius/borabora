@@ -31,8 +31,8 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.Constants.UTC;
+import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.Constants.UTC;
 
 abstract class AbstractStreamValueBuilder<B>
         implements ValueBuilder<B> {

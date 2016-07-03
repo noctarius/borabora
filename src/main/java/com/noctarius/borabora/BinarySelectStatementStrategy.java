@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 
 class BinarySelectStatementStrategy
         implements SelectStatementStrategy {

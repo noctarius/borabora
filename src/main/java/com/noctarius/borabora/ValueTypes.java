@@ -20,22 +20,23 @@ import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.function.Function;
 
+import static com.noctarius.borabora.BuiltInTagDecoder.TagProcessor;
 import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.Constants.ADDITIONAL_INFORMATION_MASK;
-import static com.noctarius.borabora.Constants.FP_VALUE_FALSE;
-import static com.noctarius.borabora.Constants.FP_VALUE_NULL;
-import static com.noctarius.borabora.Constants.FP_VALUE_TRUE;
-import static com.noctarius.borabora.Constants.FP_VALUE_UNDEF;
-import static com.noctarius.borabora.Constants.TAG_BIGFLOAT;
-import static com.noctarius.borabora.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.Constants.TAG_FRACTION;
-import static com.noctarius.borabora.Constants.TAG_MIME;
-import static com.noctarius.borabora.Constants.TAG_REGEX;
-import static com.noctarius.borabora.Constants.TAG_SIGNED_BIGNUM;
-import static com.noctarius.borabora.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.Constants.TAG_UNSIGNED_BIGNUM;
-import static com.noctarius.borabora.Constants.TAG_URI;
+import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
+import static com.noctarius.borabora.spi.Constants.FP_VALUE_UNDEF;
+import static com.noctarius.borabora.spi.Constants.TAG_BIGFLOAT;
+import static com.noctarius.borabora.spi.Constants.TAG_DATE_TIME;
+import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.spi.Constants.TAG_FRACTION;
+import static com.noctarius.borabora.spi.Constants.TAG_MIME;
+import static com.noctarius.borabora.spi.Constants.TAG_REGEX;
+import static com.noctarius.borabora.spi.Constants.TAG_SIGNED_BIGNUM;
+import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
+import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
+import static com.noctarius.borabora.spi.Constants.TAG_URI;
 
 public enum ValueTypes
         implements ValueType, TagProcessor {
@@ -55,12 +56,12 @@ public enum ValueTypes
     Bool(Value::bool),
     Null((v) -> null),
     Undefined((v) -> null),
-    DateTime(TagProcessors::readDateTime, Value::tag),
-    Timestamp(TagProcessors::readTimestamp, Value::tag),
-    UBigNum(TagProcessors::readUBigNum, Value::tag, UInt),
-    NBigNum(TagProcessors::readNBigNum, Value::tag, NInt),
-    EncCBOR(TagProcessors::readEncCBOR, Value::tag),
-    URI(TagProcessors::readURI, Value::tag),
+    DateTime(BuiltInTagDecoder::readDateTime, Value::tag),
+    Timestamp(BuiltInTagDecoder::readTimestamp, Value::tag),
+    UBigNum(BuiltInTagDecoder::readUBigNum, Value::tag, UInt),
+    NBigNum(BuiltInTagDecoder::readNBigNum, Value::tag, NInt),
+    EncCBOR(BuiltInTagDecoder::readEncCBOR, Value::tag),
+    URI(BuiltInTagDecoder::readURI, Value::tag),
     Unknown(Value::raw);
 
     private final Function<Value, Object> byValueType;
@@ -125,7 +126,7 @@ public enum ValueTypes
         return processor.process(offset, length, queryContext);
     }
 
-    static ValueTypes valueType(Input input, long offset) {
+    public static ValueTypes valueType(Input input, long offset) {
         short head = readUInt8(input, offset);
 
         // Read major type first

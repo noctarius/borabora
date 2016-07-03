@@ -19,12 +19,12 @@ package com.noctarius.borabora;
 import java.math.BigInteger;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.Constants.ADD_INFO_EIGHT_BYTES;
-import static com.noctarius.borabora.Constants.ADD_INFO_FOUR_BYTES;
-import static com.noctarius.borabora.Constants.ADD_INFO_INDEFINITE;
-import static com.noctarius.borabora.Constants.ADD_INFO_ONE_BYTE;
-import static com.noctarius.borabora.Constants.ADD_INFO_TWO_BYTES;
-import static com.noctarius.borabora.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.Constants.ADD_INFO_EIGHT_BYTES;
+import static com.noctarius.borabora.spi.Constants.ADD_INFO_FOUR_BYTES;
+import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
+import static com.noctarius.borabora.spi.Constants.ADD_INFO_ONE_BYTE;
+import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
+import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 
 enum ElementCounts {
     ;

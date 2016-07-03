@@ -17,11 +17,11 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.spi.SemanticTagProcessor;
+import com.noctarius.borabora.spi.TagDecoder;
 
 public interface ParserBuilder {
 
-    <V> ParserBuilder withSemanticTagProcessor(SemanticTagProcessor<V> processor);
+    <V> ParserBuilder withSemanticTagProcessor(TagDecoder<V> processor);
 
     ParserBuilder asBinarySelectStatement();
 

@@ -64,4 +64,8 @@ abstract class AbstractValue
 
     protected abstract <T> T extract(Validator validator, Supplier<T> supplier);
 
+    protected interface Validator {
+        void validate();
+    }
+
 }

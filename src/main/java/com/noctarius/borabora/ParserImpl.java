@@ -19,21 +19,21 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.GraphQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
-import com.noctarius.borabora.spi.SemanticTagProcessor;
+import com.noctarius.borabora.spi.TagDecoder;
 
 import java.util.List;
 
 import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.Value.NULL_VALUE;
 
 final class ParserImpl
         implements Parser {
 
-    private final List<SemanticTagProcessor> semanticTagProcessors;
+    private final List<TagDecoder> semanticTagProcessors;
     private final SelectStatementStrategy selectStatementStrategy;
 
-    ParserImpl(List<SemanticTagProcessor> semanticTagProcessors, SelectStatementStrategy selectStatementStrategy) {
+    ParserImpl(List<TagDecoder> semanticTagProcessors, SelectStatementStrategy selectStatementStrategy) {
         this.semanticTagProcessors = semanticTagProcessors;
         this.selectStatementStrategy = selectStatementStrategy;
     }
