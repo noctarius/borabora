@@ -27,6 +27,16 @@ import java.util.function.Predicate;
 public enum Predicates {
     ;
 
+    public static Predicate<Value> matchStringIgnoreCase(String value) {
+        return (v) -> {
+            if (!v.valueType().matches(ValueTypes.String)) {
+                return false;
+            }
+
+            return v.string().equalsIgnoreCase(value);
+        };
+    }
+
     public static Predicate<Value> matchString(String value) {
         // If indefinite or large string or ObjectValue we have to go the slow path
         Predicate<Value> slowPathPredicate = matchString0(value);
