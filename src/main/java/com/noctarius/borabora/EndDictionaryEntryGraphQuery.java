@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.Map;

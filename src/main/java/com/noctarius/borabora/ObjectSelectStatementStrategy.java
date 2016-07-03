@@ -24,7 +24,7 @@ import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.List;
 
-class ObjectSelectStatementStrategy
+public class ObjectSelectStatementStrategy
         implements SelectStatementStrategy {
 
     public static final SelectStatementStrategy INSTANCE = new ObjectSelectStatementStrategy();

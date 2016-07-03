@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import static com.noctarius.borabora.Bytes.readUInt8;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+
+import static com.noctarius.borabora.spi.Bytes.readUInt8;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_EIGHT_BYTES;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
@@ -27,14 +30,41 @@ import static com.noctarius.borabora.spi.Constants.ADD_INFO_RESERVED_3;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 
-enum ByteSizes {
+public enum ByteSizes {
     ;
 
-    static int intByteSize(Input input, long offset) {
+    public static long byteSizeByMajorType(MajorType majorType, Input input, long offset) {
+        switch (majorType) {
+            case UnsignedInteger:
+            case NegativeInteger:
+                return intByteSize(input, offset);
+
+            case ByteString:
+            case TextString:
+                return stringByteSize(input, offset);
+
+            case Sequence:
+                return sequenceByteSize(input, offset);
+
+            case Dictionary:
+                return dictionaryByteSize(input, offset);
+
+            case SemanticTag:
+                return semanticTagByteSize(input, offset);
+
+            case FloatingPointOrSimple:
+                return floatOrSimpleByteSize(input, offset);
+
+            default:
+                return 0;
+        }
+    }
+
+    public static int intByteSize(Input input, long offset) {
         return headByteSize(input, offset);
     }
 
-    static long sequenceByteSize(Input input, long offset) {
+    public static long sequenceByteSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         if (addInfo == ADD_INFO_INDEFINITE) {
             return indefiniteContainerByteSize(input, offset);
@@ -44,7 +74,7 @@ enum ByteSizes {
         return containerByteSize(input, offset, elementCount);
     }
 
-    static long dictionaryByteSize(Input input, long offset) {
+    public static long dictionaryByteSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         if (addInfo == ADD_INFO_INDEFINITE) {
             return indefiniteContainerByteSize(input, offset);
@@ -54,14 +84,14 @@ enum ByteSizes {
         return containerByteSize(input, offset, elementCount * 2);
     }
 
-    static long semanticTagByteSize(Input input, long offset) {
+    public static long semanticTagByteSize(Input input, long offset) {
         long byteSize = ByteSizes.intByteSize(input, offset);
         short itemHead = readUInt8(input, offset + byteSize);
         MajorType majorType = MajorType.findMajorType(itemHead);
         return byteSize + Decoder.length(input, majorType, offset + byteSize);
     }
 
-    static long floatOrSimpleByteSize(Input input, long offset) {
+    public static long floatOrSimpleByteSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
@@ -83,7 +113,7 @@ enum ByteSizes {
         }
     }
 
-    static long stringByteSize(Input input, long offset) {
+    public static long stringByteSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
@@ -105,7 +135,7 @@ enum ByteSizes {
         }
     }
 
-    static long stringDataSize(Input input, long offset) {
+    public static long stringDataSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
@@ -125,7 +155,7 @@ enum ByteSizes {
         }
     }
 
-    static int headByteSize(Input input, long offset) {
+    public static int headByteSize(Input input, long offset) {
         int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case ADD_INFO_ONE_BYTE:
@@ -170,7 +200,7 @@ enum ByteSizes {
         for (long i = 0; i < elementCount; i++) {
             short head = readUInt8(input, position);
             MajorType majorType = MajorType.findMajorType(head);
-            position += majorType.byteSize(input, position);
+            position += byteSizeByMajorType(majorType, input, position);
         }
         // Indefinite length? -> +1
         return position - offset + (addInfo == 31 ? 1 : 0);

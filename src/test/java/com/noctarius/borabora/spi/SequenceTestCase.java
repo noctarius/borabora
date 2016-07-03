@@ -14,11 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.GraphQuery;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.Output;
+import com.noctarius.borabora.Parser;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.StreamWriter;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.builder.StreamGraphBuilder;
-import com.noctarius.borabora.spi.Dictionary;
-import com.noctarius.borabora.spi.Sequence;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -126,7 +136,7 @@ public class SequenceTestCase
         Sequence sequence = value.sequence();
         for (int i = 1; i < 26; i++) {
             Value element = sequence.get(i - 1);
-            assertEquals(ValueTypes.UInt, element.valueType());
+            Assert.assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
 
             GraphQuery query = GraphQuery.newBuilder().sequence(i - 1).build();
@@ -194,9 +204,9 @@ public class SequenceTestCase
     public void sequence_to_array_size_to_large()
             throws Exception {
 
-        Sequence sequence = new SequenceImpl( //
-                Long.MAX_VALUE, new long[0][0], new QueryContextImpl(Input.fromByteArray(new byte[0]), Collections.emptyList(),
-                ObjectSelectStatementStrategy.INSTANCE));
+        Sequence sequence = new SequenceImpl(Long.MAX_VALUE, new long[0][0], //
+                newQueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList(),
+                        ObjectSelectStatementStrategy.INSTANCE));
 
         sequence.toArray();
     }

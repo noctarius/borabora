@@ -16,9 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.ByteSizes;
+import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.ElementCounts;
 import com.noctarius.borabora.spi.QueryContext;
-
-import static com.noctarius.borabora.Bytes.readUInt8;
 
 final class SequenceGraphQuery
         implements GraphQuery {
@@ -35,7 +36,7 @@ final class SequenceGraphQuery
     @Override
     public long access(long offset, QueryContext queryContext) {
         Input input = queryContext.input();
-        short head = readUInt8(input, offset);
+        short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)
@@ -48,7 +49,7 @@ final class SequenceGraphQuery
         }
 
         // Sequences need head skipped
-        long elementCount = majorType.elementCount(input, offset);
+        long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
             return -1;
         }

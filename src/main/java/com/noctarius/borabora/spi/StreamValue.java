@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.ValueType;
 
-final class StreamValue
+public final class StreamValue
         extends AbstractStreamValue {
 
     private final MajorType majorType;
     private final ValueType valueType;
     private final long offset;
 
-    StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
+    public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
         super(queryContext);
 
         if (offset == -1) {

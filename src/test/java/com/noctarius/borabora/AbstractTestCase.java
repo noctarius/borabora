@@ -17,10 +17,14 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.TagDecoder;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -78,7 +82,13 @@ public abstract class AbstractTestCase {
         return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
     }
 
-    protected static class SimplifiedTestParser {
+    public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
+                                               SelectStatementStrategy selectStatementStrategy) {
+
+        return new QueryContextImpl(input, tagDecoders, selectStatementStrategy);
+    }
+
+    public static class SimplifiedTestParser {
 
         private final com.noctarius.borabora.Parser parser;
         private final Input input;
@@ -88,15 +98,15 @@ public abstract class AbstractTestCase {
             this.input = input;
         }
 
-        Value read(GraphQuery graphQuery) {
+        public Value read(GraphQuery graphQuery) {
             return parser.read(input, graphQuery);
         }
 
-        Value read(String query) {
+        public Value read(String query) {
             return parser.read(input, query);
         }
 
-        GraphQuery prepareQuery(String query) {
+        public GraphQuery prepareQuery(String query) {
             return parser.prepareQuery(query);
         }
 

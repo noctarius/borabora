@@ -14,21 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.Dictionary;
-import com.noctarius.borabora.spi.Sequence;
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.WrongTypeException;
 
 import java.util.function.Supplier;
 
-class ObjectValue
+public class ObjectValue
         extends AbstractValue {
 
     private final MajorType majorType;
     private final ValueType valueType;
     private final Supplier<?> supplier;
 
-    ObjectValue(MajorType majorType, ValueType valueType, Object value) {
+    public ObjectValue(MajorType majorType, ValueType valueType, Object value) {
         this.majorType = majorType;
         this.valueType = valueType;
         this.supplier = () -> value;

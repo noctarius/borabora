@@ -17,15 +17,17 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.SelectStatementStrategyAware;
+import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.TagDecoder;
 
 import java.util.List;
 
-import static com.noctarius.borabora.Bytes.readUInt8;
-import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.Value.NULL_VALUE;
+import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 
 final class ParserImpl
         implements Parser {
@@ -54,7 +56,7 @@ final class ParserImpl
         } else if (offset == -2) {
             return selectStatementStrategy.finalizeSelect(queryContext);
         }
-        short head = readUInt8(input, offset);
+        short head = Decoder.readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, offset, queryContext);
@@ -73,7 +75,7 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, long offset) {
-        short head = readUInt8(input, offset);
+        short head = Decoder.readUInt8(input, offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, offset, newQueryContext(input, selectStatementStrategy));

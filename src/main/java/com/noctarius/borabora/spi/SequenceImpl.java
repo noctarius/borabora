@@ -14,16 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.Sequence;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.Bytes.readUInt8;
+import static com.noctarius.borabora.spi.Bytes.readUInt8;
 
 final class SequenceImpl
         implements Sequence {

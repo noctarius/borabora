@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.SelectStatementStrategyAware;
 
 import java.util.Collections;
 import java.util.List;

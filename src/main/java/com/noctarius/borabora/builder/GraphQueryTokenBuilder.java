@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.Value;
+import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.function.Predicate;
 

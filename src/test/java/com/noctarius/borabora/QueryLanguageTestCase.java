@@ -17,8 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamGraphBuilder;
-import com.noctarius.borabora.spi.Dictionary;
-import com.noctarius.borabora.spi.Sequence;
 import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -14,20 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.Dictionary;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.Sequence;
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 
 import java.math.BigInteger;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.Bytes.readUInt16;
-import static com.noctarius.borabora.Bytes.readUInt32;
-import static com.noctarius.borabora.Bytes.readUInt64BigInt;
-import static com.noctarius.borabora.Bytes.readUInt64Long;
-import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.spi.Constants.ASCII;
 import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
@@ -40,28 +39,32 @@ import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.Constants.UTF8;
 
-enum Decoder {
+public enum Decoder {
     ;
 
-    static Number readInt(Input input, long offset) {
-        short head = readUInt8(input, offset);
+    public static short readUInt8(Input input, long offset) {
+        return Bytes.readUInt8(input, offset);
+    }
+
+    public static Number readInt(Input input, long offset) {
+        short head = Bytes.readUInt8(input, offset);
         long mask = -((head & 0xff) >>> 5);
         int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
         switch (byteSize) {
             case 2:
-                number = mask ^ readUInt8(input, offset + 1);
+                number = mask ^ Bytes.readUInt8(input, offset + 1);
                 break;
             case 3:
-                number = mask ^ readUInt16(input, offset + 1);
+                number = mask ^ Bytes.readUInt16(input, offset + 1);
                 break;
             case 5:
-                number = mask ^ readUInt32(input, offset + 1);
+                number = mask ^ Bytes.readUInt32(input, offset + 1);
                 break;
             case 9:
-                long v = readUInt64Long(input, offset + 1);
+                long v = Bytes.readUInt64Long(input, offset + 1);
                 if (v < 0) {
-                    number = BigInteger.valueOf(mask).xor(readUInt64BigInt(input, offset + 1));
+                    number = BigInteger.valueOf(mask).xor(Bytes.readUInt64BigInt(input, offset + 1));
                 } else {
                     number = mask ^ v;
                 }
@@ -72,22 +75,22 @@ enum Decoder {
         return number;
     }
 
-    static Number readUint(Input input, long offset) {
-        short head = readUInt8(input, offset);
+    public static Number readUint(Input input, long offset) {
+        short head = Bytes.readUInt8(input, offset);
         int byteSize = ByteSizes.intByteSize(input, offset);
         Number number;
         switch (byteSize) {
             case 2:
-                number = readUInt8(input, offset + 1);
+                number = Bytes.readUInt8(input, offset + 1);
                 break;
             case 3:
-                number = readUInt16(input, offset + 1);
+                number = Bytes.readUInt16(input, offset + 1);
                 break;
             case 5:
-                number = readUInt32(input, offset + 1);
+                number = Bytes.readUInt32(input, offset + 1);
                 break;
             case 9:
-                number = readUInt64BigInt(input, offset + 1);
+                number = Bytes.readUInt64BigInt(input, offset + 1);
                 break;
             default:
                 number = head & ADDITIONAL_INFORMATION_MASK;
@@ -95,7 +98,7 @@ enum Decoder {
         return number;
     }
 
-    static Number readFloat(Input input, long offset) {
+    public static Number readFloat(Input input, long offset) {
         int addInfo = additionalInfo(input, offset);
         switch (addInfo) {
             case FP_VALUE_HALF_PRECISION:
@@ -109,21 +112,21 @@ enum Decoder {
         }
     }
 
-    static Number readNumber(Input input, ValueType valueType, long offset) {
+    public static Number readNumber(Input input, ValueType valueType, long offset) {
         if (valueType.matches(ValueTypes.Float)) {
             return readFloat(input, offset);
         }
         return readInt(input, offset);
     }
 
-    static String readString(Input input, long offset) {
+    public static String readString(Input input, long offset) {
         int addInfo = additionalInfo(input, offset);
         if (addInfo == 31) {
             // Concatenated string!
             long position = offset + 1;
             StringBuilder sb = new StringBuilder();
             while (true) {
-                short h = readUInt8(input, position);
+                short h = Bytes.readUInt8(input, position);
                 if ((h & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                     break;
                 }
@@ -136,7 +139,7 @@ enum Decoder {
         return readString0(input, offset);
     }
 
-    static Sequence readSequence(long offset, QueryContext queryContext) {
+    public static Sequence readSequence(long offset, QueryContext queryContext) {
         Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.sequenceElementCount(input, offset);
@@ -144,7 +147,7 @@ enum Decoder {
         return new SequenceImpl(size, elementIndexes, queryContext);
     }
 
-    static Dictionary readDictionary(long offset, QueryContext queryContext) {
+    public static Dictionary readDictionary(long offset, QueryContext queryContext) {
         Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.dictionaryElementCount(input, offset);
@@ -152,7 +155,7 @@ enum Decoder {
         return new DictionaryImpl(size, elementIndexes, queryContext);
     }
 
-    static long length(Input input, MajorType majorType, long offset) {
+    public static long length(Input input, MajorType majorType, long offset) {
         switch (majorType) {
             case UnsignedInteger:
             case NegativeInteger:
@@ -172,18 +175,18 @@ enum Decoder {
         throw new IllegalStateException("Illegal MajorType requested");
     }
 
-    static long skip(Input input, long offset) {
-        short head = readUInt8(input, offset);
+    public static long skip(Input input, long offset) {
+        short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         return skip(input, majorType, offset);
     }
 
-    static long skip(Input input, MajorType majorType, long offset) {
+    public static long skip(Input input, MajorType majorType, long offset) {
         long size = length(input, majorType, offset);
         return offset + size;
     }
 
-    static boolean isNull(short head) {
+    public static boolean isNull(short head) {
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple != majorType) {
             return false;
@@ -192,8 +195,8 @@ enum Decoder {
         return addInfo == FP_VALUE_NULL;
     }
 
-    static boolean getBooleanValue(Input input, long offset) {
-        short head = readUInt8(input, offset);
+    public static boolean getBooleanValue(Input input, long offset) {
+        short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple == majorType) {
             int addInfo = head & ADDITIONAL_INFORMATION_MASK;
@@ -207,20 +210,20 @@ enum Decoder {
         throw new IllegalStateException("Illegal boolean value");
     }
 
-    static float readHalfFloatValue(Input input, long offset) {
-        int value = readUInt16(input, offset);
+    public static float readHalfFloatValue(Input input, long offset) {
+        int value = Bytes.readUInt16(input, offset);
         return HalfPrecision.toFloat(value);
     }
 
-    static float readSinglePrecisionFloat(Input input, long offset) {
-        return Float.intBitsToFloat((int) readUInt32(input, offset));
+    public static float readSinglePrecisionFloat(Input input, long offset) {
+        return Float.intBitsToFloat((int) Bytes.readUInt32(input, offset));
     }
 
-    static double readDoublePrecisionFloat(Input input, long offset) {
-        return Double.longBitsToDouble(readUInt64Long(input, offset));
+    public static double readDoublePrecisionFloat(Input input, long offset) {
+        return Double.longBitsToDouble(Bytes.readUInt64Long(input, offset));
     }
 
-    static long findByDictionaryKey(Predicate<Value> predicate, long offset, QueryContext queryContext) {
+    public static long findByDictionaryKey(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         // Search for key element
         long position = findByPredicate(predicate, offset, queryContext);
         if (position == -1) {
@@ -229,23 +232,23 @@ enum Decoder {
         return skip(queryContext.input(), position);
     }
 
-    static StreamValue readValue(long offset, QueryContext queryContext) {
-        short head = readUInt8(queryContext.input(), offset);
+    public static StreamValue readValue(long offset, QueryContext queryContext) {
+        short head = Bytes.readUInt8(queryContext.input(), offset);
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(queryContext.input(), offset);
         return new StreamValue(mt, vt, offset, queryContext);
     }
 
-    static int additionalInfo(Input input, long offset) {
-        short head = readUInt8(input, offset);
+    public static int additionalInfo(Input input, long offset) {
+        short head = Bytes.readUInt8(input, offset);
         return additionalInfo(head);
     }
 
-    static int additionalInfo(short head) {
+    public static int additionalInfo(short head) {
         return head & ADDITIONAL_INFORMATION_MASK;
     }
 
-    static byte[] readRaw(Input input, MajorType majorType, long offset) {
+    public static byte[] readRaw(Input input, MajorType majorType, long offset) {
         long length = length(input, majorType, offset);
         if (length == 0) {
             return EMPTY_BYTE_ARRAY;
@@ -260,7 +263,7 @@ enum Decoder {
         RelocatableStreamValue streamValue = new RelocatableStreamValue();
         Input input = queryContext.input();
         do {
-            short head = readUInt8(input, offset);
+            short head = Bytes.readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             ValueType valueType = ValueTypes.valueType(input, offset);
 
@@ -270,13 +273,13 @@ enum Decoder {
             }
             long length = length(input, majorType, offset);
             offset = skip(input, offset + length);
-        } while (input.offsetValid(offset) && readUInt8(input, offset) != OPCODE_BREAK_MASK);
+        } while (input.offsetValid(offset) && Bytes.readUInt8(input, offset) != OPCODE_BREAK_MASK);
         return -1;
 
     }
 
     private static String readString0(Input input, long offset) {
-        short head = readUInt8(input, offset);
+        short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         int headByteSize = ByteSizes.headByteSize(input, offset);
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
@@ -307,7 +310,7 @@ enum Decoder {
                 elementIndexes[base][elIndex] = position;
 
                 // Skip elements content to next element
-                short head = readUInt8(input, position);
+                short head = Bytes.readUInt8(input, position);
                 MajorType majorType = MajorType.findMajorType(head);
                 position += length(input, majorType, position);
             }

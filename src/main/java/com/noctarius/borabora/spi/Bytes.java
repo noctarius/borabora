@@ -14,7 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
+
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.Output;
 
 import java.math.BigInteger;
 

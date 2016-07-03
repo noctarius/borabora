@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.ByteSizes;
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-
-import static com.noctarius.borabora.Bytes.readUInt8;
 
 abstract class DictionaryGraphQuery
         implements GraphQuery {
@@ -36,7 +36,7 @@ abstract class DictionaryGraphQuery
     @Override
     public long access(long offset, QueryContext queryContext) {
         Input input = queryContext.input();
-        short head = readUInt8(input, offset);
+        short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
             throw new WrongTypeException("Not a dictionary");

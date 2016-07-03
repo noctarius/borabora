@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.ByteSizes;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

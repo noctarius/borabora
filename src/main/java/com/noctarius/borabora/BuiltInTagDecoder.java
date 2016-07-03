@@ -16,7 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.ByteSizes;
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.TagDecoder;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.TypeSpecs;
@@ -27,8 +30,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Locale;
-
-import static com.noctarius.borabora.Bytes.readUInt8;
 
 final class BuiltInTagDecoder
         implements TagDecoder<Object> {
@@ -104,7 +105,7 @@ final class BuiltInTagDecoder
         int headByteSize = ByteSizes.intByteSize(input, offset);
 
         offset += headByteSize;
-        short head = readUInt8(input, offset);
+        short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
         return new StreamValue(majorType, valueType, offset, queryContext);

@@ -19,17 +19,19 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.Encoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.StreamValue;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import static com.noctarius.borabora.Bytes.readUInt8;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 
-class BinarySelectStatementStrategy
+public class BinarySelectStatementStrategy
         implements SelectStatementStrategy {
 
     public static final SelectStatementStrategy INSTANCE = new BinarySelectStatementStrategy();
@@ -146,7 +148,7 @@ class BinarySelectStatementStrategy
             BinaryQueryContext bqc = queryContext.queryStackPeek();
 
             Input input = queryContext.input();
-            short head = readUInt8(input, queryOffset);
+            short head = Decoder.readUInt8(input, queryOffset);
 
             MajorType majorType = MajorType.findMajorType(head);
             byte[] data = Decoder.readRaw(input, majorType, queryOffset);

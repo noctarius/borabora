@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.ValueType;
 
-final class RelocatableStreamValue
+public final class RelocatableStreamValue
         extends AbstractStreamValue {
 
     private QueryContext queryContext;
@@ -26,7 +27,7 @@ final class RelocatableStreamValue
     private ValueType valueType;
     private long offset;
 
-    RelocatableStreamValue() {
+    public RelocatableStreamValue() {
         super(null);
 
         if (offset == -1) {
@@ -68,7 +69,7 @@ final class RelocatableStreamValue
         return queryContext().applyProcessors(offset(), majorType());
     }
 
-    void relocate(QueryContext queryContext, MajorType majorType, ValueType valueType, long offset) {
+    public void relocate(QueryContext queryContext, MajorType majorType, ValueType valueType, long offset) {
         this.queryContext = queryContext;
         this.majorType = majorType;
         this.valueType = valueType;
@@ -76,7 +77,7 @@ final class RelocatableStreamValue
     }
 
     @Override
-    protected QueryContext queryContext() {
+    public QueryContext queryContext() {
         return queryContext;
     }
 

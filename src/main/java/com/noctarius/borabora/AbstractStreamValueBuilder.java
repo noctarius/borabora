@@ -21,6 +21,7 @@ import com.noctarius.borabora.builder.DictionaryEntryBuilder;
 import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
+import com.noctarius.borabora.spi.Encoder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

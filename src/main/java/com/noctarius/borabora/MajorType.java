@@ -26,32 +26,26 @@ import static com.noctarius.borabora.spi.Constants.MT_TEXTSTRING;
 import static com.noctarius.borabora.spi.Constants.MT_UNSINGED_INT;
 
 public enum MajorType {
-    UnsignedInteger(MT_UNSINGED_INT, 0b000, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    NegativeInteger(MT_NEGATIVE_INT, 0b001, false, ByteSizes::intByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    ByteString(MT_BYTESTRING, 0b010, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    TextString(MT_TEXTSTRING, 0b011, true, ByteSizes::stringByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    Sequence(MT_SEQUENCE, 0b100, true, ByteSizes::sequenceByteSize, ElementCounts.SEQUENCE_ELEMENT_COUNT),
-    Dictionary(MT_DICTIONARY, 0b101, true, ByteSizes::dictionaryByteSize, ElementCounts.DICTIONARY_ELEMENT_COUNT),
-    SemanticTag(MT_SEMANTIC_TAG, 0b110, false, ByteSizes::semanticTagByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false, ByteSizes::floatOrSimpleByteSize, ElementCounts.SINGLE_ELEMENT_COUNT),
-    Unknown(-1, -1, false, (s, i) -> 0, (s, i) -> 0);
+    UnsignedInteger(MT_UNSINGED_INT, 0b000, false),
+    NegativeInteger(MT_NEGATIVE_INT, 0b001, false),
+    ByteString(MT_BYTESTRING, 0b010, true),
+    TextString(MT_TEXTSTRING, 0b011, true),
+    Sequence(MT_SEQUENCE, 0b100, true),
+    Dictionary(MT_DICTIONARY, 0b101, true),
+    SemanticTag(MT_SEMANTIC_TAG, 0b110, false),
+    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false),
+    Unknown(-1, -1, false);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;
 
     private final short typeId;
     private final int mask;
     private final boolean indefinite;
-    private final ObjectLongToLongFunction<Input> byteSize;
-    private final ObjectLongToLongFunction<Input> elementCount;
 
-    MajorType(int typeId, int mask, boolean indefinite, ObjectLongToLongFunction<Input> byteSize,
-              ObjectLongToLongFunction<Input> elementCount) {
-
+    MajorType(int typeId, int mask, boolean indefinite) {
         this.typeId = (short) typeId;
         this.mask = mask;
         this.indefinite = indefinite;
-        this.byteSize = byteSize;
-        this.elementCount = elementCount;
     }
 
     public short typeId() {
@@ -65,14 +59,6 @@ public enum MajorType {
     public boolean match(short head) {
         int highBits = (head & HIGH_BITS_MASK) >>> 5;
         return (highBits | mask) == mask;
-    }
-
-    long byteSize(Input input, long offset) {
-        return byteSize.apply(input, offset);
-    }
-
-    long elementCount(Input input, long offset) {
-        return elementCount.apply(input, offset);
     }
 
     public static MajorType findMajorType(short head) {

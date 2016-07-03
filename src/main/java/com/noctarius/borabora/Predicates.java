@@ -16,7 +16,10 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.Encoder;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.QueryContextAware;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
@@ -56,8 +59,8 @@ public enum Predicates {
                 return false;
             }
 
-            if (v instanceof AbstractStreamValue) {
-                QueryContext queryContext = ((AbstractStreamValue) v).queryContext();
+            if (v instanceof QueryContextAware) {
+                QueryContext queryContext = ((QueryContextAware) v).queryContext();
                 MajorType majorType = v.majorType();
                 long offset = v.offset();
 

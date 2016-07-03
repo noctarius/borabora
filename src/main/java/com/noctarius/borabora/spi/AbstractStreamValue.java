@@ -14,16 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.Dictionary;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.Sequence;
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.ValueTypes;
 
 import java.util.function.Supplier;
 
 abstract class AbstractStreamValue
-        extends AbstractValue {
+        extends AbstractValue
+        implements QueryContextAware {
 
     private final QueryContext queryContext;
 
@@ -74,7 +77,8 @@ abstract class AbstractStreamValue
         return valueType().value(this);
     }
 
-    protected QueryContext queryContext() {
+    @Override
+    public QueryContext queryContext() {
         return queryContext;
     }
 
@@ -83,7 +87,7 @@ abstract class AbstractStreamValue
     }
 
     protected <T> T extract(Validator validator, Supplier<T> supplier) {
-        short head = Bytes.readUInt8(input(), offset());
+        short head = Decoder.readUInt8(input(), offset());
         // Null is legal for all types
         if (Decoder.isNull(head)) {
             return null;
