@@ -30,21 +30,20 @@ final class QueryContextImpl
 
     // Queries are inherently thread-safe!
     private final Deque<Object> stack = new LinkedList<>();
-    private final List<TagDecoder> semanticTagProcessors;
+    private final List<TagDecoder> tagDecoders;
     private final SelectStatementStrategy selectStatementStrategy;
     private final Input input;
 
-    QueryContextImpl(Input input, List<TagDecoder> semanticTagProcessors,
-                     SelectStatementStrategy selectStatementStrategy) {
+    QueryContextImpl(Input input, List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy) {
 
         this.input = input;
-        this.semanticTagProcessors = semanticTagProcessors;
+        this.tagDecoders = tagDecoders;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     QueryContextImpl(Input input, QueryContextImpl queryContext) {
         this.input = input;
-        this.semanticTagProcessors = queryContext.semanticTagProcessors;
+        this.tagDecoders = queryContext.tagDecoders;
         this.selectStatementStrategy = queryContext.selectStatementStrategy;
     }
 
@@ -79,10 +78,10 @@ final class QueryContextImpl
     }
 
     private <V> TagDecoder<V> findProcessor(long offset) {
-        for (int i = 0; i < semanticTagProcessors.size(); i++) {
-            TagDecoder<V> semanticTagProcessor = semanticTagProcessors.get(i);
-            if (semanticTagProcessor.handles(input, offset)) {
-                return semanticTagProcessor;
+        for (int i = 0; i < tagDecoders.size(); i++) {
+            TagDecoder<V> tagDecoder = tagDecoders.get(i);
+            if (tagDecoder.handles(input, offset)) {
+                return tagDecoder;
             }
         }
         return null;

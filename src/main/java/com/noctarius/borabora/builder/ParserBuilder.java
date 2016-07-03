@@ -21,7 +21,7 @@ import com.noctarius.borabora.spi.TagDecoder;
 
 public interface ParserBuilder {
 
-    <V> ParserBuilder withSemanticTagProcessor(TagDecoder<V> processor);
+    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder);
 
     ParserBuilder asBinarySelectStatement();
 

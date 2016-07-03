@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.Iterator;

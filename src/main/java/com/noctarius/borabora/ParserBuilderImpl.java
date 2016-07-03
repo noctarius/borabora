@@ -26,18 +26,18 @@ import java.util.List;
 final class ParserBuilderImpl
         implements ParserBuilder {
 
-    private final List<TagDecoder> processors = new ArrayList<>();
+    private final List<TagDecoder> tagDecoders = new ArrayList<>();
     private SelectStatementStrategy selectStatementStrategy;
     private boolean binarySelectStatement = true;
 
     public ParserBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
-        withSemanticTagProcessor(BuiltInTagDecoder.INSTANCE);
+        withTagDecoder(BuiltInTagDecoder.INSTANCE);
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
-    public <V> ParserBuilder withSemanticTagProcessor(TagDecoder<V> processor) {
-        processors.add(processor);
+    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder) {
+        tagDecoders.add(tagDecoder);
         return this;
     }
 
@@ -61,7 +61,7 @@ final class ParserBuilderImpl
                     BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE;
         }
 
-        return new ParserImpl(processors, selectStatementStrategy);
+        return new ParserImpl(tagDecoders, selectStatementStrategy);
     }
 
 }

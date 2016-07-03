@@ -32,11 +32,11 @@ import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 final class ParserImpl
         implements Parser {
 
-    private final List<TagDecoder> semanticTagProcessors;
+    private final List<TagDecoder> tagDecoders;
     private final SelectStatementStrategy selectStatementStrategy;
 
-    ParserImpl(List<TagDecoder> semanticTagProcessors, SelectStatementStrategy selectStatementStrategy) {
-        this.semanticTagProcessors = semanticTagProcessors;
+    ParserImpl(List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy) {
+        this.tagDecoders = tagDecoders;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
@@ -102,7 +102,7 @@ final class ParserImpl
         try {
 
             GraphQueryBuilder queryBuilder = GraphQuery.newBuilder(selectStatementStrategy);
-            QueryParser.parse(query, queryBuilder, semanticTagProcessors);
+            QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 
         } catch (Exception | TokenMgrError e) {
@@ -111,7 +111,7 @@ final class ParserImpl
     }
 
     private QueryContext newQueryContext(Input input, SelectStatementStrategy selectStatementStrategy) {
-        return new QueryContextImpl(input, semanticTagProcessors, selectStatementStrategy);
+        return new QueryContextImpl(input, tagDecoders, selectStatementStrategy);
     }
 
 }

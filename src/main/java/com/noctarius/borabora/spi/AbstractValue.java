@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import static com.noctarius.borabora.ValueTypes.ByteString;
 import static com.noctarius.borabora.ValueTypes.TextString;
 
-abstract class AbstractValue
+public abstract class AbstractValue
         implements Value {
 
     public static final String VALUE_TYPE_DOES_NOT_MATCH = "Requested value type does not match the read value: %s != %s";

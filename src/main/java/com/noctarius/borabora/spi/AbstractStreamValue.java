@@ -24,7 +24,7 @@ import com.noctarius.borabora.ValueTypes;
 
 import java.util.function.Supplier;
 
-abstract class AbstractStreamValue
+public abstract class AbstractStreamValue
         extends AbstractValue
         implements QueryContextAware {
 

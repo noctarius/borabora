@@ -16,9 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.Value;
-import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.StreamableIterable;
 
 import java.util.Iterator;

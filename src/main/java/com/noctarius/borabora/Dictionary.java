@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.Value;
 import com.noctarius.borabora.spi.StreamableIterable;
 
 import java.util.ConcurrentModificationException;

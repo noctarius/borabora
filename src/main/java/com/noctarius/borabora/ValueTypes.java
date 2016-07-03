@@ -65,7 +65,7 @@ public enum ValueTypes
     Unknown(Value::raw);
 
     private final Function<Value, Object> byValueType;
-    private final TagProcessor processor;
+    private final TagProcessor tagProcessor;
     private final ValueType identity;
 
     ValueTypes(Function<Value, Object> byValueType) {
@@ -76,13 +76,13 @@ public enum ValueTypes
         this(null, byValueType, identity);
     }
 
-    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType) {
-        this(processor, byValueType, null);
+    ValueTypes(TagProcessor tagProcessor, Function<Value, Object> byValueType) {
+        this(tagProcessor, byValueType, null);
     }
 
-    ValueTypes(TagProcessor processor, Function<Value, Object> byValueType, ValueType identity) {
+    ValueTypes(TagProcessor tagProcessor, Function<Value, Object> byValueType, ValueType identity) {
         this.byValueType = byValueType;
-        this.processor = processor;
+        this.tagProcessor = tagProcessor;
         this.identity = identity;
     }
 
@@ -120,10 +120,10 @@ public enum ValueTypes
 
     @Override
     public Object process(long offset, long length, QueryContext queryContext) {
-        if (processor == null) {
+        if (tagProcessor == null) {
             return null;
         }
-        return processor.process(offset, length, queryContext);
+        return tagProcessor.process(offset, length, queryContext);
     }
 
     public static ValueTypes valueType(Input input, long offset) {
