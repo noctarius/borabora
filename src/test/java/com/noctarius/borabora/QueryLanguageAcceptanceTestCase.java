@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class QueryLanguageAcceptanceTestCase {
@@ -174,12 +175,12 @@ public class QueryLanguageAcceptanceTestCase {
         parser.prepareQuery("(a: #, b: (#, #))");
     }
 
-   @Test
+    @Test
     public void test_dictionary_select_float_subsequence() {
         parser.prepareQuery("(1.0: #, 2.0: (#, #))");
     }
 
-   @Test
+    @Test
     public void test_dictionary_select_int_subsequence() {
         parser.prepareQuery("(1: #, 2: (#, #))");
     }
@@ -212,6 +213,150 @@ public class QueryLanguageAcceptanceTestCase {
     @Test(expected = QueryParserException.class)
     public void fail_dictionary_sequence_int_select_mixed() {
         parser.prepareQuery("(3: #, (1: #, 2: #))");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_dictionary_if_string() {
+        parser.prepareQuery("(?(0){'foo'=='bar'}>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_dictionary_if_uint() {
+        parser.prepareQuery("(?(0){'foo'==1}>>1)");
+        parser.prepareQuery("(?(0){'foo'>=1}>>1)");
+        parser.prepareQuery("(?(0){'foo'>1}>>1)");
+        parser.prepareQuery("(?(0){'foo'<=1}>>1)");
+        parser.prepareQuery("(?(0){'foo'<1}>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_dictionary_if_nint() {
+        parser.prepareQuery("(?(0){'foo'==-1}>>1)");
+        parser.prepareQuery("(?(0){'foo'>=-1}>>1)");
+        parser.prepareQuery("(?(0){'foo'>-1}>>1)");
+        parser.prepareQuery("(?(0){'foo'<=-1}>>1)");
+        parser.prepareQuery("(?(0){'foo'<-1}>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_dictionary_if_ufloat() {
+        parser.prepareQuery("(?(0){'foo'==1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'>=1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'>1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'<=1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'<1.0}>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_dictionary_if_nfloat() {
+        parser.prepareQuery("(?(0){'foo'==-1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'>=-1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'>-1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'<=-1.0}>>1)");
+        parser.prepareQuery("(?(0){'foo'<-1.0}>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_sequence_if_string() {
+        parser.prepareQuery("(?(1=='bar')>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_sequence_if_uint() {
+        parser.prepareQuery("(?(1==1)>>1)");
+        parser.prepareQuery("(?(1>=1)>>1)");
+        parser.prepareQuery("(?(1>1)>>1)");
+        parser.prepareQuery("(?(1<=1)>>1)");
+        parser.prepareQuery("(?(1<1)>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_sequence_if_nint() {
+        parser.prepareQuery("(?(1==-1)>>1)");
+        parser.prepareQuery("(?(1>=-1)>>1)");
+        parser.prepareQuery("(?(1>-1)>>1)");
+        parser.prepareQuery("(?(1<=-1)>>1)");
+        parser.prepareQuery("(?(1<-1)>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_sequence_if_ufloat() {
+        parser.prepareQuery("(?(1==1.0)>>1)");
+        parser.prepareQuery("(?(1>=1.0)>>1)");
+        parser.prepareQuery("(?(1>1.0)>>1)");
+        parser.prepareQuery("(?(1<=1.0)>>1)");
+        parser.prepareQuery("(?(1<1.0)>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_sequence_sequence_if_nfloat() {
+        parser.prepareQuery("(?(1==-1.0)>>1)");
+        parser.prepareQuery("(?(1>=-1.0)>>1)");
+        parser.prepareQuery("(?(1>-1.0)>>1)");
+        parser.prepareQuery("(?(1<=-1.0)>>1)");
+        parser.prepareQuery("(?(1<-1.0)>>1)");
+    }
+
+    @Test
+    @Ignore
+    public void test_dictionary_dictionary_if_string() {
+        parser.prepareQuery("{?{'foo'=='bar'}>>'foo'}");
+    }
+
+    @Test
+    @Ignore
+    public void test_dictionary_dictionary_if_uint() {
+        parser.prepareQuery("{?{'foo'==1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>=1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<=1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<1}>>'foo'}");
+    }
+
+    @Test
+    @Ignore
+    public void test_dictionary_dictionary_if_nint() {
+        parser.prepareQuery("{?{'foo'==-1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>=-1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>-1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<=-1}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<-1}>>'foo'}");
+    }
+
+    @Test
+    @Ignore
+    public void test_dictionary_dictionary_if_ufloat() {
+        parser.prepareQuery("{?{'foo'==1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>=1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<=1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<1.0}>>'foo'}");
+    }
+
+    @Test
+    @Ignore
+    public void test_dictionary_dictionary_if_nfloat() {
+        parser.prepareQuery("{?{'foo'==-1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>=-1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'>-1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<=-1.0}>>'foo'}");
+        parser.prepareQuery("{?{'foo'<-1.0}>>'foo'}");
+    }
+
+    @Test
+    @Ignore
+    public void test_match_any_stream_element() {
+        parser.prepareQuery("#?");
     }
 
 }
