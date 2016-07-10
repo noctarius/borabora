@@ -1,0 +1,13 @@
+= borabora - lazy CBOR parsing
+Christoph Engelbert <https://github.com/noctarius[@noctarius2k]>
+// Settings:
+:compat-mode!:
+:idseparator: -
+// Aliases:
+:project-name: tengi README
+:project-handle: tengi-readme
+:toc:
+
+image:https://raw.githubusercontent.com/noctarius/borabora/master/borabora_250_250.png[] 
+
+link:http://noctarius.github.io/borabora/[Javadoc]
