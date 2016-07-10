@@ -25,7 +25,7 @@ Christoph Engelbert <https://github.com/noctarius[@noctarius2k]>
 :toc:
 
 |===
-| image:https://raw.githubusercontent.com/noctarius/borabora/master/borabora_250_250.png[] | borabora is a link:http://cbor.io[CBOR] parser and genertor library. In difference to other existing libs borabora handles parsing and data extraction (deserialization) as lazy as possible. While writing CBOR values, borabora goes the other way and emits the bytes immediately, therefore elements can directly be sent through sockets. Another difference is the way borabora extracts data using queries. 
+| image:https://raw.githubusercontent.com/noctarius/borabora/master/borabora_250_250.png[] | borabora is a link:http://cbor.io[CBOR] parser and generator library. In difference to other existing CBOR libraries, borabora handles parsing and data extraction (deserialization) as lazy as possible. While writing CBOR values, borabora goes the other way around and emits the bytes immediately, therefore elements can be directly sent to sockets. Another difference is the way borabora extracts data using queries. 
 |===
 
 == Documentation
