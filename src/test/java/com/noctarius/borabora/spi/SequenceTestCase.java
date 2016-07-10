@@ -24,10 +24,10 @@ import com.noctarius.borabora.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.Sequence;
-import com.noctarius.borabora.StreamWriter;
+import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -341,8 +341,8 @@ public class SequenceTestCase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        StreamWriter writer = StreamWriter.newBuilder().build();
-        StreamGraphBuilder graphBuilder = writer.newStreamGraphBuilder(Output.toOutputStream(baos));
+        Writer writer = Writer.newBuilder().build();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         graphBuilder.putSequence()
 
@@ -380,8 +380,8 @@ public class SequenceTestCase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        StreamWriter writer = StreamWriter.newBuilder().build();
-        StreamGraphBuilder graphBuilder = writer.newStreamGraphBuilder(Output.toOutputStream(baos));
+        Writer writer = Writer.newBuilder().build();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         graphBuilder.putSequence(2)
 

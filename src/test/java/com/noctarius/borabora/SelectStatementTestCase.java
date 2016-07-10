@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import org.junit.Test;
@@ -208,7 +208,7 @@ public class SelectStatementTestCase
         );
     }
 
-    private void executeExercise(Consumer<StreamGraphBuilder> streamProducer, Supplier<String> textQueryProducer,
+    private void executeExercise(Consumer<GraphBuilder> streamProducer, Supplier<String> textQueryProducer,
                                  Consumer<StreamGraphQueryBuilder> graphQueryConfigurator, Consumer<Value> assertionTest) {
 
         byte[] data = createDataSource(streamProducer);
@@ -226,11 +226,11 @@ public class SelectStatementTestCase
         assertionTest.accept(parser.read(input, graphQuery));
     }
 
-    private static byte[] createDataSource(Consumer<StreamGraphBuilder> consumer) {
-        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+    private static byte[] createDataSource(Consumer<GraphBuilder> consumer) {
+        Writer writer = Writer.newBuilder().build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StreamGraphBuilder graphBuilder = streamWriter.newStreamGraphBuilder(Output.toOutputStream(baos));
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         consumer.accept(graphBuilder);
         graphBuilder.finishStream();

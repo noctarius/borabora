@@ -16,10 +16,10 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.StreamWriter;
+import com.noctarius.borabora.Writer;
 
 public interface WriterBuilder {
 
-    StreamWriter build();
+    Writer build();
 
 }

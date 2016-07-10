@@ -100,8 +100,8 @@ public class StringTestCase
     public void test_multi_indefinite_bytestreams() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
-        StreamWriter writer = StreamWriter.newBuilder().build();
-        writer.newStreamGraphBuilder(output)
+        Writer writer = Writer.newBuilder().build();
+        writer.newGraphBuilder(output)
 
               .putIndefiniteByteString().putString("ab").putString("cd").endIndefiniteString()
 

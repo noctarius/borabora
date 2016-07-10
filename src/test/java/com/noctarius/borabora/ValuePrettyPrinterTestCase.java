@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -26,19 +26,19 @@ public class ValuePrettyPrinterTestCase {
     private static final byte[] bytes = buildBytes();
 
     private static byte[] buildBytes() {
-        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+        Writer writer = Writer.newBuilder().build();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 
-        StreamGraphBuilder streamGraphBuilder = streamWriter.newStreamGraphBuilder(output);
+        GraphBuilder graphBuilder = writer.newGraphBuilder(output);
 
-        streamGraphBuilder.putSequence()
+        graphBuilder.putSequence()
 
-                          .putSequence().putNumber(1).putNumber(2).endSequence()
+                    .putSequence().putNumber(1).putNumber(2).endSequence()
 
-                          .putDictionary().putEntry().putString("key").putNumber(1).endEntry().endDictionary()
+                    .putDictionary().putEntry().putString("key").putNumber(1).endEntry().endDictionary()
 
-                          .endSequence().finishStream();
+                    .endSequence().finishStream();
 
         return baos.toByteArray();
     }

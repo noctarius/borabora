@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.builder;
 
-public interface StreamGraphBuilder
-        extends ValueBuilder<StreamGraphBuilder> {
+public interface GraphBuilder
+        extends ValueBuilder<GraphBuilder> {
 
     void finishStream();
 

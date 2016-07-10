@@ -16,14 +16,15 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.WriterBuilder;
 
-final class WriterBuilderImpl
-        implements WriterBuilder {
+public interface Writer {
 
-    @Override
-    public Writer build() {
-        return new WriterImpl();
+    GraphBuilder newGraphBuilder(Output output);
+
+    static WriterBuilder newBuilder() {
+        return new WriterBuilderImpl();
     }
 
 }

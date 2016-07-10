@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.Output;
 
-final class StreamWriterImpl
-        implements StreamWriter {
+public interface TagEncoder<V> {
 
-    @Override
-    public StreamGraphBuilder newStreamGraphBuilder(Output output) {
-        return new StreamGraphBuilderImpl(output, this);
-    }
+    boolean handles(V value);
+
+    long process(V value, Output output, long offset);
 
 }

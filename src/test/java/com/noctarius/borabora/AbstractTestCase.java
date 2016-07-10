@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
@@ -42,15 +42,15 @@ public abstract class AbstractTestCase {
         return sb.toString();
     }
 
-    public static SimplifiedTestParser executeStreamWriterTest(Consumer<StreamGraphBuilder> test) {
+    public static SimplifiedTestParser executeStreamWriterTest(Consumer<GraphBuilder> test) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 
-        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+        Writer writer = Writer.newBuilder().build();
 
-        StreamGraphBuilder streamGraphBuilder = streamWriter.newStreamGraphBuilder(output);
-        test.accept(streamGraphBuilder);
-        streamGraphBuilder.finishStream();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(output);
+        test.accept(graphBuilder);
+        graphBuilder.finishStream();
 
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);

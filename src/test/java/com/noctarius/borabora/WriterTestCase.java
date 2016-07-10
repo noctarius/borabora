@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.Constants;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class StreamWriterTestCase
+public class WriterTestCase
         extends AbstractTestCase {
 
     @Test
@@ -456,7 +456,7 @@ public class StreamWriterTestCase
         test_writing_sequence(builder -> builder.putSequence(2));
     }
 
-    private void test_writing_sequence(Function<StreamGraphBuilder, SequenceBuilder<StreamGraphBuilder>> function) {
+    private void test_writing_sequence(Function<GraphBuilder, SequenceBuilder<GraphBuilder>> function) {
 
         SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
             function.apply(sgb)
@@ -497,7 +497,7 @@ public class StreamWriterTestCase
         test_writing_dictionary(builder -> builder.putDictionary(2));
     }
 
-    private void test_writing_dictionary(Function<StreamGraphBuilder, DictionaryBuilder<StreamGraphBuilder>> function) {
+    private void test_writing_dictionary(Function<GraphBuilder, DictionaryBuilder<GraphBuilder>> function) {
 
         SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
             function.apply(sgb)

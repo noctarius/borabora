@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,10 +41,10 @@ public class QueryLanguageTestCase
     public void test_select_statement()
             throws Exception {
 
-        StreamWriter streamWriter = StreamWriter.newBuilder().build();
+        Writer writer = Writer.newBuilder().build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StreamGraphBuilder graphBuilder = streamWriter.newStreamGraphBuilder(Output.toOutputStream(baos));
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
         graphBuilder.putNumber(100).putNumber(101).putNumber(102).putNumber(103).putNumber(104).finishStream();
 
         String queryString1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #4, g: (#0, #1, #2))";

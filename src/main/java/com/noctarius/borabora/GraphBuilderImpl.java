@@ -16,15 +16,21 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphBuilder;
-import com.noctarius.borabora.builder.WriterBuilder;
+import com.noctarius.borabora.builder.GraphBuilder;
 
-public interface StreamWriter {
+final class GraphBuilderImpl
+        extends AbstractStreamValueBuilder<GraphBuilder>
+        implements GraphBuilder {
 
-    StreamGraphBuilder newStreamGraphBuilder(Output output);
+    private final Writer writer;
 
-    static WriterBuilder newBuilder() {
-        return new WriterBuilderImpl();
+    GraphBuilderImpl(Output output, Writer writer) {
+        super(output);
+        this.writer = writer;
+    }
+
+    @Override
+    public void finishStream() {
     }
 
 }
