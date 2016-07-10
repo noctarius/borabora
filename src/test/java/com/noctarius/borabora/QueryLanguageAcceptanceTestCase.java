@@ -356,7 +356,7 @@ public class QueryLanguageAcceptanceTestCase {
     @Test
     @Ignore
     public void test_match_any_stream_element() {
-        parser.prepareQuery("#?");
+        parser.prepareQuery("$");
     }
 
 }
