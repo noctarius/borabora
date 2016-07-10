@@ -20,7 +20,7 @@ import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
-public interface GraphQuery {
+public interface Query {
 
     long access(long offset, QueryContext queryContext);
 

@@ -30,7 +30,7 @@ public class StreamingParserTestCase
         byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, GraphQuery.newBuilder().stream(0).build());
+        Value value = parser.read(input, Query.newBuilder().stream(0).build());
 
         assertEquals(MajorType.NegativeInteger, value.majorType());
         assertEqualsNumber(-500, value.number());
@@ -43,7 +43,7 @@ public class StreamingParserTestCase
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, GraphQuery.newBuilder().stream(1).build());
+        Value value = parser.read(input, Query.newBuilder().stream(1).build());
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());
@@ -57,8 +57,8 @@ public class StreamingParserTestCase
         Input input = Input.fromByteArray(array);
         Parser parser = Parser.newBuilder().build();
 
-        GraphQuery graphQuery = GraphQuery.newBuilder().stream(1).build();
-        Value value = parser.read(input, graphQuery);
+        Query query = Query.newBuilder().stream(1).build();
+        Value value = parser.read(input, query);
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEqualsNumber(501, value.number());

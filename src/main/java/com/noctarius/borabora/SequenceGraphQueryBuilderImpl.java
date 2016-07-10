@@ -26,10 +26,10 @@ class SequenceGraphQueryBuilderImpl<T>
         implements SequenceGraphQueryBuilder<T> {
 
     private final T queryBuilder;
-    private final List<GraphQuery> graphQueries;
+    private final List<Query> graphQueries;
     private SelectStatementStrategy selectStatementStrategy;
 
-    SequenceGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries,
+    SequenceGraphQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
                                   SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;

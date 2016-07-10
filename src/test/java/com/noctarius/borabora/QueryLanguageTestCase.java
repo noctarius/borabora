@@ -52,16 +52,16 @@ public class QueryLanguageTestCase
 
         Parser parser = Parser.newBuilder()/*.asObjectSelectStatement()*/.build();
 
-        GraphQuery query1 = parser.prepareQuery(queryString1);
-        GraphQuery query2 = parser.prepareQuery(queryString2);
+        Query query1 = parser.prepareQuery(queryString1);
+        Query query2 = parser.prepareQuery(queryString2);
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        GraphQuery query3 = GraphQuery.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
-                                      .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
+        Query query3 = Query.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
+                            .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
 
-        GraphQuery query4 = GraphQuery.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
-                                      .asSequence().putEntry().stream(0).endEntry().endSequence().build();
+        Query query4 = Query.newBuilder(ObjectSelectStatementStrategy.INSTANCE) //
+                            .asSequence().putEntry().stream(0).endEntry().endSequence().build();
 
         Value value3 = parser.read(input, query3);
         Value value4 = parser.read(input, query4);
@@ -145,43 +145,43 @@ public class QueryLanguageTestCase
     public void test_query_combinations()
             throws Exception {
 
-        GraphQuery stream = GraphQuery.newBuilder().build();
-        GraphQuery stream_1 = GraphQuery.newBuilder().stream(1).build();
-        GraphQuery stream_sequence_one = GraphQuery.newBuilder().sequence(1).build();
-        GraphQuery stream_1_seq_1 = GraphQuery.newBuilder().stream(1).sequence(1).build();
-        GraphQuery stream_dic_1 = GraphQuery.newBuilder().dictionary(1).build();
-        GraphQuery stream_1_dic_1 = GraphQuery.newBuilder().stream(1).dictionary(1).build();
-        GraphQuery stream_dic_n1 = GraphQuery.newBuilder().dictionary(-1).build();
-        GraphQuery stream_1_dic_n1 = GraphQuery.newBuilder().stream(1).dictionary(-1).build();
-        GraphQuery stream_dic_11 = GraphQuery.newBuilder().dictionary(1.1).build();
-        GraphQuery stream_1_dic_11 = GraphQuery.newBuilder().stream(1).dictionary(1.1).build();
-        GraphQuery stream_dic_n11 = GraphQuery.newBuilder().dictionary(-1.1).build();
-        GraphQuery stream_1_dic_n11 = GraphQuery.newBuilder().stream(1).dictionary(-1.1).build();
-        GraphQuery stream_dic_s = GraphQuery.newBuilder().dictionary("test").build();
-        GraphQuery stream_1_dic_s = GraphQuery.newBuilder().stream(1).dictionary("test").build();
+        Query stream = Query.newBuilder().build();
+        Query stream_1 = Query.newBuilder().stream(1).build();
+        Query stream_sequence_one = Query.newBuilder().sequence(1).build();
+        Query stream_1_seq_1 = Query.newBuilder().stream(1).sequence(1).build();
+        Query stream_dic_1 = Query.newBuilder().dictionary(1).build();
+        Query stream_1_dic_1 = Query.newBuilder().stream(1).dictionary(1).build();
+        Query stream_dic_n1 = Query.newBuilder().dictionary(-1).build();
+        Query stream_1_dic_n1 = Query.newBuilder().stream(1).dictionary(-1).build();
+        Query stream_dic_11 = Query.newBuilder().dictionary(1.1).build();
+        Query stream_1_dic_11 = Query.newBuilder().stream(1).dictionary(1.1).build();
+        Query stream_dic_n11 = Query.newBuilder().dictionary(-1.1).build();
+        Query stream_1_dic_n11 = Query.newBuilder().stream(1).dictionary(-1.1).build();
+        Query stream_dic_s = Query.newBuilder().dictionary("test").build();
+        Query stream_1_dic_s = Query.newBuilder().stream(1).dictionary("test").build();
 
-        GraphQuery stream_tc_number = GraphQuery.newBuilder().requireType(TypeSpecs.Number).build();
-        GraphQuery stream_tc_uint = GraphQuery.newBuilder().requireType(TypeSpecs.UInt).build();
-        GraphQuery stream_tc_nint = GraphQuery.newBuilder().requireType(TypeSpecs.NInt).build();
-        GraphQuery stream_tc_int = GraphQuery.newBuilder().requireType(TypeSpecs.Int).build();
-        GraphQuery stream_tc_ufloat = GraphQuery.newBuilder().requireType(TypeSpecs.UFloat).build();
-        GraphQuery stream_tc_nfloat = GraphQuery.newBuilder().requireType(TypeSpecs.NFloat).build();
-        GraphQuery stream_tc_float = GraphQuery.newBuilder().requireType(TypeSpecs.Float).build();
-        GraphQuery stream_tc_string = GraphQuery.newBuilder().requireType(TypeSpecs.String).build();
-        GraphQuery stream_tc_dictionary = GraphQuery.newBuilder().requireType(TypeSpecs.Dictionary).build();
-        GraphQuery stream_tc_sequence = GraphQuery.newBuilder().requireType(TypeSpecs.Sequence).build();
-        GraphQuery stream_tc_tag = GraphQuery.newBuilder().requireType(TypeSpecs.SemanticTag).build();
-        GraphQuery stream_tc_tag_0 = GraphQuery.newBuilder().requireType(TypeSpecs.DateTime).build();
-        GraphQuery stream_tc_tag_1 = GraphQuery.newBuilder().requireType(TypeSpecs.Timstamp).build();
-        GraphQuery stream_tc_tag_24 = GraphQuery.newBuilder().requireType(TypeSpecs.EncCBOR).build();
-        GraphQuery stream_tc_tag_32 = GraphQuery.newBuilder().requireType(TypeSpecs.URI).build();
-        GraphQuery stream_tc_bool = GraphQuery.newBuilder().requireType(TypeSpecs.Bool).build();
-        GraphQuery stream_tc_datatime = GraphQuery.newBuilder().requireType(TypeSpecs.DateTime).build();
-        GraphQuery stream_tc_timestamp = GraphQuery.newBuilder().requireType(TypeSpecs.Timstamp).build();
-        GraphQuery stream_tc_uri = GraphQuery.newBuilder().requireType(TypeSpecs.URI).build();
-        GraphQuery stream_tc_enccbor = GraphQuery.newBuilder().requireType(TypeSpecs.EncCBOR).build();
+        Query stream_tc_number = Query.newBuilder().requireType(TypeSpecs.Number).build();
+        Query stream_tc_uint = Query.newBuilder().requireType(TypeSpecs.UInt).build();
+        Query stream_tc_nint = Query.newBuilder().requireType(TypeSpecs.NInt).build();
+        Query stream_tc_int = Query.newBuilder().requireType(TypeSpecs.Int).build();
+        Query stream_tc_ufloat = Query.newBuilder().requireType(TypeSpecs.UFloat).build();
+        Query stream_tc_nfloat = Query.newBuilder().requireType(TypeSpecs.NFloat).build();
+        Query stream_tc_float = Query.newBuilder().requireType(TypeSpecs.Float).build();
+        Query stream_tc_string = Query.newBuilder().requireType(TypeSpecs.String).build();
+        Query stream_tc_dictionary = Query.newBuilder().requireType(TypeSpecs.Dictionary).build();
+        Query stream_tc_sequence = Query.newBuilder().requireType(TypeSpecs.Sequence).build();
+        Query stream_tc_tag = Query.newBuilder().requireType(TypeSpecs.SemanticTag).build();
+        Query stream_tc_tag_0 = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
+        Query stream_tc_tag_1 = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
+        Query stream_tc_tag_24 = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
+        Query stream_tc_tag_32 = Query.newBuilder().requireType(TypeSpecs.URI).build();
+        Query stream_tc_bool = Query.newBuilder().requireType(TypeSpecs.Bool).build();
+        Query stream_tc_datatime = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
+        Query stream_tc_timestamp = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
+        Query stream_tc_uri = Query.newBuilder().requireType(TypeSpecs.URI).build();
+        Query stream_tc_enccbor = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
 
-        GraphQuery stream_tc_optional = GraphQuery.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
+        Query stream_tc_optional = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
 
         Parser parser = Parser.newBuilder().build();
         assertGraphQuery(stream, parser.prepareQuery("#"));
@@ -255,12 +255,12 @@ public class QueryLanguageTestCase
         parser.prepareQuery("#{1.1.}");
     }
 
-    private void assertGraphQuery(GraphQuery expected, GraphQuery actual) {
-        ChainGraphQuery exp = (ChainGraphQuery) expected;
-        ChainGraphQuery act = (ChainGraphQuery) actual;
+    private void assertGraphQuery(Query expected, Query actual) {
+        ChainQuery exp = (ChainQuery) expected;
+        ChainQuery act = (ChainQuery) actual;
 
-        List<GraphQuery> n1 = exp.nodes();
-        List<GraphQuery> n2 = act.nodes();
+        List<Query> n1 = exp.nodes();
+        List<Query> n2 = act.nodes();
 
         assertEquals(n1.size(), n2.size());
         assertEquals(n1, n2);

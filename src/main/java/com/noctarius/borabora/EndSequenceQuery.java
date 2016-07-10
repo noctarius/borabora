@@ -22,12 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-class EndSequenceGraphQuery
-        implements GraphQuery {
+class EndSequenceQuery
+        implements Query {
 
-    static final GraphQuery INSTANCE = new EndSequenceGraphQuery();
+    static final Query INSTANCE = new EndSequenceQuery();
 
-    private EndSequenceGraphQuery() {
+    private EndSequenceQuery() {
     }
 
     @Override

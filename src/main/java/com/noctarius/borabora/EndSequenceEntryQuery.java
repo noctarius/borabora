@@ -16,21 +16,30 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-class AsDictionaryGraphQuery
-        implements GraphQuery {
+class EndSequenceEntryQuery
+        implements Query {
+
+    static final Query INSTANCE = new EndSequenceEntryQuery();
+
+    private EndSequenceEntryQuery() {
+    }
 
     @Override
     public long access(long offset, QueryContext queryContext) {
-        // Create a new Map to store entries, thanks to thread-safetyness :)
-        Map<Value, Value> entries = new HashMap<>();
+        Value value;
+        if (offset == -2) {
+            value = queryContext.queryStackPop();
+        } else {
+            value = Decoder.readValue(offset, queryContext);
+        }
 
-        // Push to query context stack
-        queryContext.queryStackPush(entries);
+        List<Value> entries = queryContext.queryStackPeek();
+        entries.add(value);
 
         return offset;
     }

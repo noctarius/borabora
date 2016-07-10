@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 
-class EndDictionaryGraphQuery
-        implements GraphQuery {
+class EndDictionaryQuery
+        implements Query {
 
-    static final GraphQuery INSTANCE = new EndDictionaryGraphQuery();
+    static final Query INSTANCE = new EndDictionaryQuery();
 
-    private EndDictionaryGraphQuery() {
+    private EndDictionaryQuery() {
     }
 
     @Override

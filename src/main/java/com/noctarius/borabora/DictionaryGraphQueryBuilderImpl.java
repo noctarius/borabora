@@ -26,10 +26,10 @@ class DictionaryGraphQueryBuilderImpl<T>
         implements DictionaryGraphQueryBuilder<T> {
 
     private final T queryBuilder;
-    private final List<GraphQuery> graphQueries;
+    private final List<Query> graphQueries;
     private SelectStatementStrategy selectStatementStrategy;
 
-    DictionaryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries,
+    DictionaryGraphQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
                                     SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;

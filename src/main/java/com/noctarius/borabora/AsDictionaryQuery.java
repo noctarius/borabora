@@ -18,17 +18,21 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.QueryContext;
 
-final class ResetOffsetGraphQuery
-        implements GraphQuery {
+import java.util.HashMap;
+import java.util.Map;
 
-    static final GraphQuery INSTANCE = new ResetOffsetGraphQuery();
-
-    private ResetOffsetGraphQuery() {
-    }
+class AsDictionaryQuery
+        implements Query {
 
     @Override
     public long access(long offset, QueryContext queryContext) {
-        return 0;
+        // Create a new Map to store entries, thanks to thread-safetyness :)
+        Map<Value, Value> entries = new HashMap<>();
+
+        // Push to query context stack
+        queryContext.queryStackPush(entries);
+
+        return offset;
     }
 
 }

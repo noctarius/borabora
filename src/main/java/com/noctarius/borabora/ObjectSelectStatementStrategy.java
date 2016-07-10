@@ -42,67 +42,67 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<GraphQuery> graphQueries) {
-        graphQueries.add(new AsDictionaryGraphQuery());
+    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
+        graphQueries.add(new AsDictionaryQuery());
         return new DictionaryGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<GraphQuery> graphQueries) {
-        graphQueries.add(new AsSequenceGraphQuery());
+    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
+        graphQueries.add(new AsSequenceQuery());
         return new SequenceGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
-        return putDictionaryEntry(new PutEntryGraphQuery(key), queryBuilder, graphQueries);
+        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
     }
 
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(long key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
-        return putDictionaryEntry(new PutEntryGraphQuery(key), queryBuilder, graphQueries);
+        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
     }
 
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(double key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
-        return putDictionaryEntry(new PutEntryGraphQuery(key), queryBuilder, graphQueries);
+        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
     }
 
     @Override
-    public <T> T endDictionary(T queryBuilder, List<GraphQuery> graphQueries) {
-        graphQueries.add(EndDictionaryGraphQuery.INSTANCE);
+    public <T> T endDictionary(T queryBuilder, List<Query> graphQueries) {
+        graphQueries.add(EndDictionaryQuery.INSTANCE);
         return queryBuilder;
     }
 
     @Override
     public <T, S extends SequenceGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                        List<GraphQuery> graphQueries) {
+                                                                                                        List<Query> graphQueries) {
 
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndSequenceEntryGraphQuery.INSTANCE, this);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
+        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndSequenceEntryQuery.INSTANCE, this);
     }
 
     @Override
-    public <T> T endSequence(T queryBuilder, List<GraphQuery> graphQueries) {
-        graphQueries.add(EndSequenceGraphQuery.INSTANCE);
+    public <T> T endSequence(T queryBuilder, List<Query> graphQueries) {
+        graphQueries.add(EndSequenceQuery.INSTANCE);
         return queryBuilder;
     }
 
     private <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(
-            GraphQuery putKeyGraphQuery, D queryBuilder, List<GraphQuery> graphQueries) {
+            Query putKeyQuery, D queryBuilder, List<Query> graphQueries) {
 
-        graphQueries.add(putKeyGraphQuery);
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndDictionaryEntryGraphQuery.INSTANCE, this);
+        graphQueries.add(putKeyQuery);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
+        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndDictionaryEntryQuery.INSTANCE, this);
     }
 
 }

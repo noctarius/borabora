@@ -60,13 +60,13 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<GraphQuery> graphQueries) {
+    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
         graphQueries.add(putStructureHead(MajorType.Dictionary));
         return new DictionaryGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<GraphQuery> graphQueries) {
+    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
         graphQueries.add(putStructureHead(MajorType.Sequence));
         return new SequenceGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
@@ -74,54 +74,54 @@ public class BinarySelectStatementStrategy
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putString(key, offset, output)));
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
         return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(long key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putNumber(key, offset, output)));
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
         return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
     public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(double key,
                                                                                                             D queryBuilder,
-                                                                                                            List<GraphQuery> graphQueries) {
+                                                                                                            List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putDouble(key, offset, output)));
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
         return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
-    public <T> T endDictionary(T queryBuilder, List<GraphQuery> graphQueries) {
+    public <T> T endDictionary(T queryBuilder, List<Query> graphQueries) {
         graphQueries.add(this::putBreakMask);
         return queryBuilder;
     }
 
     @Override
     public <T, S extends SequenceGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                        List<GraphQuery> graphQueries) {
+                                                                                                        List<Query> graphQueries) {
 
-        graphQueries.add(ResetOffsetGraphQuery.INSTANCE);
+        graphQueries.add(ResetOffsetQuery.INSTANCE);
         return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
-    public <T> T endSequence(T queryBuilder, List<GraphQuery> graphQueries) {
+    public <T> T endSequence(T queryBuilder, List<Query> graphQueries) {
         graphQueries.add(this::putBreakMask);
         return queryBuilder;
     }
 
-    private GraphQuery putStructureHead(MajorType majorType) {
+    private Query putStructureHead(MajorType majorType) {
         return (queryOffset, queryContext) -> {
             BinaryQueryContext bqc = queryContext.queryStackPeek();
             bqc.offset = Encoder.encodeLengthAndValue(majorType, -1, bqc.offset, bqc.output);
@@ -129,7 +129,7 @@ public class BinarySelectStatementStrategy
         };
     }
 
-    private GraphQuery putKey(BiFunction<Long, Output, Long> function) {
+    private Query putKey(BiFunction<Long, Output, Long> function) {
         return (queryOffset, queryContext) -> {
             BinaryQueryContext bqc = queryContext.queryStackPeek();
             bqc.offset = function.apply(bqc.offset, bqc.output);

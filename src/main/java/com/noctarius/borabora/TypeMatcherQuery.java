@@ -22,13 +22,13 @@ import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.Objects;
 
-class TypeMatcherGraphQuery
-        implements GraphQuery {
+class TypeMatcherQuery
+        implements Query {
 
     private final TypeSpec typeSpec;
     private final boolean required;
 
-    TypeMatcherGraphQuery(TypeSpec typeSpec, boolean required) {
+    TypeMatcherQuery(TypeSpec typeSpec, boolean required) {
         Objects.requireNonNull(typeSpec, "typeSpec cannot be null");
         this.typeSpec = typeSpec;
         this.required = required;
@@ -55,11 +55,11 @@ class TypeMatcherGraphQuery
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TypeMatcherGraphQuery)) {
+        if (!(o instanceof TypeMatcherQuery)) {
             return false;
         }
 
-        TypeMatcherGraphQuery that = (TypeMatcherGraphQuery) o;
+        TypeMatcherQuery that = (TypeMatcherQuery) o;
 
         if (required != that.required) {
             return false;

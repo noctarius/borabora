@@ -23,21 +23,21 @@ import com.noctarius.borabora.spi.SelectStatementStrategyAware;
 import java.util.Collections;
 import java.util.List;
 
-final class ChainGraphQuery
-        implements GraphQuery, SelectStatementStrategyAware {
+final class ChainQuery
+        implements Query, SelectStatementStrategyAware {
 
-    private final List<GraphQuery> graphQueries;
+    private final List<Query> graphQueries;
     private SelectStatementStrategy selectStatementStrategy;
 
-    ChainGraphQuery(List<GraphQuery> graphQueries, SelectStatementStrategy selectStatementStrategy) {
+    ChainQuery(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
     public long access(long offset, QueryContext queryContext) {
-        for (GraphQuery graphQuery : graphQueries) {
-            offset = graphQuery.access(offset, queryContext);
+        for (Query query : graphQueries) {
+            offset = query.access(offset, queryContext);
             if (offset == -1) {
                 return -1;
             }
@@ -55,7 +55,7 @@ final class ChainGraphQuery
         return selectStatementStrategy;
     }
 
-    List<GraphQuery> nodes() {
+    List<Query> nodes() {
         return Collections.unmodifiableList(graphQueries);
     }
 

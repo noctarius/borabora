@@ -21,7 +21,7 @@ import org.junit.Test;
 import static com.noctarius.borabora.Value.NULL_VALUE;
 import static org.junit.Assert.assertSame;
 
-public class GraphQueryTestCase
+public class QueryTestCase
         extends AbstractTestCase {
 
     @Test(expected = WrongTypeException.class)
@@ -29,7 +29,7 @@ public class GraphQueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        parser.read(GraphQuery.newBuilder().dictionary((v) -> "b".equals(v.string())).build());
+        parser.read(Query.newBuilder().dictionary((v) -> "b".equals(v.string())).build());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class GraphQueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(GraphQuery.newBuilder().sequence(4).build());
+        Value value = parser.read(Query.newBuilder().sequence(4).build());
         assertSame(NULL_VALUE, value);
     }
 
@@ -46,7 +46,7 @@ public class GraphQueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf61610161629f0203ffff");
-        Value value = parser.read(GraphQuery.newBuilder().dictionary((v) -> "c".equals(v.string())).sequence(0).build());
+        Value value = parser.read(Query.newBuilder().dictionary((v) -> "c".equals(v.string())).sequence(0).build());
         assertSame(NULL_VALUE, value);
     }
 
@@ -55,14 +55,14 @@ public class GraphQueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf61610161629f0203ffff");
-        parser.read(GraphQuery.newBuilder().sequence(0).build());
+        parser.read(Query.newBuilder().sequence(0).build());
     }
 
     @Test
     public void code_coverage_for_unused_but_generated_methods()
             throws Exception {
 
-        GraphQuery query = GraphQuery.newBuilder().stream(1).dictionary("b").sequence(1).build();
+        Query query = Query.newBuilder().stream(1).dictionary("b").sequence(1).build();
         query.toString();
     }
 

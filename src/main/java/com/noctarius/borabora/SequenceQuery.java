@@ -21,12 +21,12 @@ import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.ElementCounts;
 import com.noctarius.borabora.spi.QueryContext;
 
-final class SequenceGraphQuery
-        implements GraphQuery {
+final class SequenceQuery
+        implements Query {
 
     private final long sequenceIndex;
 
-    SequenceGraphQuery(long sequenceIndex) {
+    SequenceQuery(long sequenceIndex) {
         if (sequenceIndex < 0) {
             throw new IllegalArgumentException("sequenceIndex must be greater or equal to 0");
         }
@@ -67,11 +67,11 @@ final class SequenceGraphQuery
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SequenceGraphQuery)) {
+        if (!(o instanceof SequenceQuery)) {
             return false;
         }
 
-        SequenceGraphQuery that = (SequenceGraphQuery) o;
+        SequenceQuery that = (SequenceQuery) o;
         return sequenceIndex == that.sequenceIndex;
     }
 

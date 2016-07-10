@@ -21,12 +21,12 @@ import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.Map;
 
-class EndDictionaryEntryGraphQuery
-        implements GraphQuery {
+class EndDictionaryEntryQuery
+        implements Query {
 
-    static final GraphQuery INSTANCE = new EndDictionaryEntryGraphQuery();
+    static final Query INSTANCE = new EndDictionaryEntryQuery();
 
-    private EndDictionaryEntryGraphQuery() {
+    private EndDictionaryEntryQuery() {
     }
 
     @Override

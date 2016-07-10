@@ -23,12 +23,12 @@ import com.noctarius.borabora.spi.QueryContext;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-abstract class DictionaryGraphQuery
-        implements GraphQuery {
+abstract class DictionaryQuery
+        implements Query {
 
     protected final Predicate<Value> predicate;
 
-    DictionaryGraphQuery(Predicate<Value> predicate) {
+    DictionaryQuery(Predicate<Value> predicate) {
         Objects.requireNonNull(predicate, "predicate must be set");
         this.predicate = predicate;
     }
@@ -54,7 +54,7 @@ abstract class DictionaryGraphQuery
         if (this == o) {
             return true;
         }
-        return o instanceof DictionaryGraphQuery;
+        return o instanceof DictionaryQuery;
     }
 
     @Override
@@ -62,28 +62,28 @@ abstract class DictionaryGraphQuery
         return "DictionaryGraphQuery{" + "predicate=" + predicate + '}';
     }
 
-    static DictionaryGraphQuery stringMatcher(String key) {
-        return new StringDictionaryGraphQuery(key);
+    static DictionaryQuery stringMatcher(String key) {
+        return new StringDictionaryQuery(key);
     }
 
-    static DictionaryGraphQuery intMatcher(long key) {
-        return new IntDictionaryGraphQuery(key);
+    static DictionaryQuery intMatcher(long key) {
+        return new IntDictionaryQuery(key);
     }
 
-    static DictionaryGraphQuery floatMatcher(double key) {
-        return new FloatDictionaryGraphQuery(key);
+    static DictionaryQuery floatMatcher(double key) {
+        return new FloatDictionaryQuery(key);
     }
 
-    static DictionaryGraphQuery predicateMatcher(Predicate<Value> predicate) {
-        return new PredicateDictionaryGraphQuery(predicate);
+    static DictionaryQuery predicateMatcher(Predicate<Value> predicate) {
+        return new PredicateDictionaryQuery(predicate);
     }
 
-    private static final class StringDictionaryGraphQuery
-            extends DictionaryGraphQuery {
+    private static final class StringDictionaryQuery
+            extends DictionaryQuery {
 
         private final String value;
 
-        private StringDictionaryGraphQuery(String value) {
+        private StringDictionaryQuery(String value) {
             super(Predicates.matchString(value));
             this.value = value;
         }
@@ -93,14 +93,14 @@ abstract class DictionaryGraphQuery
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof StringDictionaryGraphQuery)) {
+            if (!(o instanceof StringDictionaryQuery)) {
                 return false;
             }
             if (!super.equals(o)) {
                 return false;
             }
 
-            StringDictionaryGraphQuery that = (StringDictionaryGraphQuery) o;
+            StringDictionaryQuery that = (StringDictionaryQuery) o;
             return value.equals(that.value);
         }
 
@@ -115,12 +115,12 @@ abstract class DictionaryGraphQuery
         }
     }
 
-    private static final class IntDictionaryGraphQuery
-            extends DictionaryGraphQuery {
+    private static final class IntDictionaryQuery
+            extends DictionaryQuery {
 
         private final long value;
 
-        private IntDictionaryGraphQuery(long value) {
+        private IntDictionaryQuery(long value) {
             super(Predicates.matchInt(value));
             this.value = value;
         }
@@ -130,14 +130,14 @@ abstract class DictionaryGraphQuery
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof IntDictionaryGraphQuery)) {
+            if (!(o instanceof IntDictionaryQuery)) {
                 return false;
             }
             if (!super.equals(o)) {
                 return false;
             }
 
-            IntDictionaryGraphQuery that = (IntDictionaryGraphQuery) o;
+            IntDictionaryQuery that = (IntDictionaryQuery) o;
             return value == that.value;
         }
 
@@ -152,12 +152,12 @@ abstract class DictionaryGraphQuery
         }
     }
 
-    private static final class FloatDictionaryGraphQuery
-            extends DictionaryGraphQuery {
+    private static final class FloatDictionaryQuery
+            extends DictionaryQuery {
 
         private final double value;
 
-        private FloatDictionaryGraphQuery(double value) {
+        private FloatDictionaryQuery(double value) {
             super(Predicates.matchFloat(value));
             this.value = value;
         }
@@ -167,14 +167,14 @@ abstract class DictionaryGraphQuery
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof FloatDictionaryGraphQuery)) {
+            if (!(o instanceof FloatDictionaryQuery)) {
                 return false;
             }
             if (!super.equals(o)) {
                 return false;
             }
 
-            FloatDictionaryGraphQuery that = (FloatDictionaryGraphQuery) o;
+            FloatDictionaryQuery that = (FloatDictionaryQuery) o;
             return Double.compare(that.value, value) == 0;
         }
 
@@ -191,10 +191,10 @@ abstract class DictionaryGraphQuery
         }
     }
 
-    private static final class PredicateDictionaryGraphQuery
-            extends DictionaryGraphQuery {
+    private static final class PredicateDictionaryQuery
+            extends DictionaryQuery {
 
-        private PredicateDictionaryGraphQuery(Predicate<Value> predicate) {
+        private PredicateDictionaryQuery(Predicate<Value> predicate) {
             super(predicate);
         }
 
@@ -203,14 +203,14 @@ abstract class DictionaryGraphQuery
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof PredicateDictionaryGraphQuery)) {
+            if (!(o instanceof PredicateDictionaryQuery)) {
                 return false;
             }
             if (!super.equals(o)) {
                 return false;
             }
 
-            PredicateDictionaryGraphQuery that = (PredicateDictionaryGraphQuery) o;
+            PredicateDictionaryQuery that = (PredicateDictionaryQuery) o;
             String predicateClass = predicate.getClass().getName();
             String otherPredicateClass = that.predicate.getClass().getName();
 

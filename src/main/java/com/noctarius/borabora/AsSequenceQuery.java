@@ -21,8 +21,8 @@ import com.noctarius.borabora.spi.QueryContext;
 import java.util.ArrayList;
 import java.util.List;
 
-class AsSequenceGraphQuery
-        implements GraphQuery {
+class AsSequenceQuery
+        implements Query {
 
     @Override
     public long access(long offset, QueryContext queryContext) {

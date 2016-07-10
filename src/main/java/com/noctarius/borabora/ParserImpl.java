@@ -41,16 +41,16 @@ final class ParserImpl
     }
 
     @Override
-    public Value read(Input input, GraphQuery graphQuery) {
+    public Value read(Input input, Query query) {
         SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
-        if (graphQuery instanceof SelectStatementStrategyAware) {
-            selectStatementStrategy = ((SelectStatementStrategyAware) graphQuery).selectStatementStrategy();
+        if (query instanceof SelectStatementStrategyAware) {
+            selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
         }
 
         QueryContext queryContext = newQueryContext(input, selectStatementStrategy);
         selectStatementStrategy.beginSelect(queryContext);
 
-        long offset = graphQuery.access(0, queryContext);
+        long offset = query.access(0, queryContext);
         if (offset == -1) {
             return NULL_VALUE;
         } else if (offset == -2) {
@@ -82,8 +82,8 @@ final class ParserImpl
     }
 
     @Override
-    public byte[] extract(Input input, GraphQuery graphQuery) {
-        Value value = read(input, graphQuery);
+    public byte[] extract(Input input, Query query) {
+        Value value = read(input, query);
         return value == null ? EMPTY_BYTE_ARRAY : value.raw();
     }
 
@@ -98,10 +98,10 @@ final class ParserImpl
     }
 
     @Override
-    public GraphQuery prepareQuery(String query) {
+    public Query prepareQuery(String query) {
         try {
 
-            GraphQueryBuilder queryBuilder = GraphQuery.newBuilder(selectStatementStrategy);
+            GraphQueryBuilder queryBuilder = Query.newBuilder(selectStatementStrategy);
             QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 

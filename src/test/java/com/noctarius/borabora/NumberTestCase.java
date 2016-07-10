@@ -76,7 +76,7 @@ public class NumberTestCase
 
         Input input = Input.fromByteArray(this.input);
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        Value value = parser.read(input, Query.newBuilder().build());
 
         Number result = value.number();
         assertEqualsNumber(this.expected, result);

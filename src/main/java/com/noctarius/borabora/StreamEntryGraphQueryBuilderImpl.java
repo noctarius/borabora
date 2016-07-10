@@ -31,21 +31,21 @@ class StreamEntryGraphQueryBuilderImpl<T>
         implements StreamEntryGraphQueryBuilder<T> {
 
     private final T queryBuilder;
-    private final List<GraphQuery> graphQueries;
-    private final GraphQuery endEntryGraphQuery;
+    private final List<Query> graphQueries;
+    private final Query endEntryQuery;
 
-    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<GraphQuery> graphQueries, GraphQuery endEntryGraphQuery,
+    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<Query> graphQueries, Query endEntryQuery,
                                      SelectStatementStrategy selectStatementStrategy) {
 
         super(graphQueries, selectStatementStrategy);
         this.queryBuilder = queryBuilder;
         this.graphQueries = graphQueries;
-        this.endEntryGraphQuery = endEntryGraphQuery;
+        this.endEntryQuery = endEntryQuery;
     }
 
     @Override
     public EntryGraphQueryBuilder<T> stream(long offset) {
-        graphQueries.add(new StreamGraphQuery(offset));
+        graphQueries.add(new StreamQuery(offset));
         return this;
     }
 
@@ -61,7 +61,7 @@ class StreamEntryGraphQueryBuilderImpl<T>
 
     @Override
     public T endEntry() {
-        graphQueries.add(endEntryGraphQuery);
+        graphQueries.add(endEntryQuery);
         return queryBuilder;
     }
 

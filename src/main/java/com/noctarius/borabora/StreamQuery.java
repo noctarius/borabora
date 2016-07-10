@@ -19,12 +19,12 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 
-final class StreamGraphQuery
-        implements GraphQuery {
+final class StreamQuery
+        implements Query {
 
     private final long streamIndex;
 
-    StreamGraphQuery(long streamIndex) {
+    StreamQuery(long streamIndex) {
         this.streamIndex = streamIndex;
     }
 
@@ -44,11 +44,11 @@ final class StreamGraphQuery
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StreamGraphQuery)) {
+        if (!(o instanceof StreamQuery)) {
             return false;
         }
 
-        StreamGraphQuery that = (StreamGraphQuery) o;
+        StreamQuery that = (StreamQuery) o;
         return streamIndex == that.streamIndex;
     }
 

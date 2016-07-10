@@ -54,14 +54,14 @@ public class WriterTestCase
                .putString(null).putBoolean(null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
-        Value value6 = parser.read(GraphQuery.newBuilder().stream(5).build());
-        Value valueN1 = parser.read(GraphQuery.newBuilder().stream(6).build());
-        Value valueN2 = parser.read(GraphQuery.newBuilder().stream(7).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
+        Value value6 = parser.read(Query.newBuilder().stream(5).build());
+        Value valueN1 = parser.read(Query.newBuilder().stream(6).build());
+        Value valueN2 = parser.read(Query.newBuilder().stream(7).build());
 
         assertEquals("foo", value1.string());
         assertEquals("äüö", value2.string());
@@ -86,11 +86,11 @@ public class WriterTestCase
                .putBoolean(null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertFalse(value1.bool());
         assertTrue(value2.bool());
@@ -111,11 +111,11 @@ public class WriterTestCase
             sgb.putNumber((Byte) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Byte.MAX_VALUE, value1.number());
         assertEqualsNumber(Byte.MIN_VALUE, value2.number());
@@ -136,11 +136,11 @@ public class WriterTestCase
             sgb.putNumber((Short) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Short.MAX_VALUE, value1.number());
         assertEqualsNumber(Short.MIN_VALUE, value2.number());
@@ -161,11 +161,11 @@ public class WriterTestCase
             sgb.putNumber((Integer) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Integer.MAX_VALUE, value1.number());
         assertEqualsNumber(Integer.MIN_VALUE, value2.number());
@@ -186,11 +186,11 @@ public class WriterTestCase
             sgb.putNumber((Long) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Long.MAX_VALUE, value1.number());
         assertEqualsNumber(Long.MIN_VALUE, value2.number());
@@ -211,11 +211,11 @@ public class WriterTestCase
             sgb.putHalfPrecision(null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Float.POSITIVE_INFINITY, value1.number());
         assertEqualsNumber(Float.NEGATIVE_INFINITY, value2.number());
@@ -236,11 +236,11 @@ public class WriterTestCase
             sgb.putNumber((Float) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Float.MAX_VALUE, value1.number());
         assertEqualsNumber(Float.MIN_VALUE, value2.number());
@@ -261,11 +261,11 @@ public class WriterTestCase
             sgb.putNumber((Double) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
-        Value value4 = parser.read(GraphQuery.newBuilder().stream(3).build());
-        Value value5 = parser.read(GraphQuery.newBuilder().stream(4).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(Query.newBuilder().stream(4).build());
 
         assertEqualsNumber(Double.MAX_VALUE, value1.number());
         assertEqualsNumber(Double.MIN_VALUE, value2.number());
@@ -282,7 +282,7 @@ public class WriterTestCase
             sgb.putNumber((Number) null);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertNull(value.number());
     }
 
@@ -294,7 +294,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Byte.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Byte.MAX_VALUE, value.number());
     }
 
@@ -306,7 +306,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Short.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Short.MAX_VALUE, value.number());
     }
 
@@ -318,7 +318,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Integer.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Integer.MAX_VALUE, value.number());
     }
 
@@ -330,7 +330,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Long.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Long.MAX_VALUE, value.number());
     }
 
@@ -342,7 +342,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Float.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Float.MAX_VALUE, value.number());
     }
 
@@ -354,7 +354,7 @@ public class WriterTestCase
             sgb.putNumber((Number) Double.MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Double.MAX_VALUE, value.number());
     }
 
@@ -366,7 +366,7 @@ public class WriterTestCase
             sgb.putNumber(Constants.BI_VAL_MAX_VALUE);
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEqualsNumber(Constants.BI_VAL_MAX_VALUE, value.number());
     }
 
@@ -392,7 +392,7 @@ public class WriterTestCase
                .endIndefiniteString();
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals("abcdefghiüöä", value.string());
     }
 
@@ -428,7 +428,7 @@ public class WriterTestCase
                .endIndefiniteString();
         });
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -466,8 +466,8 @@ public class WriterTestCase
                     .endSequence();
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().sequence(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().sequence(1).build());
+        Value value1 = parser.read(Query.newBuilder().sequence(0).build());
+        Value value2 = parser.read(Query.newBuilder().sequence(1).build());
 
         assertEquals("a", value1.string());
         assertEquals("b", value2.string());
@@ -515,8 +515,8 @@ public class WriterTestCase
                     .endDictionary();
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().dictionary("a").build());
-        Value value2 = parser.read(GraphQuery.newBuilder().dictionary("b").build());
+        Value value1 = parser.read(Query.newBuilder().dictionary("a").build());
+        Value value2 = parser.read(Query.newBuilder().dictionary("b").build());
 
         assertEquals("A", value1.string());
         assertEquals("B", value2.string());
@@ -557,9 +557,9 @@ public class WriterTestCase
                .putTimestamp(null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
 
         assertEquals(expected, (long) value1.tag());
         assertEquals(expected, (long) value2.tag());
@@ -577,8 +577,8 @@ public class WriterTestCase
                .putURI(null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
 
         assertEquals(expected, value1.tag());
         assertNull(value2.tag());
@@ -597,9 +597,9 @@ public class WriterTestCase
                .putDateTime((Instant) null).putDateTime((Date) null);
         });
 
-        Value value1 = parser.read(GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(GraphQuery.newBuilder().stream(1).build());
-        Value value3 = parser.read(GraphQuery.newBuilder().stream(2).build());
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
 
         assertEquals(date, value1.tag());
         assertEquals(date, value2.tag());

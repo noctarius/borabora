@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.GraphQuery;
+import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
 import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
@@ -30,24 +30,24 @@ public interface SelectStatementStrategy {
 
     Value finalizeSelect(QueryContext queryContext);
 
-    <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<GraphQuery> graphQueries);
+    <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries);
 
-    <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<GraphQuery> graphQueries);
+    <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries);
 
     <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key, D queryBuilder,
-                                                                                                     List<GraphQuery> graphQueries);
+                                                                                                     List<Query> graphQueries);
 
     <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(long key, D queryBuilder,
-                                                                                                     List<GraphQuery> graphQueries);
+                                                                                                     List<Query> graphQueries);
 
     <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(double key, D queryBuilder,
-                                                                                                     List<GraphQuery> graphQueries);
+                                                                                                     List<Query> graphQueries);
 
-    <T> T endDictionary(T queryBuilder, List<GraphQuery> graphQueries);
+    <T> T endDictionary(T queryBuilder, List<Query> graphQueries);
 
     <T, S extends SequenceGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                 List<GraphQuery> graphQueries);
+                                                                                                 List<Query> graphQueries);
 
-    <T> T endSequence(T queryBuilder, List<GraphQuery> graphQueries);
+    <T> T endSequence(T queryBuilder, List<Query> graphQueries);
 
 }

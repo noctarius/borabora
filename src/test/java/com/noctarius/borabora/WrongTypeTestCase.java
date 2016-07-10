@@ -26,7 +26,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.tag();
     }
 
@@ -35,7 +35,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.number();
     }
 
@@ -44,7 +44,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.sequence();
     }
 
@@ -53,7 +53,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.dictionary();
     }
 
@@ -62,7 +62,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.string();
     }
 
@@ -71,7 +71,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x40");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         value.bool();
     }
 

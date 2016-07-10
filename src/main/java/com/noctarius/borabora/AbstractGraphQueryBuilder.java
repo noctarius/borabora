@@ -23,23 +23,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.DictionaryGraphQuery.floatMatcher;
-import static com.noctarius.borabora.DictionaryGraphQuery.intMatcher;
-import static com.noctarius.borabora.DictionaryGraphQuery.predicateMatcher;
-import static com.noctarius.borabora.DictionaryGraphQuery.stringMatcher;
+import static com.noctarius.borabora.DictionaryQuery.floatMatcher;
+import static com.noctarius.borabora.DictionaryQuery.intMatcher;
+import static com.noctarius.borabora.DictionaryQuery.predicateMatcher;
+import static com.noctarius.borabora.DictionaryQuery.stringMatcher;
 
 abstract class AbstractGraphQueryBuilder {
 
-    protected final List<GraphQuery> graphQueries;
+    protected final List<Query> graphQueries;
     protected final SelectStatementStrategy selectStatementStrategy;
 
-    protected AbstractGraphQueryBuilder(List<GraphQuery> graphQueries, SelectStatementStrategy selectStatementStrategy) {
+    protected AbstractGraphQueryBuilder(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     public void sequence0(long index) {
-        graphQueries.add(new SequenceGraphQuery(index));
+        graphQueries.add(new SequenceQuery(index));
     }
 
     public void dictionary0(Predicate<Value> predicate) {
@@ -61,11 +61,11 @@ abstract class AbstractGraphQueryBuilder {
     }
 
     public void nullOrType0(TypeSpec typeSpec) {
-        graphQueries.add(new TypeMatcherGraphQuery(typeSpec, false));
+        graphQueries.add(new TypeMatcherQuery(typeSpec, false));
     }
 
     public void requireType0(TypeSpec typeSpec) {
-        graphQueries.add(new TypeMatcherGraphQuery(typeSpec, true));
+        graphQueries.add(new TypeMatcherQuery(typeSpec, true));
     }
 
 }

@@ -20,16 +20,16 @@ import com.noctarius.borabora.spi.QueryContext;
 
 import java.util.function.Supplier;
 
-class PutEntryGraphQuery
-        implements GraphQuery {
+class PutEntryQuery
+        implements Query {
 
     private final Supplier<Value> keyValueSupplier;
 
-    PutEntryGraphQuery(String key) {
+    PutEntryQuery(String key) {
         this.keyValueSupplier = () -> new ObjectValue(MajorType.TextString, ValueTypes.TextString, key);
     }
 
-    PutEntryGraphQuery(long key) {
+    PutEntryQuery(long key) {
         if (key < 0) {
             this.keyValueSupplier = () -> new ObjectValue(MajorType.NegativeInteger, ValueTypes.NInt, key);
         } else {
@@ -37,7 +37,7 @@ class PutEntryGraphQuery
         }
     }
 
-    PutEntryGraphQuery(double key) {
+    PutEntryQuery(double key) {
         if (key < 0) {
             this.keyValueSupplier = () -> new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.NFloat, key);
         } else {

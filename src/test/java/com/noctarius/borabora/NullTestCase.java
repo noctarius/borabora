@@ -53,7 +53,7 @@ public class NullTestCase
 
         SimplifiedTestParser parser = buildParser("0xf6");
 
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         assertEquals(ValueTypes.Null, value.valueType());
         assertNull(function.apply(value));

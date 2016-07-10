@@ -98,15 +98,15 @@ public abstract class AbstractTestCase {
             this.input = input;
         }
 
-        public Value read(GraphQuery graphQuery) {
-            return parser.read(input, graphQuery);
+        public Value read(Query query) {
+            return parser.read(input, query);
         }
 
         public Value read(String query) {
             return parser.read(input, query);
         }
 
-        public GraphQuery prepareQuery(String query) {
+        public Query prepareQuery(String query) {
             return parser.prepareQuery(query);
         }
 

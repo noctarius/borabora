@@ -30,7 +30,7 @@ final class GraphQueryBuilderImpl
         extends AbstractGraphQueryBuilder
         implements StreamGraphQueryBuilder {
 
-    private static final GraphQuery STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamGraphQuery(0);
+    private static final Query STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamQuery(0);
 
     GraphQueryBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
         super(new ArrayList<>(), selectStatementStrategy);
@@ -38,7 +38,7 @@ final class GraphQueryBuilderImpl
 
     @Override
     public GraphQueryBuilder stream(long offset) {
-        graphQueries.add(new StreamGraphQuery(offset));
+        graphQueries.add(new StreamQuery(offset));
         return this;
     }
 
@@ -53,13 +53,13 @@ final class GraphQueryBuilderImpl
     }
 
     @Override
-    public GraphQuery build() {
+    public Query build() {
         if (graphQueries.size() == 0) {
             graphQueries.add(STREAM_INDEX_ZERO_GRAPH_QUERY);
-        } else if (!(graphQueries.get(0) instanceof StreamGraphQuery)) {
+        } else if (!(graphQueries.get(0) instanceof StreamQuery)) {
             graphQueries.add(0, STREAM_INDEX_ZERO_GRAPH_QUERY);
         }
-        return new ChainGraphQuery(graphQueries, selectStatementStrategy);
+        return new ChainQuery(graphQueries, selectStatementStrategy);
     }
 
     @Override

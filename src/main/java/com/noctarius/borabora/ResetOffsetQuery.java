@@ -16,32 +16,19 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 
-import java.util.List;
+final class ResetOffsetQuery
+        implements Query {
 
-class EndSequenceEntryGraphQuery
-        implements GraphQuery {
+    static final Query INSTANCE = new ResetOffsetQuery();
 
-    static final GraphQuery INSTANCE = new EndSequenceEntryGraphQuery();
-
-    private EndSequenceEntryGraphQuery() {
+    private ResetOffsetQuery() {
     }
 
     @Override
     public long access(long offset, QueryContext queryContext) {
-        Value value;
-        if (offset == -2) {
-            value = queryContext.queryStackPop();
-        } else {
-            value = Decoder.readValue(offset, queryContext);
-        }
-
-        List<Value> entries = queryContext.queryStackPeek();
-        entries.add(value);
-
-        return offset;
+        return 0;
     }
 
 }

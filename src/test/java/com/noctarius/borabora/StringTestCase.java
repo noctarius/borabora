@@ -44,7 +44,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0x01020304"), ASCII);
         SimplifiedTestParser parser = buildParser("0x4401020304");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -54,7 +54,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0x0102030405"), ASCII);
         SimplifiedTestParser parser = buildParser("0x5f42010243030405ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -64,7 +64,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0xaabbccddeeff99"), ASCII);
         SimplifiedTestParser parser = buildParser("0x5f44aabbccdd43eeff99ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -74,7 +74,7 @@ public class StringTestCase
 
         String expected = new String(hexToBytes("0xc3bce6b0b4f0908591"), UTF_8);
         SimplifiedTestParser parser = buildParser("0x5f62c3bc63e6b0b464f0908591ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         assertEquals(expected, value.string());
     }
 
@@ -112,8 +112,8 @@ public class StringTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Value value1 = parser.read(input, GraphQuery.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, GraphQuery.newBuilder().stream(1).build());
+        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
 
         assertEquals("abcd", value1.string());
         assertEquals("efgh", value2.string());
@@ -122,7 +122,7 @@ public class StringTestCase
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getInputData());
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        Value value = parser.read(input, Query.newBuilder().build());
 
         assertEquals(valueType, value.valueType());
         assertEquals(testValue.getExpectedValue(), value.string());

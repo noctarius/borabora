@@ -216,14 +216,14 @@ public class SelectStatementTestCase
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder(selectStatementStrategy).build();
 
-        StreamGraphQueryBuilder graphQueryBuilder = GraphQuery.newBuilder(selectStatementStrategy);
+        StreamGraphQueryBuilder graphQueryBuilder = Query.newBuilder(selectStatementStrategy);
         graphQueryConfigurator.accept(graphQueryBuilder);
 
-        GraphQuery textQuery = parser.prepareQuery(textQueryProducer.get());
-        GraphQuery graphQuery = graphQueryBuilder.build();
+        Query textQuery = parser.prepareQuery(textQueryProducer.get());
+        Query query = graphQueryBuilder.build();
 
         assertionTest.accept(parser.read(input, textQuery));
-        assertionTest.accept(parser.read(input, graphQuery));
+        assertionTest.accept(parser.read(input, query));
     }
 
     private static byte[] createDataSource(Consumer<GraphBuilder> consumer) {

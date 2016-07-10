@@ -28,7 +28,7 @@ public class SimpleTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf0");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         assertArrayEquals(new byte[]{(byte) 0xf0}, value.raw());
     }

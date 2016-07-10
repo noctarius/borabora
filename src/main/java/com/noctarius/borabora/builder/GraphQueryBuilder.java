@@ -16,11 +16,11 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.GraphQuery;
+import com.noctarius.borabora.Query;
 
 public interface GraphQueryBuilder
         extends GraphQueryTokenBuilder<GraphQueryBuilder> {
 
-    GraphQuery build();
+    Query build();
 
 }

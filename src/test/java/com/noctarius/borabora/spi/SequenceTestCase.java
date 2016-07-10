@@ -18,7 +18,7 @@ package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Dictionary;
-import com.noctarius.borabora.GraphQuery;
+import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.Output;
@@ -50,7 +50,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertEquals(0, sequence.size());
     }
@@ -60,7 +60,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertNull(sequence.get(1));
     }
@@ -70,7 +70,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertNull(sequence.get(-1));
     }
@@ -80,7 +80,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
     }
@@ -90,7 +90,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9fff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
     }
@@ -100,7 +100,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
     }
@@ -110,7 +110,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f010203ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
     }
@@ -131,7 +131,7 @@ public class SequenceTestCase
 
     private void long_sequence(String hex) {
         SimplifiedTestParser parser = buildParser(hex);
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
         for (int i = 1; i < 26; i++) {
@@ -139,7 +139,7 @@ public class SequenceTestCase
             Assert.assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
 
-            GraphQuery query = GraphQuery.newBuilder().sequence(i - 1).build();
+            Query query = Query.newBuilder().sequence(i - 1).build();
             element = parser.read(query);
             assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
@@ -151,7 +151,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
         Iterator<Value> iterator = sequence.iterator();
@@ -168,7 +168,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
         Iterator<Value> iterator = sequence.iterator();
@@ -190,7 +190,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
         Value[] values = sequence.toArray();
@@ -216,7 +216,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -228,7 +228,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -240,7 +240,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -252,7 +252,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -264,7 +264,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x826161a161626163");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
         assertEquals(2, sequence.size());
@@ -282,7 +282,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9fff");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         assertEquals(0, value.sequence().size());
     }
@@ -327,10 +327,10 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
         Sequence sequence = value.sequence();
         for (int i = 0; i < 3; i++) {
-            assertEqualsNumber(i + 1, parser.read(GraphQuery.newBuilder().sequence(i).build()).number());
+            assertEqualsNumber(i + 1, parser.read(Query.newBuilder().sequence(i).build()).number());
             assertEqualsNumber(i + 1, sequence.get(i).number());
         }
     }
@@ -361,7 +361,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        Value value = parser.read(input, Query.newBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
 
         Sequence sequence = value.sequence();
@@ -400,7 +400,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, GraphQuery.newBuilder().build());
+        Value value = parser.read(input, Query.newBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
 
         Sequence sequence = value.sequence();
@@ -422,11 +422,11 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_graph(SimplifiedTestParser parser) {
-        GraphQuery i0e0 = GraphQuery.newBuilder().sequence(0).build();
-        GraphQuery i1e0 = GraphQuery.newBuilder().sequence(1).sequence(0).build();
-        GraphQuery i1e1 = GraphQuery.newBuilder().sequence(1).sequence(1).build();
-        GraphQuery i2e0 = GraphQuery.newBuilder().sequence(2).sequence(0).build();
-        GraphQuery i2e1 = GraphQuery.newBuilder().sequence(2).sequence(1).build();
+        Query i0e0 = Query.newBuilder().sequence(0).build();
+        Query i1e0 = Query.newBuilder().sequence(1).sequence(0).build();
+        Query i1e1 = Query.newBuilder().sequence(1).sequence(1).build();
+        Query i2e0 = Query.newBuilder().sequence(2).sequence(0).build();
+        Query i2e1 = Query.newBuilder().sequence(2).sequence(1).build();
 
         Value v1 = parser.read(i0e0);
         Value v2 = parser.read(i1e0);
@@ -442,7 +442,7 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_traversal(SimplifiedTestParser parser) {
-        Value value = parser.read(GraphQuery.newBuilder().build());
+        Value value = parser.read(Query.newBuilder().build());
 
         Sequence sequence = value.sequence();
 
