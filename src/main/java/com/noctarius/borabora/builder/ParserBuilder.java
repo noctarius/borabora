@@ -23,6 +23,10 @@ public interface ParserBuilder {
 
     <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder);
 
+    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2);
+
+    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders);
+
     ParserBuilder asBinarySelectStatement();
 
     ParserBuilder asObjectSelectStatement();

@@ -17,9 +17,37 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.WriterBuilder;
+import com.noctarius.borabora.spi.TagEncoder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 final class WriterBuilderImpl
         implements WriterBuilder {
+
+    private final List<TagEncoder> tagEncoders = new ArrayList<>();
+
+    @Override
+    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder) {
+        tagEncoders.add(tagEncoder);
+        return this;
+    }
+
+    @Override
+    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2) {
+        tagEncoders.add(tagEncoder1);
+        tagEncoders.add(tagEncoder2);
+        return this;
+    }
+
+    @Override
+    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders) {
+        this.tagEncoders.add(tagEncoder1);
+        this.tagEncoders.add(tagEncoder2);
+        this.tagEncoders.addAll(Arrays.asList(tagEncoders));
+        return this;
+    }
 
     @Override
     public Writer build() {

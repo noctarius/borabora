@@ -17,8 +17,15 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Writer;
+import com.noctarius.borabora.spi.TagEncoder;
 
 public interface WriterBuilder {
+
+    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder);
+
+    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2);
+
+    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders);
 
     Writer build();
 

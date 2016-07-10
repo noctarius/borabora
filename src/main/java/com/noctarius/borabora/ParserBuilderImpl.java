@@ -21,6 +21,7 @@ import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 final class ParserBuilderImpl
@@ -38,6 +39,21 @@ final class ParserBuilderImpl
     @Override
     public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder) {
         tagDecoders.add(tagDecoder);
+        return this;
+    }
+
+    @Override
+    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
+        tagDecoders.add(tagDecoder1);
+        tagDecoders.add(tagDecoder2);
+        return this;
+    }
+
+    @Override
+    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders) {
+        this.tagDecoders.add(tagDecoder1);
+        this.tagDecoders.add(tagDecoder2);
+        this.tagDecoders.addAll(Arrays.asList(tagDecoders));
         return this;
     }
 
