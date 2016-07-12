@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
 import java.text.DateFormat;
 import java.text.ParsePosition;

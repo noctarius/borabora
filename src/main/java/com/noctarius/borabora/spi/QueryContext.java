@@ -23,7 +23,7 @@ public interface QueryContext {
 
     Input input();
 
-    <T> T applyProcessors(long offset, MajorType majorType);
+    <T> T applyDecoder(long offset, MajorType majorType);
 
     <T> void queryStackPush(T element);
 

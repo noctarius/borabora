@@ -17,12 +17,33 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.EncoderContext;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.TagReader;
+import com.noctarius.borabora.spi.TagWriter;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import static com.noctarius.borabora.BuiltInTagDecoder.TagProcessor;
+import static com.noctarius.borabora.spi.CommonTagCodec.BIG_NUM_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.BIG_NUM_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.ENCODED_CBOR_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.NBIG_NUM_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.UBIG_NUM_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.URI_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.URI_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.URI_WRITER;
 import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
+import static com.noctarius.borabora.spi.Constants.ASCII_ENCODER;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
@@ -39,7 +60,7 @@ import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_URI;
 
 public enum ValueTypes
-        implements ValueType, TagProcessor {
+        implements ValueType, TagReader, TagWriter {
 
     Number(Value::number),
     Int(Value::number, Number),
@@ -56,33 +77,41 @@ public enum ValueTypes
     Bool(Value::bool),
     Null((v) -> null),
     Undefined((v) -> null),
-    DateTime(BuiltInTagDecoder::readDateTime, Value::tag),
-    Timestamp(BuiltInTagDecoder::readTimestamp, Value::tag),
-    UBigNum(BuiltInTagDecoder::readUBigNum, Value::tag, UInt),
-    NBigNum(BuiltInTagDecoder::readNBigNum, Value::tag, NInt),
-    EncCBOR(BuiltInTagDecoder::readEncCBOR, Value::tag),
-    URI(BuiltInTagDecoder::readURI, Value::tag),
+    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag),
+    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag),
+    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt),
+    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt),
+    EncCBOR(ENCODED_CBOR_READER, (v, o, e) -> 0 /* TODO */, (v) -> false /* TODO */, Value::tag),
+    URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag),
     Unknown(Value::raw);
 
+    private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
-    private final TagProcessor tagProcessor;
+    private final TagReader tagReader;
+    private final TagWriter tagWriter;
     private final ValueType identity;
 
     ValueTypes(Function<Value, Object> byValueType) {
-        this(null, byValueType, null);
+        this(null, null, (v) -> false, byValueType, null);
     }
 
     ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
-        this(null, byValueType, identity);
+        this(null, null, (v) -> false, byValueType, identity);
     }
 
-    ValueTypes(TagProcessor tagProcessor, Function<Value, Object> byValueType) {
-        this(tagProcessor, byValueType, null);
+    ValueTypes(TagReader tagReader, TagWriter tagWriter, Predicate<Object> encodeableTypeMatcher,
+               Function<Value, Object> byValueType) {
+
+        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null);
     }
 
-    ValueTypes(TagProcessor tagProcessor, Function<Value, Object> byValueType, ValueType identity) {
+    ValueTypes(TagReader tagReader, TagWriter tagWriter, Predicate<Object> encodeableTypeMatcher,
+               Function<Value, Object> byValueType, ValueType identity) {
+
+        this.encodeableTypeMatcher = encodeableTypeMatcher;
         this.byValueType = byValueType;
-        this.tagProcessor = tagProcessor;
+        this.tagReader = tagReader;
+        this.tagWriter = tagWriter;
         this.identity = identity;
     }
 
@@ -120,10 +149,19 @@ public enum ValueTypes
 
     @Override
     public Object process(long offset, long length, QueryContext queryContext) {
-        if (tagProcessor == null) {
+        if (tagReader == null) {
             return null;
         }
-        return tagProcessor.process(offset, length, queryContext);
+        return tagReader.process(offset, length, queryContext);
+    }
+
+    @Override
+    public long process(Object value, long offset, EncoderContext encoderContext) {
+        return tagWriter.process(value, offset, encoderContext);
+    }
+
+    private boolean typeEncodeable(Object value) {
+        return encodeableTypeMatcher.test(value);
     }
 
     public static ValueTypes valueType(Input input, long offset) {
@@ -152,6 +190,33 @@ public enum ValueTypes
                 return semanticTagType(input, offset);
         }
         throw new IllegalArgumentException("Illegal value type requested");
+    }
+
+    public static ValueTypes valueType(Object value) {
+        if (value == null) {
+            return Null;
+        }
+
+        Class<?> type = value.getClass();
+        if (java.lang.Number.class.isAssignableFrom(type)) {
+            if (value instanceof java.lang.Float || value instanceof Double || value instanceof BigDecimal) {
+                return ((Number) value).doubleValue() < 0.0 ? NFloat : UFloat;
+            }
+            return ((Number) value).longValue() < 0 ? NInt : UInt;
+        } else if (java.lang.String.class.isAssignableFrom(type)) {
+            return ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
+        } else if (List.class.isAssignableFrom(type) || value.getClass().isArray()) {
+            return Sequence;
+        } else if (Map.class.isAssignableFrom(type)) {
+            return Dictionary;
+        } else {
+            for (ValueTypes valueType : ValueTypes.values()) {
+                if (valueType.typeEncodeable(value)) {
+                    return valueType;
+                }
+            }
+        }
+        return null;
     }
 
     private static ValueTypes floatNullOrBool(short head) {

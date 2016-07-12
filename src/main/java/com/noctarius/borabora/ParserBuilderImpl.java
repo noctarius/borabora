@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
+import com.noctarius.borabora.spi.CommonTagCodec;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
 
@@ -32,7 +33,7 @@ final class ParserBuilderImpl
     private boolean binarySelectStatement = true;
 
     public ParserBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
-        withTagDecoder(BuiltInTagDecoder.INSTANCE);
+        withTagDecoder(CommonTagCodec.INSTANCE);
         this.selectStatementStrategy = selectStatementStrategy;
     }
 

@@ -53,7 +53,7 @@ final class QueryContextImpl
     }
 
     @Override
-    public <T> T applyProcessors(long offset, MajorType majorType) {
+    public <T> T applyDecoder(long offset, MajorType majorType) {
         TagDecoder<T> processor = findProcessor(offset);
         if (processor == null) {
             return null;

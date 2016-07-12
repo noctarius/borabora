@@ -16,13 +16,18 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Input;
+import com.noctarius.borabora.Output;
 
-public interface TagDecoder<V>
-        extends TagReader<V> {
+public interface EncoderContext {
 
-    boolean handles(Input input, long offset);
+    Output output();
 
-    TypeSpec handles(int tagId);
+    <T> long applyEncoder(Object value, long offset);
+
+    <T> void queryStackPush(T element);
+
+    <T> T queryStackPop();
+
+    <T> T queryStackPeek();
 
 }

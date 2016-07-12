@@ -16,12 +16,9 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Output;
-
-public interface TagEncoder<V> {
+public interface TagEncoder<V>
+        extends TagWriter<V> {
 
     boolean handles(V value);
-
-    long process(V value, Output output, long offset);
 
 }

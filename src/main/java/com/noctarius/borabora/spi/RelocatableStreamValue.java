@@ -66,7 +66,7 @@ public final class RelocatableStreamValue
 
     @Override
     protected <T> T extractTag() {
-        return queryContext().applyProcessors(offset(), majorType());
+        return queryContext().applyDecoder(offset(), majorType());
     }
 
     public void relocate(QueryContext queryContext, MajorType majorType, ValueType valueType, long offset) {
