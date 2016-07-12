@@ -28,20 +28,22 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.spi.CommonTagCodec.BIG_NUM_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.BIG_NUM_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.DATE_TIME_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.ENCODED_CBOR_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.NBIG_NUM_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TIMESTAMP_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.UBIG_NUM_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.URI_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.URI_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.URI_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.DATE_TIME_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.ENCODED_CBOR_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.URI_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.URI_WRITER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.BIG_NUM_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.URI_MATCHER;
 import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.spi.Constants.ASCII_ENCODER;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
@@ -81,14 +83,14 @@ public enum ValueTypes
     Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag),
     UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt),
     NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt),
-    EncCBOR(ENCODED_CBOR_READER, (v, o, e) -> 0 /* TODO */, (v) -> false /* TODO */, Value::tag),
+    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag),
     URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag),
     Unknown(Value::raw);
 
     private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
-    private final TagReader tagReader;
-    private final TagWriter tagWriter;
+    private final TagReader<Object> tagReader;
+    private final TagWriter<Object> tagWriter;
     private final ValueType identity;
 
     ValueTypes(Function<Value, Object> byValueType) {
@@ -99,13 +101,13 @@ public enum ValueTypes
         this(null, null, (v) -> false, byValueType, identity);
     }
 
-    ValueTypes(TagReader tagReader, TagWriter tagWriter, Predicate<Object> encodeableTypeMatcher,
+    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
                Function<Value, Object> byValueType) {
 
         this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null);
     }
 
-    ValueTypes(TagReader tagReader, TagWriter tagWriter, Predicate<Object> encodeableTypeMatcher,
+    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
                Function<Value, Object> byValueType, ValueType identity) {
 
         this.encodeableTypeMatcher = encodeableTypeMatcher;

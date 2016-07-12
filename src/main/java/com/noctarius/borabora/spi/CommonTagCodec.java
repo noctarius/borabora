@@ -19,7 +19,6 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 
@@ -40,87 +39,138 @@ import static com.noctarius.borabora.spi.Constants.UTC;
 public final class CommonTagCodec
         implements TagDecoder<Object>, TagEncoder<Object> {
 
-    public static final Predicate<Object> DATE_TIME_MATCHER = (v) -> //
-            Date.class.isAssignableFrom(v.getClass()) || java.sql.Date.class.isAssignableFrom(v.getClass());
+    public enum TYPE_MATCHER
+            implements Predicate<Object> {
 
-    public static final Predicate<Object> TIMESTAMP_MATCHER = (v) -> Timestamp.class.isAssignableFrom(v.getClass());
+        DATE_TIME_MATCHER((v) -> //
+                Date.class.isAssignableFrom(v.getClass()) || java.sql.Date.class.isAssignableFrom(v.getClass())),
 
-    public static final Predicate<Object> BIG_NUM_MATCHER = (v) -> //
-            BigInteger.class.isAssignableFrom(v.getClass()) || BigDecimal.class.isAssignableFrom(v.getClass());
+        TIMESTAMP_MATCHER((v) -> Timestamp.class.isAssignableFrom(v.getClass())),
 
-    public static final Predicate<Object> URI_MATCHER = (v) -> URI.class.isAssignableFrom(v.getClass());
+        BIG_NUM_MATCHER((v) -> //
+                BigInteger.class.isAssignableFrom(v.getClass()) || BigDecimal.class.isAssignableFrom(v.getClass())),
 
-    public static final TagWriter<Date> DATE_TIME_WRITER = (value, offset, encoderContext) -> {
-        Output output = encoderContext.output();
-        Instant instant = value.toInstant();
-        ZonedDateTime zonedDateTime = instant.atZone(UTC);
-        return Encoder.putDateTime(zonedDateTime, offset, output);
-    };
+        URI_MATCHER((v) -> URI.class.isAssignableFrom(v.getClass())),
 
-    public static final TagReader<Date> DATE_TIME_READER = (offset, length, queryContext) -> {
-        Input input = queryContext.input();
-        int byteSize = ByteSizes.intByteSize(input, offset);
-        String date = Decoder.readString(input, offset + byteSize);
-        return DateParser.parseDate(date, Locale.ENGLISH);
-    };
+        ENCODED_CBOR_MATCHER((v) -> false /* TODO */);
 
-    public static final TagWriter<BigInteger> BIG_NUM_WRITER = (value, offset, encoderContext) -> {
-        Output output = encoderContext.output();
-        return Encoder.putNumber(value, offset, output);
-    };
+        private final Predicate<Object> predicate;
 
-    public static final TagReader<BigInteger> UBIG_NUM_READER = (offset, length, queryContext) -> {
-        Input input = queryContext.input();
-        int byteSize = ByteSizes.intByteSize(input, offset);
-        String bigNum = Decoder.readString(input, offset + byteSize);
-        try {
-            byte[] bytes = bigNum.getBytes("ASCII");
-            return new BigInteger(1, bytes);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("NBigNum could not be read", e);
+        TYPE_MATCHER(Predicate<Object> predicate) {
+            this.predicate = predicate;
         }
-    };
 
-    public static final TagReader<BigInteger> NBIG_NUM_READER = (offset, length, queryContext) -> //
-            BigInteger.valueOf(-1).xor(UBIG_NUM_READER.process(offset, length, queryContext));
-
-    public static final TagWriter<URI> URI_WRITER = (value, offset, encoderContext) -> {
-        Output output = encoderContext.output();
-        return Encoder.putUri(value, offset, output);
-    };
-
-    public static final TagReader<URI> URI_READER = (offset, length, queryContext) -> {
-        Input input = queryContext.input();
-        int byteSize = ByteSizes.intByteSize(input, offset);
-        String uri = Decoder.readString(input, offset + byteSize);
-        try {
-            return new URI(uri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("URI could not be read", e);
+        @Override
+        public boolean test(Object value) {
+            return predicate.test(value);
         }
-    };
+    }
 
-    public static final TagWriter<Number> TIMESTAMP_WRITER = (value, offset, encoderContext) -> {
-        Output output = encoderContext.output();
-        return Encoder.putTimestamp(value.longValue(), offset, output);
-    };
+    public enum TAG_WRITER
+            implements TagWriter<Object> {
 
-    public static final TagReader<Number> TIMESTAMP_READER = (offset, length, queryContext) -> {
-        Input input = queryContext.input();
-        ValueType valueType = ValueTypes.valueType(input, offset + 1);
-        return Decoder.readNumber(input, valueType, offset + 1);
-    };
+        DATE_TIME_WRITER((value, offset, encoderContext) -> {
+            Output output = encoderContext.output();
+            Instant instant = ((Date) value).toInstant();
+            ZonedDateTime zonedDateTime = instant.atZone(UTC);
+            return Encoder.putDateTime(zonedDateTime, offset, output);
+        }),
 
-    public static final TagReader<Value> ENCODED_CBOR_READER = (offset, length, queryContext) -> {
-        Input input = queryContext.input();
-        int headByteSize = ByteSizes.intByteSize(input, offset);
+        BIG_NUM_WRITER((value, offset, encoderContext) -> {
+            Output output = encoderContext.output();
+            return Encoder.putNumber((BigInteger) value, offset, output);
+        }),
 
-        offset += headByteSize;
-        short head = Decoder.readUInt8(input, offset);
-        MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(input, offset);
-        return new StreamValue(majorType, valueType, offset, queryContext);
-    };
+        TIMESTAMP_WRITER((value, offset, encoderContext) -> {
+            Output output = encoderContext.output();
+            return Encoder.putTimestamp(((Number) value).longValue(), offset, output);
+        }),
+
+        URI_WRITER((value, offset, encoderContext) -> {
+            Output output = encoderContext.output();
+            return Encoder.putUri((URI) value, offset, output);
+        }),
+
+        ENCODED_CBOR_WRITER((value, offset, encoderContext) -> {
+            return offset; /* TODO */
+        });
+
+        private final TagWriter<Object> tagWriter;
+
+        TAG_WRITER(TagWriter<Object> tagWriter) {
+            this.tagWriter = tagWriter;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return tagWriter.process(value, offset, encoderContext);
+        }
+    }
+
+    public enum TAG_READER
+            implements TagReader<Object> {
+
+        DATE_TIME_READER((offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            int byteSize = ByteSizes.intByteSize(input, offset);
+            String date = Decoder.readString(input, offset + byteSize);
+            return DateParser.parseDate(date, Locale.ENGLISH);
+        }),
+
+        UBIG_NUM_READER((offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            int byteSize = ByteSizes.intByteSize(input, offset);
+            String bigNum = Decoder.readString(input, offset + byteSize);
+            try {
+                byte[] bytes = bigNum.getBytes("ASCII");
+                return new BigInteger(1, bytes);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("NBigNum could not be read", e);
+            }
+        }),
+
+        NBIG_NUM_READER((offset, length, queryContext) -> //
+                BigInteger.valueOf(-1).xor((BigInteger) UBIG_NUM_READER.process(offset, length, queryContext))),
+
+        URI_READER((offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            int byteSize = ByteSizes.intByteSize(input, offset);
+            String uri = Decoder.readString(input, offset + byteSize);
+            try {
+                return new URI(uri);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("URI could not be read", e);
+            }
+        }),
+
+        TIMESTAMP_READER((offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            ValueType valueType = ValueTypes.valueType(input, offset + 1);
+            return Decoder.readNumber(input, valueType, offset + 1);
+        }),
+
+        ENCODED_CBOR_READER((offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            int headByteSize = ByteSizes.intByteSize(input, offset);
+
+            offset += headByteSize;
+            short head = Decoder.readUInt8(input, offset);
+            MajorType majorType = MajorType.findMajorType(head);
+            ValueType valueType = ValueTypes.valueType(input, offset);
+            return new StreamValue(majorType, valueType, offset, queryContext);
+        });
+
+        private final TagReader<Object> tagReader;
+
+        TAG_READER(TagReader<Object> tagReader) {
+            this.tagReader = tagReader;
+        }
+
+        @Override
+        public Object process(long offset, long length, QueryContext queryContext) {
+            return tagReader.process(offset, length, queryContext);
+        }
+    }
 
     public static final TagDecoder INSTANCE = new CommonTagCodec();
 
