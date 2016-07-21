@@ -24,32 +24,28 @@ final class HalfPrecision {
 
     // ignores the higher 16 bits
     static float toFloat(int hbits) {
-        int mant = hbits & 0x03ff;                        // 10 bits mantissa
-        int exp = hbits & 0x7c00;                         // 5 bits exponent
-        if (exp == 0x7c00) {                              // NaN/Inf
-            exp = 0x3fc00;                                // -> NaN/Inf
-        } else if (exp != 0) {                            // normalized value
-            exp += 0x1c000;                               // exp - 15 + 127
-            if (mant == 0 && exp > 0x1c400) {             // smooth transition
-                return Float.intBitsToFloat((hbits & 0x8000) << 16 | exp << 13 | 0x3ff);
-            }
-        } else if (mant != 0) {                           // && exp==0 -> subnormal
-            exp = 0x1c400;                                // make it normal
-            do {
-                mant <<= 1;                               // mantissa * 2
-                exp -= 0x400;                             // decrease exp by 1
-            } while ((mant & 0x400) == 0);                // while not normal
-            mant &= 0x3ff;                                // discard subnormal bit
-        }                                                 // else +/-0 -> +/-0
-        return Float.intBitsToFloat(                      // combine all parts
-                (hbits & 0x8000) << 16                    // sign  << ( 31 - 15 )
-                        | (exp | mant) << 13);            // value << ( 23 - 10 )
+        // Thanks to Jakob project: https://github.com/jawi/jacob
+        int exp = (hbits >> 10) & 0x1f;
+        int mant = hbits & 0x3ff;
+
+        double val;
+        if (exp == 0) {
+            val = mant * Math.pow(2, -24);
+        } else if (exp != 31) {
+            val = (mant + 1024) * Math.pow(2, exp - 25);
+        } else if (mant != 0) {
+            val = Double.NaN;
+        } else {
+            val = Double.POSITIVE_INFINITY;
+        }
+
+        return (float) (((hbits & 0x8000) == 0) ? val : -val);
     }
 
     // returns all higher 16 bits as 0 for all results
     static int fromFloat(float fval) {
         int fbits = Float.floatToIntBits(fval);
-        int sign = fbits >>> 16 & 0x8000;                 // sign only
+        int sign = (fbits >>> 16) & 0x8000;                 // sign only
         int val = (fbits & 0x7fffffff) + 0x1000;          // rounded value
 
         if (val >= 0x47800000) {                          // might be or become NaN/Inf

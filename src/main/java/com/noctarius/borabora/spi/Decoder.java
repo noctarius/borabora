@@ -210,9 +210,9 @@ public enum Decoder {
         throw new IllegalStateException("Illegal boolean value");
     }
 
-    public static float readHalfFloatValue(Input input, long offset) {
+    public static HalfPrecisionFloat readHalfFloatValue(Input input, long offset) {
         int value = Bytes.readUInt16(input, offset);
-        return HalfPrecision.toFloat(value);
+        return HalfPrecisionFloat.valueOf(HalfPrecision.toFloat(value));
     }
 
     public static float readSinglePrecisionFloat(Input input, long offset) {

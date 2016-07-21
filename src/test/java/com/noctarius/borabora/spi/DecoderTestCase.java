@@ -14,8 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.spi.Decoder;
 import org.junit.Test;
 
@@ -26,19 +30,19 @@ public class DecoderTestCase
         extends AbstractTestCase {
 
     @Test(expected = IllegalStateException.class)
-    public void test_illegal_boolean_value() {
+    public void fail_illegal_boolean_value() {
         Input input = Input.fromByteArray(hexToBytes("0xf6"));
         Decoder.getBooleanValue(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void test_illegal_floatingpoint_type() {
+    public void fail_illegal_floatingpoint_type() {
         Input input = Input.fromByteArray(hexToBytes("0xf6"));
         Decoder.readFloat(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void test_calculate_length_illegal_major_type() {
+    public void fail_calculate_length_illegal_major_type() {
         Decoder.length(null, MajorType.Unknown, 0);
     }
 
@@ -73,7 +77,7 @@ public class DecoderTestCase
     }
 
     @Test(expected = NoSuchByteException.class)
-    public void test_nosuchbyteexception() {
+    public void fail_nosuchbyteexception() {
         Input input = Input.fromByteArray(new byte[0]);
         Decoder.additionalInfo(input, 0);
     }

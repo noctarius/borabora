@@ -120,12 +120,12 @@ public class StringTestCase
     }
 
     private void testString(ValueType valueType, TestValue<String> testValue) {
-        Input input = Input.fromByteArray(testValue.getInputData());
+        Input input = Input.fromByteArray(testValue.getValue2());
         Parser parser = Parser.newBuilder().build();
         Value value = parser.read(input, Query.newBuilder().build());
 
         assertEquals(valueType, value.valueType());
-        assertEquals(testValue.getExpectedValue(), value.string());
+        assertEquals(testValue.getValue1(), value.string());
     }
 
 }

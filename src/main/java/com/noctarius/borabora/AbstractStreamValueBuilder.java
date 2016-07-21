@@ -22,6 +22,7 @@ import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.Encoder;
+import com.noctarius.borabora.spi.HalfPrecisionFloat;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -146,6 +147,8 @@ abstract class AbstractStreamValueBuilder<B>
             putNumber((int) value);
         } else if (value instanceof Long) {
             putNumber((long) value);
+        } else if (value instanceof HalfPrecisionFloat) {
+            putHalfPrecision(value.floatValue());
         } else if (value instanceof Float) {
             putNumber((float) value);
         } else if (value instanceof Double) {

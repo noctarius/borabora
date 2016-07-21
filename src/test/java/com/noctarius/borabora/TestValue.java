@@ -18,21 +18,21 @@ package com.noctarius.borabora;
 
 public final class TestValue<V> {
 
-    private final V expectedValue;
+    private final V value1;
 
-    private final byte[] inputData;
+    private final byte[] value2;
 
-    public TestValue(V expectedValue, String hexBytes) {
-        this.expectedValue = expectedValue;
-        this.inputData = AbstractTestCase.hexToBytes(hexBytes);
+    public TestValue(V value1, String hexBytes) {
+        this.value1 = value1;
+        this.value2 = AbstractTestCase.hexToBytes(hexBytes);
     }
 
-    public V getExpectedValue() {
-        return expectedValue;
+    public V getValue1() {
+        return value1;
     }
 
-    public byte[] getInputData() {
-        return inputData;
+    public byte[] getValue2() {
+        return value2;
     }
 
 }

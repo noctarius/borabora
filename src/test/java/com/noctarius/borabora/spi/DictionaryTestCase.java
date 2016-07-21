@@ -14,8 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Query;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueTypes;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -411,8 +419,8 @@ public class DictionaryTestCase
         SimplifiedTestParser parser = buildParser("0xa201020304");
         Value value = parser.read(Query.newBuilder().build());
 
-        assertEquals(MajorType.Dictionary, value.majorType());
-        assertEquals(ValueTypes.Dictionary, value.valueType());
+        Assert.assertEquals(MajorType.Dictionary, value.majorType());
+        Assert.assertEquals(ValueTypes.Dictionary, value.valueType());
 
         Dictionary dictionary = value.dictionary();
         assertEquals(2, dictionary.size());

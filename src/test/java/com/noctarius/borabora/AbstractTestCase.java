@@ -61,6 +61,7 @@ public abstract class AbstractTestCase {
     public static void assertEqualsNumber(Number n1, Number n2) {
         if (n1.getClass().equals(n2.getClass())) {
             assertEquals(n1, n2);
+            return;
         }
 
         BigInteger b1 = n1 instanceof BigInteger ? (BigInteger) n1 : BigInteger.valueOf(n1.longValue());
