@@ -94,7 +94,7 @@ final class DictionaryImpl
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
-        for (long i = 0; i < size; i += 2) {
+        for (long i = 0; i < size * 2; i += 2) {
             Value key = Decoder.readValue(calculateArrayIndex(i), queryContext);
             Value value = Decoder.readValue(calculateArrayIndex(i + 1), queryContext);
             sb.append(key).append('=').append(value).append(", ");
@@ -105,7 +105,7 @@ final class DictionaryImpl
     @Override
     public String asString() {
         StringBuilder sb = new StringBuilder("[");
-        for (long i = 0; i < size; i += 2) {
+        for (long i = 0; i < size * 2; i += 2) {
             Value key = Decoder.readValue(calculateArrayIndex(i), queryContext);
             Value value = Decoder.readValue(calculateArrayIndex(i + 1), queryContext);
             sb.append(key.asString()).append('=').append(value.asString()).append(", ");

@@ -25,9 +25,12 @@ import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.TagDecoder;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.noctarius.borabora.Value.NULL_VALUE;
 import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_FINALIZE_SELECT;
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
 
 final class ParserImpl
         implements Parser {
@@ -51,9 +54,9 @@ final class ParserImpl
         selectStatementStrategy.beginSelect(queryContext);
 
         long offset = query.access(0, queryContext);
-        if (offset == -1) {
+        if (offset == QUERY_RETURN_CODE_NULL) {
             return NULL_VALUE;
-        } else if (offset == -2) {
+        } else if (offset == QUERY_RETURN_CODE_FINALIZE_SELECT) {
             return selectStatementStrategy.finalizeSelect(queryContext);
         }
         short head = Decoder.readUInt8(input, offset);
@@ -79,6 +82,21 @@ final class ParserImpl
         MajorType mt = MajorType.findMajorType(head);
         ValueType vt = ValueTypes.valueType(input, offset);
         return new StreamValue(mt, vt, offset, newQueryContext(input, selectStatementStrategy));
+    }
+
+    @Override
+    public void read(Input input, Query query, Consumer<Value> consumer) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public void read(Input input, String query, Consumer<Value> consumer) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public void read(Input input, long offset, Consumer<Value> consumer) {
+        consumer.accept(read(input, offset));
     }
 
     @Override

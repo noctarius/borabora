@@ -18,7 +18,6 @@ package com.noctarius.borabora.spi;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -29,6 +28,9 @@ public interface Constants {
 
     int ADDITIONAL_INFORMATION_MASK = 0b000_11111;
     int OPCODE_BREAK_MASK = 0b111_11111;
+
+    short QUERY_RETURN_CODE_NULL = -1;
+    short QUERY_RETURN_CODE_FINALIZE_SELECT = -2;
 
     short MT_UNSINGED_INT = 0;
     short MT_NEGATIVE_INT = 1;
@@ -81,7 +83,6 @@ public interface Constants {
 
     Charset ASCII = Charset.forName("ASCII");
     Charset UTF8 = Charset.forName("UTF8");
-    CharsetEncoder ASCII_ENCODER = ASCII.newEncoder();
 
     int COMPARATOR_LESS_THAN = -1;
 

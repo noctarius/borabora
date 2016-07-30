@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_FINALIZE_SELECT;
+
 class EndDictionaryQuery
         implements Query {
 
@@ -42,7 +44,7 @@ class EndDictionaryQuery
         // Push dictionary value
         queryContext.queryStackPush(new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary));
 
-        return -2;
+        return QUERY_RETURN_CODE_FINALIZE_SELECT;
     }
 
     private static class MapBackedDictionary

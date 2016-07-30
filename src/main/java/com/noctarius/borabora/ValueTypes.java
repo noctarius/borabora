@@ -45,7 +45,6 @@ import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.ENCODED_CBO
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.URI_MATCHER;
 import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
-import static com.noctarius.borabora.spi.Constants.ASCII_ENCODER;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
@@ -60,6 +59,7 @@ import static com.noctarius.borabora.spi.Constants.TAG_SIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_URI;
+import static com.noctarius.borabora.spi.StringEncoders.ASCII_ENCODER;
 
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {

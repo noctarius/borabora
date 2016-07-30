@@ -31,7 +31,6 @@ import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_ONE_BYTE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
 import static com.noctarius.borabora.spi.Constants.ASCII;
-import static com.noctarius.borabora.spi.Constants.ASCII_ENCODER;
 import static com.noctarius.borabora.spi.Constants.BI_MASK;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_24;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_256;
@@ -53,6 +52,8 @@ import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_URI;
 import static com.noctarius.borabora.spi.Constants.UTF8;
+import static com.noctarius.borabora.spi.StringEncoders.ASCII_ENCODER;
+import static com.noctarius.borabora.spi.StringEncoders.UTF8_ENCODER;
 
 public enum Encoder {
     ;
@@ -77,12 +78,12 @@ public enum Encoder {
     }
 
     public static long putTextString(String value, long offset, Output output) {
-        byte[] data = value.getBytes(UTF8);
+        byte[] data = UTF8_ENCODER.encode(value);
         return putString(data, TextString, offset, output);
     }
 
     public static long putByteString(String value, long offset, Output output) {
-        byte[] data = value.getBytes(ASCII);
+        byte[] data = ASCII_ENCODER.encode(value);
         return putString(data, ByteString, offset, output);
     }
 

@@ -19,6 +19,8 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
+import java.util.function.Consumer;
+
 public interface Parser {
 
     Value read(Input input, Query query);
@@ -26,6 +28,12 @@ public interface Parser {
     Value read(Input input, String query);
 
     Value read(Input input, long offset);
+
+    void read(Input input, Query query, Consumer<Value> consumer);
+
+    void read(Input input, String query, Consumer<Value> consumer);
+
+    void read(Input input, long offset, Consumer<Value> consumer);
 
     byte[] extract(Input input, Query query);
 

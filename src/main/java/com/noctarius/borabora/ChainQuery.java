@@ -23,6 +23,8 @@ import com.noctarius.borabora.spi.SelectStatementStrategyAware;
 import java.util.Collections;
 import java.util.List;
 
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
+
 final class ChainQuery
         implements Query, SelectStatementStrategyAware {
 
@@ -38,8 +40,8 @@ final class ChainQuery
     public long access(long offset, QueryContext queryContext) {
         for (Query query : graphQueries) {
             offset = query.access(offset, queryContext);
-            if (offset == -1) {
-                return -1;
+            if (offset == QUERY_RETURN_CODE_NULL) {
+                return QUERY_RETURN_CODE_NULL;
             }
         }
         return offset;

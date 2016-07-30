@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_FINALIZE_SELECT;
+
 class EndSequenceQuery
         implements Query {
 
@@ -41,7 +43,7 @@ class EndSequenceQuery
         // Push dictionary value
         queryContext.queryStackPush(new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence));
 
-        return -2;
+        return QUERY_RETURN_CODE_FINALIZE_SELECT;
     }
 
     private static class ListBackedSequence

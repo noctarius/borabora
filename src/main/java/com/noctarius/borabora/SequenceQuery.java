@@ -21,6 +21,8 @@ import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.ElementCounts;
 import com.noctarius.borabora.spi.QueryContext;
 
+import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
+
 final class SequenceQuery
         implements Query {
 
@@ -40,7 +42,7 @@ final class SequenceQuery
         MajorType majorType = MajorType.findMajorType(head);
 
         // Stream direct access (return actual object itself)
-        if (sequenceIndex == -1) {
+        if (sequenceIndex == QUERY_RETURN_CODE_NULL) {
             return offset;
         }
 
@@ -51,7 +53,7 @@ final class SequenceQuery
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
-            return -1;
+            return QUERY_RETURN_CODE_NULL;
         }
 
         // Element access
