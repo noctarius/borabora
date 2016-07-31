@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -188,88 +187,6 @@ public class QueryLanguageTestCase
         SimplifiedTestParser parser = buildParser("0xa201020304");
         Value value = parser.read("#{1}");
         assertEqualsNumber(2, value.number());
-    }
-
-    @Test
-    public void test_query_combinations()
-            throws Exception {
-
-        Query stream = Query.newBuilder().build();
-        Query stream_1 = Query.newBuilder().stream(1).build();
-        Query stream_sequence_one = Query.newBuilder().sequence(1).build();
-        Query stream_1_seq_1 = Query.newBuilder().stream(1).sequence(1).build();
-        Query stream_dic_1 = Query.newBuilder().dictionary(1).build();
-        Query stream_1_dic_1 = Query.newBuilder().stream(1).dictionary(1).build();
-        Query stream_dic_n1 = Query.newBuilder().dictionary(-1).build();
-        Query stream_1_dic_n1 = Query.newBuilder().stream(1).dictionary(-1).build();
-        Query stream_dic_11 = Query.newBuilder().dictionary(1.1).build();
-        Query stream_1_dic_11 = Query.newBuilder().stream(1).dictionary(1.1).build();
-        Query stream_dic_n11 = Query.newBuilder().dictionary(-1.1).build();
-        Query stream_1_dic_n11 = Query.newBuilder().stream(1).dictionary(-1.1).build();
-        Query stream_dic_s = Query.newBuilder().dictionary("test").build();
-        Query stream_1_dic_s = Query.newBuilder().stream(1).dictionary("test").build();
-
-        Query stream_tc_number = Query.newBuilder().requireType(TypeSpecs.Number).build();
-        Query stream_tc_uint = Query.newBuilder().requireType(TypeSpecs.UInt).build();
-        Query stream_tc_nint = Query.newBuilder().requireType(TypeSpecs.NInt).build();
-        Query stream_tc_int = Query.newBuilder().requireType(TypeSpecs.Int).build();
-        Query stream_tc_ufloat = Query.newBuilder().requireType(TypeSpecs.UFloat).build();
-        Query stream_tc_nfloat = Query.newBuilder().requireType(TypeSpecs.NFloat).build();
-        Query stream_tc_float = Query.newBuilder().requireType(TypeSpecs.Float).build();
-        Query stream_tc_string = Query.newBuilder().requireType(TypeSpecs.String).build();
-        Query stream_tc_dictionary = Query.newBuilder().requireType(TypeSpecs.Dictionary).build();
-        Query stream_tc_sequence = Query.newBuilder().requireType(TypeSpecs.Sequence).build();
-        Query stream_tc_tag = Query.newBuilder().requireType(TypeSpecs.SemanticTag).build();
-        Query stream_tc_tag_0 = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
-        Query stream_tc_tag_1 = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
-        Query stream_tc_tag_24 = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
-        Query stream_tc_tag_32 = Query.newBuilder().requireType(TypeSpecs.URI).build();
-        Query stream_tc_bool = Query.newBuilder().requireType(TypeSpecs.Bool).build();
-        Query stream_tc_datatime = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
-        Query stream_tc_timestamp = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
-        Query stream_tc_uri = Query.newBuilder().requireType(TypeSpecs.URI).build();
-        Query stream_tc_enccbor = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
-
-        Query stream_tc_optional = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
-
-        Parser parser = Parser.newBuilder().build();
-        assertQueryEquals(stream, parser.prepareQuery("#"));
-        assertQueryEquals(stream_1, parser.prepareQuery("#1"));
-        assertQueryEquals(stream_sequence_one, parser.prepareQuery("#(1)"));
-        assertQueryEquals(stream_1_seq_1, parser.prepareQuery("#1(1)"));
-        assertQueryEquals(stream_dic_1, parser.prepareQuery("#{1}"));
-        assertQueryEquals(stream_1_dic_1, parser.prepareQuery("#1{1}"));
-        assertQueryEquals(stream_dic_n1, parser.prepareQuery("#{-1}"));
-        assertQueryEquals(stream_1_dic_n1, parser.prepareQuery("#1{-1}"));
-        assertQueryEquals(stream_dic_11, parser.prepareQuery("#{1.1}"));
-        assertQueryEquals(stream_1_dic_11, parser.prepareQuery("#1{1.1}"));
-        assertQueryEquals(stream_dic_n11, parser.prepareQuery("#{-1.1}"));
-        assertQueryEquals(stream_1_dic_n11, parser.prepareQuery("#1{-1.1}"));
-        assertQueryEquals(stream_dic_s, parser.prepareQuery("#{'test'}"));
-        assertQueryEquals(stream_1_dic_s, parser.prepareQuery("#1{'test'}"));
-
-        assertQueryEquals(stream_tc_number, parser.prepareQuery("#->number"));
-        assertQueryEquals(stream_tc_uint, parser.prepareQuery("#->uint"));
-        assertQueryEquals(stream_tc_nint, parser.prepareQuery("#->nint"));
-        assertQueryEquals(stream_tc_int, parser.prepareQuery("#->int"));
-        assertQueryEquals(stream_tc_ufloat, parser.prepareQuery("#->ufloat"));
-        assertQueryEquals(stream_tc_nfloat, parser.prepareQuery("#->nfloat"));
-        assertQueryEquals(stream_tc_float, parser.prepareQuery("#->float"));
-        assertQueryEquals(stream_tc_string, parser.prepareQuery("#->string"));
-        assertQueryEquals(stream_tc_dictionary, parser.prepareQuery("#->dictionary"));
-        assertQueryEquals(stream_tc_sequence, parser.prepareQuery("#->sequence"));
-        assertQueryEquals(stream_tc_tag, parser.prepareQuery("#->tag"));
-        assertQueryEquals(stream_tc_tag_0, parser.prepareQuery("#->tag$0"));
-        assertQueryEquals(stream_tc_tag_1, parser.prepareQuery("#->tag$1"));
-        assertQueryEquals(stream_tc_tag_24, parser.prepareQuery("#->tag$24"));
-        assertQueryEquals(stream_tc_tag_32, parser.prepareQuery("#->tag$32"));
-        assertQueryEquals(stream_tc_bool, parser.prepareQuery("#->bool"));
-        assertQueryEquals(stream_tc_datatime, parser.prepareQuery("#->datetime"));
-        assertQueryEquals(stream_tc_timestamp, parser.prepareQuery("#->timestamp"));
-        assertQueryEquals(stream_tc_uri, parser.prepareQuery("#->uri"));
-        assertQueryEquals(stream_tc_enccbor, parser.prepareQuery("#->enccbor"));
-
-        assertQueryEquals(stream_tc_optional, parser.prepareQuery("#->?enccbor"));
     }
 
     @Test(expected = QueryParserException.class)

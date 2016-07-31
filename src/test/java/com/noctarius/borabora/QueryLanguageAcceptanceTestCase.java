@@ -77,6 +77,34 @@ public class QueryLanguageAcceptanceTestCase
         evaluate(query, "#");
     }
 
+    @Test
+    public void test_stream_sequence_int() {
+        Query query = Query.newBuilder().stream(1).sequence(1).build();
+        evaluate(query, "#1(1)");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_stream_sequence_nint() {
+        parser.prepareQuery("#1(-1)");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fail_query_stream_sequence_nint() {
+        Query.newBuilder().stream(1).sequence(-1).build();
+    }
+
+    @Test
+    public void test_stream_dictionary_int() {
+        Query query = Query.newBuilder().stream(1).dictionary(1).build();
+        evaluate(query, "#1{1}");
+    }
+
+    @Test
+    public void test_stream_dictionary_nint() {
+        Query query = Query.newBuilder().stream(1).dictionary(-1).build();
+        evaluate(query, "#1{-1}");
+    }
+
     @Test(expected = QueryParserException.class)
     public void fail_type_match_missing_type_sped() {
         parser.prepareQuery("#->");
@@ -113,6 +141,12 @@ public class QueryLanguageAcceptanceTestCase
     }
 
     @Test
+    public void test_stream_dictionary_access_string() {
+        Query query = Query.newBuilder().stream(1).dictionary(matchString("test")).build();
+        evaluate(query, "#1{'test'}");
+    }
+
+    @Test
     public void test_dictionary_access_uint() {
         Query query = Query.newBuilder().dictionary(matchInt(123)).build();
         evaluate(query, "#{123}");
@@ -131,9 +165,21 @@ public class QueryLanguageAcceptanceTestCase
     }
 
     @Test
+    public void test_stream_dictionary_access_ufloat() {
+        Query query = Query.newBuilder().stream(1).dictionary(matchFloat(123.0)).build();
+        evaluate(query, "#1{123.0}");
+    }
+
+    @Test
     public void test_dictionary_access_nfloar() {
         Query query = Query.newBuilder().dictionary(matchFloat(-123.0)).build();
         evaluate(query, "#{-123.0}");
+    }
+
+    @Test
+    public void test_stream_dictionary_access_nfloar() {
+        Query query = Query.newBuilder().stream(1).dictionary(matchFloat(-123.0)).build();
+        evaluate(query, "#1{-123.0}");
     }
 
     @Test(expected = QueryParserException.class)
@@ -219,6 +265,107 @@ public class QueryLanguageAcceptanceTestCase
     @Test(expected = QueryParserException.class)
     public void fail_sequence_dictionary_select_int_mixed() {
         parser.prepareQuery("(#, 3: (1: #, 2: #))");
+    }
+
+    @Test
+    public void test_type_check_uint() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.UInt).build();
+        assertQueryEquals(query, parser.prepareQuery("#->uint"));
+    }
+
+    @Test
+    public void test_type_check_nint() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.NInt).build();
+        assertQueryEquals(query, parser.prepareQuery("#->nint"));
+    }
+
+    @Test
+    public void test_type_check_int() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Int).build();
+        assertQueryEquals(query, parser.prepareQuery("#->int"));
+    }
+
+    @Test
+    public void test_type_check_ufloat() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.UFloat).build();
+        assertQueryEquals(query, parser.prepareQuery("#->ufloat"));
+    }
+
+    @Test
+    public void test_type_check_nfloat() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.NFloat).build();
+        assertQueryEquals(query, parser.prepareQuery("#->nfloat"));
+    }
+
+    @Test
+    public void test_type_check_float() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Float).build();
+        assertQueryEquals(query, parser.prepareQuery("#->float"));
+    }
+
+    @Test
+    public void test_type_check_string() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.String).build();
+        assertQueryEquals(query, parser.prepareQuery("#->string"));
+    }
+
+    @Test
+    public void test_type_check_dictionary() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Dictionary).build();
+        assertQueryEquals(query, parser.prepareQuery("#->dictionary"));
+    }
+
+    @Test
+    public void test_type_check_sequence() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Sequence).build();
+        assertQueryEquals(query, parser.prepareQuery("#->sequence"));
+    }
+
+    @Test
+    public void test_type_check_tag() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.SemanticTag).build();
+        assertQueryEquals(query, parser.prepareQuery("#->tag"));
+    }
+
+    @Test
+    public void test_type_check_date_time() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
+        assertQueryEquals(query, parser.prepareQuery("#->tag$0"));
+        assertQueryEquals(query, parser.prepareQuery("#->datetime"));
+    }
+
+    @Test
+    public void test_type_check_timestamp() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
+        assertQueryEquals(query, parser.prepareQuery("#->tag$1"));
+        assertQueryEquals(query, parser.prepareQuery("#->timestamp"));
+    }
+
+    @Test
+    public void test_type_check_enccbor() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
+        assertQueryEquals(query, parser.prepareQuery("#->tag$24"));
+        assertQueryEquals(query, parser.prepareQuery("#->enccbor"));
+    }
+
+    @Test
+    public void test_type_check_optional_enccbor() {
+        Query query = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
+        assertQueryEquals(query, parser.prepareQuery("#->?tag$24"));
+        assertQueryEquals(query, parser.prepareQuery("#->?enccbor"));
+    }
+
+    @Test
+    public void test_type_check_uri() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.URI).build();
+        assertQueryEquals(query, parser.prepareQuery("#->tag$32"));
+        assertQueryEquals(query, parser.prepareQuery("#->uri"));
+    }
+
+    @Test
+    public void test_type_check_bool() {
+        Query query = Query.newBuilder().requireType(TypeSpecs.Bool).build();
+        assertQueryEquals(query, parser.prepareQuery("#->bool"));
     }
 
     @Test
