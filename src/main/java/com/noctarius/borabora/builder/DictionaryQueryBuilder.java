@@ -16,13 +16,14 @@
  */
 package com.noctarius.borabora.builder;
 
-public interface StreamGraphQueryBuilder
-        extends GraphQueryBuilder {
+public interface DictionaryQueryBuilder<T> {
 
-    GraphQueryBuilder stream(long offset);
+    StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key);
 
-    DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary();
+    StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key);
 
-    SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence();
+    StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key);
+
+    T endDictionary();
 
 }

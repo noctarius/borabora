@@ -17,7 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +29,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.noctarius.borabora.Predicates.matchFloat;
-import static com.noctarius.borabora.Predicates.matchString;
 import static com.noctarius.borabora.Predicates.matchInt;
+import static com.noctarius.borabora.Predicates.matchString;
 
 @RunWith(Parameterized.class)
 public class SelectStatementTestCase
@@ -209,14 +209,14 @@ public class SelectStatementTestCase
     }
 
     private void executeExercise(Consumer<GraphBuilder> streamProducer, Supplier<String> textQueryProducer,
-                                 Consumer<StreamGraphQueryBuilder> graphQueryConfigurator, Consumer<Value> assertionTest) {
+                                 Consumer<StreamQueryBuilder> graphQueryConfigurator, Consumer<Value> assertionTest) {
 
         byte[] data = createDataSource(streamProducer);
 
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder(selectStatementStrategy).build();
 
-        StreamGraphQueryBuilder graphQueryBuilder = Query.newBuilder(selectStatementStrategy);
+        StreamQueryBuilder graphQueryBuilder = Query.newBuilder(selectStatementStrategy);
         graphQueryConfigurator.accept(graphQueryBuilder);
 
         Query textQuery = parser.prepareQuery(textQueryProducer.get());

@@ -16,25 +16,52 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 public interface Query {
 
+    default boolean isStreamQueryCapable() {
+        return true;
+    }
+
     long access(long offset, QueryContext queryContext);
 
-    static StreamGraphQueryBuilder newBuilder() {
+    static StreamQueryBuilder newBuilder() {
         return newBuilder(true);
     }
 
-    static StreamGraphQueryBuilder newBuilder(boolean binarySelectStatement) {
-        return newBuilder(binarySelectStatement ?
+    static StreamQueryBuilder newBuilder(boolean binarySelectStatement) {
+        return newBuilder(binarySelectStatement ? //
                 BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE);
     }
 
-    static StreamGraphQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
-        return new GraphQueryBuilderImpl(selectStatementStrategy);
+    static StreamQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
+        return new QueryBuilderImpl(selectStatementStrategy);
+    }
+
+    static boolean equals(Object first, Object second) {
+        String name = first.getClass().getName();
+        String otherName = second.getClass().getName();
+
+        if (name.contains("$$Lambda$") && !otherName.contains("$$Lambda$") //
+                || !name.contains("$$Lambda$") && otherName.contains("$$Lambda$")) {
+
+            return false;
+        }
+
+        if (!name.contains("$$Lambda$") && !otherName.contains("$$Lambda$")) {
+            return first.equals(second);
+        }
+
+        int nameIndex = name.indexOf("$$Lambda$");
+        int otherNameIndex = otherName.indexOf("$$Lambda$");
+
+        int nameEndIndex = name.indexOf('/', nameIndex);
+        int otherNameEndIndex = name.indexOf('/', otherNameIndex);
+
+        return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
     }
 
 }

@@ -76,7 +76,7 @@ class TypeMatcherQuery
 
     @Override
     public String toString() {
-        return "TypeMatcherGraphQuery{" + "typeSpec=" + typeSpec + ", required=" + required + '}';
+        return "TypeMatcherQuery{" + "typeSpec=" + typeSpec + ", required=" + required + '}';
     }
 
 }

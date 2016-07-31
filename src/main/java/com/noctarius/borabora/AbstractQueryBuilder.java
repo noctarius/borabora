@@ -28,12 +28,12 @@ import static com.noctarius.borabora.DictionaryQuery.intMatcher;
 import static com.noctarius.borabora.DictionaryQuery.predicateMatcher;
 import static com.noctarius.borabora.DictionaryQuery.stringMatcher;
 
-abstract class AbstractGraphQueryBuilder {
+abstract class AbstractQueryBuilder {
 
     protected final List<Query> graphQueries;
     protected final SelectStatementStrategy selectStatementStrategy;
 
-    protected AbstractGraphQueryBuilder(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
+    protected AbstractQueryBuilder(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
         this.selectStatementStrategy = selectStatementStrategy;
     }

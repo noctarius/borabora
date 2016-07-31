@@ -84,7 +84,7 @@ final class SequenceQuery
 
     @Override
     public String toString() {
-        return "SequenceGraphQuery{" + "sequenceIndex=" + sequenceIndex + '}';
+        return "SequenceQuery{" + "sequenceIndex=" + sequenceIndex + '}';
     }
 
     private long skip(Input input, long offset) {

@@ -44,4 +44,9 @@ class EndSequenceEntryQuery
         return offset;
     }
 
+    @Override
+    public String toString() {
+        return "EndSequenceEntryQuery{}";
+    }
+
 }

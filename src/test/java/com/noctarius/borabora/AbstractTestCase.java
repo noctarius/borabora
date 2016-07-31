@@ -83,6 +83,19 @@ public abstract class AbstractTestCase {
         return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
     }
 
+    public static void assertQueryEquals(Query expected, Query actual) {
+        ChainQuery exp = (ChainQuery) expected;
+        ChainQuery act = (ChainQuery) actual;
+
+        List<Query> n1 = exp.nodes();
+        List<Query> n2 = act.nodes();
+
+        assertEquals(n1.size(), n2.size());
+        for (int i = 0; i < n1.size(); i++) {
+            Query.equals(n1.get(i), n2.get(i));
+        }
+    }
+
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
                                                SelectStatementStrategy selectStatementStrategy) {
 
@@ -110,7 +123,6 @@ public abstract class AbstractTestCase {
         public Query prepareQuery(String query) {
             return parser.prepareQuery(query);
         }
-
     }
 
 }

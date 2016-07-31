@@ -46,4 +46,9 @@ class EndDictionaryEntryQuery
         return offset;
     }
 
+    @Override
+    public String toString() {
+        return "EndDictionaryEntryQuery{}";
+    }
+
 }

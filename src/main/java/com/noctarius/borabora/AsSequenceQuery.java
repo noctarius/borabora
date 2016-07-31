@@ -24,6 +24,11 @@ import java.util.List;
 class AsSequenceQuery
         implements Query {
 
+    static final Query INSTANCE = new AsSequenceQuery();
+
+    private AsSequenceQuery() {
+    }
+
     @Override
     public long access(long offset, QueryContext queryContext) {
         // Create a new List to store entries, thanks to thread-safetyness :)
@@ -33,6 +38,11 @@ class AsSequenceQuery
         queryContext.queryStackPush(entries);
 
         return offset;
+    }
+
+    @Override
+    public String toString() {
+        return "AsSequenceQuery{}";
     }
 
 }

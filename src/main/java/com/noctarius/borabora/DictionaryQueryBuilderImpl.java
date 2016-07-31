@@ -16,21 +16,21 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
+import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.List;
 
-class SequenceGraphQueryBuilderImpl<T>
-        implements SequenceGraphQueryBuilder<T> {
+class DictionaryQueryBuilderImpl<T>
+        implements DictionaryQueryBuilder<T> {
 
     private final T queryBuilder;
     private final List<Query> graphQueries;
     private SelectStatementStrategy selectStatementStrategy;
 
-    SequenceGraphQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
-                                  SelectStatementStrategy selectStatementStrategy) {
+    DictionaryQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
+                                    SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;
         this.graphQueries = graphQueries;
@@ -38,13 +38,23 @@ class SequenceGraphQueryBuilderImpl<T>
     }
 
     @Override
-    public StreamEntryGraphQueryBuilder<SequenceGraphQueryBuilder<T>> putEntry() {
-        return selectStatementStrategy.putSequenceEntry(this, graphQueries);
+    public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key) {
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
     }
 
     @Override
-    public T endSequence() {
-        return selectStatementStrategy.endSequence(queryBuilder, graphQueries);
+    public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key) {
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
+    }
+
+    @Override
+    public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key) {
+        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
+    }
+
+    @Override
+    public T endDictionary() {
+        return selectStatementStrategy.endDictionary(queryBuilder, graphQueries);
     }
 
 }

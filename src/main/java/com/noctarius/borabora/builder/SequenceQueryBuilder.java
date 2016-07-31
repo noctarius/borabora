@@ -14,26 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.QueryContext;
+public interface SequenceQueryBuilder<T> {
 
-final class ResetOffsetQuery
-        implements Query {
+    StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry();
 
-    static final Query INSTANCE = new ResetOffsetQuery();
-
-    private ResetOffsetQuery() {
-    }
-
-    @Override
-    public long access(long offset, QueryContext queryContext) {
-        return 0;
-    }
-
-    @Override
-    public String toString() {
-        return "ResetOffsetQuery{}";
-    }
+    T endSequence();
 
 }

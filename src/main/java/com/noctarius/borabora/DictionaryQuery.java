@@ -59,7 +59,7 @@ abstract class DictionaryQuery
 
     @Override
     public String toString() {
-        return "DictionaryGraphQuery{" + "predicate=" + predicate + '}';
+        return "DictionaryQuery{" + "predicate=" + predicate + '}';
     }
 
     static DictionaryQuery stringMatcher(String key) {
@@ -111,7 +111,7 @@ abstract class DictionaryQuery
 
         @Override
         public String toString() {
-            return "StringDictionaryGraphQuery{" + "value='" + value + '\'' + '}';
+            return "StringDictionaryQuery{" + "value='" + value + '\'' + '}';
         }
     }
 
@@ -148,7 +148,7 @@ abstract class DictionaryQuery
 
         @Override
         public String toString() {
-            return "IntDictionaryGraphQuery{" + "value=" + value + '}';
+            return "IntDictionaryQuery{" + "value=" + value + '}';
         }
     }
 
@@ -187,7 +187,7 @@ abstract class DictionaryQuery
 
         @Override
         public String toString() {
-            return "FloatDictionaryGraphQuery{" + "value=" + value + '}';
+            return "FloatDictionaryQuery{" + "value=" + value + '}';
         }
     }
 

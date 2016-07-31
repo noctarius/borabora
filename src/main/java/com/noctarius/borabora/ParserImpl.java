@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphQueryBuilder;
+import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
@@ -50,19 +50,7 @@ final class ParserImpl
             selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
         }
 
-        QueryContext queryContext = newQueryContext(input, selectStatementStrategy);
-        selectStatementStrategy.beginSelect(queryContext);
-
-        long offset = query.access(0, queryContext);
-        if (offset == QUERY_RETURN_CODE_NULL) {
-            return NULL_VALUE;
-        } else if (offset == QUERY_RETURN_CODE_FINALIZE_SELECT) {
-            return selectStatementStrategy.finalizeSelect(queryContext);
-        }
-        short head = Decoder.readUInt8(input, offset);
-        MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, offset, queryContext);
+        return evaluate(query, input, 0, selectStatementStrategy);
     }
 
     @Override
@@ -86,12 +74,24 @@ final class ParserImpl
 
     @Override
     public void read(Input input, Query query, Consumer<Value> consumer) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
+        if (query instanceof SelectStatementStrategyAware) {
+            selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
+        }
+
+        long startOffset = 0;
+        do {
+            Value value = evaluate(query, input, startOffset, selectStatementStrategy);
+            consumer.accept(value);
+
+            MajorType majorType = value.majorType();
+            startOffset += Decoder.length(input, majorType, startOffset);
+        } while (query.isStreamQueryCapable() && input.offsetValid(startOffset));
     }
 
     @Override
     public void read(Input input, String query, Consumer<Value> consumer) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        read(input, prepareQuery(query), consumer);
     }
 
     @Override
@@ -119,7 +119,7 @@ final class ParserImpl
     public Query prepareQuery(String query) {
         try {
 
-            GraphQueryBuilder queryBuilder = Query.newBuilder(selectStatementStrategy);
+            QueryBuilder queryBuilder = Query.newBuilder(selectStatementStrategy);
             QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 
@@ -130,6 +130,22 @@ final class ParserImpl
 
     private QueryContext newQueryContext(Input input, SelectStatementStrategy selectStatementStrategy) {
         return new QueryContextImpl(input, tagDecoders, selectStatementStrategy);
+    }
+
+    private Value evaluate(Query query, Input input, long startOffset, SelectStatementStrategy selectStatementStrategy) {
+        QueryContext queryContext = newQueryContext(input, selectStatementStrategy);
+        selectStatementStrategy.beginSelect(queryContext);
+
+        long offset = query.access(startOffset, queryContext);
+        if (offset == QUERY_RETURN_CODE_NULL) {
+            return NULL_VALUE;
+        } else if (offset == QUERY_RETURN_CODE_FINALIZE_SELECT) {
+            return selectStatementStrategy.finalizeSelect(queryContext);
+        }
+        short head = Decoder.readUInt8(input, offset);
+        MajorType mt = MajorType.findMajorType(head);
+        ValueType vt = ValueTypes.valueType(input, offset);
+        return new StreamValue(mt, vt, offset, queryContext);
     }
 
 }

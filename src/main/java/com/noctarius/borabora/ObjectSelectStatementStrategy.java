@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
+import com.noctarius.borabora.builder.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
@@ -42,19 +42,19 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(new AsDictionaryQuery());
-        return new DictionaryGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public <T> DictionaryQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
+        graphQueries.add(AsDictionaryQuery.INSTANCE);
+        return new DictionaryQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(new AsSequenceQuery());
-        return new SequenceGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public <T> SequenceQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
+        graphQueries.add(AsSequenceQuery.INSTANCE);
+        return new SequenceQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(String key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
@@ -62,7 +62,7 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(long key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(long key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
@@ -70,7 +70,7 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(double key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(double key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
@@ -84,11 +84,11 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public <T, S extends SequenceGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<S> putSequenceEntry(S queryBuilder,
+    public <T, S extends SequenceQueryBuilder<T>> StreamEntryQueryBuilder<S> putSequenceEntry(S queryBuilder,
                                                                                                         List<Query> graphQueries) {
 
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndSequenceEntryQuery.INSTANCE, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, EndSequenceEntryQuery.INSTANCE, this);
     }
 
     @Override
@@ -97,12 +97,12 @@ public class ObjectSelectStatementStrategy
         return queryBuilder;
     }
 
-    private <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(
+    private <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(
             Query putKeyQuery, D queryBuilder, List<Query> graphQueries) {
 
         graphQueries.add(putKeyQuery);
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, EndDictionaryEntryQuery.INSTANCE, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, EndDictionaryEntryQuery.INSTANCE, this);
     }
 
 }

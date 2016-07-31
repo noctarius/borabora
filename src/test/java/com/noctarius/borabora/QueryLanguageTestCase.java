@@ -18,13 +18,13 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.spi.TypeSpecs;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.noctarius.borabora.Predicates.matchString;
@@ -37,7 +37,56 @@ public class QueryLanguageTestCase
     // (foo: #{'b'}, bar: #{'c'})
 
     @Test
-    @Ignore
+    public void test_any_stream_element()
+            throws Exception {
+
+        Writer writer = Writer.newBuilder().build();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putString("test").putString("foo").putString("bar").finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+
+        Parser parser = Parser.newBuilder().build();
+
+        Query query = parser.prepareQuery("$");
+
+        List<Value> list = new ArrayList<>();
+        parser.read(input, query, list::add);
+
+        assertEquals(3, list.size());
+        assertEquals("test", list.get(0).string());
+        assertEquals("foo", list.get(1).string());
+        assertEquals("bar", list.get(2).string());
+    }
+
+    @Test
+    public void test_first_stream_element()
+            throws Exception {
+
+        Writer writer = Writer.newBuilder().build();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putString("test").putString("foo").putString("bar").finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+
+        Parser parser = Parser.newBuilder().build();
+
+        Query query = parser.prepareQuery("#");
+
+        List<Value> list = new ArrayList<>();
+        parser.read(input, query, list::add);
+
+        assertEquals(1, list.size());
+        assertEquals("test", list.get(0).string());
+    }
+
+    @Test
     public void test_select_statement()
             throws Exception {
 
@@ -184,43 +233,43 @@ public class QueryLanguageTestCase
         Query stream_tc_optional = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
 
         Parser parser = Parser.newBuilder().build();
-        assertGraphQuery(stream, parser.prepareQuery("#"));
-        assertGraphQuery(stream_1, parser.prepareQuery("#1"));
-        assertGraphQuery(stream_sequence_one, parser.prepareQuery("#(1)"));
-        assertGraphQuery(stream_1_seq_1, parser.prepareQuery("#1(1)"));
-        assertGraphQuery(stream_dic_1, parser.prepareQuery("#{1}"));
-        assertGraphQuery(stream_1_dic_1, parser.prepareQuery("#1{1}"));
-        assertGraphQuery(stream_dic_n1, parser.prepareQuery("#{-1}"));
-        assertGraphQuery(stream_1_dic_n1, parser.prepareQuery("#1{-1}"));
-        assertGraphQuery(stream_dic_11, parser.prepareQuery("#{1.1}"));
-        assertGraphQuery(stream_1_dic_11, parser.prepareQuery("#1{1.1}"));
-        assertGraphQuery(stream_dic_n11, parser.prepareQuery("#{-1.1}"));
-        assertGraphQuery(stream_1_dic_n11, parser.prepareQuery("#1{-1.1}"));
-        assertGraphQuery(stream_dic_s, parser.prepareQuery("#{'test'}"));
-        assertGraphQuery(stream_1_dic_s, parser.prepareQuery("#1{'test'}"));
+        assertQueryEquals(stream, parser.prepareQuery("#"));
+        assertQueryEquals(stream_1, parser.prepareQuery("#1"));
+        assertQueryEquals(stream_sequence_one, parser.prepareQuery("#(1)"));
+        assertQueryEquals(stream_1_seq_1, parser.prepareQuery("#1(1)"));
+        assertQueryEquals(stream_dic_1, parser.prepareQuery("#{1}"));
+        assertQueryEquals(stream_1_dic_1, parser.prepareQuery("#1{1}"));
+        assertQueryEquals(stream_dic_n1, parser.prepareQuery("#{-1}"));
+        assertQueryEquals(stream_1_dic_n1, parser.prepareQuery("#1{-1}"));
+        assertQueryEquals(stream_dic_11, parser.prepareQuery("#{1.1}"));
+        assertQueryEquals(stream_1_dic_11, parser.prepareQuery("#1{1.1}"));
+        assertQueryEquals(stream_dic_n11, parser.prepareQuery("#{-1.1}"));
+        assertQueryEquals(stream_1_dic_n11, parser.prepareQuery("#1{-1.1}"));
+        assertQueryEquals(stream_dic_s, parser.prepareQuery("#{'test'}"));
+        assertQueryEquals(stream_1_dic_s, parser.prepareQuery("#1{'test'}"));
 
-        assertGraphQuery(stream_tc_number, parser.prepareQuery("#->number"));
-        assertGraphQuery(stream_tc_uint, parser.prepareQuery("#->uint"));
-        assertGraphQuery(stream_tc_nint, parser.prepareQuery("#->nint"));
-        assertGraphQuery(stream_tc_int, parser.prepareQuery("#->int"));
-        assertGraphQuery(stream_tc_ufloat, parser.prepareQuery("#->ufloat"));
-        assertGraphQuery(stream_tc_nfloat, parser.prepareQuery("#->nfloat"));
-        assertGraphQuery(stream_tc_float, parser.prepareQuery("#->float"));
-        assertGraphQuery(stream_tc_string, parser.prepareQuery("#->string"));
-        assertGraphQuery(stream_tc_dictionary, parser.prepareQuery("#->dictionary"));
-        assertGraphQuery(stream_tc_sequence, parser.prepareQuery("#->sequence"));
-        assertGraphQuery(stream_tc_tag, parser.prepareQuery("#->tag"));
-        assertGraphQuery(stream_tc_tag_0, parser.prepareQuery("#->tag$0"));
-        assertGraphQuery(stream_tc_tag_1, parser.prepareQuery("#->tag$1"));
-        assertGraphQuery(stream_tc_tag_24, parser.prepareQuery("#->tag$24"));
-        assertGraphQuery(stream_tc_tag_32, parser.prepareQuery("#->tag$32"));
-        assertGraphQuery(stream_tc_bool, parser.prepareQuery("#->bool"));
-        assertGraphQuery(stream_tc_datatime, parser.prepareQuery("#->datetime"));
-        assertGraphQuery(stream_tc_timestamp, parser.prepareQuery("#->timestamp"));
-        assertGraphQuery(stream_tc_uri, parser.prepareQuery("#->uri"));
-        assertGraphQuery(stream_tc_enccbor, parser.prepareQuery("#->enccbor"));
+        assertQueryEquals(stream_tc_number, parser.prepareQuery("#->number"));
+        assertQueryEquals(stream_tc_uint, parser.prepareQuery("#->uint"));
+        assertQueryEquals(stream_tc_nint, parser.prepareQuery("#->nint"));
+        assertQueryEquals(stream_tc_int, parser.prepareQuery("#->int"));
+        assertQueryEquals(stream_tc_ufloat, parser.prepareQuery("#->ufloat"));
+        assertQueryEquals(stream_tc_nfloat, parser.prepareQuery("#->nfloat"));
+        assertQueryEquals(stream_tc_float, parser.prepareQuery("#->float"));
+        assertQueryEquals(stream_tc_string, parser.prepareQuery("#->string"));
+        assertQueryEquals(stream_tc_dictionary, parser.prepareQuery("#->dictionary"));
+        assertQueryEquals(stream_tc_sequence, parser.prepareQuery("#->sequence"));
+        assertQueryEquals(stream_tc_tag, parser.prepareQuery("#->tag"));
+        assertQueryEquals(stream_tc_tag_0, parser.prepareQuery("#->tag$0"));
+        assertQueryEquals(stream_tc_tag_1, parser.prepareQuery("#->tag$1"));
+        assertQueryEquals(stream_tc_tag_24, parser.prepareQuery("#->tag$24"));
+        assertQueryEquals(stream_tc_tag_32, parser.prepareQuery("#->tag$32"));
+        assertQueryEquals(stream_tc_bool, parser.prepareQuery("#->bool"));
+        assertQueryEquals(stream_tc_datatime, parser.prepareQuery("#->datetime"));
+        assertQueryEquals(stream_tc_timestamp, parser.prepareQuery("#->timestamp"));
+        assertQueryEquals(stream_tc_uri, parser.prepareQuery("#->uri"));
+        assertQueryEquals(stream_tc_enccbor, parser.prepareQuery("#->enccbor"));
 
-        assertGraphQuery(stream_tc_optional, parser.prepareQuery("#->?enccbor"));
+        assertQueryEquals(stream_tc_optional, parser.prepareQuery("#->?enccbor"));
     }
 
     @Test(expected = QueryParserException.class)
@@ -253,18 +302,6 @@ public class QueryLanguageTestCase
 
         Parser parser = Parser.newBuilder().build();
         parser.prepareQuery("#{1.1.}");
-    }
-
-    private void assertGraphQuery(Query expected, Query actual) {
-        ChainQuery exp = (ChainQuery) expected;
-        ChainQuery act = (ChainQuery) actual;
-
-        List<Query> n1 = exp.nodes();
-        List<Query> n2 = act.nodes();
-
-        assertEquals(n1.size(), n2.size());
-        assertEquals(n1, n2);
-        assertEquals(n1.hashCode(), n2.hashCode());
     }
 
     @Test

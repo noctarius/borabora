@@ -16,25 +16,11 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.Value;
-import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.Query;
 
-import java.util.function.Predicate;
+public interface QueryBuilder
+        extends QueryTokenBuilder<QueryBuilder> {
 
-public interface GraphQueryTokenBuilder<T extends GraphQueryTokenBuilder<T>> {
-
-    T sequence(long index);
-
-    T dictionary(Predicate<Value> predicate);
-
-    T dictionary(String key);
-
-    T dictionary(double key);
-
-    T dictionary(long key);
-
-    T nullOrType(TypeSpec typeSpec);
-
-    T requireType(TypeSpec typeSpec);
+    Query build();
 
 }

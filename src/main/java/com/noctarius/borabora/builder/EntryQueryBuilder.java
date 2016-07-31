@@ -16,14 +16,9 @@
  */
 package com.noctarius.borabora.builder;
 
-public interface DictionaryGraphQueryBuilder<T> {
+public interface EntryQueryBuilder<T>
+        extends QueryTokenBuilder<EntryQueryBuilder<T>> {
 
-    StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(String key);
-
-    StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(double key);
-
-    StreamEntryGraphQueryBuilder<DictionaryGraphQueryBuilder<T>> putEntry(long key);
-
-    T endDictionary();
+    T endEntry();
 
 }

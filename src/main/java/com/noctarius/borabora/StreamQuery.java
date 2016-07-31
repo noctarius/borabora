@@ -40,6 +40,11 @@ final class StreamQuery
     }
 
     @Override
+    public boolean isStreamQueryCapable() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -59,7 +64,7 @@ final class StreamQuery
 
     @Override
     public String toString() {
-        return "StreamGraphQuery{" + "streamIndex=" + streamIndex + '}';
+        return "StreamQuery{" + "streamIndex=" + streamIndex + '}';
     }
 
     private long skip(Input input, long offset) {

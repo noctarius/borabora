@@ -14,11 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora;
 
-public interface EntryGraphQueryBuilder<T>
-        extends GraphQueryTokenBuilder<EntryGraphQueryBuilder<T>> {
+import com.noctarius.borabora.spi.QueryContext;
 
-    T endEntry();
+final class MultiStreamQuery
+        implements Query {
+
+    static final Query INSTANCE = new MultiStreamQuery();
+
+    private MultiStreamQuery() {
+    }
+
+    @Override
+    public long access(long offset, QueryContext queryContext) {
+        return offset;
+    }
+
+    @Override
+    public boolean isStreamQueryCapable() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "MultiElementQuery{}";
+    }
 
 }

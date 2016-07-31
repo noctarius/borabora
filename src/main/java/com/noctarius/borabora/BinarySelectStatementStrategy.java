@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
+import com.noctarius.borabora.builder.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.Encoder;
 import com.noctarius.borabora.spi.QueryContext;
@@ -60,45 +60,45 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public <T> DictionaryGraphQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
+    public <T> DictionaryQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
         graphQueries.add(putStructureHead(MajorType.Dictionary));
-        return new DictionaryGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+        return new DictionaryQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T> SequenceGraphQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
+    public <T> SequenceQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
         graphQueries.add(putStructureHead(MajorType.Sequence));
-        return new SequenceGraphQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+        return new SequenceQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(String key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(String key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putString(key, offset, output)));
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(long key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(long key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putNumber(key, offset, output)));
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
-    public <T, D extends DictionaryGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<D> putDictionaryEntry(double key,
+    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(double key,
                                                                                                             D queryBuilder,
                                                                                                             List<Query> graphQueries) {
 
         graphQueries.add(putKey((offset, output) -> Encoder.putDouble(key, offset, output)));
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override
@@ -108,11 +108,11 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public <T, S extends SequenceGraphQueryBuilder<T>> StreamEntryGraphQueryBuilder<S> putSequenceEntry(S queryBuilder,
+    public <T, S extends SequenceQueryBuilder<T>> StreamEntryQueryBuilder<S> putSequenceEntry(S queryBuilder,
                                                                                                         List<Query> graphQueries) {
 
         graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryGraphQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
     }
 
     @Override

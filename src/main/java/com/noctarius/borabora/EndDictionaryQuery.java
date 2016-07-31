@@ -47,6 +47,11 @@ class EndDictionaryQuery
         return QUERY_RETURN_CODE_FINALIZE_SELECT;
     }
 
+    @Override
+    public String toString() {
+        return "EndDictionaryQuery{}";
+    }
+
     private static class MapBackedDictionary
             extends AbstractJavaBackedDataStructure
             implements Dictionary {

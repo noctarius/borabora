@@ -53,4 +53,29 @@ class PutEntryQuery
         return offset;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PutEntryQuery)) {
+            return false;
+        }
+
+        PutEntryQuery that = (PutEntryQuery) o;
+
+        return keyValueSupplier != null ? keyValueSupplier.equals(that.keyValueSupplier) : that.keyValueSupplier == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return keyValueSupplier != null ? keyValueSupplier.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "PutEntryQuery{" + "keyValueSupplier=" + keyValueSupplier + '}';
+    }
+
 }

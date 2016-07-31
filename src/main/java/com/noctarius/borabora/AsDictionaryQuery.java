@@ -24,6 +24,11 @@ import java.util.Map;
 class AsDictionaryQuery
         implements Query {
 
+    static final Query INSTANCE = new AsDictionaryQuery();
+
+    private AsDictionaryQuery() {
+    }
+
     @Override
     public long access(long offset, QueryContext queryContext) {
         // Create a new Map to store entries, thanks to thread-safetyness :)
@@ -33,6 +38,11 @@ class AsDictionaryQuery
         queryContext.queryStackPush(entries);
 
         return offset;
+    }
+
+    @Override
+    public String toString() {
+        return "AsDictionaryQuery{}";
     }
 
 }

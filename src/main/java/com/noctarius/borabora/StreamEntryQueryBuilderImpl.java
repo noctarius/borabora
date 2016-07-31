@@ -16,25 +16,25 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.EntryGraphQueryBuilder;
-import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryGraphQueryBuilder;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
+import com.noctarius.borabora.builder.EntryQueryBuilder;
+import com.noctarius.borabora.builder.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-class StreamEntryGraphQueryBuilderImpl<T>
-        extends AbstractGraphQueryBuilder
-        implements StreamEntryGraphQueryBuilder<T> {
+class StreamEntryQueryBuilderImpl<T>
+        extends AbstractQueryBuilder
+        implements StreamEntryQueryBuilder<T> {
 
     private final T queryBuilder;
     private final List<Query> graphQueries;
     private final Query endEntryQuery;
 
-    StreamEntryGraphQueryBuilderImpl(T queryBuilder, List<Query> graphQueries, Query endEntryQuery,
+    StreamEntryQueryBuilderImpl(T queryBuilder, List<Query> graphQueries, Query endEntryQuery,
                                      SelectStatementStrategy selectStatementStrategy) {
 
         super(graphQueries, selectStatementStrategy);
@@ -44,18 +44,18 @@ class StreamEntryGraphQueryBuilderImpl<T>
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> stream(long offset) {
+    public EntryQueryBuilder<T> stream(long offset) {
         graphQueries.add(new StreamQuery(offset));
         return this;
     }
 
     @Override
-    public DictionaryGraphQueryBuilder<EntryGraphQueryBuilder<T>> asDictionary() {
+    public DictionaryQueryBuilder<EntryQueryBuilder<T>> asDictionary() {
         return selectStatementStrategy.asDictionary(this, graphQueries);
     }
 
     @Override
-    public SequenceGraphQueryBuilder<EntryGraphQueryBuilder<T>> asSequence() {
+    public SequenceQueryBuilder<EntryQueryBuilder<T>> asSequence() {
         return selectStatementStrategy.asSequence(this, graphQueries);
     }
 
@@ -66,43 +66,43 @@ class StreamEntryGraphQueryBuilderImpl<T>
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> sequence(long index) {
+    public EntryQueryBuilder<T> sequence(long index) {
         sequence0(index);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> dictionary(Predicate<Value> predicate) {
+    public EntryQueryBuilder<T> dictionary(Predicate<Value> predicate) {
         dictionary0(predicate);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> dictionary(String key) {
+    public EntryQueryBuilder<T> dictionary(String key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> dictionary(double key) {
+    public EntryQueryBuilder<T> dictionary(double key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> dictionary(long key) {
+    public EntryQueryBuilder<T> dictionary(long key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> nullOrType(TypeSpec typeSpec) {
+    public EntryQueryBuilder<T> nullOrType(TypeSpec typeSpec) {
         nullOrType0(typeSpec);
         return this;
     }
 
     @Override
-    public EntryGraphQueryBuilder<T> requireType(TypeSpec typeSpec) {
+    public EntryQueryBuilder<T> requireType(TypeSpec typeSpec) {
         requireType0(typeSpec);
         return this;
     }

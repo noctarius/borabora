@@ -16,39 +16,48 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryGraphQueryBuilder;
-import com.noctarius.borabora.builder.GraphQueryBuilder;
-import com.noctarius.borabora.builder.SequenceGraphQueryBuilder;
-import com.noctarius.borabora.builder.StreamGraphQueryBuilder;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
+import com.noctarius.borabora.builder.QueryBuilder;
+import com.noctarius.borabora.builder.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-final class GraphQueryBuilderImpl
-        extends AbstractGraphQueryBuilder
-        implements StreamGraphQueryBuilder {
+final class QueryBuilderImpl
+        extends AbstractQueryBuilder
+        implements StreamQueryBuilder {
 
     private static final Query STREAM_INDEX_ZERO_GRAPH_QUERY = new StreamQuery(0);
 
-    GraphQueryBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
+    QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
         super(new ArrayList<>(), selectStatementStrategy);
     }
 
     @Override
-    public GraphQueryBuilder stream(long offset) {
-        graphQueries.add(new StreamQuery(offset));
+    public QueryBuilder stream(long streamIndex) {
+        if (streamIndex < 0) {
+            throw new IllegalArgumentException("streamIndex must not be negative");
+        }
+        graphQueries.add(new StreamQuery(streamIndex));
         return this;
     }
 
     @Override
-    public DictionaryGraphQueryBuilder<GraphQueryBuilder> asDictionary() {
+    public QueryBuilder multiStream() {
+        graphQueries.add(MultiStreamQuery.INSTANCE);
+        return this;
+    }
+
+    @Override
+    public DictionaryQueryBuilder<QueryBuilder> asDictionary() {
         return selectStatementStrategy.asDictionary(this, graphQueries);
     }
 
     @Override
-    public SequenceGraphQueryBuilder<GraphQueryBuilder> asSequence() {
+    public SequenceQueryBuilder<QueryBuilder> asSequence() {
         return selectStatementStrategy.asSequence(this, graphQueries);
     }
 
@@ -56,50 +65,51 @@ final class GraphQueryBuilderImpl
     public Query build() {
         if (graphQueries.size() == 0) {
             graphQueries.add(STREAM_INDEX_ZERO_GRAPH_QUERY);
-        } else if (!(graphQueries.get(0) instanceof StreamQuery)) {
+        } else if (!(graphQueries.get(0) instanceof StreamQuery)
+                && !(graphQueries.get(0) instanceof MultiStreamQuery)) {
             graphQueries.add(0, STREAM_INDEX_ZERO_GRAPH_QUERY);
         }
         return new ChainQuery(graphQueries, selectStatementStrategy);
     }
 
     @Override
-    public GraphQueryBuilder sequence(long index) {
+    public QueryBuilder sequence(long index) {
         sequence0(index);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(Predicate<Value> predicate) {
+    public QueryBuilder dictionary(Predicate<Value> predicate) {
         dictionary0(predicate);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(String key) {
+    public QueryBuilder dictionary(String key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(double key) {
+    public QueryBuilder dictionary(double key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder dictionary(long key) {
+    public QueryBuilder dictionary(long key) {
         dictionary0(key);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder nullOrType(TypeSpec typeSpec) {
+    public QueryBuilder nullOrType(TypeSpec typeSpec) {
         nullOrType0(typeSpec);
         return this;
     }
 
     @Override
-    public GraphQueryBuilder requireType(TypeSpec typeSpec) {
+    public QueryBuilder requireType(TypeSpec typeSpec) {
         requireType0(typeSpec);
         return this;
     }

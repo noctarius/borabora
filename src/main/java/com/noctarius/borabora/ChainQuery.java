@@ -28,11 +28,13 @@ import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
 final class ChainQuery
         implements Query, SelectStatementStrategyAware {
 
+    private final boolean streamingCapable;
     private final List<Query> graphQueries;
     private SelectStatementStrategy selectStatementStrategy;
 
     ChainQuery(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
         this.graphQueries = graphQueries;
+        this.streamingCapable = streamingCapable(graphQueries);
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
@@ -48,8 +50,38 @@ final class ChainQuery
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChainQuery)) {
+            return false;
+        }
+
+        ChainQuery that = (ChainQuery) o;
+
+        if (streamingCapable != that.streamingCapable) {
+            return false;
+        }
+        if (graphQueries != null ? !graphQueries.equals(that.graphQueries) : that.graphQueries != null) {
+            return false;
+        }
+        return selectStatementStrategy != null ? selectStatementStrategy.equals(that.selectStatementStrategy) :
+                that.selectStatementStrategy == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (streamingCapable ? 1 : 0);
+        result = 31 * result + (graphQueries != null ? graphQueries.hashCode() : 0);
+        result = 31 * result + (selectStatementStrategy != null ? selectStatementStrategy.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "ChainGraphQuery{" + "graphQueries=" + graphQueries + '}';
+        return "ChainQuery{" + "graphQueries=" + graphQueries + '}';
     }
 
     @Override
@@ -57,8 +89,22 @@ final class ChainQuery
         return selectStatementStrategy;
     }
 
+    @Override
+    public boolean isStreamQueryCapable() {
+        return streamingCapable;
+    }
+
     List<Query> nodes() {
         return Collections.unmodifiableList(graphQueries);
+    }
+
+    private static boolean streamingCapable(List<Query> graphQueries) {
+        for (Query query : graphQueries) {
+            if (!query.isStreamQueryCapable()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

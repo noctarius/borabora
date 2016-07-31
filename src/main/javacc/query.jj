@@ -56,22 +56,20 @@ PARSER_BEGIN(QueryParser)
      * </ul>
      */
     class QueryParser {
-        private GraphQueryBuilder queryBuilder;
+        private QueryBuilder queryBuilder;
         private Collection<TagDecoder> processors;
 
         private Deque generatorStack = new LinkedList();
 
-        private DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder;
-        private SequenceGraphQueryBuilder sequenceGraphQueryBuilder;
-        private StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder;
+        private StreamEntryQueryBuilder streamEntryQueryBuilder;
 
-        private QueryParser(Reader reader, GraphQueryBuilder queryBuilder, Collection<TagDecoder> processors) {
+        private QueryParser(Reader reader, QueryBuilder queryBuilder, Collection<TagDecoder> processors) {
             this(reader);
             this.queryBuilder = queryBuilder;
             this.processors = processors;
         }
 
-        static void parse(String query, GraphQueryBuilder queryBuilder, Collection<TagDecoder> processors)
+        static void parse(String query, QueryBuilder queryBuilder, Collection<TagDecoder> processors)
                 throws ParseException, TokenMgrError {
 
             new QueryParser(new StringReader(query), queryBuilder, processors).select();
@@ -104,6 +102,7 @@ TOKEN: {
      | < COLON:  (":") >
      | < COMMA:  (",") >
      | < UNDER:  ("_") >
+     | < DOLLAR: ("$") >
 
      | < TYPE:   (
           "int"
@@ -138,7 +137,7 @@ void select(): {
 void element(): {
 }
 {
-    ( property() | stream() )
+    ( property() | streamElement() )
 }
 
 void type(): {
@@ -151,12 +150,12 @@ void dictionaryType(): {
 }
 {
     {
-        DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder = ((StreamGraphQueryBuilder) queryBuilder).asDictionary();
-        generatorStack.addFirst(dictionaryGraphQueryBuilder);
+        DictionaryQueryBuilder dictionaryQueryBuilder = ((StreamQueryBuilder) queryBuilder).asDictionary();
+        generatorStack.addFirst(dictionaryQueryBuilder);
     }
     ( property() ( <COMMA> property() )* )
     {
-        dictionaryGraphQueryBuilder.endDictionary();
+        dictionaryQueryBuilder.endDictionary();
         generatorStack.removeFirst();
     }
 }
@@ -165,12 +164,12 @@ void sequenceType(): {
 }
 {
     {
-        SequenceGraphQueryBuilder sequenceGraphQueryBuilder = ((StreamGraphQueryBuilder) queryBuilder).asSequence();
-        generatorStack.addFirst(sequenceGraphQueryBuilder);
+        SequenceQueryBuilder sequenceQueryBuilder = ((StreamQueryBuilder) queryBuilder).asSequence();
+        generatorStack.addFirst(sequenceQueryBuilder);
     }
     ( entry() ( <COMMA> entry() )* )
     {
-        sequenceGraphQueryBuilder.endSequence();
+        sequenceQueryBuilder.endSequence();
         generatorStack.removeFirst();
     }
 }
@@ -179,12 +178,12 @@ void entry(): {
 }
 {
     {
-        SequenceGraphQueryBuilder sequenceGraphQueryBuilder = (SequenceGraphQueryBuilder) generatorStack.peekFirst();
-        StreamEntryGraphQueryBuilder streamEntryGraphQueryBuilder = sequenceGraphQueryBuilder.putEntry();
+        SequenceQueryBuilder sequenceQueryBuilder = (SequenceQueryBuilder) generatorStack.peekFirst();
+        StreamEntryQueryBuilder streamEntryQueryBuilder = sequenceQueryBuilder.putEntry();
     }
-    ( stream() | type() )
+    ( streamElement() | type() )
     {
-        streamEntryGraphQueryBuilder.endEntry();
+        streamEntryQueryBuilder.endEntry();
     }
 }
 
@@ -202,38 +201,38 @@ void property(): {
         stringToken = <IDENT>
     )
     {
-        DictionaryGraphQueryBuilder dictionaryGraphQueryBuilder = (DictionaryGraphQueryBuilder) generatorStack.peekFirst();
+        DictionaryQueryBuilder dictionaryQueryBuilder = (DictionaryQueryBuilder) generatorStack.peekFirst();
 
         if (intToken != null) {
             long value = Long.parseLong(intToken.image);
-            streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(value);
+            streamEntryQueryBuilder = dictionaryQueryBuilder.putEntry(value);
         } else if (floatToken != null) {
             try {
                 NumberFormat format = DecimalFormat.getInstance(Locale.ENGLISH);
                 double value = format.parse(floatToken.image).doubleValue();
-                streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(value);
+                streamEntryQueryBuilder = dictionaryQueryBuilder.putEntry(value);
             } catch (java.text.ParseException e) {
                 throw new QueryParserException(e);
             }
         } else if (stringToken != null) {
             String string = stringToken.image;
-            streamEntryGraphQueryBuilder = dictionaryGraphQueryBuilder.putEntry(string);
+            streamEntryQueryBuilder = dictionaryQueryBuilder.putEntry(string);
         }
     }
     <COLON> ( query() | type() )
     {
-        streamEntryGraphQueryBuilder.endEntry();
+        streamEntryQueryBuilder.endEntry();
     }
 }
 
-void stream(): {
+void streamElement(): {
     Token intToken = null;
 }
 {
     <HASH> ( intToken = <UINT> )?
     {
         long index = intToken == null ? 0 : Long.parseLong(intToken.image);
-        ((StreamGraphQueryBuilder) queryBuilder).stream(index);
+        ((StreamQueryBuilder) queryBuilder).stream(index);
     }
 }
 
@@ -310,5 +309,14 @@ void typematch(): {
 void query(): {
 }
 {
-    stream() (expression())*
+    ( multiStream() | streamElement() ) (expression())*
+}
+
+void multiStream(): {
+}
+{
+    <DOLLAR>
+    {
+        ((StreamQueryBuilder) queryBuilder).multiStream();
+    }
 }
