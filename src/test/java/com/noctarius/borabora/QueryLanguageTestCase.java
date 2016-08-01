@@ -189,38 +189,6 @@ public class QueryLanguageTestCase
         assertEqualsNumber(2, value.number());
     }
 
-    @Test(expected = QueryParserException.class)
-    public void test_query_parsing_fail_unknown_tagid()
-            throws Exception {
-
-        Parser parser = Parser.newBuilder().build();
-        parser.prepareQuery("#->tag$111");
-    }
-
-    @Test(expected = QueryParserException.class)
-    public void test_query_parsing_fail()
-            throws Exception {
-
-        Parser parser = Parser.newBuilder().build();
-        parser.prepareQuery("");
-    }
-
-    @Test(expected = QueryParserException.class)
-    public void test_query_parsing_fail_broken_dictionary()
-            throws Exception {
-
-        Parser parser = Parser.newBuilder().build();
-        parser.prepareQuery("#{}");
-    }
-
-    @Test(expected = QueryParserException.class)
-    public void test_query_parsing_fail_token_error_default()
-            throws Exception {
-
-        Parser parser = Parser.newBuilder().build();
-        parser.prepareQuery("#{1.1.}");
-    }
-
     @Test
     public void code_coverage_for_unused_but_generated_methods()
             throws Exception {

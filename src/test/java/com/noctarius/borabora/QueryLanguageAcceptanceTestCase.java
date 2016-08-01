@@ -30,6 +30,13 @@ public class QueryLanguageAcceptanceTestCase
     private final Parser parser = Parser.newBuilder().build();
 
     @Test(expected = QueryParserException.class)
+    public void fail_empty_query()
+            throws Exception {
+
+        parser.prepareQuery("");
+    }
+
+    @Test(expected = QueryParserException.class)
     public void fail_stream_nint() {
         parser.prepareQuery("#-1");
     }
@@ -327,6 +334,11 @@ public class QueryLanguageAcceptanceTestCase
         assertQueryEquals(query, parser.prepareQuery("#->tag"));
     }
 
+    @Test(expected = QueryParserException.class)
+    public void fail_type_check_unknown_tag() {
+        parser.prepareQuery("#->tag$111");
+    }
+
     @Test
     public void test_type_check_date_time() {
         Query query = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
@@ -480,6 +492,26 @@ public class QueryLanguageAcceptanceTestCase
     @Test(expected = QueryParserException.class)
     public void fail_dictionary_sequence_int_select_mixed() {
         parser.prepareQuery("(3: #, (1: #, 2: #))");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_broken_dictionary_query() {
+        parser.prepareQuery("#{}");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_broken_sequence_query() {
+        parser.prepareQuery("#()");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_broken_dictionary_float_query() {
+        parser.prepareQuery("#{1.1.}");
+    }
+
+    @Test(expected = QueryParserException.class)
+    public void fail_broken_sequence_float_query() {
+        parser.prepareQuery("#(1.1.)");
     }
 
     @Test
