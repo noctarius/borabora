@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -80,6 +81,26 @@ public class DictionaryTestCase
         assertEquals("C", dictionary.get(matchString("c")).string());
         assertEquals("D", dictionary.get(matchString("d")).string());
         assertEquals("E", dictionary.get(matchString("e")).string());
+    }
+
+
+    @Test
+    public void test_stream_multi_element_dictionary_foreach()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
+        Value value = parser.read(Query.newBuilder().build());
+
+        Dictionary dictionary = value.dictionary();
+
+        Map<String, String> result = new HashMap<>();
+        dictionary.forEach((k, v) -> result.put(k.string(), v.string()));
+
+        assertEquals("A", result.get("a"));
+        assertEquals("B", result.get("b"));
+        assertEquals("C", result.get("c"));
+        assertEquals("D", result.get("d"));
+        assertEquals("E", result.get("e"));
     }
 
     @Test

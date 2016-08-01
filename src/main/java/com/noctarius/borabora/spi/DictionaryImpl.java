@@ -38,7 +38,7 @@ final class DictionaryImpl
     private final long[][] elementIndexes;
     private final QueryContext queryContext;
 
-    public DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+    DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -151,34 +151,7 @@ final class DictionaryImpl
 
         @Override
         public Iterator<Map.Entry<Value, Value>> iterator() {
-            return new DictionaryEntryIterator();
-        }
-    }
-
-    private class DictionaryEntryIterator
-            implements Iterator<Map.Entry<Value, Value>> {
-
-        private long arrayIndex = 0;
-
-        @Override
-        public boolean hasNext() {
-            return arrayIndex < size * 2;
-        }
-
-        @Override
-        public Map.Entry<Value, Value> next() {
-            try {
-                if (arrayIndex >= size * 2) {
-                    throw new NoSuchElementException("No further element available");
-                }
-
-                long offsetKey = calculateArrayIndex(arrayIndex);
-                long offsetValue = calculateArrayIndex(arrayIndex);
-                return new SimpleEntry(offsetKey, offsetValue);
-
-            } finally {
-                arrayIndex += 2;
-            }
+            return new EntriesIterator();
         }
     }
 

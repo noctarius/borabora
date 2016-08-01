@@ -18,25 +18,30 @@ package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Dictionary;
-import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
+import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Sequence;
-import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.noctarius.borabora.Predicates.matchInt;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -143,6 +148,46 @@ public class SequenceTestCase
             element = parser.read(query);
             assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
+        }
+    }
+
+    @Test
+    public void long_sequence_stream()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(Query.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        List<Number> numbers = sequence.stream().map(v -> v.number()).collect(toList());
+
+        Iterator<Number> iterator = numbers.iterator();
+
+        int position = 1;
+        while (iterator.hasNext()) {
+            Number v = iterator.next();
+            assertEqualsNumber(position++, v.longValue());
+        }
+    }
+
+    @Test
+    public void long_sequence_parallel_stream()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
+        Value value = parser.read(Query.newBuilder().build());
+
+        Sequence sequence = value.sequence();
+        List<Long> numbers = sequence.parallelStream().map(v -> v.number().longValue())
+                                     .collect(toCollection(CopyOnWriteArrayList::new));
+
+        numbers.sort(Comparator.naturalOrder());
+        Iterator<Long> iterator = numbers.iterator();
+
+        int position = 1;
+        while (iterator.hasNext()) {
+            Number v = iterator.next();
+            assertEqualsNumber(position++, v);
         }
     }
 
