@@ -20,7 +20,6 @@ import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.NoSuchByteException;
-import com.noctarius.borabora.spi.Decoder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

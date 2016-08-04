@@ -14,41 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.impl.query.stages;
 
-import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
 
-import java.util.Map;
+public class PrepareSelectionQueryStage
+        implements QueryStage {
 
-class EndDictionaryEntryQuery
-        implements Query {
+    public static final QueryStage INSTANCE = new PrepareSelectionQueryStage();
 
-    static final Query INSTANCE = new EndDictionaryEntryQuery();
-
-    private EndDictionaryEntryQuery() {
+    protected PrepareSelectionQueryStage() {
     }
 
     @Override
-    public long access(long offset, QueryContext queryContext) {
-        Value value;
-        if (offset == -2) {
-            value = queryContext.queryStackPop();
-        } else {
-            value = Decoder.readValue(offset, queryContext);
-        }
+    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
+                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
+                                QueryContext pipelineContext) {
 
-        Value key = queryContext.queryStackPop();
-
-        Map<Value, Value> entries = queryContext.queryStackPeek();
-        entries.put(key, value);
-
-        return offset;
+        pipelineContext.selectStatementStrategy().beginSelect(pipelineContext);
+        return pipelineStage.visitChildren(pipelineContext);
     }
 
     @Override
     public String toString() {
-        return "EndDictionaryEntryQuery{}";
+        return "SELECT_BEGIN";
     }
 
 }

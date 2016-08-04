@@ -18,10 +18,13 @@ package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Value;
 
 public interface QueryContext {
 
-    Input input();
+    void consume(long offset);
+
+    void consume(Value value);
 
     <T> T applyDecoder(long offset, MajorType majorType);
 
@@ -30,5 +33,13 @@ public interface QueryContext {
     <T> T queryStackPop();
 
     <T> T queryStackPeek();
+
+    Input input();
+
+    long offset();
+
+    void offset(long offset);
+
+    SelectStatementStrategy selectStatementStrategy();
 
 }

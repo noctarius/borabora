@@ -52,11 +52,7 @@ public final class RelocatableStreamValue
 
     @Override
     public String toString() {
-        return "RelocatableStreamValue{" +
-                "valueType=" + valueType +
-                ", offset=" + offset +
-                ", value=" + byValueType() +
-                '}';
+        return "RelocatableStreamValue{" + "valueType=" + valueType + ", offset=" + offset + ", value=" + byValueType() + '}';
     }
 
     @Override

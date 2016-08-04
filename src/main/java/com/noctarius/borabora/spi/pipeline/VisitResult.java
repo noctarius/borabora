@@ -14,31 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.spi.QueryContext;
+public enum VisitResult {
 
-final class MultiStreamQuery
-        implements Query {
+    /**
+     * Continue pipeline execution with next child or sibling
+     */
+    Continue,
 
-    static final Query INSTANCE = new MultiStreamQuery();
+    /**
+     * Loop on current {@link Stage#evaluate(PipelineStage, Object)}
+     */
+    Loop,
 
-    private MultiStreamQuery() {
-    }
+    /**
+     * Stop execution on current subtree and skip children but continue
+     * on next sibling
+     */
+    Break,
 
-    @Override
-    public long access(long offset, QueryContext queryContext) {
-        return offset;
-    }
-
-    @Override
-    public boolean isStreamQueryCapable() {
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "MultiElementQuery{}";
-    }
-
+    /**
+     * Stop execution altogether
+     */
+    Exit
 }

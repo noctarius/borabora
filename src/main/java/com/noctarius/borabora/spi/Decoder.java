@@ -36,8 +36,8 @@ import static com.noctarius.borabora.spi.Constants.FP_VALUE_HALF_PRECISION;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_SINGLE_PRECISION;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
 import static com.noctarius.borabora.spi.Constants.UTF8;
 
 public enum Decoder {
@@ -227,8 +227,8 @@ public enum Decoder {
     public static long findByDictionaryKey(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         // Search for key element
         long position = findByPredicate(predicate, offset, queryContext);
-        if (position == QUERY_RETURN_CODE_NULL) {
-            return QUERY_RETURN_CODE_NULL;
+        if (position == OFFSET_CODE_NULL) {
+            return OFFSET_CODE_NULL;
         }
         return skip(queryContext.input(), position);
     }
@@ -275,7 +275,7 @@ public enum Decoder {
             long length = length(input, majorType, offset);
             offset = skip(input, offset + length);
         } while (input.offsetValid(offset) && Bytes.readUInt8(input, offset) != OPCODE_BREAK_MASK);
-        return QUERY_RETURN_CODE_NULL;
+        return OFFSET_CODE_NULL;
 
     }
 

@@ -16,56 +16,75 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.impl.query.stages.DictionaryLookupQueryStage;
+import com.noctarius.borabora.impl.query.stages.SequenceIndexQueryStage;
+import com.noctarius.borabora.impl.query.stages.SequenceMatcherQueryStage;
+import com.noctarius.borabora.impl.query.stages.TypeMatcherQueryStage;
+import com.noctarius.borabora.spi.QueryBuilderTreeNode;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.DictionaryQuery.floatMatcher;
-import static com.noctarius.borabora.DictionaryQuery.intMatcher;
-import static com.noctarius.borabora.DictionaryQuery.predicateMatcher;
-import static com.noctarius.borabora.DictionaryQuery.stringMatcher;
-
 abstract class AbstractQueryBuilder {
 
-    protected final List<Query> graphQueries;
+    protected final QueryBuilderTreeNode parentTreeNode;
     protected final SelectStatementStrategy selectStatementStrategy;
 
-    protected AbstractQueryBuilder(List<Query> graphQueries, SelectStatementStrategy selectStatementStrategy) {
-        this.graphQueries = graphQueries;
+    protected QueryBuilderTreeNode currentTreeNode;
+
+    protected AbstractQueryBuilder(QueryBuilderTreeNode parentTreeNode, SelectStatementStrategy selectStatementStrategy) {
+        this.parentTreeNode = parentTreeNode;
+        this.currentTreeNode = parentTreeNode;
+
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
+    public void sequenceMatch0(Predicate<Value> predicate) {
+        Tracer.traceInfo("AbstractQueryBuilder#sequenceMatch0", this);
+        Objects.requireNonNull(predicate, "predicate must not be null");
+        currentTreeNode = currentTreeNode.pushChild(new SequenceMatcherQueryStage(predicate));
+    }
+
     public void sequence0(long index) {
-        graphQueries.add(new SequenceQuery(index));
+        Tracer.traceInfo("AbstractQueryBuilder#sequence0", this);
+        if (index < 0) {
+            throw new IllegalArgumentException("index must not be negative");
+        }
+        currentTreeNode = currentTreeNode.pushChild(new SequenceIndexQueryStage(index));
     }
 
     public void dictionary0(Predicate<Value> predicate) {
+        Tracer.traceInfo("AbstractQueryBuilder#dictionary0-predicate", this);
         Objects.requireNonNull(predicate, "predicate must not be null");
-        graphQueries.add(predicateMatcher(predicate));
+        currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.predicateMatcher(predicate));
     }
 
     public void dictionary0(String key) {
+        Tracer.traceInfo("AbstractQueryBuilder#dictionary0-string", this);
         Objects.requireNonNull(key, "key must not be null");
-        graphQueries.add(stringMatcher(key));
+        currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.stringMatcher(key));
     }
 
     public void dictionary0(double key) {
-        graphQueries.add(floatMatcher(key));
+        Tracer.traceInfo("AbstractQueryBuilder#dictionary0-double", this);
+        currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.floatMatcher(key));
     }
 
     public void dictionary0(long key) {
-        graphQueries.add(intMatcher(key));
+        Tracer.traceInfo("AbstractQueryBuilder#dictionary0-long", this);
+        currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.intMatcher(key));
     }
 
     public void nullOrType0(TypeSpec typeSpec) {
-        graphQueries.add(new TypeMatcherQuery(typeSpec, false));
+        Tracer.traceInfo("AbstractQueryBuilder#nullOrType0", this);
+        currentTreeNode = currentTreeNode.pushChild(new TypeMatcherQueryStage(typeSpec, false));
     }
 
     public void requireType0(TypeSpec typeSpec) {
-        graphQueries.add(new TypeMatcherQuery(typeSpec, true));
+        Tracer.traceInfo("AbstractQueryBuilder#requireType0", this);
+        currentTreeNode = currentTreeNode.pushChild(new TypeMatcherQueryStage(typeSpec, true));
     }
 
 }

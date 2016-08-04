@@ -64,28 +64,14 @@ import static com.noctarius.borabora.spi.StringEncoders.ASCII_ENCODER;
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {
 
-    Number(Value::number),
-    Int(Value::number, Number),
-    UInt(Value::number, Int),
-    NInt(Value::number, Int),
-    String(Value::string),
-    ByteString(Value::string, String),
-    TextString(Value::string, String),
-    Sequence(Value::sequence),
-    Dictionary(Value::dictionary),
-    Float(Value::number, Number),
-    UFloat(Value::number, Float),
-    NFloat(Value::number, Float),
-    Bool(Value::bool),
-    Null((v) -> null),
-    Undefined((v) -> null),
-    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag),
-    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag),
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt),
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt),
-    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag),
-    URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag),
-    Unknown(Value::raw);
+    Number(Value::number), Int(Value::number, Number), UInt(Value::number, Int), NInt(Value::number, Int), String(
+            Value::string), ByteString(Value::string, String), TextString(Value::string, String), Sequence(
+            Value::sequence), Dictionary(Value::dictionary), Float(Value::number, Number), UFloat(Value::number, Float), NFloat(
+            Value::number, Float), Bool(Value::bool), Null((v) -> null), Undefined((v) -> null), DateTime(DATE_TIME_READER,
+            DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER,
+            Value::tag), UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt), NBigNum(NBIG_NUM_READER,
+            BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt), EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER,
+            ENCODED_CBOR_MATCHER, Value::tag), URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag), Unknown(Value::raw);
 
     private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;

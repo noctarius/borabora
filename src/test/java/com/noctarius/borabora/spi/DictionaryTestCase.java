@@ -83,7 +83,6 @@ public class DictionaryTestCase
         assertEquals("E", dictionary.get(matchString("e")).string());
     }
 
-
     @Test
     public void test_stream_multi_element_dictionary_foreach()
             throws Exception {

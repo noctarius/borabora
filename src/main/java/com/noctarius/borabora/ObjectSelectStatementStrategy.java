@@ -16,13 +16,19 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryQueryBuilder;
-import com.noctarius.borabora.builder.SequenceQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.QueryStage;
+import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.StreamableIterable;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class ObjectSelectStatementStrategy
         implements SelectStatementStrategy {
@@ -37,72 +43,283 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public Value finalizeSelect(QueryContext queryContext) {
-        return queryContext.queryStackPop();
+    public void finalizeSelect(QueryContext queryContext) {
+        Value value = queryContext.queryStackPop();
+        queryContext.consume(value);
     }
 
     @Override
-    public <T> DictionaryQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(AsDictionaryQuery.INSTANCE);
-        return new DictionaryQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public void beginDictionary(QueryContext queryContext) {
+        // Create a new Map to store entries, thanks to thread-safetyness :)
+        Map<Value, Value> entries = new HashMap<>();
+
+        // Push to query context stack
+        queryContext.queryStackPush(entries);
     }
 
     @Override
-    public <T> SequenceQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(AsSequenceQuery.INSTANCE);
-        return new SequenceQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public void endDictionary(QueryContext queryContext) {
+        // Generated underlying map
+        Map<Value, Value> entries = queryContext.queryStackPop();
+
+        // Build the new Dictionary based by these entries
+        Dictionary dictionary = new MapBackedDictionary(entries, queryContext);
+
+        // Push dictionary value
+        queryContext.queryStackPush(new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary));
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(String key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
+    public void putDictionaryKey(String key, QueryContext queryContext) {
+        Value keyValue = new ObjectValue(MajorType.TextString, ValueTypes.TextString, key);
+        queryContext.queryStackPush(keyValue);
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(long key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
+    public void putDictionaryKey(long key, QueryContext queryContext) {
+        Value keyValue;
+        if (key < 0) {
+            keyValue = new ObjectValue(MajorType.NegativeInteger, ValueTypes.NInt, key);
+        } else {
+            keyValue = new ObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, key);
+        }
+        queryContext.queryStackPush(keyValue);
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(double key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        return putDictionaryEntry(new PutEntryQuery(key), queryBuilder, graphQueries);
+    public void putDictionaryKey(double key, QueryContext queryContext) {
+        Value keyValue;
+        if (key < 0) {
+            keyValue = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.NFloat, key);
+        } else {
+            keyValue = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.UFloat, key);
+        }
+        queryContext.queryStackPush(keyValue);
     }
 
     @Override
-    public <T> T endDictionary(T queryBuilder, List<Query> graphQueries) {
-        graphQueries.add(EndDictionaryQuery.INSTANCE);
-        return queryBuilder;
+    public void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+        long offset = queryContext.offset();
+
+        Value v1 = queryContext.queryStackPop();
+        Object v2 = queryContext.queryStackPeek();
+
+        Value key;
+        Value value;
+        if (!(v2 instanceof Value)) {
+            key = v1;
+            if (offset == -2) {
+                value = queryContext.queryStackPop();
+            } else if (offset == -1) {
+                value = Value.NULL_VALUE;
+            } else {
+                value = Decoder.readValue(offset, queryContext);
+            }
+        } else {
+            value = v1;
+            key = queryContext.queryStackPop();
+        }
+
+        Map<Value, Value> entries = queryContext.queryStackPeek();
+        entries.put(key, value);
     }
 
     @Override
-    public <T, S extends SequenceQueryBuilder<T>> StreamEntryQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                        List<Query> graphQueries) {
+    public void beginSequence(QueryContext queryContext) {
+        // Create a new List to store entries, thanks to thread-safetyness :)
+        List<Value> entries = new ArrayList<>();
 
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, EndSequenceEntryQuery.INSTANCE, this);
+        // Push to query context stack
+        queryContext.queryStackPush(entries);
     }
 
     @Override
-    public <T> T endSequence(T queryBuilder, List<Query> graphQueries) {
-        graphQueries.add(EndSequenceQuery.INSTANCE);
-        return queryBuilder;
+    public void endSequence(QueryContext queryContext) {
+        // Generated underlying list
+        List<Value> entries = queryContext.queryStackPop();
+
+        // Build the new Sequence based by these entries
+        Sequence sequence = new ListBackedSequence(entries, queryContext);
+
+        // Push dictionary value
+        queryContext.queryStackPush(new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence));
     }
 
-    private <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(
-            Query putKeyQuery, D queryBuilder, List<Query> graphQueries) {
+    @Override
+    public void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+        Value value;
+        if (queryContext.queryStackPeek() instanceof Value) {
+            value = queryContext.queryStackPop();
+        } else {
+            long offset = queryContext.offset();
 
-        graphQueries.add(putKeyQuery);
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, EndDictionaryEntryQuery.INSTANCE, this);
+            if (offset == -2) {
+                value = queryContext.queryStackPop();
+            } else if (offset == -1) {
+                value = Value.NULL_VALUE;
+            } else {
+                value = Decoder.readValue(offset, queryContext);
+            }
+        }
+        List<Value> entries = queryContext.queryStackPeek();
+        entries.add(value);
+    }
+
+    private static class ListBackedSequence
+            extends AbstractJavaBackedDataStructure
+            implements Sequence {
+
+        private final List<Value> entries;
+        private final QueryContext queryContext;
+
+        private ListBackedSequence(List<Value> entries, QueryContext queryContext) {
+            this.entries = entries;
+            this.queryContext = queryContext;
+        }
+
+        @Override
+        public long size() {
+            return entries.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return entries.isEmpty();
+        }
+
+        @Override
+        public boolean contains(Predicate<Value> predicate) {
+            return findValue(predicate, iterator(), queryContext) != null;
+        }
+
+        @Override
+        public Iterator<Value> iterator() {
+            return entries.iterator();
+        }
+
+        @Override
+        public Value[] toArray() {
+            return entries.toArray(new Value[entries.size()]);
+        }
+
+        @Override
+        public Value get(long sequenceIndex) {
+            return entries.get((int) sequenceIndex);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (long i = 0; i < entries.size(); i++) {
+                sb.append(get(i)).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+
+        @Override
+        public String asString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (long i = 0; i < entries.size(); i++) {
+                sb.append(get(i).asString()).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+    }
+
+    private static class MapBackedDictionary
+            extends AbstractJavaBackedDataStructure
+            implements Dictionary {
+
+        private final Map<Value, Value> entries;
+        private final QueryContext queryContext;
+
+        private MapBackedDictionary(Map<Value, Value> entries, QueryContext queryContext) {
+            this.entries = entries;
+            this.queryContext = queryContext;
+        }
+
+        @Override
+        public long size() {
+            return entries.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return entries.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Predicate<Value> predicate) {
+            return findValue(predicate, keys().iterator(), queryContext) != null;
+        }
+
+        @Override
+        public boolean containsValue(Predicate<Value> predicate) {
+            return findValue(predicate, values().iterator(), queryContext) != null;
+        }
+
+        @Override
+        public Value get(Predicate<Value> predicate) {
+            Value key = findValue(predicate, keys().iterator(), queryContext);
+            return entries.get(key);
+        }
+
+        @Override
+        public StreamableIterable<Value> keys() {
+            return new SimpleStreamableIterable<>(entries.keySet());
+        }
+
+        @Override
+        public StreamableIterable<Value> values() {
+            return new SimpleStreamableIterable<>(entries.values());
+        }
+
+        @Override
+        public StreamableIterable<Map.Entry<Value, Value>> entries() {
+            return new SimpleStreamableIterable<>(entries.entrySet());
+        }
+
+        @Override
+        public Iterator<Map.Entry<Value, Value>> iterator() {
+            return entries.entrySet().iterator();
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (Map.Entry<Value, Value> entry : entries.entrySet()) {
+                Value key = entry.getKey();
+                Value value = entry.getValue();
+                sb.append(key).append('=').append(value).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+
+        @Override
+        public String asString() {
+            StringBuilder sb = new StringBuilder("[");
+            for (Map.Entry<Value, Value> entry : entries.entrySet()) {
+                Value key = entry.getKey();
+                Value value = entry.getValue();
+                sb.append(key.asString()).append('=').append(value.asString()).append(", ");
+            }
+            return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+    }
+
+    private static class SimpleStreamableIterable<T>
+            implements StreamableIterable<T> {
+
+        private final Iterable<T> iterable;
+
+        private SimpleStreamableIterable(Iterable<T> iterable) {
+            this.iterable = iterable;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return iterable.iterator();
+        }
     }
 
 }

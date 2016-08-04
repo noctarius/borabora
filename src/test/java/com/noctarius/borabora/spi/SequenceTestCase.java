@@ -32,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.noctarius.borabora.Predicates.any;
 import static com.noctarius.borabora.Predicates.matchInt;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
@@ -456,6 +458,33 @@ public class SequenceTestCase
 
         assertTrue(entry1.valueType().matches(ValueTypes.Dictionary));
         assertTrue(entry2.valueType().matches(ValueTypes.Dictionary));
+    }
+
+    @Test
+    public void test_match_any_sequence_element() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Writer writer = Writer.newBuilder().build();
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putSequence()
+
+                    .putString("a").putString("b").putString("c")
+
+                    .endSequence().finishStream();
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Parser parser = Parser.newBuilder().build();
+
+        Query query = Query.newBuilder().sequenceMatch(any()).build();
+
+        List<Value> result = new ArrayList<>();
+        parser.read(input, query, result::add);
+
+        assertEquals(3, result.size());
+        assertEquals("a", result.get(0).string());
+        assertEquals("b", result.get(1).string());
+        assertEquals("c", result.get(2).string());
     }
 
     private void test_sequence(String hex)

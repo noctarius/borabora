@@ -17,12 +17,7 @@
 package com.noctarius.borabora.builder;
 
 public interface StreamEntryQueryBuilder<T>
-        extends EntryQueryBuilder<T> {
-
-    EntryQueryBuilder<T> stream(long offset);
-
-    DictionaryQueryBuilder<EntryQueryBuilder<T>> asDictionary();
-
-    SequenceQueryBuilder<EntryQueryBuilder<T>> asSequence();
+        extends EntryQueryBuilder<T>, StreamElementQueryBuilder<EntryQueryBuilder<T>>,
+                SelectorQueryBuilder<EntryQueryBuilder<T>> {
 
 }

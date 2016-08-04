@@ -14,35 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ConsumeSelectedQueryStage
+        implements QueryStage {
 
-class AsSequenceQuery
-        implements Query {
+    public static final QueryStage INSTANCE = new ConsumeSelectedQueryStage();
 
-    static final Query INSTANCE = new AsSequenceQuery();
-
-    private AsSequenceQuery() {
+    protected ConsumeSelectedQueryStage() {
     }
 
     @Override
-    public long access(long offset, QueryContext queryContext) {
-        // Create a new List to store entries, thanks to thread-safetyness :)
-        List<Value> entries = new ArrayList<>();
+    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
+                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
+                                QueryContext pipelineContext) {
 
-        // Push to query context stack
-        queryContext.queryStackPush(entries);
-
-        return offset;
+        pipelineContext.selectStatementStrategy().finalizeSelect(pipelineContext);
+        return VisitResult.Continue;
     }
 
     @Override
     public String toString() {
-        return "AsSequenceQuery{}";
+        return "SELECT_END";
     }
 
 }

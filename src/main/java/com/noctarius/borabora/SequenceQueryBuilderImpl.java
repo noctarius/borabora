@@ -18,33 +18,39 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
+import com.noctarius.borabora.spi.QueryBuilderTreeNode;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
-import java.util.List;
+import static com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage.INSTANCE;
 
 class SequenceQueryBuilderImpl<T>
         implements SequenceQueryBuilder<T> {
 
     private final T queryBuilder;
-    private final List<Query> graphQueries;
+    private final QueryBuilderTreeNode parentTreeNode;
     private SelectStatementStrategy selectStatementStrategy;
 
-    SequenceQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
-                                  SelectStatementStrategy selectStatementStrategy) {
+    SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderTreeNode parentTreeNode,
+                             SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;
-        this.graphQueries = graphQueries;
+        this.parentTreeNode = parentTreeNode;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
     public StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry() {
-        return selectStatementStrategy.putSequenceEntry(this, graphQueries);
+        Tracer.traceCall("SequenceQueryBuilderImpl#putEntry", this);
+        QueryBuilderTreeNode entry = new QueryBuilderTreeNode(AsSequenceSelectorEntryQueryStage.INSTANCE);
+        parentTreeNode.children().add(entry);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, INSTANCE, selectStatementStrategy);
     }
 
     @Override
     public T endSequence() {
-        return selectStatementStrategy.endSequence(queryBuilder, graphQueries);
+        Tracer.traceReturn("SequenceQueryBuilderImpl#endSequence", this);
+        return queryBuilder;
     }
 
 }

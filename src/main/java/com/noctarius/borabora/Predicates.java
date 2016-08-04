@@ -30,6 +30,12 @@ import java.util.function.Predicate;
 public enum Predicates {
     ;
 
+    private static final Predicate<Value> MATCH_ANY = (v) -> true;
+
+    public static final Predicate<Value> any() {
+        return MATCH_ANY;
+    }
+
     public static Predicate<Value> matchStringIgnoreCase(String value) {
         return (v) -> {
             if (!v.valueType().matches(ValueTypes.String)) {
@@ -61,6 +67,7 @@ public enum Predicates {
 
             if (v instanceof QueryContextAware) {
                 QueryContext queryContext = ((QueryContextAware) v).queryContext();
+                // TODO Match majorType ByteString vs TextString
                 MajorType majorType = v.majorType();
                 long offset = v.offset();
 
@@ -111,6 +118,29 @@ public enum Predicates {
             }
             return value == n.longValue();
         };
+    }
+
+    public static boolean predicateEquals(Predicate first, Predicate second) {
+        String name = first.getClass().getName();
+        String otherName = second.getClass().getName();
+
+        if (name.contains("$$Lambda$") && !otherName.contains("$$Lambda$") //
+                || !name.contains("$$Lambda$") && otherName.contains("$$Lambda$")) {
+
+            return false;
+        }
+
+        if (!name.contains("$$Lambda$") && !otherName.contains("$$Lambda$")) {
+            return first.equals(second);
+        }
+
+        int nameIndex = name.indexOf("$$Lambda$");
+        int otherNameIndex = otherName.indexOf("$$Lambda$");
+
+        int nameEndIndex = name.indexOf('/', nameIndex);
+        int otherNameEndIndex = name.indexOf('/', otherNameIndex);
+
+        return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
     }
 
 }

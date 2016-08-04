@@ -20,6 +20,7 @@ import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static com.noctarius.borabora.Predicates.any;
 import static com.noctarius.borabora.Predicates.matchFloat;
 import static com.noctarius.borabora.Predicates.matchInt;
 import static com.noctarius.borabora.Predicates.matchString;
@@ -476,6 +477,7 @@ public class QueryLanguageAcceptanceTestCase
                            .putEntry(2).stream(0).endEntry() //
                            .endDictionary().endEntry() //
                            .endDictionary().build();
+        System.out.println("");
         evaluate(query, "(3: #, 4: (1: #, 2: #))");
     }
 
@@ -620,7 +622,7 @@ public class QueryLanguageAcceptanceTestCase
     @Ignore
     public void test_dictionary_dictionary_if_string() {
         Query query = null; // TODO
-        evaluate(query, "{?{'foo'=='bar'}>>'foo'}");
+        evaluate(query, "#{?{'foo'=='bar'}>>'foo'}");
     }
 
     @Test
@@ -665,6 +667,15 @@ public class QueryLanguageAcceptanceTestCase
         evaluate(query, "{?{'foo'>-1.0}>>'foo'}");
         evaluate(query, "{?{'foo'<=-1.0}>>'foo'}");
         evaluate(query, "{?{'foo'<-1.0}>>'foo'}");
+    }
+
+    @Test
+    public void test_any_sequence_index() {
+        Query query = Query.newBuilder().sequenceMatch(any()).build();
+        evaluate(query, "#(?)");
+
+        query = Query.newBuilder().multiStream().sequenceMatch(any()).build();
+        evaluate(query, "$(?)");
     }
 
     @Test

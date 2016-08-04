@@ -16,9 +16,12 @@
  */
 options {
     STATIC = false;
+    JAVA_UNICODE_ESCAPE=true;
+    FORCE_LA_CHECK=true;
     SUPPORT_CLASS_VISIBILITY_PUBLIC=false;
     DEBUG_PARSER=false;
     DEBUG_TOKEN_MANAGER=false;
+    DEBUG_LOOKAHEAD=false;
 }
 PARSER_BEGIN(QueryParser)
     package com.noctarius.borabora;
@@ -56,23 +59,25 @@ PARSER_BEGIN(QueryParser)
      * </ul>
      */
     class QueryParser {
-        private QueryBuilder queryBuilder;
         private Collection<TagDecoder> processors;
 
         private Deque generatorStack = new LinkedList();
 
-        private StreamEntryQueryBuilder streamEntryQueryBuilder;
-
         private QueryParser(Reader reader, QueryBuilder queryBuilder, Collection<TagDecoder> processors) {
             this(reader);
-            this.queryBuilder = queryBuilder;
             this.processors = processors;
+
+            generatorStack.addFirst(queryBuilder);
         }
 
         static void parse(String query, QueryBuilder queryBuilder, Collection<TagDecoder> processors)
                 throws ParseException, TokenMgrError {
 
             new QueryParser(new StringReader(query), queryBuilder, processors).select();
+        }
+
+        private <T> T queryTokenBuilder() {
+            return (T) generatorStack.peek();
         }
     }
 PARSER_END(QueryParser)
@@ -103,6 +108,11 @@ TOKEN: {
      | < COMMA:  (",") >
      | < UNDER:  ("_") >
      | < DOLLAR: ("$") >
+     | < EQEQ:   ("==") >
+     | < GTEQ:   (">=") >
+     | < LTEQ:   ("<=") >
+     | < GT:     (">") >
+     | < LT:     ("<") >
 
      | < TYPE:   (
           "int"
@@ -128,7 +138,6 @@ TOKEN: {
 }
 
 void select(): {
-
 }
 {
     ( query() | type() ) <EOF>
@@ -150,12 +159,12 @@ void dictionaryType(): {
 }
 {
     {
-        DictionaryQueryBuilder dictionaryQueryBuilder = ((StreamQueryBuilder) queryBuilder).asDictionary();
+        DictionaryQueryBuilder dictionaryQueryBuilder = ((SelectorQueryBuilder) queryTokenBuilder()).asDictionary();
         generatorStack.addFirst(dictionaryQueryBuilder);
     }
     ( property() ( <COMMA> property() )* )
     {
-        dictionaryQueryBuilder.endDictionary();
+        ((DictionaryQueryBuilder) queryTokenBuilder()).endDictionary();
         generatorStack.removeFirst();
     }
 }
@@ -164,12 +173,12 @@ void sequenceType(): {
 }
 {
     {
-        SequenceQueryBuilder sequenceQueryBuilder = ((StreamQueryBuilder) queryBuilder).asSequence();
+        SequenceQueryBuilder sequenceQueryBuilder = ((SelectorQueryBuilder) queryTokenBuilder()).asSequence();
         generatorStack.addFirst(sequenceQueryBuilder);
     }
     ( entry() ( <COMMA> entry() )* )
     {
-        sequenceQueryBuilder.endSequence();
+        ((SequenceQueryBuilder) queryTokenBuilder()).endSequence();
         generatorStack.removeFirst();
     }
 }
@@ -178,12 +187,13 @@ void entry(): {
 }
 {
     {
-        SequenceQueryBuilder sequenceQueryBuilder = (SequenceQueryBuilder) generatorStack.peekFirst();
-        StreamEntryQueryBuilder streamEntryQueryBuilder = sequenceQueryBuilder.putEntry();
+        StreamEntryQueryBuilder streamEntryQueryBuilder = ((SequenceQueryBuilder) queryTokenBuilder()).putEntry();
+        generatorStack.addFirst(streamEntryQueryBuilder);
     }
     ( streamElement() | type() )
     {
-        streamEntryQueryBuilder.endEntry();
+        ((StreamEntryQueryBuilder) queryTokenBuilder()).endEntry();
+        generatorStack.removeFirst();
     }
 }
 
@@ -201,8 +211,8 @@ void property(): {
         stringToken = <IDENT>
     )
     {
-        DictionaryQueryBuilder dictionaryQueryBuilder = (DictionaryQueryBuilder) generatorStack.peekFirst();
-
+        DictionaryQueryBuilder dictionaryQueryBuilder = (DictionaryQueryBuilder) queryTokenBuilder();
+        StreamEntryQueryBuilder streamEntryQueryBuilder = null;
         if (intToken != null) {
             long value = Long.parseLong(intToken.image);
             streamEntryQueryBuilder = dictionaryQueryBuilder.putEntry(value);
@@ -218,10 +228,12 @@ void property(): {
             String string = stringToken.image;
             streamEntryQueryBuilder = dictionaryQueryBuilder.putEntry(string);
         }
+        generatorStack.addFirst(streamEntryQueryBuilder);
     }
     <COLON> ( query() | type() )
     {
-        streamEntryQueryBuilder.endEntry();
+        ((StreamEntryQueryBuilder) queryTokenBuilder()).endEntry();
+        generatorStack.removeFirst();
     }
 }
 
@@ -232,7 +244,7 @@ void streamElement(): {
     <HASH> ( intToken = <UINT> )?
     {
         long index = intToken == null ? 0 : Long.parseLong(intToken.image);
-        ((StreamQueryBuilder) queryBuilder).stream(index);
+        ((StreamElementQueryBuilder) queryTokenBuilder()).stream(index);
     }
 }
 
@@ -254,38 +266,48 @@ void dictionary(): {
     {
         if (intToken != null) {
             long value = Long.parseLong(intToken.image);
-            queryBuilder.dictionary(value);
+            ((QueryTokenBuilder) queryTokenBuilder()).dictionary(value);
         } else if (floatToken != null) {
             try {
                 NumberFormat format = DecimalFormat.getInstance(Locale.ENGLISH);
                 double value = format.parse(floatToken.image).doubleValue();
-                queryBuilder.dictionary(value);
+                ((QueryTokenBuilder) queryTokenBuilder()).dictionary(value);
             } catch (java.text.ParseException e) {
                 throw new QueryParserException(e);
             }
         } else if (stringToken != null) {
             String string = stringToken.image;
             string = string.substring(1, string.length() - 1);
-            queryBuilder.dictionary(string);
+            ((QueryTokenBuilder) queryTokenBuilder()).dictionary(string);
         }
     }
 }
 
 void sequence(): {
     Token intToken = null;
+    Token optToken = null;
 }
 {
-    (<OBRA>) ( intToken = <UINT>) (<CBRA>)
+    (<OBRA>)
+    (
+        intToken = <UINT> |
+        optToken = <OPT>
+    )
+    (<CBRA>)
     {
-        long index = Long.parseLong(intToken.image);
-        queryBuilder.sequence(index);
+        if (optToken != null) {
+            ((QueryTokenBuilder) queryTokenBuilder()).sequenceMatch(Predicates.any());
+        } else {
+            long index = Long.parseLong(intToken.image);
+            ((QueryTokenBuilder) queryTokenBuilder()).sequence(index);
+        }
     }
 }
 
 void expression(): {
 }
 {
-    (dictionary() | sequence() | typematch())
+    ( dictionary() | sequence() | typematch() )
 }
 
 void typematch(): {
@@ -299,9 +321,9 @@ void typematch(): {
         String spec = typeToken.image;
         TypeSpec typeSpec = TypeSpecs.typeSpec(spec, processors);
         if (required) {
-            queryBuilder.requireType(typeSpec);
+            ((QueryTokenBuilder) queryTokenBuilder()).requireType(typeSpec);
         } else {
-            queryBuilder.nullOrType(typeSpec);
+            ((QueryTokenBuilder) queryTokenBuilder()).nullOrType(typeSpec);
         }
     }
 }
@@ -317,6 +339,6 @@ void multiStream(): {
 {
     <DOLLAR>
     {
-        ((StreamQueryBuilder) queryBuilder).multiStream();
+        ((StreamQueryBuilder) queryTokenBuilder()).multiStream();
     }
 }

@@ -30,7 +30,6 @@ import static com.noctarius.borabora.spi.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_ONE_BYTE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
-import static com.noctarius.borabora.spi.Constants.ASCII;
 import static com.noctarius.borabora.spi.Constants.BI_MASK;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_24;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_256;

@@ -14,40 +14,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.impl.query.stages;
 
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
 
 import java.util.Objects;
 
-class TypeMatcherQuery
-        implements Query {
+public class TypeMatcherQueryStage
+        implements QueryStage {
 
     private final TypeSpec typeSpec;
     private final boolean required;
 
-    TypeMatcherQuery(TypeSpec typeSpec, boolean required) {
+    public TypeMatcherQueryStage(TypeSpec typeSpec, boolean required) {
         Objects.requireNonNull(typeSpec, "typeSpec cannot be null");
         this.typeSpec = typeSpec;
         this.required = required;
     }
 
     @Override
-    public long access(long offset, QueryContext queryContext) {
-        Input input = queryContext.input();
+    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
+                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
+                                QueryContext pipelineContext) {
+
+        Input input = pipelineContext.input();
+        long offset = pipelineContext.offset();
+
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
-        if (typeSpec.valid(majorType, input, offset)) {
-            return offset;
-        }
-        if (required) {
+        if (!typeSpec.valid(majorType, input, offset) && required) {
             String msg = String.format("Element at offset %s is not of type %s but %s", offset, this.typeSpec, valueType);
             throw new WrongTypeException(msg);
         }
-        return offset;
+
+        return pipelineStage.visitChildren(pipelineContext);
     }
 
     @Override
@@ -55,11 +65,11 @@ class TypeMatcherQuery
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TypeMatcherQuery)) {
+        if (!(o instanceof TypeMatcherQueryStage)) {
             return false;
         }
 
-        TypeMatcherQuery that = (TypeMatcherQuery) o;
+        TypeMatcherQueryStage that = (TypeMatcherQueryStage) o;
 
         if (required != that.required) {
             return false;
@@ -76,7 +86,7 @@ class TypeMatcherQuery
 
     @Override
     public String toString() {
-        return "TypeMatcherQuery{" + "typeSpec=" + typeSpec + ", required=" + required + '}';
+        return "TYPE_MATCH[ " + "type=" + typeSpec + ", optional=" + !required + " ]";
     }
 
 }

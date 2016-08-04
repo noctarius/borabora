@@ -25,6 +25,8 @@ public interface QueryTokenBuilder<T extends QueryTokenBuilder<T>> {
 
     T sequence(long index);
 
+    T sequenceMatch(Predicate<Value> predicate);
+
     T dictionary(Predicate<Value> predicate);
 
     T dictionary(String key);

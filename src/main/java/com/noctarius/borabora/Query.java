@@ -17,16 +17,16 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 public interface Query {
 
-    default boolean isStreamQueryCapable() {
-        return true;
-    }
+    boolean isStreamQueryCapable();
 
-    long access(long offset, QueryContext queryContext);
+    QueryPipeline newQueryPipeline();
+
+    void printQueryGraph();
 
     static StreamQueryBuilder newBuilder() {
         return newBuilder(true);
@@ -42,6 +42,10 @@ public interface Query {
     }
 
     static boolean equals(Object first, Object second) {
+        if (!(first instanceof Query) || !(second instanceof Query)) {
+            return false;
+        }
+
         String name = first.getClass().getName();
         String otherName = second.getClass().getName();
 

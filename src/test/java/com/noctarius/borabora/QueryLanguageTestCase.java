@@ -157,8 +157,6 @@ public class QueryLanguageTestCase
 
         assertEquals(ValueTypes.Dictionary, value3.valueType());
         assertEquals(ValueTypes.Sequence, value4.valueType());
-
-        System.out.println(ValuePrettyPrinter.asStringPrettyPrint(value1));
     }
 
     @Test
@@ -203,7 +201,7 @@ public class QueryLanguageTestCase
         token_source.set(qp, null);
         qp.ReInit(new StringReader(""));
 
-        QueryParserTokenManager tm = new QueryParserTokenManager(new SimpleCharStream(new StringReader("")));
+        QueryParserTokenManager tm = new QueryParserTokenManager(new JavaCharStream(new StringReader("")));
         qp = new QueryParser(tm);
         qp.ReInit(tm);
         qp.enable_tracing();

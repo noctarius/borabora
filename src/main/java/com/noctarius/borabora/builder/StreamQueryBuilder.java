@@ -17,14 +17,8 @@
 package com.noctarius.borabora.builder;
 
 public interface StreamQueryBuilder
-        extends QueryBuilder {
-
-    QueryBuilder stream(long offset);
+        extends QueryBuilder, StreamElementQueryBuilder<QueryBuilder>, SelectorQueryBuilder<QueryBuilder> {
 
     QueryBuilder multiStream();
-
-    DictionaryQueryBuilder<QueryBuilder> asDictionary();
-
-    SequenceQueryBuilder<QueryBuilder> asSequence();
 
 }

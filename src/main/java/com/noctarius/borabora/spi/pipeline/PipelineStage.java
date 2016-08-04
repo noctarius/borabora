@@ -14,26 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.spi.QueryContext;
+public interface PipelineStage<PC, T extends Stage<PC, T>> {
 
-final class ResetOffsetQuery
-        implements Query {
+    VisitResult visit(PipelineStage<PC, T> previousPipelineStage, PC pipelineContext);
 
-    static final Query INSTANCE = new ResetOffsetQuery();
-
-    private ResetOffsetQuery() {
+    default VisitResult visitChildren(PC pipelineContext) {
+        return VisitResult.Continue;
     }
 
-    @Override
-    public long access(long offset, QueryContext queryContext) {
-        return 0;
-    }
-
-    @Override
-    public String toString() {
-        return "ResetOffsetQuery{}";
-    }
+    T stage();
 
 }

@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractTestCase {
@@ -84,22 +87,15 @@ public abstract class AbstractTestCase {
     }
 
     public static void assertQueryEquals(Query expected, Query actual) {
-        ChainQuery exp = (ChainQuery) expected;
-        ChainQuery act = (ChainQuery) actual;
-
-        List<Query> n1 = exp.nodes();
-        List<Query> n2 = act.nodes();
-
-        assertEquals(n1.size(), n2.size());
-        for (int i = 0; i < n1.size(); i++) {
-            Query.equals(n1.get(i), n2.get(i));
-        }
+        QueryImpl exp = (QueryImpl) expected;
+        QueryImpl act = (QueryImpl) actual;
+        assertEquals(exp, act);
     }
 
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
                                                SelectStatementStrategy selectStatementStrategy) {
 
-        return new QueryContextImpl(input, tagDecoders, selectStatementStrategy);
+        return new QueryContextImpl(input, EMPTY_QUERY_PIPELINE, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
     }
 
     public static class SimplifiedTestParser {

@@ -16,20 +16,23 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryQueryBuilder;
-import com.noctarius.borabora.builder.SequenceQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.Encoder;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.function.BiFunction;
 
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.Constants.SIMPLE_VALUE_NULL_BYTE;
 
 public class BinarySelectStatementStrategy
         implements SelectStatementStrategy {
@@ -45,7 +48,7 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public Value finalizeSelect(QueryContext queryContext) {
+    public void finalizeSelect(QueryContext queryContext) {
         BinaryQueryContext bqc = queryContext.queryStackPop();
 
         byte[] data = bqc.baos.toByteArray();
@@ -55,108 +58,96 @@ public class BinarySelectStatementStrategy
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, 0);
 
-        QueryContext newQueryContext = new QueryContextImpl(input, (QueryContextImpl) queryContext);
-        return new StreamValue(majorType, valueType, 0, newQueryContext);
+        QueryContext newQueryContext = new QueryContextImpl(input, EMPTY_QUERY_PIPELINE, //
+                EMPTY_QUERY_CONSUMER, (QueryContextImpl) queryContext);
+
+        Value value = new StreamValue(majorType, valueType, 0, newQueryContext);
+        queryContext.consume(value);
     }
 
     @Override
-    public <T> DictionaryQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(putStructureHead(MajorType.Dictionary));
-        return new DictionaryQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public void beginDictionary(QueryContext queryContext) {
+        putStructureHead(MajorType.Dictionary, queryContext);
     }
 
     @Override
-    public <T> SequenceQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries) {
-        graphQueries.add(putStructureHead(MajorType.Sequence));
-        return new SequenceQueryBuilderImpl<>(graphQueryBuilder, graphQueries, this);
+    public void endDictionary(QueryContext queryContext) {
+        putBreakMask(queryContext);
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(String key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        graphQueries.add(putKey((offset, output) -> Encoder.putString(key, offset, output)));
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+    public void putDictionaryKey(String key, QueryContext queryContext) {
+        BinaryQueryContext bqc = queryContext.queryStackPeek();
+        bqc.offset = Encoder.putString(key, bqc.offset, bqc.output);
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(long key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        graphQueries.add(putKey((offset, output) -> Encoder.putNumber(key, offset, output)));
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+    public void putDictionaryKey(long key, QueryContext queryContext) {
+        BinaryQueryContext bqc = queryContext.queryStackPeek();
+        bqc.offset = Encoder.putNumber(key, bqc.offset, bqc.output);
     }
 
     @Override
-    public <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(double key,
-                                                                                                            D queryBuilder,
-                                                                                                            List<Query> graphQueries) {
-
-        graphQueries.add(putKey((offset, output) -> Encoder.putDouble(key, offset, output)));
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+    public void putDictionaryKey(double key, QueryContext queryContext) {
+        BinaryQueryContext bqc = queryContext.queryStackPeek();
+        bqc.offset = Encoder.putDouble(key, bqc.offset, bqc.output);
     }
 
     @Override
-    public <T> T endDictionary(T queryBuilder, List<Query> graphQueries) {
-        graphQueries.add(this::putBreakMask);
-        return queryBuilder;
+    public void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+        if (!(previousPipelineStage.stage() instanceof AsDictionarySelectorQueryStage) //
+                && !(previousPipelineStage.stage() instanceof AsSequenceSelectorQueryStage)) {
+
+            queryContext.offset(putValue(queryContext));
+        }
     }
 
     @Override
-    public <T, S extends SequenceQueryBuilder<T>> StreamEntryQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                        List<Query> graphQueries) {
-
-        graphQueries.add(ResetOffsetQuery.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(queryBuilder, graphQueries, this::putValue, this);
+    public void beginSequence(QueryContext queryContext) {
+        putStructureHead(MajorType.Sequence, queryContext);
     }
 
     @Override
-    public <T> T endSequence(T queryBuilder, List<Query> graphQueries) {
-        graphQueries.add(this::putBreakMask);
-        return queryBuilder;
+    public void endSequence(QueryContext queryContext) {
+        putBreakMask(queryContext);
     }
 
-    private Query putStructureHead(MajorType majorType) {
-        return (queryOffset, queryContext) -> {
-            BinaryQueryContext bqc = queryContext.queryStackPeek();
-            bqc.offset = Encoder.encodeLengthAndValue(majorType, -1, bqc.offset, bqc.output);
-            return queryOffset;
-        };
+    @Override
+    public void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+        if (!(previousPipelineStage.stage() instanceof AsDictionarySelectorQueryStage) //
+                && !(previousPipelineStage.stage() instanceof AsSequenceSelectorQueryStage)) {
+
+            queryContext.offset(putValue(queryContext));
+        }
     }
 
-    private Query putKey(BiFunction<Long, Output, Long> function) {
-        return (queryOffset, queryContext) -> {
-            BinaryQueryContext bqc = queryContext.queryStackPeek();
-            bqc.offset = function.apply(bqc.offset, bqc.output);
-            return queryOffset;
-        };
+    private void putStructureHead(MajorType majorType, QueryContext queryContext) {
+        BinaryQueryContext bqc = queryContext.queryStackPeek();
+        bqc.offset = Encoder.encodeLengthAndValue(majorType, -1, bqc.offset, bqc.output);
     }
 
-    private long putBreakMask(long queryOffset, QueryContext queryContext) {
+    private void putBreakMask(QueryContext queryContext) {
         BinaryQueryContext bqc = queryContext.queryStackPeek();
         bqc.output.write(bqc.offset++, (byte) OPCODE_BREAK_MASK);
-        return -2;
     }
 
-    private long putValue(long queryOffset, QueryContext queryContext) {
-        if (queryOffset >= 0) {
-            BinaryQueryContext bqc = queryContext.queryStackPeek();
-
+    private long putValue(QueryContext queryContext) {
+        long offset = queryContext.offset();
+        BinaryQueryContext bqc = queryContext.queryStackPeek();
+        if (offset >= 0) {
             Input input = queryContext.input();
-            short head = Decoder.readUInt8(input, queryOffset);
+            short head = Decoder.readUInt8(input, offset);
 
             MajorType majorType = MajorType.findMajorType(head);
-            byte[] data = Decoder.readRaw(input, majorType, queryOffset);
+            byte[] data = Decoder.readRaw(input, majorType, offset);
             bqc.offset = bqc.output.write(data, bqc.offset, data.length);
 
-            return queryOffset + data.length;
+            return offset + data.length;
+        } else if (offset == OFFSET_CODE_NULL) {
+            bqc.output.write(bqc.offset, SIMPLE_VALUE_NULL_BYTE);
+            bqc.offset++;
         }
-        return queryOffset;
+        return offset;
     }
 
     private static class BinaryQueryContext {

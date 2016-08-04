@@ -14,35 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.pipeline.Stage;
 
-import java.util.HashMap;
-import java.util.Map;
-
-class AsDictionaryQuery
-        implements Query {
-
-    static final Query INSTANCE = new AsDictionaryQuery();
-
-    private AsDictionaryQuery() {
-    }
-
-    @Override
-    public long access(long offset, QueryContext queryContext) {
-        // Create a new Map to store entries, thanks to thread-safetyness :)
-        Map<Value, Value> entries = new HashMap<>();
-
-        // Push to query context stack
-        queryContext.queryStackPush(entries);
-
-        return offset;
-    }
-
-    @Override
-    public String toString() {
-        return "AsDictionaryQuery{}";
-    }
-
+public interface QueryStage
+        extends Stage<QueryContext, QueryStage> {
 }

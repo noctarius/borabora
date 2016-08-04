@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
@@ -29,8 +31,8 @@ public interface Constants {
     int ADDITIONAL_INFORMATION_MASK = 0b000_11111;
     int OPCODE_BREAK_MASK = 0b111_11111;
 
-    short QUERY_RETURN_CODE_NULL = -1;
-    short QUERY_RETURN_CODE_FINALIZE_SELECT = -2;
+    short OFFSET_CODE_NULL = -1;
+    short OFFSET_CODE_EXIT = -2;
 
     short MT_UNSINGED_INT = 0;
     short MT_NEGATIVE_INT = 1;
@@ -91,5 +93,18 @@ public interface Constants {
     DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd't'HH:mm:ss.SSSz", Locale.US);
 
     byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
+    QueryConsumer EMPTY_QUERY_CONSUMER = ((offset) -> false);
+
+    QueryPipeline<QueryContext> EMPTY_QUERY_PIPELINE = new QueryPipeline<QueryContext>() {
+        @Override
+        public void evaluate(QueryContext pipelineContext) {
+        }
+
+        @Override
+        public String printQueryGraph() {
+            return "";
+        }
+    };
 
 }

@@ -1,8 +1,6 @@
 package com.noctarius.borabora;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *

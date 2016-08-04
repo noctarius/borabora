@@ -16,38 +16,31 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Query;
-import com.noctarius.borabora.Value;
-import com.noctarius.borabora.builder.DictionaryQueryBuilder;
-import com.noctarius.borabora.builder.SequenceQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
-
-import java.util.List;
+import com.noctarius.borabora.impl.query.stages.QueryStage;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
 public interface SelectStatementStrategy {
 
     void beginSelect(QueryContext queryContext);
 
-    Value finalizeSelect(QueryContext queryContext);
+    void finalizeSelect(QueryContext queryContext);
 
-    <T> DictionaryQueryBuilder<T> asDictionary(T graphQueryBuilder, List<Query> graphQueries);
+    void beginDictionary(QueryContext queryContext);
 
-    <T> SequenceQueryBuilder<T> asSequence(T graphQueryBuilder, List<Query> graphQueries);
+    void endDictionary(QueryContext queryContext);
 
-    <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(String key, D queryBuilder,
-                                                                                                     List<Query> graphQueries);
+    void putDictionaryKey(String key, QueryContext queryContext);
 
-    <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(long key, D queryBuilder,
-                                                                                                     List<Query> graphQueries);
+    void putDictionaryKey(long key, QueryContext queryContext);
 
-    <T, D extends DictionaryQueryBuilder<T>> StreamEntryQueryBuilder<D> putDictionaryEntry(double key, D queryBuilder,
-                                                                                                     List<Query> graphQueries);
+    void putDictionaryKey(double key, QueryContext queryContext);
 
-    <T> T endDictionary(T queryBuilder, List<Query> graphQueries);
+    void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext);
 
-    <T, S extends SequenceQueryBuilder<T>> StreamEntryQueryBuilder<S> putSequenceEntry(S queryBuilder,
-                                                                                                 List<Query> graphQueries);
+    void beginSequence(QueryContext queryContext);
 
-    <T> T endSequence(T queryBuilder, List<Query> graphQueries);
+    void endSequence(QueryContext queryContext);
+
+    void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext);
 
 }

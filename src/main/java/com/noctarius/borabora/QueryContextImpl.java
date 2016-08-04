@@ -17,9 +17,11 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.QueryConsumer;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -31,18 +33,26 @@ final class QueryContextImpl
     // Queries are inherently thread-safe!
     private final Deque<Object> stack = new LinkedList<>();
     private final List<TagDecoder> tagDecoders;
+    private final QueryConsumer queryConsumer;
     private final SelectStatementStrategy selectStatementStrategy;
     private final Input input;
 
-    QueryContextImpl(Input input, List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy) {
+    private long offset;
+
+    QueryContextImpl(Input input, QueryPipeline queryPipeline, QueryConsumer queryConsumer, //
+                     List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy) {
 
         this.input = input;
+        this.queryConsumer = queryConsumer;
         this.tagDecoders = tagDecoders;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
-    QueryContextImpl(Input input, QueryContextImpl queryContext) {
+    QueryContextImpl(Input input, QueryPipeline queryPipeline,//
+                     QueryConsumer queryConsumer, QueryContextImpl queryContext) {
+
         this.input = input;
+        this.queryConsumer = queryConsumer;
         this.tagDecoders = queryContext.tagDecoders;
         this.selectStatementStrategy = queryContext.selectStatementStrategy;
     }
@@ -50,6 +60,31 @@ final class QueryContextImpl
     @Override
     public Input input() {
         return input;
+    }
+
+    @Override
+    public long offset() {
+        return offset;
+    }
+
+    @Override
+    public void offset(long offset) {
+        this.offset = offset;
+    }
+
+    @Override
+    public SelectStatementStrategy selectStatementStrategy() {
+        return selectStatementStrategy;
+    }
+
+    @Override
+    public void consume(long offset) {
+        queryConsumer.accept(offset, this);
+    }
+
+    @Override
+    public void consume(Value value) {
+        queryConsumer.consume(value);
     }
 
     @Override

@@ -96,10 +96,7 @@ class ObjectValue
 
     @Override
     public String toString() {
-        return "ObjectValue{" +
-                "valueType=" + valueType +
-                ", value=" + byValueType() +
-                '}';
+        return "ObjectValue{" + "valueType=" + valueType + ", value=" + byValueType() + '}';
     }
 
     @Override

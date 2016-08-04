@@ -18,19 +18,20 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.spi.Decoder;
+import com.noctarius.borabora.spi.QueryConsumer;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.SelectStatementStrategyAware;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.noctarius.borabora.Value.NULL_VALUE;
 import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
-import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_FINALIZE_SELECT;
-import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
+import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
 
 final class ParserImpl
         implements Parser {
@@ -50,7 +51,10 @@ final class ParserImpl
             selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
         }
 
-        return evaluate(query, input, 0, selectStatementStrategy);
+        SingleConsumer consumer = new SingleConsumer();
+        QueryConsumer queryConsumer = bridgeConsumer(consumer, false);
+        evaluate(query, input, queryConsumer, selectStatementStrategy);
+        return consumer.value == null ? Value.NULL_VALUE : consumer.value;
     }
 
     @Override
@@ -67,9 +71,11 @@ final class ParserImpl
     @Override
     public Value read(Input input, long offset) {
         short head = Decoder.readUInt8(input, offset);
-        MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, offset, newQueryContext(input, selectStatementStrategy));
+        MajorType majorType = MajorType.findMajorType(head);
+        ValueType valueType = ValueTypes.valueType(input, offset);
+
+        QueryContext queryContext = newQueryContext(input, EMPTY_QUERY_PIPELINE, EMPTY_QUERY_CONSUMER, selectStatementStrategy);
+        return new StreamValue(majorType, valueType, offset, queryContext);
     }
 
     @Override
@@ -79,14 +85,8 @@ final class ParserImpl
             selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
         }
 
-        long startOffset = 0;
-        do {
-            Value value = evaluate(query, input, startOffset, selectStatementStrategy);
-            consumer.accept(value);
-
-            MajorType majorType = value.majorType();
-            startOffset += Decoder.length(input, majorType, startOffset);
-        } while (query.isStreamQueryCapable() && input.offsetValid(startOffset));
+        QueryConsumer queryConsumer = bridgeConsumer(consumer, true);
+        evaluate(query, input, queryConsumer, selectStatementStrategy);
     }
 
     @Override
@@ -128,24 +128,37 @@ final class ParserImpl
         }
     }
 
-    private QueryContext newQueryContext(Input input, SelectStatementStrategy selectStatementStrategy) {
-        return new QueryContextImpl(input, tagDecoders, selectStatementStrategy);
+    private QueryContext newQueryContext(Input input, QueryPipeline queryPipeline, QueryConsumer queryConsumer,
+                                         SelectStatementStrategy selectStatementStrategy) {
+
+        return new QueryContextImpl(input, queryPipeline, queryConsumer, tagDecoders, selectStatementStrategy);
     }
 
-    private Value evaluate(Query query, Input input, long startOffset, SelectStatementStrategy selectStatementStrategy) {
-        QueryContext queryContext = newQueryContext(input, selectStatementStrategy);
-        selectStatementStrategy.beginSelect(queryContext);
+    private void evaluate(Query query, Input input, QueryConsumer queryConsumer,
+                          SelectStatementStrategy selectStatementStrategy) {
 
-        long offset = query.access(startOffset, queryContext);
-        if (offset == QUERY_RETURN_CODE_NULL) {
-            return NULL_VALUE;
-        } else if (offset == QUERY_RETURN_CODE_FINALIZE_SELECT) {
-            return selectStatementStrategy.finalizeSelect(queryContext);
+        QueryPipeline<QueryContext> queryPipeline = query.newQueryPipeline();
+        QueryContext queryContext = newQueryContext(input, queryPipeline, queryConsumer, selectStatementStrategy);
+
+        queryPipeline.evaluate(queryContext);
+    }
+
+    private QueryConsumer bridgeConsumer(Consumer<Value> consumer, boolean multiConsumer) {
+        return (value) -> {
+            consumer.accept(value);
+            return multiConsumer;
+        };
+    }
+
+    private static class SingleConsumer
+            implements Consumer<Value> {
+
+        private Value value;
+
+        @Override
+        public void accept(Value value) {
+            this.value = value;
         }
-        short head = Decoder.readUInt8(input, offset);
-        MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(input, offset);
-        return new StreamValue(mt, vt, offset, queryContext);
     }
 
 }

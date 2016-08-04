@@ -18,43 +18,56 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorEntryQueryStage;
+import com.noctarius.borabora.spi.QueryBuilderTreeNode;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
-import java.util.List;
+import static com.noctarius.borabora.impl.query.stages.ConsumeDictionaryEntryValueQueryStage.INSTANCE;
 
 class DictionaryQueryBuilderImpl<T>
         implements DictionaryQueryBuilder<T> {
 
     private final T queryBuilder;
-    private final List<Query> graphQueries;
+    private final QueryBuilderTreeNode parentTreeNode;
     private SelectStatementStrategy selectStatementStrategy;
 
-    DictionaryQueryBuilderImpl(T queryBuilder, List<Query> graphQueries,
-                                    SelectStatementStrategy selectStatementStrategy) {
+    DictionaryQueryBuilderImpl(T queryBuilder, QueryBuilderTreeNode parentTreeNode,
+                               SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;
-        this.graphQueries = graphQueries;
+        this.parentTreeNode = parentTreeNode;
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key) {
-        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-string", this);
+        QueryBuilderTreeNode entry = new QueryBuilderTreeNode(AsDictionarySelectorEntryQueryStage.withStringKey(key));
+        parentTreeNode.children().add(entry);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, INSTANCE, selectStatementStrategy);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key) {
-        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-double", this);
+        QueryBuilderTreeNode entry = new QueryBuilderTreeNode(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
+        parentTreeNode.children().add(entry);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, INSTANCE, selectStatementStrategy);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key) {
-        return selectStatementStrategy.putDictionaryEntry(key, this, graphQueries);
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-long", this);
+        QueryBuilderTreeNode entry = new QueryBuilderTreeNode(AsDictionarySelectorEntryQueryStage.withIntKey(key));
+        parentTreeNode.children().add(entry);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, INSTANCE, selectStatementStrategy);
     }
 
     @Override
     public T endDictionary() {
-        return selectStatementStrategy.endDictionary(queryBuilder, graphQueries);
+        Tracer.traceReturn("DictionaryQueryBuilderImpl#endDictionary", this);
+        return queryBuilder;
+
     }
 
 }

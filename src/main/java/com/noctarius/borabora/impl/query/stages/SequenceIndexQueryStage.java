@@ -14,54 +14,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora;
+package com.noctarius.borabora.impl.query.stages;
 
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.ByteSizes;
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.ElementCounts;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
 
-import static com.noctarius.borabora.spi.Constants.QUERY_RETURN_CODE_NULL;
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 
-final class SequenceQuery
-        implements Query {
+public class SequenceIndexQueryStage
+        implements QueryStage {
 
     private final long sequenceIndex;
 
-    SequenceQuery(long sequenceIndex) {
-        if (sequenceIndex < 0) {
-            throw new IllegalArgumentException("sequenceIndex must be greater or equal to 0");
-        }
+    public SequenceIndexQueryStage(long sequenceIndex) {
         this.sequenceIndex = sequenceIndex;
     }
 
     @Override
-    public long access(long offset, QueryContext queryContext) {
-        Input input = queryContext.input();
+    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
+                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
+                                QueryContext pipelineContext) {
+
+        Input input = pipelineContext.input();
+        long offset = pipelineContext.offset();
+
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
 
-        // Stream direct access (return actual object itself)
-        if (sequenceIndex == QUERY_RETURN_CODE_NULL) {
-            return offset;
-        }
-
-        if (MajorType.Sequence != majorType) {
+        if (majorType != MajorType.Sequence) {
             throw new WrongTypeException("Not a sequence");
         }
 
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
-            return QUERY_RETURN_CODE_NULL;
+            pipelineContext.consume(OFFSET_CODE_NULL);
+            return VisitResult.Break;
         }
 
         // Element access
         long headByteSize = ByteSizes.headByteSize(input, offset);
         offset += headByteSize;
 
-        // Stream objects
-        return skip(input, offset);
+        // Skip items until sequenceIndex
+        offset = skip(input, offset);
+        pipelineContext.offset(offset);
+
+        return pipelineStage.visitChildren(pipelineContext);
+    }
+
+    private long skip(Input input, long offset) {
+        // Skip unnecessary objects
+        for (int i = 0; i < sequenceIndex; i++) {
+            offset = Decoder.skip(input, offset);
+        }
+        return offset;
     }
 
     @Override
@@ -69,11 +83,12 @@ final class SequenceQuery
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SequenceQuery)) {
+        if (!(o instanceof SequenceIndexQueryStage)) {
             return false;
         }
 
-        SequenceQuery that = (SequenceQuery) o;
+        SequenceIndexQueryStage that = (SequenceIndexQueryStage) o;
+
         return sequenceIndex == that.sequenceIndex;
     }
 
@@ -84,15 +99,7 @@ final class SequenceQuery
 
     @Override
     public String toString() {
-        return "SequenceQuery{" + "sequenceIndex=" + sequenceIndex + '}';
-    }
-
-    private long skip(Input input, long offset) {
-        // Skip unnecessary objects
-        for (int i = 0; i < sequenceIndex; i++) {
-            offset = Decoder.skip(input, offset);
-        }
-        return offset;
+        return "SEQ_INDEX[ " + sequenceIndex + " ]";
     }
 
 }
