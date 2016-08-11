@@ -195,6 +195,10 @@
                 <configuration>
                     <excludes>
                         <exclude>**/*Delegate.*</exclude>
+                        <exclude>com.noctarius.borabora.QueryParser</exclude>
+                        <exclude>com.noctarius.borabora.ParseException</exclude>
+                        <exclude>com.noctarius.borabora.JavaCharStream</exclude>
+                        <exclude>com.noctarius.borabora.QueryParserTokenManager</exclude>
                     </excludes>
                 </configuration>
                 <executions>
