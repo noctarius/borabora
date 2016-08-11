@@ -33,17 +33,24 @@ public enum TypeSpecs
         implements TypeSpec {
 
     Number("number", ValueTypes.Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, //
-            ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), Int("int", Number,
-            ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int), UInt("uint", Int,
-            ValueTypes.UInt, ValueTypes.UBigNum), NInt("nint", Int, ValueTypes.NInt, ValueTypes.NBigNum), Float("float", Number,
-            ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), UFloat("ufloat", Float, ValueTypes.UFloat), NFloat("nfloat",
-            Float, ValueTypes.NFloat), String("string", ValueTypes.ByteString, ValueTypes.TextString), Dictionary("dictionary",
-            ValueTypes.Dictionary), Sequence("sequence", ValueTypes.Sequence), SemanticTag("tag",
-            ValueTypes.Unknown), SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown), Bool("bool",
-            ValueTypes.Bool), DateTime("datetime", SpecializedSemanticTag, TAG_DATE_TIME, ValueTypes.DateTime), Timstamp(
-            "timestamp", SpecializedSemanticTag, TAG_TIMESTAMP, ValueTypes.Timestamp), URI("uri", SpecializedSemanticTag, TAG_URI,
-            ValueTypes.URI), EncCBOR("enccbor", SpecializedSemanticTag, TAG_ENCCBOR, ValueTypes.EncCBOR), Unknown("unknown",
-            ValueTypes.Unknown), Null("null", ValueTypes.Null);
+            ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), //
+    Int("int", Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int), //
+    UInt("uint", Int, ValueTypes.UInt, ValueTypes.UBigNum), NInt("nint", Int, ValueTypes.NInt, ValueTypes.NBigNum), //
+    Float("float", Number, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), //
+    UFloat("ufloat", Float, ValueTypes.UFloat), //
+    NFloat("nfloat", Float, ValueTypes.NFloat), //
+    String("string", ValueTypes.ByteString, ValueTypes.TextString), //
+    Dictionary("dictionary", ValueTypes.Dictionary), //
+    Sequence("sequence", ValueTypes.Sequence), //
+    SemanticTag("tag", ValueTypes.Unknown), //
+    SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown), //
+    Bool("bool", ValueTypes.Bool), //
+    DateTime("datetime", SpecializedSemanticTag, TAG_DATE_TIME, ValueTypes.DateTime), //
+    Timstamp("timestamp", SpecializedSemanticTag, TAG_TIMESTAMP, ValueTypes.Timestamp), //
+    URI("uri", SpecializedSemanticTag, TAG_URI, ValueTypes.URI), //
+    EncCBOR("enccbor", SpecializedSemanticTag, TAG_ENCCBOR, ValueTypes.EncCBOR), //
+    Unknown("unknown", ValueTypes.Unknown), //
+    Null("null", ValueTypes.Null);
 
     private static final TypeSpecs[] TYPE_SPECS_VALUES = values();
 

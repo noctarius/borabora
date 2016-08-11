@@ -26,10 +26,15 @@ import static com.noctarius.borabora.spi.Constants.MT_TEXTSTRING;
 import static com.noctarius.borabora.spi.Constants.MT_UNSINGED_INT;
 
 public enum MajorType {
-    UnsignedInteger(MT_UNSINGED_INT, 0b000, false), NegativeInteger(MT_NEGATIVE_INT, 0b001, false), ByteString(MT_BYTESTRING,
-            0b010, true), TextString(MT_TEXTSTRING, 0b011, true), Sequence(MT_SEQUENCE, 0b100, true), Dictionary(MT_DICTIONARY,
-            0b101, true), SemanticTag(MT_SEMANTIC_TAG, 0b110, false), FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111,
-            false), Unknown(-1, -1, false);
+    UnsignedInteger(MT_UNSINGED_INT, 0b000, false), //
+    NegativeInteger(MT_NEGATIVE_INT, 0b001, false), //
+    ByteString(MT_BYTESTRING, 0b010, true), //
+    TextString(MT_TEXTSTRING, 0b011, true), //
+    Sequence(MT_SEQUENCE, 0b100, true), //
+    Dictionary(MT_DICTIONARY, 0b101, true), //
+    SemanticTag(MT_SEMANTIC_TAG, 0b110, false), //
+    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false), //
+    Unknown(-1, -1, false);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;
 
