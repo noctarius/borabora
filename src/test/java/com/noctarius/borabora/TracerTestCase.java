@@ -16,5 +16,24 @@
  */
 package com.noctarius.borabora;
 
+import org.junit.Test;
+
 public class TracerTestCase {
+
+    @Test
+    public void test_console_tracer() {
+        Tracer tracer = new Tracer.ConsoleTracer();
+        tracer.traceCall0("test_console_tracer");
+        tracer.traceInfo0("test_console_tracer");
+        tracer.traceReturn0("test_console_tracer");
+    }
+
+    @Test
+    public void test_noop_tracer() {
+        Tracer tracer = new Tracer.NoopTracer();
+        tracer.traceCall0("test_console_tracer");
+        tracer.traceInfo0("test_console_tracer");
+        tracer.traceReturn0("test_console_tracer");
+    }
+
 }
