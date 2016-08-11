@@ -1,3 +1,4 @@
 com.noctarius.borabora
 com.noctarius.borabora.builder
 com.noctarius.borabora.spi
+com.noctarius.borabora.spi.pipeline
