@@ -17,19 +17,30 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Parser;
+import com.noctarius.borabora.spi.QueryOptimizer;
+import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
 
 public interface ParserBuilder {
 
-    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder);
+    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder);
 
-    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2);
+    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2);
 
-    <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders);
+    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders);
 
-    ParserBuilder asBinarySelectStatement();
+    ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer);
 
-    ParserBuilder asObjectSelectStatement();
+    ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2);
+
+    ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                    QueryOptimizer... queryOptimizers);
+
+    ParserBuilder asBinarySelectStatementStrategy();
+
+    ParserBuilder asObjectSelectStatementStrategy();
+
+    ParserBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy);
 
     Parser build();
 

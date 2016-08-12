@@ -214,7 +214,7 @@ public class SelectStatementTestCase
         byte[] data = createDataSource(streamProducer);
 
         Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder(selectStatementStrategy).build();
+        Parser parser = Parser.newBuilder().withSelectStatementStrategy(selectStatementStrategy).build();
 
         StreamQueryBuilder graphQueryBuilder = Query.newBuilder(selectStatementStrategy);
         graphQueryConfigurator.accept(graphQueryBuilder);

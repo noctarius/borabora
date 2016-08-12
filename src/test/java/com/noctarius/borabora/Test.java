@@ -25,6 +25,7 @@ public class Test {
 
     public static void main(String[] args)
             throws IOException {
+
         File file = new File("dummy32.bin");
         byte[] data = new byte[(int) file.length()];
 
@@ -35,7 +36,7 @@ public class Test {
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder().build();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 500; i++) {
             long start = System.nanoTime();
             Value value = parser.read(input, Query.newBuilder().build());
             ValuePrettyPrinter.asStringPrettyPrint(value);

@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.function.Consumer;
 
@@ -44,11 +43,7 @@ public interface Parser {
     Query prepareQuery(String query);
 
     static ParserBuilder newBuilder() {
-        return newBuilder(null);
-    }
-
-    static ParserBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
-        return new ParserBuilderImpl(selectStatementStrategy);
+        return new ParserBuilderImpl();
     }
 
 }

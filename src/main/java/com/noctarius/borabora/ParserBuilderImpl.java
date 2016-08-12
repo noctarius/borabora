@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.spi.CommonTagCodec;
+import com.noctarius.borabora.spi.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
 
@@ -29,29 +30,28 @@ final class ParserBuilderImpl
         implements ParserBuilder {
 
     private final List<TagDecoder> tagDecoders = new ArrayList<>();
-    private SelectStatementStrategy selectStatementStrategy;
-    private boolean binarySelectStatement = true;
+    private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
+    private SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
 
-    public ParserBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
-        withTagDecoder(CommonTagCodec.INSTANCE);
-        this.selectStatementStrategy = selectStatementStrategy;
+    public ParserBuilderImpl() {
+        addTagDecoder(CommonTagCodec.INSTANCE);
     }
 
     @Override
-    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder) {
+    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder) {
         tagDecoders.add(tagDecoder);
         return this;
     }
 
     @Override
-    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
+    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
         tagDecoders.add(tagDecoder1);
         tagDecoders.add(tagDecoder2);
         return this;
     }
 
     @Override
-    public <V> ParserBuilder withTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders) {
+    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders) {
         this.tagDecoders.add(tagDecoder1);
         this.tagDecoders.add(tagDecoder2);
         this.tagDecoders.addAll(Arrays.asList(tagDecoders));
@@ -59,25 +59,52 @@ final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder asBinarySelectStatement() {
-        binarySelectStatement = true;
+    public ParserBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy) {
+        this.selectStatementStrategy = selectStatementStrategy;
         return this;
     }
 
     @Override
-    public ParserBuilder asObjectSelectStatement() {
-        binarySelectStatement = false;
+    public ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer) {
+        if (!this.queryOptimizers.contains(queryOptimizer)) {
+            this.queryOptimizers.add(queryOptimizer);
+        }
+        return this;
+    }
+
+    @Override
+    public ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
+        addQueryOptimizer(queryOptimizer1);
+        addQueryOptimizer(queryOptimizer2);
+        return this;
+    }
+
+    @Override
+    public ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                           QueryOptimizer... queryOptimizers) {
+
+        addQueryOptimizer(queryOptimizer1);
+        addQueryOptimizer(queryOptimizer2);
+        for (QueryOptimizer queryOptimizer : queryOptimizers) {
+            addQueryOptimizer(queryOptimizer);
+        }
+        return this;
+    }
+
+    @Override
+    public ParserBuilder asBinarySelectStatementStrategy() {
+        selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+        return this;
+    }
+
+    @Override
+    public ParserBuilder asObjectSelectStatementStrategy() {
+        selectStatementStrategy = ObjectSelectStatementStrategy.INSTANCE;
         return this;
     }
 
     @Override
     public Parser build() {
-        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
-        if (selectStatementStrategy == null) {
-            selectStatementStrategy = binarySelectStatement ? //
-                    BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE;
-        }
-
         return new ParserImpl(tagDecoders, selectStatementStrategy);
     }
 
