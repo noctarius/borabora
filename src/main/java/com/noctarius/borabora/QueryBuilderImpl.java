@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.impl.query.BTreePipelineStage;
 import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.impl.query.QueryPipelineImpl;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
@@ -32,10 +33,11 @@ import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.QueryBuilderTreeNode;
 import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 import java.util.ArrayList;
@@ -105,11 +107,14 @@ final class QueryBuilderImpl
         // Build LCRS query plan
         PipelineStage<QueryContext, QueryStage> rootStage = QueryBuilderTreeNode.build(parentTreeNode);
 
+        // New pipeline stage factory
+        PipelineStageFactory<QueryContext, QueryStage, BTreePipelineStage<QueryContext, QueryStage>> factory = BTreePipelineStage::new;
+
         // Apply query optimizers
         PipelineStage<QueryContext, QueryStage> optimizedRootStage = rootStage;
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
             if (queryOptimizer.handles(optimizedRootStage)) {
-                optimizedRootStage = queryOptimizer.optimize(optimizedRootStage);
+                optimizedRootStage = queryOptimizer.optimize(optimizedRootStage, factory);
             }
         }
 

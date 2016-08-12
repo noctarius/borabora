@@ -17,9 +17,9 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.spi.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 
 public interface ParserBuilder {
 

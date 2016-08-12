@@ -18,9 +18,9 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.spi.CommonTagCodec;
-import com.noctarius.borabora.spi.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
