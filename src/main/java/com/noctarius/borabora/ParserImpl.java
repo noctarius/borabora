@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
 
 final class ParserImpl
         implements Parser {
@@ -74,7 +73,7 @@ final class ParserImpl
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
 
-        QueryContext queryContext = newQueryContext(input, EMPTY_QUERY_PIPELINE, EMPTY_QUERY_CONSUMER, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, EMPTY_QUERY_CONSUMER, selectStatementStrategy);
         return new StreamValue(majorType, valueType, offset, queryContext);
     }
 
@@ -128,17 +127,17 @@ final class ParserImpl
         }
     }
 
-    private QueryContext newQueryContext(Input input, QueryPipeline queryPipeline, QueryConsumer queryConsumer,
+    private QueryContext newQueryContext(Input input, QueryConsumer queryConsumer,
                                          SelectStatementStrategy selectStatementStrategy) {
 
-        return new QueryContextImpl(input, queryPipeline, queryConsumer, tagDecoders, selectStatementStrategy);
+        return new QueryContextImpl(input, queryConsumer, tagDecoders, selectStatementStrategy);
     }
 
     private void evaluate(Query query, Input input, QueryConsumer queryConsumer,
                           SelectStatementStrategy selectStatementStrategy) {
 
         QueryPipeline<QueryContext> queryPipeline = query.newQueryPipeline();
-        QueryContext queryContext = newQueryContext(input, queryPipeline, queryConsumer, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, queryConsumer, selectStatementStrategy);
 
         queryPipeline.evaluate(queryContext);
     }

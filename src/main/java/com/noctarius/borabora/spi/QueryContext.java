@@ -19,6 +19,7 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueType;
 
 public interface QueryContext {
 
@@ -26,7 +27,7 @@ public interface QueryContext {
 
     void consume(Value value);
 
-    <T> T applyDecoder(long offset, MajorType majorType);
+    <T> T applyDecoder(long offset, MajorType majorType, ValueType valueType);
 
     <T> void queryStackPush(T element);
 

@@ -76,7 +76,7 @@ public final class StreamValue
 
     @Override
     protected <T> T extractTag() {
-        return queryContext().applyDecoder(offset(), majorType());
+        return queryContext().applyDecoder(offset(), majorType(), valueType());
     }
 
 }

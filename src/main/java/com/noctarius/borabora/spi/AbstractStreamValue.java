@@ -41,7 +41,7 @@ public abstract class AbstractStreamValue
 
     @Override
     public Number number() {
-        return extract(() -> matchValueType(valueType(), ValueTypes.UInt, ValueTypes.NInt, ValueTypes.NFloat),
+        return extract(() -> matchValueType(valueType(), ValueTypes.Int, ValueTypes.Float),
                 () -> Decoder.readNumber(input(), valueType(), offset()));
     }
 

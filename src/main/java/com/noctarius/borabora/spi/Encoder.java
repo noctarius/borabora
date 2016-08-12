@@ -30,6 +30,7 @@ import static com.noctarius.borabora.spi.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_ONE_BYTE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
+import static com.noctarius.borabora.spi.Constants.ASCII;
 import static com.noctarius.borabora.spi.Constants.BI_MASK;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_24;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_256;
@@ -112,6 +113,25 @@ public enum Encoder {
             absValue = value;
         }
         return encodeLengthAndValue(majorType, absValue, offset, output);
+    }
+
+    public static long putBigInteger(BigInteger value, long offset, Output output) {
+        MajorType majorType;
+        BigInteger absValue;
+        if (value.compareTo(BigInteger.ZERO) == COMPARATOR_LESS_THAN) {
+            majorType = MajorType.NegativeInteger;
+            absValue = BI_VAL_MINUS_ONE.subtract(value).abs();
+
+        } else {
+            majorType = MajorType.UnsignedInteger;
+            absValue = value;
+        }
+        if (majorType == MajorType.NegativeInteger) {
+            offset = putSemanticTag(TAG_SIGNED_BIGNUM, offset, output);
+        } else {
+            offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
+        }
+        return putString(absValue.toByteArray(), MajorType.ByteString, offset, output);
     }
 
     public static long putHalfPrecision(float value, long offset, Output output) {

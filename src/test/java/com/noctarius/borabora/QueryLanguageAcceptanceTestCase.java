@@ -294,18 +294,6 @@ public class QueryLanguageAcceptanceTestCase
     }
 
     @Test
-    public void test_type_check_ufloat() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.UFloat).build();
-        assertQueryEquals(query, parser.prepareQuery("#->ufloat"));
-    }
-
-    @Test
-    public void test_type_check_nfloat() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.NFloat).build();
-        assertQueryEquals(query, parser.prepareQuery("#->nfloat"));
-    }
-
-    @Test
     public void test_type_check_float() {
         Query query = Query.newBuilder().requireType(TypeSpecs.Float).build();
         assertQueryEquals(query, parser.prepareQuery("#->float"));

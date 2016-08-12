@@ -29,7 +29,6 @@ import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import java.io.ByteArrayOutputStream;
 
 import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
 import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.Constants.SIMPLE_VALUE_NULL_BYTE;
@@ -58,8 +57,7 @@ public class BinarySelectStatementStrategy
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, 0);
 
-        QueryContext newQueryContext = new QueryContextImpl(input, EMPTY_QUERY_PIPELINE, //
-                EMPTY_QUERY_CONSUMER, (QueryContextImpl) queryContext);
+        QueryContext newQueryContext = new QueryContextImpl(input, EMPTY_QUERY_CONSUMER, (QueryContextImpl) queryContext);
 
         Value value = new StreamValue(majorType, valueType, 0, newQueryContext);
         queryContext.consume(value);

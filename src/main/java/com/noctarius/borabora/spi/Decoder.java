@@ -260,6 +260,18 @@ public enum Decoder {
         return data;
     }
 
+    public static byte[] extractStringBytes(Input input, long offset) {
+        int headByteSize = ByteSizes.headByteSize(input, offset);
+        // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
+        int dataSize = (int) ByteSizes.stringDataSize(input, offset);
+        if (dataSize == 0) {
+            return EMPTY_BYTE_ARRAY;
+        }
+        byte[] bytes = new byte[dataSize];
+        input.read(bytes, offset + headByteSize, dataSize);
+        return bytes;
+    }
+
     private static long findByPredicate(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         RelocatableStreamValue streamValue = new RelocatableStreamValue();
         Input input = queryContext.input();
@@ -280,21 +292,17 @@ public enum Decoder {
     }
 
     private static String readString0(Input input, long offset) {
-        short head = Bytes.readUInt8(input, offset);
-        MajorType majorType = MajorType.findMajorType(head);
-        int headByteSize = ByteSizes.headByteSize(input, offset);
-        // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
-        int dataSize = (int) ByteSizes.stringDataSize(input, offset);
+        byte[] bytes = extractStringBytes(input, offset);
         // Empty string
-        if (dataSize == 0) {
+        if (bytes.length == 0) {
             return "";
         }
-        byte[] data = new byte[dataSize];
-        input.read(data, offset + headByteSize, dataSize);
+        short head = Bytes.readUInt8(input, offset);
+        MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.ByteString == majorType) {
-            return new String(data, ASCII);
+            return new String(bytes, ASCII);
         }
-        return new String(data, UTF8);
+        return new String(bytes, UTF8);
     }
 
     private static long[][] readElementIndexes(Input input, long offset, long elementSize) {

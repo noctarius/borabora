@@ -214,12 +214,45 @@ abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
+    public B putBigInteger(BigInteger value) {
+        if (value == null) {
+            validate();
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putBigInteger(value, offset, output);
+        }
+        return builder;
+    }
+
+    @Override
     public B putString(String value) {
         validate();
         if (value == null) {
             offset = Encoder.putNull(offset, output);
         } else {
             offset = Encoder.putString(value, offset, output);
+        }
+        return builder;
+    }
+
+    @Override
+    public B putByteString(String value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putByteString(value, offset, output);
+        }
+        return builder;
+    }
+
+    @Override
+    public B putTextString(String value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+        } else {
+            offset = Encoder.putTextString(value, offset, output);
         }
         return builder;
     }

@@ -42,9 +42,7 @@ PARSER_BEGIN(QueryParser)
      *   <li><tt>int</tt>: signed int (up to 64 bits)</li>
      *   <li><tt>uint</tt>: unsigned int (up to 64 bits)</li>
      *   <li><tt>nint</tt>: negative int (up to 64 bits)</li>
-     *   <li><tt>float/tt>: half, single or double precision signed float (up to 64 bits)</li>
-     *   <li><tt>ufloat</tt>: half, single or double precision unsigned float (up to 64 bits)</li>
-     *   <li><tt>nfloat</tt>: half, single or double precision negative float (up to 64 bits)</li>
+     *   <li><tt>float/tt>: half, single or double precision float (up to 64 bits)</li>
      *   <li><tt>number</tt>: any of types int, uint, float, ufloat</li>
      *   <li><tt>string</tt>: ASCII or UTF8 encoded string</li>
      *   <li><tt>dictionary</tt>: dictionary type</li>
@@ -119,8 +117,6 @@ TOKEN: {
         | "uint"
         | "nint"
         | "float"
-        | "ufloat"
-        | "nfloat"
         | "number"
         | "string"
         | "dictionary"

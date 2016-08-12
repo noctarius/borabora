@@ -61,8 +61,6 @@ public class TypeSpecsTestCase
         assertTrue(TypeSpecs.UInt.matches(TypeSpecs.Number));
         assertTrue(TypeSpecs.NInt.matches(TypeSpecs.Number));
         assertTrue(TypeSpecs.Float.matches(TypeSpecs.Number));
-        assertTrue(TypeSpecs.UFloat.matches(TypeSpecs.Number));
-        assertTrue(TypeSpecs.NFloat.matches(TypeSpecs.Number));
     }
 
     @Test
@@ -75,8 +73,6 @@ public class TypeSpecsTestCase
     @Test
     public void test_matches_float() {
         assertTrue(TypeSpecs.Float.matches(TypeSpecs.Float));
-        assertTrue(TypeSpecs.UFloat.matches(TypeSpecs.Float));
-        assertTrue(TypeSpecs.NFloat.matches(TypeSpecs.Float));
     }
 
     @Test

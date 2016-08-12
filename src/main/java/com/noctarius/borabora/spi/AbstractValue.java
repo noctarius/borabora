@@ -49,9 +49,9 @@ public abstract class AbstractValue
         }
     }
 
-    protected void matchValueType(ValueType actual, ValueType expected1, ValueType expected2, ValueType expected3) {
-        if (!actual.matches(expected1) && !actual.matches(expected2) && !actual.matches(expected3)) {
-            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, expected1, expected2, expected3, actual);
+    protected void matchValueType(ValueType actual, ValueType expected1, ValueType expected2) {
+        if (!actual.matches(expected1) && !actual.matches(expected2)) {
+            String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, expected1, expected2, actual);
             throw new WrongTypeException(msg);
         }
     }

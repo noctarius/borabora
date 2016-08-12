@@ -21,7 +21,6 @@ import com.noctarius.borabora.spi.QueryConsumer;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TagDecoder;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -39,7 +38,7 @@ final class QueryContextImpl
 
     private long offset;
 
-    QueryContextImpl(Input input, QueryPipeline queryPipeline, QueryConsumer queryConsumer, //
+    QueryContextImpl(Input input, QueryConsumer queryConsumer, //
                      List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy) {
 
         this.input = input;
@@ -48,8 +47,7 @@ final class QueryContextImpl
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
-    QueryContextImpl(Input input, QueryPipeline queryPipeline,//
-                     QueryConsumer queryConsumer, QueryContextImpl queryContext) {
+    QueryContextImpl(Input input, QueryConsumer queryConsumer, QueryContextImpl queryContext) {
 
         this.input = input;
         this.queryConsumer = queryConsumer;
@@ -88,13 +86,13 @@ final class QueryContextImpl
     }
 
     @Override
-    public <T> T applyDecoder(long offset, MajorType majorType) {
+    public <T> T applyDecoder(long offset, MajorType majorType, ValueType valueType) {
         TagDecoder<T> processor = findProcessor(offset);
         if (processor == null) {
             return null;
         }
         long length = Decoder.length(input, majorType, offset);
-        return processor.process(offset, length, this);
+        return processor.process(valueType, offset, length, this);
     }
 
     @Override

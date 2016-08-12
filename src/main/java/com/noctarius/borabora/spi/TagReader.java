@@ -16,8 +16,10 @@
  */
 package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.ValueType;
+
 public interface TagReader<V> {
 
-    V process(long offset, long length, QueryContext queryContext);
+    V process(ValueType valueType, long offset, long length, QueryContext queryContext);
 
 }

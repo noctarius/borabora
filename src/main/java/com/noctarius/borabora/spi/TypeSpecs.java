@@ -33,12 +33,10 @@ public enum TypeSpecs
         implements TypeSpec {
 
     Number("number", ValueTypes.Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, //
-            ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), //
+            ValueTypes.NBigNum, ValueTypes.Int, ValueTypes.Float), //
     Int("int", Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int), //
     UInt("uint", Int, ValueTypes.UInt, ValueTypes.UBigNum), NInt("nint", Int, ValueTypes.NInt, ValueTypes.NBigNum), //
-    Float("float", Number, ValueTypes.UFloat, ValueTypes.NFloat, ValueTypes.Float), //
-    UFloat("ufloat", Float, ValueTypes.UFloat), //
-    NFloat("nfloat", Float, ValueTypes.NFloat), //
+    Float("float", Number, ValueTypes.Float), //
     String("string", ValueTypes.ByteString, ValueTypes.TextString), //
     Dictionary("dictionary", ValueTypes.Dictionary), //
     Sequence("sequence", ValueTypes.Sequence), //

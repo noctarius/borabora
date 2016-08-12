@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Decoder;
 import com.noctarius.borabora.spi.EncoderContext;
+import com.noctarius.borabora.spi.HalfPrecisionFloat;
 import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.TagReader;
 import com.noctarius.borabora.spi.TagWriter;
@@ -25,6 +26,7 @@ import com.noctarius.borabora.spi.TagWriter;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,6 +35,7 @@ import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.ENCODED_CBOR_
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.URI_READER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
@@ -66,53 +69,58 @@ public enum ValueTypes
 
     Number(Value::number), //
     Int(Value::number, Number), //
-    UInt(Value::number, Int), //
-    NInt(Value::number, Int), //
+    UInt(Value::number, Int, ValueValidators::isPositive), //
+    NInt(Value::number, Int, ValueValidators::isNegative), //
     String(Value::string), //
-    ByteString(Value::string, String), //
-    TextString(Value::string, String), //
+    ByteString(Value::string, String, ValueValidators::isByteString), //
+    TextString(Value::string, String, ValueValidators::isTextString), //
     Sequence(Value::sequence), //
     Dictionary(Value::dictionary), //
     Float(Value::number, Number), //
-    UFloat(Value::number, Float), //
-    NFloat(Value::number, Float), //
-    Bool(Value::bool), Null((v) -> null), //
+    Bool(Value::bool), //
+    Null((v) -> null), //
     Undefined((v) -> null), //
     DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), //
     Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt), //
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt), //
+    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
+    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
     EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
     URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag), //
-    Unknown(Value::raw);
+    Unknown(UNKNOWN_TAG_READER, null, null, Value::raw);
 
     private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
     private final TagReader<Object> tagReader;
     private final TagWriter<Object> tagWriter;
+    private final BiConsumer<Value, Object> validator;
     private final ValueType identity;
 
     ValueTypes(Function<Value, Object> byValueType) {
-        this(null, null, (v) -> false, byValueType, null);
+        this(null, null, (v) -> false, byValueType, null, null);
     }
 
     ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
-        this(null, null, (v) -> false, byValueType, identity);
+        this(null, null, (v) -> false, byValueType, identity, null);
+    }
+
+    ValueTypes(Function<Value, Object> byValueType, ValueType identity, BiConsumer<Value, Object> validator) {
+        this(null, null, (v) -> false, byValueType, identity, validator);
     }
 
     ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
                Function<Value, Object> byValueType) {
 
-        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null);
+        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null, null);
     }
 
     ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
-               Function<Value, Object> byValueType, ValueType identity) {
+               Function<Value, Object> byValueType, ValueType identity, BiConsumer<Value, Object> validator) {
 
         this.encodeableTypeMatcher = encodeableTypeMatcher;
         this.byValueType = byValueType;
         this.tagReader = tagReader;
         this.tagWriter = tagWriter;
+        this.validator = validator;
         this.identity = identity;
     }
 
@@ -145,15 +153,26 @@ public enum ValueTypes
 
     @Override
     public <T> T value(Value value) {
-        return (T) byValueType.apply(value);
+        return value(value, false);
     }
 
     @Override
-    public Object process(long offset, long length, QueryContext queryContext) {
-        if (tagReader == null) {
-            return null;
+    public <T> T value(Value value, boolean validate) {
+        if (!value.valueType().matches(this)) {
+            String msg = java.lang.String.format("ValueType does not match: %s, %s", this, value.valueType());
+            throw new IllegalArgumentException(msg);
         }
-        return tagReader.process(offset, length, queryContext);
+
+        Object extracted = byValueType.apply(value);
+        if (validate && validator != null) {
+            validator.accept(value, extracted);
+        }
+        return (T) extracted;
+    }
+
+    @Override
+    public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+        return tagReader.process(valueType, offset, length, queryContext);
     }
 
     @Override
@@ -189,8 +208,9 @@ public enum ValueTypes
                 return floatNullOrBool(head);
             case SemanticTag:
                 return semanticTagType(input, offset);
+            default:
+                throw new IllegalArgumentException("Illegal value type requested");
         }
-        throw new IllegalArgumentException("Illegal value type requested");
     }
 
     public static ValueTypes valueType(Object value) {
@@ -200,8 +220,10 @@ public enum ValueTypes
 
         Class<?> type = value.getClass();
         if (java.lang.Number.class.isAssignableFrom(type)) {
-            if (value instanceof java.lang.Float || value instanceof Double || value instanceof BigDecimal) {
-                return ((Number) value).doubleValue() < 0.0 ? NFloat : UFloat;
+            if (value instanceof HalfPrecisionFloat || value instanceof java.lang.Float //
+                    || value instanceof Double || value instanceof BigDecimal) {
+
+                return Float;
             }
             return ((Number) value).longValue() < 0 ? NInt : UInt;
         } else if (java.lang.String.class.isAssignableFrom(type)) {
@@ -231,7 +253,7 @@ public enum ValueTypes
             case FP_VALUE_UNDEF:
                 return Undefined;
             default:
-                return NFloat;
+                return Float;
         }
     }
 

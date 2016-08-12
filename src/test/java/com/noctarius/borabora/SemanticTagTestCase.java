@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import static com.noctarius.borabora.spi.Constants.ASCII;
 import static org.junit.Assert.assertEquals;
 
 public class SemanticTagTestCase
@@ -85,7 +86,7 @@ public class SemanticTagTestCase
     public void test_semantic_tag_enc_cbor()
             throws Exception {
 
-        String expected = new String(hexToBytes("0x6449455446"));
+        String expected = new String(hexToBytes("0x6449455446"), ASCII);
         SimplifiedTestParser parser = buildParser("0xd818456449455446");
         Value value = parser.read(Query.newBuilder().build());
         Value enc = value.tag();

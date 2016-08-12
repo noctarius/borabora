@@ -30,7 +30,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_PIPELINE;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractTestCase {
@@ -95,7 +94,7 @@ public abstract class AbstractTestCase {
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
                                                SelectStatementStrategy selectStatementStrategy) {
 
-        return new QueryContextImpl(input, EMPTY_QUERY_PIPELINE, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+        return new QueryContextImpl(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
     }
 
     public static class SimplifiedTestParser {

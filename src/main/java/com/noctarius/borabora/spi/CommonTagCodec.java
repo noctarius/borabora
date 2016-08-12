@@ -22,7 +22,6 @@ import com.noctarius.borabora.Output;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -110,29 +109,26 @@ public final class CommonTagCodec
     public enum TAG_READER
             implements TagReader<Object> {
 
-        DATE_TIME_READER((offset, length, queryContext) -> {
+        DATE_TIME_READER((valueType, offset, length, queryContext) -> {
             Input input = queryContext.input();
             int byteSize = ByteSizes.intByteSize(input, offset);
             String date = Decoder.readString(input, offset + byteSize);
             return DateParser.parseDate(date, Locale.ENGLISH);
         }),
 
-        UBIG_NUM_READER((offset, length, queryContext) -> {
+        UBIG_NUM_READER((valueType, offset, length, queryContext) -> {
             Input input = queryContext.input();
             int byteSize = ByteSizes.intByteSize(input, offset);
-            String bigNum = Decoder.readString(input, offset + byteSize);
-            try {
-                byte[] bytes = bigNum.getBytes("ASCII");
-                return new BigInteger(1, bytes);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("NBigNum could not be read", e);
-            }
+            // We need to extract raw bytes to prevent creating strings
+            // and since new String(..) transforms the byte array for char[]
+            byte[] bytes = Decoder.extractStringBytes(input, offset + 1);
+            return new BigInteger(1, bytes);
         }),
 
-        NBIG_NUM_READER((offset, length, queryContext) -> //
-                BigInteger.valueOf(-1).xor((BigInteger) UBIG_NUM_READER.process(offset, length, queryContext))),
+        NBIG_NUM_READER((valueType, offset, length, queryContext) -> //
+                BigInteger.valueOf(-1).xor((BigInteger) UBIG_NUM_READER.process(valueType, offset, length, queryContext))),
 
-        URI_READER((offset, length, queryContext) -> {
+        URI_READER((valueType, offset, length, queryContext) -> {
             Input input = queryContext.input();
             int byteSize = ByteSizes.intByteSize(input, offset);
             String uri = Decoder.readString(input, offset + byteSize);
@@ -143,21 +139,37 @@ public final class CommonTagCodec
             }
         }),
 
-        TIMESTAMP_READER((offset, length, queryContext) -> {
+        TIMESTAMP_READER((vt, offset, length, queryContext) -> {
             Input input = queryContext.input();
-            ValueType valueType = ValueTypes.valueType(input, offset + 1);
-            return Decoder.readNumber(input, valueType, offset + 1);
+            // Move offset to the actual data item
+            offset += ByteSizes.headByteSize(input, offset);
+            // Timestamp might have different types of items
+            ValueType valueType = ValueTypes.valueType(input, offset);
+            return Decoder.readNumber(input, valueType, offset);
         }),
 
-        ENCODED_CBOR_READER((offset, length, queryContext) -> {
+        ENCODED_CBOR_READER((vt, offset, length, queryContext) -> {
             Input input = queryContext.input();
             int headByteSize = ByteSizes.intByteSize(input, offset);
 
             offset += headByteSize;
             short head = Decoder.readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
+            // Normally this is a bytestring for real
             ValueType valueType = ValueTypes.valueType(input, offset);
             return new StreamValue(majorType, valueType, offset, queryContext);
+        }),
+
+        UNKNOWN_TAG_READER((valueType, offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            // Move offset to the actual data item
+            offset += ByteSizes.headByteSize(input, offset);
+            short itemHead = Decoder.readUInt8(input, offset);
+            MajorType majorType = MajorType.findMajorType(itemHead);
+            long size = ByteSizes.byteSizeByMajorType(majorType, input, offset);
+            byte[] bytes = new byte[(int) size];
+            input.read(bytes, offset, size);
+            return bytes;
         });
 
         private final TagReader<Object> tagReader;
@@ -167,8 +179,8 @@ public final class CommonTagCodec
         }
 
         @Override
-        public Object process(long offset, long length, QueryContext queryContext) {
-            return tagReader.process(offset, length, queryContext);
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return tagReader.process(valueType, offset, length, queryContext);
         }
     }
 
@@ -183,9 +195,8 @@ public final class CommonTagCodec
     }
 
     @Override
-    public Object process(long offset, long length, QueryContext queryContext) {
-        ValueTypes valueType = ValueTypes.valueType(queryContext.input(), offset);
-        return valueType.process(offset, length, queryContext);
+    public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+        return ((ValueTypes) valueType).process(valueType, offset, length, queryContext);
     }
 
     @Override

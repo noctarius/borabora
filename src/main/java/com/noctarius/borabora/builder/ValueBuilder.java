@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.builder;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Date;
@@ -52,7 +53,13 @@ public interface ValueBuilder<B> {
 
     B putHalfPrecision(Float value);
 
+    B putBigInteger(BigInteger value);
+
     B putString(String value);
+
+    B putByteString(String value);
+
+    B putTextString(String value);
 
     B putURI(URI uri);
 

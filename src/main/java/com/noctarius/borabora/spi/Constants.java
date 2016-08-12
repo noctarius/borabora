@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
@@ -95,16 +93,5 @@ public interface Constants {
     byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     QueryConsumer EMPTY_QUERY_CONSUMER = ((offset) -> false);
-
-    QueryPipeline<QueryContext> EMPTY_QUERY_PIPELINE = new QueryPipeline<QueryContext>() {
-        @Override
-        public void evaluate(QueryContext pipelineContext) {
-        }
-
-        @Override
-        public String printQueryGraph() {
-            return "";
-        }
-    };
 
 }

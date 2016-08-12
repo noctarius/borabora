@@ -24,6 +24,8 @@ public interface ValueType {
 
     <T> T value(Value value);
 
+    <T> T value(Value value, boolean validate);
+
     boolean matches(ValueType other);
 
     boolean matchesExact(ValueType other);

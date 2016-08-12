@@ -88,12 +88,7 @@ public class ObjectSelectStatementStrategy
 
     @Override
     public void putDictionaryKey(double key, QueryContext queryContext) {
-        Value keyValue;
-        if (key < 0) {
-            keyValue = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.NFloat, key);
-        } else {
-            keyValue = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.UFloat, key);
-        }
+        Value keyValue = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, key);
         queryContext.queryStackPush(keyValue);
     }
 
