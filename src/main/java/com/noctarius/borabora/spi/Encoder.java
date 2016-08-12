@@ -30,7 +30,6 @@ import static com.noctarius.borabora.spi.Constants.ADD_INFO_FOUR_BYTES;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_INDEFINITE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_ONE_BYTE;
 import static com.noctarius.borabora.spi.Constants.ADD_INFO_TWO_BYTES;
-import static com.noctarius.borabora.spi.Constants.ASCII;
 import static com.noctarius.borabora.spi.Constants.BI_MASK;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_24;
 import static com.noctarius.borabora.spi.Constants.BI_VAL_256;
@@ -57,10 +56,6 @@ import static com.noctarius.borabora.spi.StringEncoders.UTF8_ENCODER;
 
 public enum Encoder {
     ;
-
-    public static long putInt8(byte value, long offset, Output output) {
-        return Bytes.putInt8(value, offset, output);
-    }
 
     public static long putString(String value, long offset, Output output) {
         if (ASCII_ENCODER.canEncode(value)) {

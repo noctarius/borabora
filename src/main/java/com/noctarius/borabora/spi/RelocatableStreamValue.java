@@ -29,10 +29,6 @@ public final class RelocatableStreamValue
 
     public RelocatableStreamValue() {
         super(null);
-
-        if (offset == -1) {
-            throw new IllegalArgumentException("No offset available for CBOR type");
-        }
     }
 
     @Override
