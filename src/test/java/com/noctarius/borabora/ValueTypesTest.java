@@ -9,15 +9,18 @@ import com.noctarius.borabora.spi.QueryContext;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.TagDecoder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -426,6 +429,101 @@ public class ValueTypesTest
         ValueTypes.valueType(input, 0);
     }
 
+    @Test
+    public void test_valueType_obj_uint() {
+        ValueType valueType = ValueTypes.valueType(1);
+        assertEquals(ValueTypes.UInt, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_nint() {
+        ValueType valueType = ValueTypes.valueType(-1);
+        assertEquals(ValueTypes.NInt, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_bytestring() {
+        ValueType valueType = ValueTypes.valueType("foo");
+        assertEquals(ValueTypes.ByteString, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_textstring() {
+        ValueType valueType = ValueTypes.valueType("üöä");
+        assertEquals(ValueTypes.TextString, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_sequence() {
+        ValueType valueType = ValueTypes.valueType(new ArrayList<>());
+        assertEquals(ValueTypes.Sequence, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_dictionary() {
+        ValueType valueType = ValueTypes.valueType(new HashMap<>());
+        assertEquals(ValueTypes.Dictionary, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_floatOrSimple_null() {
+        ValueType valueType = ValueTypes.valueType(null);
+        assertEquals(ValueTypes.Null, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_floatOrSimple_bool() {
+        ValueType valueType = ValueTypes.valueType(true);
+        assertEquals(ValueTypes.Bool, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_floatOrSimple_float() {
+        ValueType valueType = ValueTypes.valueType(Float.valueOf(12.0f));
+        assertEquals(ValueTypes.Float, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_datetime() {
+        ValueType valueType = ValueTypes.valueType(new Date());
+        assertEquals(ValueTypes.DateTime, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_timestamp() {
+        Input input = semanticTag(ValueTypes.Timestamp);
+        ValueType valueType = ValueTypes.valueType(input, 0);
+        assertEquals(ValueTypes.Timestamp, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_ubigint() {
+        ValueType valueType = ValueTypes.valueType(new BigInteger("1234"));
+        assertEquals(ValueTypes.UBigNum, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_nbigint() {
+        ValueType valueType = ValueTypes.valueType(new BigInteger("-1234"));
+        assertEquals(ValueTypes.NBigNum, valueType);
+    }
+
+    @Test
+    @Ignore("Not yet implemented")
+    public void test_valueType_obj_semtag_enccbor() {
+        Input input = semanticTag(ValueTypes.EncCBOR);
+        ValueType valueType = ValueTypes.valueType(input, 0);
+        assertEquals(ValueTypes.EncCBOR, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_uri()
+            throws Exception {
+
+        ValueType valueType = ValueTypes.valueType(new URI("www.noctarius.com"));
+        assertEquals(ValueTypes.URI, valueType);
+    }
+
     private Input input(MajorType majorType, ValueType valueType) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
@@ -440,21 +538,23 @@ public class ValueTypesTest
         return Input.fromByteArray(baos.toByteArray());
     }
 
-    private Input semanticTag(ValueType valueType) {
-        if (valueType == ValueTypes.DateTime) {
-            return semanticTag(TAG_DATE_TIME);
-        } else if (valueType == ValueTypes.Timestamp) {
-            return semanticTag(TAG_TIMESTAMP);
-        } else if (valueType == ValueTypes.UBigNum) {
-            return semanticTag(TAG_UNSIGNED_BIGNUM);
-        } else if (valueType == ValueTypes.NBigNum) {
-            return semanticTag(TAG_SIGNED_BIGNUM);
-        } else if (valueType == ValueTypes.EncCBOR) {
-            return semanticTag(TAG_ENCCBOR);
-        } else if (valueType == ValueTypes.URI) {
-            return semanticTag(TAG_URI);
+    private Input semanticTag(ValueTypes valueType) {
+        switch (valueType) {
+            case DateTime:
+                return semanticTag(TAG_DATE_TIME);
+            case Timestamp:
+                return semanticTag(TAG_TIMESTAMP);
+            case UBigNum:
+                return semanticTag(TAG_UNSIGNED_BIGNUM);
+            case NBigNum:
+                return semanticTag(TAG_SIGNED_BIGNUM);
+            case EncCBOR:
+                return semanticTag(TAG_ENCCBOR);
+            case URI:
+                return semanticTag(TAG_URI);
+            default:
+                throw new IllegalArgumentException("Not a semanticTag value type");
         }
-        throw new IllegalArgumentException("Not a semanticTag value type");
     }
 
     private Input semanticTag(int tagId) {

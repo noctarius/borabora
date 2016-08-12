@@ -42,10 +42,11 @@ import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.DATE_TIME_WRI
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.URI_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.BIG_NUM_MATCHER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
+import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER;
 import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.URI_MATCHER;
 import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
 import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
@@ -82,8 +83,8 @@ public enum ValueTypes
     Undefined((v) -> null), //
     DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), //
     Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, BIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
+    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
+    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
     EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
     URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag), //
     Unknown(UNKNOWN_TAG_READER, null, null, Value::raw);
@@ -223,18 +224,21 @@ public enum ValueTypes
 
                 return Float;
             }
-            return ((Number) value).longValue() < 0 ? NInt : UInt;
+            if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
+                return ((Number) value).longValue() < 0 ? NInt : UInt;
+            }
         } else if (java.lang.String.class.isAssignableFrom(type)) {
             return ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
         } else if (List.class.isAssignableFrom(type) || value.getClass().isArray()) {
             return Sequence;
         } else if (Map.class.isAssignableFrom(type)) {
             return Dictionary;
-        } else {
-            for (ValueTypes valueType : ValueTypes.values()) {
-                if (valueType.typeEncodeable(value)) {
-                    return valueType;
-                }
+        } else if (value instanceof Boolean) {
+            return Bool;
+        }
+        for (ValueTypes valueType : ValueTypes.values()) {
+            if (valueType.typeEncodeable(value)) {
+                return valueType;
             }
         }
         return null;

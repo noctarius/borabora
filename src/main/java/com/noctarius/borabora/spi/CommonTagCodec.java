@@ -46,8 +46,11 @@ public final class CommonTagCodec
 
         TIMESTAMP_MATCHER((v) -> Timestamp.class.isAssignableFrom(v.getClass())),
 
-        BIG_NUM_MATCHER((v) -> //
-                BigInteger.class.isAssignableFrom(v.getClass()) || BigDecimal.class.isAssignableFrom(v.getClass())),
+        UBIG_NUM_MATCHER((v) -> //
+                BigInteger.class.isAssignableFrom(v.getClass()) && ((BigInteger) v).signum() >= 0),
+
+        NBIG_NUM_MATCHER((v) -> //
+                BigInteger.class.isAssignableFrom(v.getClass()) && ((BigInteger) v).signum() < 0),
 
         URI_MATCHER((v) -> URI.class.isAssignableFrom(v.getClass())),
 
