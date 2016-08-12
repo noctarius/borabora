@@ -206,10 +206,8 @@ public enum ValueTypes
                 return Dictionary;
             case FloatingPointOrSimple:
                 return floatNullOrBool(head);
-            case SemanticTag:
+            default: // Always a semantic tag
                 return semanticTagType(input, offset);
-            default:
-                throw new IllegalArgumentException("Illegal value type requested");
         }
     }
 
