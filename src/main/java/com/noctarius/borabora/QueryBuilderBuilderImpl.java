@@ -18,7 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
-import com.noctarius.borabora.spi.QueryOptimizer;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 import java.util.ArrayList;

@@ -14,17 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
+public interface QueryOptimizer<PC, T extends Stage<PC, T>, PS extends PipelineStage<PC, T>> {
 
-public interface QueryBuilderBuilder {
+    boolean handles(PipelineStage rooPipelineStage);
 
-    QueryBuilderBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy);
-
-    QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer);
-
-    QueryBuilder newBuilder();
+    PS optimize(PS rootPipelineStage, PipelineStageFactory<PC, T, PS> pipelineStageFactory);
 
 }

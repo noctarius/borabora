@@ -14,15 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.Stage;
+public interface PipelineStageFactory<PC, T extends Stage<PC, T>, PS extends PipelineStage<PC, T>> {
 
-public interface QueryOptimizer<PC, T extends Stage<PC, T>, PS extends PipelineStage<PC, T>> {
-
-    boolean handles(PipelineStage rooPipelineStage);
-
-    PS optimize(PS rootPipelineStage);
+    PS newPipelineStage(PS left, PS right, Stage<PC, T> stage);
 
 }
