@@ -16,17 +16,22 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.builder.QueryBuilderBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
-public interface Query {
+import java.util.Collections;
 
-    boolean isStreamQueryCapable();
+public interface Query {
 
     QueryPipeline newQueryPipeline();
 
     void printQueryGraph();
+
+    static QueryBuilderBuilder configureBuilder() {
+        return new QueryBuilderBuilderImpl();
+    }
 
     static StreamQueryBuilder newBuilder() {
         return newBuilder(true);
@@ -38,7 +43,7 @@ public interface Query {
     }
 
     static StreamQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
-        return new QueryBuilderImpl(selectStatementStrategy);
+        return new QueryBuilderImpl(selectStatementStrategy, Collections.emptyList());
     }
 
 }

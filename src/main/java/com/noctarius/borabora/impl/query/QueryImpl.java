@@ -71,11 +71,6 @@ public final class QueryImpl
     }
 
     @Override
-    public boolean isStreamQueryCapable() {
-        return streamingCapable;
-    }
-
-    @Override
     public QueryPipeline newQueryPipeline() {
         return queryPipeline;
     }

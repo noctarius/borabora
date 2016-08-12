@@ -32,6 +32,7 @@ import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.QueryBuilderTreeNode;
 import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.QueryOptimizer;
 import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
@@ -48,8 +49,11 @@ final class QueryBuilderImpl
         extends AbstractQueryBuilder
         implements StreamQueryBuilder {
 
-    QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy) {
+    private final List<QueryOptimizer> queryOptimizers;
+
+    QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy, List<QueryOptimizer> queryOptimizers) {
         super(new QueryBuilderTreeNode(QUERY_BASE), selectStatementStrategy);
+        this.queryOptimizers = queryOptimizers;
     }
 
     @Override
@@ -98,8 +102,19 @@ final class QueryBuilderImpl
         // Fix selector multiple consumers
         fixSelectorConsumers(parentTreeNode);
 
+        // Build LCRS query plan
         PipelineStage<QueryContext, QueryStage> rootStage = QueryBuilderTreeNode.build(parentTreeNode);
-        QueryPipeline<QueryContext> queryPipeline = new QueryPipelineImpl(rootStage);
+
+        // Apply query optimizers
+        PipelineStage<QueryContext, QueryStage> optimizedRootStage = rootStage;
+        for (QueryOptimizer queryOptimizer : queryOptimizers) {
+            if (queryOptimizer.handles(optimizedRootStage)) {
+                optimizedRootStage = queryOptimizer.optimize(optimizedRootStage);
+            }
+        }
+
+        // Build query pipeline
+        QueryPipeline<QueryContext> queryPipeline = new QueryPipelineImpl(optimizedRootStage);
 
         return new QueryImpl(queryPipeline, selectStatementStrategy);
     }
