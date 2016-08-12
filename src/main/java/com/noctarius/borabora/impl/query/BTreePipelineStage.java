@@ -83,15 +83,7 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
         }
 
         BTreePipelineStage<?, ?> that = (BTreePipelineStage<?, ?>) o;
-
-        if (left != null ? !left.equals(that.left) : that.left != null) {
-            return false;
-        }
-        if (right != null ? !right.equals(that.right) : that.right != null) {
-            return false;
-        }
-        return stage != null ? stage.equals(that.stage) : that.stage == null;
-
+        return treeEquals(this, that);
     }
 
     @Override

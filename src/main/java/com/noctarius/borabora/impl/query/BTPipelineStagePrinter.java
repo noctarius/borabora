@@ -18,7 +18,8 @@ package com.noctarius.borabora.impl.query;
 
 import static com.noctarius.borabora.impl.query.BTreePipelineStage.NIL;
 
-class BTPipelineStagePrinter {
+enum BTPipelineStagePrinter {
+    ;
 
     static String printTree(BTreePipelineStage node) {
         StringBuilder sb = new StringBuilder();
