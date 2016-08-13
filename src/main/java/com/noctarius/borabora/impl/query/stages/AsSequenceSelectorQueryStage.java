@@ -16,10 +16,11 @@
  */
 package com.noctarius.borabora.impl.query.stages;
 
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 public class AsSequenceSelectorQueryStage
         implements QueryStage {
@@ -30,10 +31,7 @@ public class AsSequenceSelectorQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
-                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
-                                QueryContext pipelineContext) {
-
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
         SelectStatementStrategy selectStatementStrategy = pipelineContext.selectStatementStrategy();
         selectStatementStrategy.beginSequence(pipelineContext);
 

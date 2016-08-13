@@ -21,11 +21,12 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Objects;
 
@@ -42,10 +43,7 @@ public class TypeMatcherQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
-                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
-                                QueryContext pipelineContext) {
-
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
         Input input = pipelineContext.input();
         long offset = pipelineContext.offset();
 

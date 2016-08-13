@@ -19,15 +19,15 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.EntryQueryBuilder;
-import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
-import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
-import com.noctarius.borabora.impl.query.stages.QueryStage;
-import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.builder.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
+import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.function.Predicate;
 

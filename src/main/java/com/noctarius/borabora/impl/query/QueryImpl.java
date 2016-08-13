@@ -17,19 +17,18 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import com.noctarius.borabora.spi.query.SelectStatementStrategyAware;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 public final class QueryImpl
         implements Query, SelectStatementStrategyAware {
 
     private final boolean streamingCapable;
-    private final QueryPipeline<QueryContext> queryPipeline;
+    private final QueryPipeline queryPipeline;
     private SelectStatementStrategy selectStatementStrategy;
 
-    public QueryImpl(QueryPipeline<QueryContext> queryPipeline, SelectStatementStrategy selectStatementStrategy) {
+    public QueryImpl(QueryPipeline queryPipeline, SelectStatementStrategy selectStatementStrategy) {
         this.queryPipeline = queryPipeline;
         this.streamingCapable = queryPipeline.isStreamQueryCapable();
         this.selectStatementStrategy = selectStatementStrategy;

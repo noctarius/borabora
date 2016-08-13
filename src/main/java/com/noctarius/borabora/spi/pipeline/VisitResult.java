@@ -24,7 +24,7 @@ public enum VisitResult {
     Continue,
 
     /**
-     * Loop on current {@link Stage#evaluate(PipelineStage, PipelineStage, Object)}
+     * Loop on current {@link QueryStage#evaluate(PipelineStage, PipelineStage, Object)}
      */
     Loop,
 

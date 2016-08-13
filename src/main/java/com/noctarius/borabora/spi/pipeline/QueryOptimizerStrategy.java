@@ -18,6 +18,6 @@ package com.noctarius.borabora.spi.pipeline;
 
 public interface QueryOptimizerStrategy {
 
-
+    PipelineStage optimizeQuery(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory);
 
 }

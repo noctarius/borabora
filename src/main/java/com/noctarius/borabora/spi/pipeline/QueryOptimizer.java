@@ -16,10 +16,10 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface QueryOptimizer<PC, T extends Stage<PC, T>, PS extends PipelineStage<PC, T>> {
+public interface QueryOptimizer {
 
     boolean handles(PipelineStage rooPipelineStage);
 
-    PS optimize(PS rootPipelineStage, PipelineStageFactory<PC, T, PS> pipelineStageFactory);
+    PipelineStage optimize(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory);
 
 }

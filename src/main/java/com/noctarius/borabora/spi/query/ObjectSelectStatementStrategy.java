@@ -22,7 +22,6 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamableIterable;
@@ -99,7 +98,7 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+    public void putDictionaryValue(PipelineStage previousPipelineStage, QueryContext queryContext) {
         long offset = queryContext.offset();
 
         Value v1 = queryContext.queryStackPop();
@@ -147,7 +146,7 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
-    public void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+    public void putSequenceValue(PipelineStage previousPipelineStage, QueryContext queryContext) {
         Value value;
         if (queryContext.queryStackPeek() instanceof Value) {
             value = queryContext.queryStackPop();

@@ -47,7 +47,7 @@ public class UtilsClassEnumMethodsTestCase {
         call(ByteSizes.class.getName());
         call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());
-        call("com.noctarius.borabora.impl.query.BTPipelineStagePrinter");
+        call("com.noctarius.borabora.impl.query.PipelineStagePrinter");
         call(VisitResult.class.getName());
     }
 

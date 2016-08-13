@@ -16,31 +16,29 @@
  */
 package com.noctarius.borabora.impl.query;
 
-import com.noctarius.borabora.impl.query.stages.QueryStage;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryPipeline;
+import com.noctarius.borabora.spi.query.QueryContext;
 
-public class QueryPipelineImpl
-        implements QueryPipeline<QueryContext> {
+import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
-    final PipelineStage<QueryContext, QueryStage> rootPipelineStage;
+class QueryPipelineImpl
+        implements QueryPipeline {
 
-    public QueryPipelineImpl(PipelineStage<QueryContext, QueryStage> rootPipelineStage) {
+    private final PipelineStage rootPipelineStage;
+
+    QueryPipelineImpl(PipelineStage rootPipelineStage) {
         this.rootPipelineStage = rootPipelineStage;
     }
 
     @Override
     public void evaluate(QueryContext queryContext) {
-        rootPipelineStage.visit(BTreePipelineStage.NIL, queryContext);
+        rootPipelineStage.visit(NIL, queryContext);
     }
 
     @Override
     public String printQueryGraph() {
-        if (rootPipelineStage instanceof BTreePipelineStage) {
-            return BTPipelineStagePrinter.printTree((BTreePipelineStage) rootPipelineStage);
-        }
-        throw new UnsupportedOperationException("Cannot render Query Graph of type: " + rootPipelineStage.getClass().getName());
+        return PipelineStagePrinter.printTree(rootPipelineStage);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class QueryPipelineImpl
         }
 
         QueryPipelineImpl that = (QueryPipelineImpl) o;
-        return BTreePipelineStage.treeEquals((BTreePipelineStage) rootPipelineStage, (BTreePipelineStage) that.rootPipelineStage);
+        return BTreePipelineStage.treeEquals(rootPipelineStage, that.rootPipelineStage);
     }
 
     @Override

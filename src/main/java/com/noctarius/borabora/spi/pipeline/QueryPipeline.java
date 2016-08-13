@@ -16,9 +16,11 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface QueryPipeline<PC> {
+import com.noctarius.borabora.spi.query.QueryContext;
 
-    void evaluate(PC pipelineContext);
+public interface QueryPipeline {
+
+    void evaluate(QueryContext pipelineContext);
 
     default boolean isStreamQueryCapable() {
         return true;

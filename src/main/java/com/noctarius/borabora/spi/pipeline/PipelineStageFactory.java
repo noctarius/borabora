@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface PipelineStageFactory<PC, T extends Stage<PC, T>, PS extends PipelineStage<PC, T>> {
+public interface PipelineStageFactory {
 
-    PS newPipelineStage(PS left, PS right, T stage);
+    PipelineStage newPipelineStage(PipelineStage left, PipelineStage right, QueryStage stage);
 
 }

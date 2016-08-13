@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
 public interface SelectStatementStrategy {
@@ -35,12 +34,12 @@ public interface SelectStatementStrategy {
 
     void putDictionaryKey(double key, QueryContext queryContext);
 
-    void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext);
+    void putDictionaryValue(PipelineStage previousPipelineStage, QueryContext queryContext);
 
     void beginSequence(QueryContext queryContext);
 
     void endSequence(QueryContext queryContext);
 
-    void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext);
+    void putSequenceValue(PipelineStage previousPipelineStage, QueryContext queryContext);
 
 }

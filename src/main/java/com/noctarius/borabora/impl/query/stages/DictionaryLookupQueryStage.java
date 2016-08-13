@@ -22,11 +22,12 @@ import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -42,8 +43,7 @@ public class DictionaryLookupQueryStage
     }
 
     @Override
-    public final VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
-                                      PipelineStage<QueryContext, QueryStage> pipelineStage, //
+    public final VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage,
                                       QueryContext pipelineContext) {
 
         Input input = pipelineContext.input();

@@ -16,8 +16,9 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface QueryPipelineFactory<PC> {
+public interface QueryPipelineFactory {
 
-    QueryPipeline<PC> newQueryPipeline(QueryBuilderNode queryRootNode, QueryOptimizerStrategy queryOptimizerStrategy);
+    QueryPipeline newQueryPipeline(QueryBuilderNode queryRootNode, PipelineStageFactory pipelineStageFactory,
+                                   QueryOptimizerStrategy queryOptimizerStrategy);
 
 }

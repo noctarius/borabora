@@ -16,21 +16,19 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.impl.query.stages.QueryStage;
-import com.noctarius.borabora.impl.query.BTreePipelineStage;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.noctarius.borabora.impl.query.BTreePipelineStage.NIL;
+import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
 public final class QueryBuilderNode {
 
-    public static final Stage<QueryContext, QueryStage> QUERY_BASE = new QueryStage() {
+    public static final QueryStage QUERY_BASE = new QueryStage() {
         @Override
-        public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage,//
-                                    PipelineStage<QueryContext, QueryStage> pipelineStage, //
+        public VisitResult evaluate(PipelineStage previousPipelineStage,//
+                                    PipelineStage pipelineStage, //
                                     QueryContext pipelineContext) {
 
             return pipelineStage.visitChildren(pipelineContext);
@@ -43,13 +41,13 @@ public final class QueryBuilderNode {
     };
 
     private final List<QueryBuilderNode> children = new ArrayList<>();
-    private final Stage<QueryContext, QueryStage> stage;
+    private final QueryStage stage;
 
-    public QueryBuilderNode(Stage<QueryContext, QueryStage> stage) {
+    public QueryBuilderNode(QueryStage stage) {
         this.stage = stage;
     }
 
-    public QueryBuilderNode pushChild(Stage<QueryContext, QueryStage> stage) {
+    public QueryBuilderNode pushChild(QueryStage stage) {
         QueryBuilderNode child = new QueryBuilderNode(stage);
         children.add(child);
         return child;
@@ -63,7 +61,7 @@ public final class QueryBuilderNode {
         return children;
     }
 
-    public Stage<QueryContext, QueryStage> stage() {
+    public QueryStage stage() {
         return stage;
     }
 
@@ -72,33 +70,33 @@ public final class QueryBuilderNode {
         return "QueryBuilderTreeNode{stage=" + stage + ", children=" + children + '}';
     }
 
-    @SuppressWarnings("unchecked")
-    public static <PC, T extends Stage<PC, T>> BTreePipelineStage<PC, T> build(QueryBuilderNode tree) {
-        BTreePipelineStage<PC, T> left = NIL;
-        BTreePipelineStage<PC, T> right = NIL;
+    public static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {
+
+        PipelineStage left = NIL;
+        PipelineStage right = NIL;
 
         List<QueryBuilderNode> children = tree.children;
         if (children.size() > 0) {
-            left = transform(children, 0);
+            left = transform(children, 0, pipelineStageFactory);
         }
 
-        return new BTreePipelineStage(left, right, tree.stage);
+        return pipelineStageFactory.newPipelineStage(left, right, tree.stage);
     }
 
-    @SuppressWarnings("unchecked")
-    private static <PC, T extends Stage<PC, T>> BTreePipelineStage<PC, T> transform(List<QueryBuilderNode> children,
-                                                                                    int index) {
-        BTreePipelineStage<PC, T> left = NIL;
-        BTreePipelineStage<PC, T> right = NIL;
+    private static PipelineStage transform(List<QueryBuilderNode> children, int index,
+                                           PipelineStageFactory pipelineStageFactory) {
 
-        Stage<QueryContext, QueryStage> stage = null;
+        PipelineStage left = NIL;
+        PipelineStage right = NIL;
+
+        QueryStage stage = null;
         if (index < children.size()) {
-            right = transform(children, index + 1);
+            right = transform(children, index + 1, pipelineStageFactory);
 
             QueryBuilderNode treeNode = children.get(index);
             stage = treeNode.stage;
             if (treeNode.children.size() > 0) {
-                left = transform(treeNode.children, 0);
+                left = transform(treeNode.children, 0, pipelineStageFactory);
             }
         }
 
@@ -106,6 +104,6 @@ public final class QueryBuilderNode {
             return NIL;
         }
 
-        return new BTreePipelineStage(left, right, stage);
+        return pipelineStageFactory.newPipelineStage(left, right, stage);
     }
 }

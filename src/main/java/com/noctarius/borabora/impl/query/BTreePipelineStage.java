@@ -17,31 +17,25 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.Stage;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.QueryContext;
 
-public class BTreePipelineStage<PC, T extends Stage<PC, T>>
-        implements PipelineStage<PC, T> {
+class BTreePipelineStage
+        implements PipelineStage {
 
-    public static final BTreePipelineStage NIL = new BTreePipelineStage(null, null, null) {
-        @Override
-        public String toString() {
-            return "NIL";
-        }
-    };
+    final PipelineStage left;
+    final PipelineStage right;
+    final QueryStage stage;
 
-    final BTreePipelineStage<PC, T> left;
-    final BTreePipelineStage<PC, T> right;
-    final T stage;
-
-    public BTreePipelineStage(BTreePipelineStage<PC, T> left, BTreePipelineStage<PC, T> right, T stage) {
+    BTreePipelineStage(PipelineStage left, PipelineStage right, QueryStage stage) {
         this.left = left;
         this.right = right;
         this.stage = stage;
     }
 
     @Override
-    public VisitResult visit(PipelineStage<PC, T> previousPipelineStage, PC pipelineContext) {
+    public VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext) {
         VisitResult visitResult = VisitResult.Continue;
 
         if (stage != null) {
@@ -61,7 +55,7 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
     }
 
     @Override
-    public VisitResult visitChildren(PC pipelineContext) {
+    public VisitResult visitChildren(QueryContext pipelineContext) {
         if (left != NIL) {
             return left.visit(this, pipelineContext);
         }
@@ -69,8 +63,18 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
     }
 
     @Override
-    public T stage() {
+    public QueryStage stage() {
         return stage;
+    }
+
+    @Override
+    public PipelineStage left() {
+        return left;
+    }
+
+    @Override
+    public PipelineStage right() {
+        return right;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
             return false;
         }
 
-        BTreePipelineStage<?, ?> that = (BTreePipelineStage<?, ?>) o;
+        BTreePipelineStage that = (BTreePipelineStage) o;
         return treeEquals(this, that);
     }
 
@@ -99,7 +103,7 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
         return "BTreePipelineStage{stage=" + stage + ", left=" + left + ", right=" + right + '}';
     }
 
-    public static boolean treeEquals(BTreePipelineStage a, BTreePipelineStage b) {
+    public static boolean treeEquals(PipelineStage a, PipelineStage b) {
         // check for reference equality and nulls
         if (a == b) {
             return true; // note this picks up case of two nulls
@@ -112,20 +116,20 @@ public class BTreePipelineStage<PC, T extends Stage<PC, T>>
         }
 
         // check for data inequality
-        if (a.stage != b.stage) {
-            if ((a.stage == null) || (b.stage == null)) {
+        if (a.stage() != b.stage()) {
+            if ((a.stage() == null) || (b.stage() == null)) {
                 return false;
             }
-            if (!Stage.equals(a.stage, b.stage)) {
+            if (!QueryStage.equals(a.stage(), b.stage())) {
                 return false;
             }
         }
 
         // recursively check branches
-        if (!treeEquals(a.left, b.left)) {
+        if (!treeEquals(a.left(), b.left())) {
             return false;
         }
-        if (!treeEquals(a.right, b.right)) {
+        if (!treeEquals(a.right(), b.right())) {
             return false;
         }
 

@@ -24,7 +24,6 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
-import com.noctarius.borabora.impl.query.stages.QueryStage;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.Encoder;
@@ -98,7 +97,7 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public void putDictionaryValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+    public void putDictionaryValue(PipelineStage previousPipelineStage, QueryContext queryContext) {
         if (!(previousPipelineStage.stage() instanceof AsDictionarySelectorQueryStage) //
                 && !(previousPipelineStage.stage() instanceof AsSequenceSelectorQueryStage)) {
 
@@ -117,7 +116,7 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
-    public void putSequenceValue(PipelineStage<QueryContext, QueryStage> previousPipelineStage, QueryContext queryContext) {
+    public void putSequenceValue(PipelineStage previousPipelineStage, QueryContext queryContext) {
         if (!(previousPipelineStage.stage() instanceof AsDictionarySelectorQueryStage) //
                 && !(previousPipelineStage.stage() instanceof AsSequenceSelectorQueryStage)) {
 

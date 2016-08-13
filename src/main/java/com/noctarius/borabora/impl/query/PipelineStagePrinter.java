@@ -16,41 +16,43 @@
  */
 package com.noctarius.borabora.impl.query;
 
-import static com.noctarius.borabora.impl.query.BTreePipelineStage.NIL;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
-enum BTPipelineStagePrinter {
+import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+
+enum PipelineStagePrinter {
     ;
 
-    static String printTree(BTreePipelineStage node) {
+    static String printTree(PipelineStage node) {
         StringBuilder sb = new StringBuilder();
         printTree(node, sb);
         return sb.toString();
     }
 
-    private static void printTree(BTreePipelineStage node, StringBuilder sb) {
-        if (node.right != null && node.right != NIL) {
-            printTree(node.right, sb, true, "");
+    private static void printTree(PipelineStage node, StringBuilder sb) {
+        if (node.right() != null && node.right() != NIL) {
+            printTree(node.right(), sb, true, "");
         }
 
         printNodeValue(node, sb);
 
-        if (node.left != null && node.left != NIL) {
-            printTree(node.left, sb, false, "");
+        if (node.left() != null && node.left() != NIL) {
+            printTree(node.left(), sb, false, "");
         }
     }
 
-    private static void printNodeValue(BTreePipelineStage node, StringBuilder sb) {
-        if (node.stage == null) {
+    private static void printNodeValue(PipelineStage node, StringBuilder sb) {
+        if (node.stage() == null) {
             sb.append("<null>");
         } else {
-            sb.append(node.stage.toString());
+            sb.append(node.stage().toString());
         }
         sb.append('\n');
     }
 
-    private static void printTree(BTreePipelineStage node, StringBuilder sb, boolean isRight, String indent) {
-        if (node.right != null && node.right != NIL) {
-            printTree(node.right, sb, true, indent + (isRight ? "        " : " |      "));
+    private static void printTree(PipelineStage node, StringBuilder sb, boolean isRight, String indent) {
+        if (node.right() != null && node.right() != NIL) {
+            printTree(node.right(), sb, true, indent + (isRight ? "        " : " |      "));
         }
 
         sb.append(indent);
@@ -63,8 +65,8 @@ enum BTPipelineStagePrinter {
 
         printNodeValue(node, sb);
 
-        if (node.left != null && node.left != NIL) {
-            printTree(node.left, sb, false, indent + (isRight ? " |      " : "        "));
+        if (node.left() != null && node.left() != NIL) {
+            printTree(node.left(), sb, false, indent + (isRight ? " |      " : "        "));
         }
     }
 }

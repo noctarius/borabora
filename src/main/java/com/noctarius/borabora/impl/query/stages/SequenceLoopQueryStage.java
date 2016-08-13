@@ -18,12 +18,13 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 public class SequenceLoopQueryStage
         implements QueryStage {
@@ -34,10 +35,7 @@ public class SequenceLoopQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage<QueryContext, QueryStage> previousPipelineStage, //
-                                PipelineStage<QueryContext, QueryStage> pipelineStage, //
-                                QueryContext pipelineContext) {
-
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
         Input input = pipelineContext.input();
         long offset = pipelineContext.offset();
 

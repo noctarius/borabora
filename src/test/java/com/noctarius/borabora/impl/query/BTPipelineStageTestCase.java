@@ -72,7 +72,7 @@ public class BTPipelineStageTestCase {
         BTreePipelineStage two = new BTreePipelineStage(BTreePipelineStage.NIL, five, null);
         BTreePipelineStage one = new BTreePipelineStage(two, three, null);
 
-        String actual = BTPipelineStagePrinter.printTree(one);
+        String actual = PipelineStagePrinter.printTree(one);
         assertEquals(expected, actual);
     }
 

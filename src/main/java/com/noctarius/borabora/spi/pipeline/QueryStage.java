@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface Stage<PC, T extends Stage<PC, T>> {
+import com.noctarius.borabora.spi.query.QueryContext;
 
-    VisitResult evaluate(PipelineStage<PC, T> previousPipelineStage, PipelineStage<PC, T> pipelineStage, PC pipelineContext);
+public interface QueryStage {
+
+    VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext);
 
     static boolean equals(Object first, Object second) {
-        if (!(first instanceof Stage) || !(second instanceof Stage)) {
+        if (!(first instanceof QueryStage) || !(second instanceof QueryStage)) {
             return false;
         }
 

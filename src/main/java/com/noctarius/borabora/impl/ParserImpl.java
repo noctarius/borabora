@@ -147,7 +147,7 @@ final class ParserImpl
     private void evaluate(Query query, Input input, QueryConsumer queryConsumer,
                           SelectStatementStrategy selectStatementStrategy) {
 
-        QueryPipeline<QueryContext> queryPipeline = query.newQueryPipeline();
+        QueryPipeline queryPipeline = query.newQueryPipeline();
         QueryContext queryContext = newQueryContext(input, queryConsumer, selectStatementStrategy);
 
         queryPipeline.evaluate(queryContext);

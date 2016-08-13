@@ -18,29 +18,27 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Value;
+import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilder;
+import com.noctarius.borabora.builder.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.impl.query.BTreeFactories;
+import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
+import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
 import com.noctarius.borabora.impl.query.stages.MultiStreamElementQueryStage;
 import com.noctarius.borabora.impl.query.stages.PrepareSelectionQueryStage;
-import com.noctarius.borabora.impl.query.stages.QueryStage;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-import com.noctarius.borabora.builder.DictionaryQueryBuilder;
-import com.noctarius.borabora.builder.SequenceQueryBuilder;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.impl.query.BTreePipelineStage;
-import com.noctarius.borabora.impl.query.QueryImpl;
-import com.noctarius.borabora.impl.query.QueryPipelineImpl;
-import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
-import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
-import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -104,22 +102,18 @@ public final class QueryBuilderImpl
         // Fix selector multiple consumers
         fixSelectorConsumers(parentTreeNode);
 
-        // Build LCRS query plan
-        PipelineStage<QueryContext, QueryStage> rootStage = QueryBuilderNode.build(parentTreeNode);
-
         // New pipeline stage factory
-        PipelineStageFactory<QueryContext, QueryStage, BTreePipelineStage<QueryContext, QueryStage>> factory = BTreePipelineStage::new;
+        PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
 
-        // Apply query optimizers
-        PipelineStage<QueryContext, QueryStage> optimizedRootStage = rootStage;
-        for (QueryOptimizer queryOptimizer : queryOptimizers) {
-            if (queryOptimizer.handles(optimizedRootStage)) {
-                optimizedRootStage = queryOptimizer.optimize(optimizedRootStage, factory);
-            }
-        }
+        // New query optimizer strategy
+        QueryOptimizerStrategy queryOptimizerStrategy = BTreeFactories.newQueryOptimizerStrategy(queryOptimizers);
 
-        // Build query pipeline
-        QueryPipeline<QueryContext> queryPipeline = new QueryPipelineImpl(optimizedRootStage);
+        // New query pipeline factory
+        QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
+
+        // Build query pipeline with optimized query execution plan
+        QueryPipeline queryPipeline = queryPipelineFactory
+                .newQueryPipeline(parentTreeNode, pipelineStageFactory, queryOptimizerStrategy);
 
         return new QueryImpl(queryPipeline, selectStatementStrategy);
     }

@@ -16,14 +16,47 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-public interface PipelineStage<PC, T extends Stage<PC, T>> {
+import com.noctarius.borabora.spi.query.QueryContext;
 
-    VisitResult visit(PipelineStage<PC, T> previousPipelineStage, PC pipelineContext);
+public interface PipelineStage {
 
-    default VisitResult visitChildren(PC pipelineContext) {
+    PipelineStage NIL = new PipelineStage() {
+        @Override
+        public VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext) {
+            return VisitResult.Continue;
+        }
+
+        @Override
+        public QueryStage stage() {
+            return null;
+        }
+
+        @Override
+        public PipelineStage left() {
+            return NIL;
+        }
+
+        @Override
+        public PipelineStage right() {
+            return NIL;
+        }
+
+        @Override
+        public String toString() {
+            return "NIL";
+        }
+    };
+
+    VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext);
+
+    default VisitResult visitChildren(QueryContext pipelineContext) {
         return VisitResult.Continue;
     }
 
-    T stage();
+    QueryStage stage();
+
+    PipelineStage left();
+
+    PipelineStage right();
 
 }
