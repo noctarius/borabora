@@ -28,10 +28,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
-public class NullTestCase
+public class ExtractNullTestCase
         extends AbstractTestCase {
 
-    @Parameterized.Parameters(name = "test_null_value_{0}")
+    @Parameterized.Parameters(name = "test_extract_null_value_{0}")
     public static Collection<Object[]> suppliers() {
         return Arrays.asList(new Object[][]{{"tag", function(Value::tag)}, //
                                             {"number", function(Value::number)}, //
@@ -43,7 +43,7 @@ public class NullTestCase
 
     private final Function<Value, Object> function;
 
-    public NullTestCase(String name, Function<Value, Object> function) {
+    public ExtractNullTestCase(String name, Function<Value, Object> function) {
         this.function = function;
     }
 
