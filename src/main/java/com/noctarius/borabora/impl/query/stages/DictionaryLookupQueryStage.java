@@ -21,17 +21,15 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.ByteSizes;
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-
-import static com.noctarius.borabora.Predicates.predicateEquals;
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 
 public class DictionaryLookupQueryStage
         implements QueryStage {
@@ -63,7 +61,7 @@ public class DictionaryLookupQueryStage
 
         // Execute the key lookup
         offset = Decoder.findByDictionaryKey(predicate, offset, pipelineContext);
-        if (offset == OFFSET_CODE_NULL) {
+        if (offset == Constants.OFFSET_CODE_NULL) {
             pipelineContext.consume(offset);
             return VisitResult.Break;
         }
@@ -84,7 +82,7 @@ public class DictionaryLookupQueryStage
 
         DictionaryLookupQueryStage that = (DictionaryLookupQueryStage) o;
 
-        return predicate != null ? predicateEquals(predicate, that.predicate) : that.predicate == null;
+        return predicate != null ? Predicates.predicateEquals(predicate, that.predicate) : that.predicate == null;
     }
 
     @Override

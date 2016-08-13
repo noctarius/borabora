@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.EncoderContext;
-import com.noctarius.borabora.spi.HalfPrecisionFloat;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.TagReader;
-import com.noctarius.borabora.spi.TagWriter;
+import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.codec.TagWriter;
+import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.StringEncoders;
+import com.noctarius.borabora.spi.codec.TagReader;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,41 +31,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.DATE_TIME_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.ENCODED_CBOR_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_READER.URI_READER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TAG_WRITER.URI_WRITER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER;
-import static com.noctarius.borabora.spi.CommonTagCodec.TYPE_MATCHER.URI_MATCHER;
-import static com.noctarius.borabora.spi.Constants.ADDITIONAL_INFORMATION_MASK;
-import static com.noctarius.borabora.spi.Constants.FP_VALUE_FALSE;
-import static com.noctarius.borabora.spi.Constants.FP_VALUE_NULL;
-import static com.noctarius.borabora.spi.Constants.FP_VALUE_TRUE;
-import static com.noctarius.borabora.spi.Constants.FP_VALUE_UNDEF;
-import static com.noctarius.borabora.spi.Constants.TAG_BIGFLOAT;
-import static com.noctarius.borabora.spi.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.spi.Constants.TAG_FRACTION;
-import static com.noctarius.borabora.spi.Constants.TAG_MIME;
-import static com.noctarius.borabora.spi.Constants.TAG_REGEX;
-import static com.noctarius.borabora.spi.Constants.TAG_SIGNED_BIGNUM;
-import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
-import static com.noctarius.borabora.spi.Constants.TAG_URI;
-import static com.noctarius.borabora.spi.StringEncoders.ASCII_ENCODER;
 
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {
@@ -81,13 +48,15 @@ public enum ValueTypes
     Bool(Value::bool), //
     Null((v) -> null), //
     Undefined((v) -> null), //
-    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), //
-    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
-    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
-    URI(URI_READER, URI_WRITER, URI_MATCHER, Value::tag), //
-    Unknown(UNKNOWN_TAG_READER, null, null, Value::raw);
+    DateTime(
+            CommonTagCodec.TAG_READER.DATE_TIME_READER, CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER, CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER, Value::tag), //
+    Timestamp(
+            CommonTagCodec.TAG_READER.TIMESTAMP_READER, CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER, CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER, Value::tag), //
+    UBigNum(CommonTagCodec.TAG_READER.UBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER, CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
+    NBigNum(CommonTagCodec.TAG_READER.NBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER, CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
+    EncCBOR(CommonTagCodec.TAG_READER.ENCODED_CBOR_READER, CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER, CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER, Value::tag), //
+    URI(CommonTagCodec.TAG_READER.URI_READER, CommonTagCodec.TAG_WRITER.URI_WRITER, CommonTagCodec.TYPE_MATCHER.URI_MATCHER, Value::tag), //
+    Unknown(CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER, null, null, Value::raw);
 
     private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
@@ -228,7 +197,7 @@ public enum ValueTypes
                 return ((Number) value).longValue() < 0 ? NInt : UInt;
             }
         } else if (java.lang.String.class.isAssignableFrom(type)) {
-            return ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
+            return StringEncoders.ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
         } else if (List.class.isAssignableFrom(type) || value.getClass().isArray()) {
             return Sequence;
         } else if (Map.class.isAssignableFrom(type)) {
@@ -245,14 +214,14 @@ public enum ValueTypes
     }
 
     private static ValueTypes floatNullOrBool(short head) {
-        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        int addInfo = head & Constants.ADDITIONAL_INFORMATION_MASK;
         switch (addInfo) {
-            case FP_VALUE_NULL:
+            case Constants.FP_VALUE_NULL:
                 return Null;
-            case FP_VALUE_TRUE:
-            case FP_VALUE_FALSE:
+            case Constants.FP_VALUE_TRUE:
+            case Constants.FP_VALUE_FALSE:
                 return Bool;
-            case FP_VALUE_UNDEF:
+            case Constants.FP_VALUE_UNDEF:
                 return Undefined;
             default:
                 return Float;
@@ -262,28 +231,28 @@ public enum ValueTypes
     private static ValueTypes semanticTagType(Input input, long offset) {
         Number tagType = Decoder.readUint(input, offset);
         switch (tagType.intValue()) {
-            case TAG_DATE_TIME:
+            case Constants.TAG_DATE_TIME:
                 return DateTime;
-            case TAG_TIMESTAMP:
+            case Constants.TAG_TIMESTAMP:
                 return Timestamp;
-            case TAG_UNSIGNED_BIGNUM:
+            case Constants.TAG_UNSIGNED_BIGNUM:
                 return UBigNum;
-            case TAG_SIGNED_BIGNUM:
+            case Constants.TAG_SIGNED_BIGNUM:
                 return NBigNum;
-            case TAG_BIGFLOAT:
+            case Constants.TAG_BIGFLOAT:
                 // return BigFloat;
                 throw new IllegalStateException("BigFloat is not supported");
-            case TAG_ENCCBOR:
+            case Constants.TAG_ENCCBOR:
                 return EncCBOR;
-            case TAG_FRACTION:
+            case Constants.TAG_FRACTION:
                 //return Fraction;
                 throw new IllegalStateException("Fraction is not supported");
-            case TAG_URI:
+            case Constants.TAG_URI:
                 return URI;
-            case TAG_REGEX:
+            case Constants.TAG_REGEX:
                 //return RegEx;
                 throw new IllegalStateException("RegEx is not supported");
-            case TAG_MIME:
+            case Constants.TAG_MIME:
                 //return Mime;
                 throw new IllegalStateException("Mime is not supported");
         }

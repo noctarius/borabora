@@ -19,6 +19,7 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
@@ -33,7 +34,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -76,11 +76,11 @@ public class DictionaryTestCase
         Value value = parser.read(Query.newBuilder().build());
 
         Dictionary dictionary = value.dictionary();
-        assertEquals("A", dictionary.get(matchString("a")).string());
-        assertEquals("B", dictionary.get(matchString("b")).string());
-        assertEquals("C", dictionary.get(matchString("c")).string());
-        assertEquals("D", dictionary.get(matchString("d")).string());
-        assertEquals("E", dictionary.get(matchString("e")).string());
+        assertEquals("A", dictionary.get(Predicates.matchString("a")).string());
+        assertEquals("B", dictionary.get(Predicates.matchString("b")).string());
+        assertEquals("C", dictionary.get(Predicates.matchString("c")).string());
+        assertEquals("D", dictionary.get(Predicates.matchString("d")).string());
+        assertEquals("E", dictionary.get(Predicates.matchString("e")).string());
     }
 
     @Test
@@ -402,8 +402,8 @@ public class DictionaryTestCase
 
         Dictionary dictionary = value.dictionary();
 
-        assertTrue(dictionary.containsKey(matchString("b")));
-        assertFalse(dictionary.containsKey(matchString("z")));
+        assertTrue(dictionary.containsKey(Predicates.matchString("b")));
+        assertFalse(dictionary.containsKey(Predicates.matchString("z")));
     }
 
     @Test
@@ -428,8 +428,8 @@ public class DictionaryTestCase
 
         Dictionary dictionary = value.dictionary();
 
-        assertTrue(dictionary.containsValue(matchString("B")));
-        assertFalse(dictionary.containsValue(matchString("Z")));
+        assertTrue(dictionary.containsValue(Predicates.matchString("B")));
+        assertFalse(dictionary.containsValue(Predicates.matchString("Z")));
     }
 
     @Test
@@ -492,8 +492,8 @@ public class DictionaryTestCase
 
         assertEquals(2, dictionary.size());
 
-        assertTrue(dictionary.get(matchString("Fun")).bool());
-        assertEqualsNumber(-2, dictionary.get(matchString("Amt")).number());
+        assertTrue(dictionary.get(Predicates.matchString("Fun")).bool());
+        assertEqualsNumber(-2, dictionary.get(Predicates.matchString("Amt")).number());
     }
 
     @Test

@@ -19,14 +19,13 @@ package com.noctarius.borabora.impl.query.stages;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.ByteSizes;
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.ElementCounts;
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
-
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 
 public class SequenceIndexQueryStage
         implements QueryStage {
@@ -55,7 +54,7 @@ public class SequenceIndexQueryStage
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
-            pipelineContext.consume(OFFSET_CODE_NULL);
+            pipelineContext.consume(Constants.OFFSET_CODE_NULL);
             return VisitResult.Break;
         }
 

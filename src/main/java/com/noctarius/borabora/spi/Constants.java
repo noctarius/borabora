@@ -16,13 +16,14 @@
  */
 package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.spi.query.QueryConsumer;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import static com.noctarius.borabora.MajorType.FloatingPointOrSimple;
 
 public interface Constants {
 
@@ -69,9 +70,9 @@ public interface Constants {
     int ADD_INFO_RESERVED_3 = 30;
     int ADD_INFO_INDEFINITE = 31;
 
-    byte SIMPLE_VALUE_NULL_BYTE = (byte) ((FloatingPointOrSimple.typeId() << 5) | FP_VALUE_NULL);
-    byte SIMPLE_VALUE_FALSE_BYTE = (byte) ((FloatingPointOrSimple.typeId() << 5) | FP_VALUE_FALSE);
-    byte SIMPLE_VALUE_TRUE_BYTE = (byte) ((FloatingPointOrSimple.typeId() << 5) | FP_VALUE_TRUE);
+    byte SIMPLE_VALUE_NULL_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_NULL);
+    byte SIMPLE_VALUE_FALSE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_FALSE);
+    byte SIMPLE_VALUE_TRUE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_TRUE);
 
     BigInteger BI_VAL_MINUS_ONE = BigInteger.valueOf(-1);
     BigInteger BI_VAL_24 = BigInteger.valueOf(24);

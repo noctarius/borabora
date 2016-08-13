@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
 
 public interface QueryBuilderBuilder {
 

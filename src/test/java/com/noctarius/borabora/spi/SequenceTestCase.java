@@ -19,15 +19,17 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.Input;
-import com.noctarius.borabora.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.Predicates;
+import com.noctarius.borabora.Query;
+import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.impl.SequenceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,8 +42,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.noctarius.borabora.Predicates.any;
-import static com.noctarius.borabora.Predicates.matchInt;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
@@ -279,7 +279,7 @@ public class SequenceTestCase
 
         Sequence sequence = value.sequence();
 
-        assertTrue(sequence.contains(matchInt(2)));
+        assertTrue(sequence.contains(Predicates.matchInt(2)));
     }
 
     @Test
@@ -303,7 +303,7 @@ public class SequenceTestCase
 
         Sequence sequence = value.sequence();
 
-        assertFalse(sequence.contains(matchInt(30)));
+        assertFalse(sequence.contains(Predicates.matchInt(30)));
     }
 
     @Test
@@ -476,7 +476,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Query query = Query.newBuilder().sequenceMatch(any()).build();
+        Query query = Query.newBuilder().sequenceMatch(Predicates.any()).build();
 
         List<Value> result = new ArrayList<>();
         parser.read(input, query, result::add);

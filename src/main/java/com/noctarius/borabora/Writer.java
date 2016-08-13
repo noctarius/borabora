@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.WriterBuilder;
+import com.noctarius.borabora.impl.WriterBuilderImpl;
 
 public interface Writer {
 

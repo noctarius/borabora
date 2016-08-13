@@ -20,6 +20,7 @@ import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 public final class StreamValue
         extends AbstractStreamValue {

@@ -1,14 +1,17 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.CommonTagCodec;
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.Encoder;
-import com.noctarius.borabora.spi.HalfPrecisionFloat;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
+import com.noctarius.borabora.impl.DefaultQueryContextFactory;
+import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContextFactory;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,20 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.noctarius.borabora.MajorType.FloatingPointOrSimple;
-import static com.noctarius.borabora.spi.Constants.ASCII;
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
-import static com.noctarius.borabora.spi.Constants.FP_VALUE_UNDEF;
-import static com.noctarius.borabora.spi.Constants.TAG_BIGFLOAT;
-import static com.noctarius.borabora.spi.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.spi.Constants.TAG_FRACTION;
-import static com.noctarius.borabora.spi.Constants.TAG_MIME;
-import static com.noctarius.borabora.spi.Constants.TAG_REGEX;
-import static com.noctarius.borabora.spi.Constants.TAG_SIGNED_BIGNUM;
-import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
-import static com.noctarius.borabora.spi.Constants.TAG_URI;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -204,7 +193,7 @@ public class ValueTypesTest
 
     @Test
     public void test_value_undefined() {
-        byte[] bytes = new byte[]{(byte) ((FloatingPointOrSimple.typeId() << 5) | FP_VALUE_UNDEF)};
+        byte[] bytes = new byte[]{(byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | Constants.FP_VALUE_UNDEF)};
         Value value = asValue(bytes);
         assertNull(ValueTypes.Undefined.value(value, true));
     }
@@ -267,7 +256,7 @@ public class ValueTypesTest
 
     @Test
     public void test_value_cborenc() {
-        String expected = new String(hexToBytes("0x6449455446"), ASCII);
+        String expected = new String(hexToBytes("0x6449455446"), Constants.ASCII);
         byte[] bytes = hexToBytes("0xd818456449455446");
         Value value = asValue(bytes);
         assertEquals(expected, ((Value) ValueTypes.EncCBOR.value(value, true)).string());
@@ -407,25 +396,25 @@ public class ValueTypesTest
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_bigfloat() {
-        Input input = semanticTag(TAG_BIGFLOAT);
+        Input input = semanticTag(Constants.TAG_BIGFLOAT);
         ValueTypes.valueType(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_fraction() {
-        Input input = semanticTag(TAG_FRACTION);
+        Input input = semanticTag(Constants.TAG_FRACTION);
         ValueTypes.valueType(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_regex() {
-        Input input = semanticTag(TAG_REGEX);
+        Input input = semanticTag(Constants.TAG_REGEX);
         ValueTypes.valueType(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_mime() {
-        Input input = semanticTag(TAG_MIME);
+        Input input = semanticTag(Constants.TAG_MIME);
         ValueTypes.valueType(input, 0);
     }
 
@@ -541,17 +530,17 @@ public class ValueTypesTest
     private Input semanticTag(ValueTypes valueType) {
         switch (valueType) {
             case DateTime:
-                return semanticTag(TAG_DATE_TIME);
+                return semanticTag(Constants.TAG_DATE_TIME);
             case Timestamp:
-                return semanticTag(TAG_TIMESTAMP);
+                return semanticTag(Constants.TAG_TIMESTAMP);
             case UBigNum:
-                return semanticTag(TAG_UNSIGNED_BIGNUM);
+                return semanticTag(Constants.TAG_UNSIGNED_BIGNUM);
             case NBigNum:
-                return semanticTag(TAG_SIGNED_BIGNUM);
+                return semanticTag(Constants.TAG_SIGNED_BIGNUM);
             case EncCBOR:
-                return semanticTag(TAG_ENCCBOR);
+                return semanticTag(Constants.TAG_ENCCBOR);
             case URI:
-                return semanticTag(TAG_URI);
+                return semanticTag(Constants.TAG_URI);
             default:
                 throw new IllegalArgumentException("Not a semanticTag value type");
         }
@@ -582,7 +571,10 @@ public class ValueTypesTest
         List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
 
-        QueryContext queryContext = new QueryContextImpl(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+        QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
+        QueryContext queryContext = queryContextFactory
+                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+
         return new StreamValue(majorType, valueType, 0, queryContext);
     }
 

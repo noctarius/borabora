@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.ByteSizes;
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.ElementCounts;
-import com.noctarius.borabora.spi.Encoder;
-import com.noctarius.borabora.spi.StringEncoders;
 import com.noctarius.borabora.spi.TypeSpecs;
+import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ElementCounts;
+import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.codec.StringEncoders;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import org.junit.Test;
 
@@ -43,9 +43,9 @@ public class UtilsClassEnumMethodsTestCase {
         call(Encoder.class.getName());
         call(ElementCounts.class.getName());
         call(Decoder.class.getName());
-        call("com.noctarius.borabora.spi.DateParser");
+        call("com.noctarius.borabora.spi.codec.DateParser");
         call(ByteSizes.class.getName());
-        call("com.noctarius.borabora.spi.Bytes");
+        call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());
         call("com.noctarius.borabora.impl.query.BTPipelineStagePrinter");
         call(VisitResult.class.getName());

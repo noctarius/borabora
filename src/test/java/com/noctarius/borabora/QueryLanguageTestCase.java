@@ -17,16 +17,13 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -120,11 +117,11 @@ public class QueryLanguageTestCase
         assertEquals(ValueTypes.Dictionary, value1.valueType());
 
         Dictionary v1 = value1.dictionary();
-        Value v1v1 = v1.get(matchString("a"));
-        Value v1v2 = v1.get(matchString("b"));
-        Value v1v3 = v1.get(matchString("c"));
-        Value v1v4 = v1.get(matchString("f"));
-        Value v1v5 = v1.get(matchString("g"));
+        Value v1v1 = v1.get(Predicates.matchString("a"));
+        Value v1v2 = v1.get(Predicates.matchString("b"));
+        Value v1v3 = v1.get(Predicates.matchString("c"));
+        Value v1v4 = v1.get(Predicates.matchString("f"));
+        Value v1v5 = v1.get(Predicates.matchString("g"));
 
         assertEquals(ValueTypes.UInt, v1v1.valueType());
         assertEquals(ValueTypes.UInt, v1v2.valueType());
@@ -136,8 +133,8 @@ public class QueryLanguageTestCase
         assertEqualsNumber(100, v1v2.number());
 
         Dictionary v1v3d = v1v3.dictionary();
-        Value v1v3v1 = v1v3d.get(matchString("d"));
-        Value v1v3v2 = v1v3d.get(matchString("e"));
+        Value v1v3v1 = v1v3d.get(Predicates.matchString("d"));
+        Value v1v3v2 = v1v3d.get(Predicates.matchString("e"));
 
         assertEqualsNumber(100, v1v3v1.number());
         assertEqualsNumber(100, v1v3v2.number());
@@ -185,39 +182,6 @@ public class QueryLanguageTestCase
         SimplifiedTestParser parser = buildParser("0xa201020304");
         Value value = parser.read("#{1}");
         assertEqualsNumber(2, value.number());
-    }
-
-    @Test
-    public void code_coverage_for_unused_but_generated_methods()
-            throws Exception {
-
-        ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
-        QueryParser qp = new QueryParser(stream);
-        qp.ReInit(stream);
-
-        qp = new QueryParser(new StringReader(""));
-        Field token_source = QueryParser.class.getDeclaredField("token_source");
-        token_source.setAccessible(true);
-        token_source.set(qp, null);
-        qp.ReInit(new StringReader(""));
-
-        QueryParserTokenManager tm = new QueryParserTokenManager(new JavaCharStream(new StringReader("")));
-        qp = new QueryParser(tm);
-        qp.ReInit(tm);
-        qp.enable_tracing();
-        qp.disable_tracing();
-
-        qp.ReInit(new StringReader("#"));
-        qp.getToken(0);
-        qp.getToken(1);
-
-        qp.ReInit(new StringReader("#"));
-        Token token;
-        while ((token = qp.getNextToken()) != null) {
-            if (token.next == null) {
-                break;
-            }
-        }
     }
 
 }

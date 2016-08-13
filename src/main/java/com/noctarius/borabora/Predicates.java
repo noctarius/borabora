@@ -16,10 +16,10 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.Encoder;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.QueryContextAware;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContextAware;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;

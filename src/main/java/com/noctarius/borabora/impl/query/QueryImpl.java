@@ -17,9 +17,9 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
-import com.noctarius.borabora.spi.SelectStatementStrategyAware;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.SelectStatementStrategyAware;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 public final class QueryImpl

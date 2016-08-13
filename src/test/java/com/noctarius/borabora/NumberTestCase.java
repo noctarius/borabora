@@ -25,7 +25,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static com.noctarius.borabora.spi.HalfPrecisionFloat.valueOf;
+import static com.noctarius.borabora.HalfPrecisionFloat.valueOf;
 import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(Parameterized.class)

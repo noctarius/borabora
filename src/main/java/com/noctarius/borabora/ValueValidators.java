@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.HalfPrecisionFloat;
-
 import java.math.BigInteger;
 
 enum ValueValidators {

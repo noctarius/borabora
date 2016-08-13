@@ -18,20 +18,19 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.Value;
+import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.spi.ByteSizes;
-import com.noctarius.borabora.spi.Decoder;
-import com.noctarius.borabora.spi.ElementCounts;
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 
 import java.util.function.Predicate;
-
-import static com.noctarius.borabora.Predicates.predicateEquals;
 
 public class SequenceMatcherQueryStage
         implements QueryStage {
@@ -95,7 +94,7 @@ public class SequenceMatcherQueryStage
 
         SequenceMatcherQueryStage that = (SequenceMatcherQueryStage) o;
 
-        return predicate != null ? predicateEquals(predicate, that.predicate) : that.predicate == null;
+        return predicate != null ? Predicates.predicateEquals(predicate, that.predicate) : that.predicate == null;
 
     }
 

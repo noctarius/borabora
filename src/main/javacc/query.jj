@@ -24,9 +24,11 @@ options {
     DEBUG_LOOKAHEAD=false;
 }
 PARSER_BEGIN(QueryParser)
-    package com.noctarius.borabora;
+    package com.noctarius.borabora.impl;
     import java.io.*;
+    import com.noctarius.borabora.*;
     import com.noctarius.borabora.spi.*;
+    import com.noctarius.borabora.spi.codec.*;
     import com.noctarius.borabora.builder.*;
     import java.text.*;
     import java.util.*;

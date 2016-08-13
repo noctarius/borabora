@@ -18,6 +18,7 @@ package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 public final class RelocatableStreamValue
         extends AbstractStreamValue {

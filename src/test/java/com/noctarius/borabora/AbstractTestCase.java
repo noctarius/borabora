@@ -17,10 +17,12 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.QueryImpl;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
-import com.noctarius.borabora.spi.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContextFactory;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
@@ -57,7 +59,7 @@ public abstract class AbstractTestCase {
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
 
-        return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
+        return new SimplifiedTestParser(Parser.newBuilder().build(), input);
     }
 
     public static void assertEqualsNumber(Number n1, Number n2) {
@@ -82,7 +84,7 @@ public abstract class AbstractTestCase {
     public static SimplifiedTestParser buildParser(String hex) {
         byte[] data = hexToBytes(hex);
         Input input = Input.fromByteArray(data);
-        return new SimplifiedTestParser(com.noctarius.borabora.Parser.newBuilder().build(), input);
+        return new SimplifiedTestParser(Parser.newBuilder().build(), input);
     }
 
     public static void assertQueryEquals(Query expected, Query actual) {
@@ -94,15 +96,16 @@ public abstract class AbstractTestCase {
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
                                                SelectStatementStrategy selectStatementStrategy) {
 
-        return new QueryContextImpl(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+        QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
+        return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
     }
 
     public static class SimplifiedTestParser {
 
-        private final com.noctarius.borabora.Parser parser;
+        private final Parser parser;
         private final Input input;
 
-        private SimplifiedTestParser(com.noctarius.borabora.Parser parser, Input input) {
+        private SimplifiedTestParser(Parser parser, Input input) {
             this.parser = parser;
             this.input = input;
         }

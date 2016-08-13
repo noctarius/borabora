@@ -21,13 +21,9 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
+import com.noctarius.borabora.spi.codec.TagDecoder;
 
 import java.util.Collection;
-
-import static com.noctarius.borabora.spi.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.spi.Constants.TAG_URI;
 
 public enum TypeSpecs
         implements TypeSpec {
@@ -43,10 +39,10 @@ public enum TypeSpecs
     SemanticTag("tag", ValueTypes.Unknown), //
     SpecializedSemanticTag("tag$", SemanticTag, ValueTypes.Unknown), //
     Bool("bool", ValueTypes.Bool), //
-    DateTime("datetime", SpecializedSemanticTag, TAG_DATE_TIME, ValueTypes.DateTime), //
-    Timstamp("timestamp", SpecializedSemanticTag, TAG_TIMESTAMP, ValueTypes.Timestamp), //
-    URI("uri", SpecializedSemanticTag, TAG_URI, ValueTypes.URI), //
-    EncCBOR("enccbor", SpecializedSemanticTag, TAG_ENCCBOR, ValueTypes.EncCBOR), //
+    DateTime("datetime", SpecializedSemanticTag, Constants.TAG_DATE_TIME, ValueTypes.DateTime), //
+    Timstamp("timestamp", SpecializedSemanticTag, Constants.TAG_TIMESTAMP, ValueTypes.Timestamp), //
+    URI("uri", SpecializedSemanticTag, Constants.TAG_URI, ValueTypes.URI), //
+    EncCBOR("enccbor", SpecializedSemanticTag, Constants.TAG_ENCCBOR, ValueTypes.EncCBOR), //
     Unknown("unknown", ValueTypes.Unknown), //
     Null("null", ValueTypes.Null);
 

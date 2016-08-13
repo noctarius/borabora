@@ -16,11 +16,14 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContextAware;
 
 import java.util.function.Supplier;
 

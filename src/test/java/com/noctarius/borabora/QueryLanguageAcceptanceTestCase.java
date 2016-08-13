@@ -20,11 +20,6 @@ import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.noctarius.borabora.Predicates.any;
-import static com.noctarius.borabora.Predicates.matchFloat;
-import static com.noctarius.borabora.Predicates.matchInt;
-import static com.noctarius.borabora.Predicates.matchString;
-
 public class QueryLanguageAcceptanceTestCase
         extends AbstractTestCase {
 
@@ -144,49 +139,49 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_dictionary_access_string() {
-        Query query = Query.newBuilder().dictionary(matchString("test")).build();
+        Query query = Query.newBuilder().dictionary(Predicates.matchString("test")).build();
         evaluate(query, "#{'test'}");
     }
 
     @Test
     public void test_stream_dictionary_access_string() {
-        Query query = Query.newBuilder().stream(1).dictionary(matchString("test")).build();
+        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchString("test")).build();
         evaluate(query, "#1{'test'}");
     }
 
     @Test
     public void test_dictionary_access_uint() {
-        Query query = Query.newBuilder().dictionary(matchInt(123)).build();
+        Query query = Query.newBuilder().dictionary(Predicates.matchInt(123)).build();
         evaluate(query, "#{123}");
     }
 
     @Test
     public void test_dictionary_access_nint() {
-        Query query = Query.newBuilder().dictionary(matchInt(-123)).build();
+        Query query = Query.newBuilder().dictionary(Predicates.matchInt(-123)).build();
         evaluate(query, "#{-123}");
     }
 
     @Test
     public void test_dictionary_access_ufloat() {
-        Query query = Query.newBuilder().dictionary(matchFloat(123.0)).build();
+        Query query = Query.newBuilder().dictionary(Predicates.matchFloat(123.0)).build();
         evaluate(query, "#{123.0}");
     }
 
     @Test
     public void test_stream_dictionary_access_ufloat() {
-        Query query = Query.newBuilder().stream(1).dictionary(matchFloat(123.0)).build();
+        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchFloat(123.0)).build();
         evaluate(query, "#1{123.0}");
     }
 
     @Test
     public void test_dictionary_access_nfloar() {
-        Query query = Query.newBuilder().dictionary(matchFloat(-123.0)).build();
+        Query query = Query.newBuilder().dictionary(Predicates.matchFloat(-123.0)).build();
         evaluate(query, "#{-123.0}");
     }
 
     @Test
     public void test_stream_dictionary_access_nfloar() {
-        Query query = Query.newBuilder().stream(1).dictionary(matchFloat(-123.0)).build();
+        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchFloat(-123.0)).build();
         evaluate(query, "#1{-123.0}");
     }
 
@@ -659,10 +654,10 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_any_sequence_index() {
-        Query query = Query.newBuilder().sequenceMatch(any()).build();
+        Query query = Query.newBuilder().sequenceMatch(Predicates.any()).build();
         evaluate(query, "#(?)");
 
-        query = Query.newBuilder().multiStream().sequenceMatch(any()).build();
+        query = Query.newBuilder().multiStream().sequenceMatch(Predicates.any()).build();
         evaluate(query, "$(?)");
     }
 

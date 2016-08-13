@@ -16,9 +16,13 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
+import com.noctarius.borabora.impl.QueryBuilderImpl;
+import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.spi.SelectStatementStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 
 import java.util.Collections;

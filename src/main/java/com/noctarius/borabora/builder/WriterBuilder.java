@@ -17,7 +17,7 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagEncoder;
 
 public interface WriterBuilder {
 

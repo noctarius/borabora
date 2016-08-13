@@ -17,11 +17,9 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.impl.query.stages.QueryStage;
-import com.noctarius.borabora.spi.QueryContext;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-
-import static com.noctarius.borabora.impl.query.BTreePipelineStage.NIL;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
 public class QueryPipelineImpl
         implements QueryPipeline<QueryContext> {
@@ -34,7 +32,7 @@ public class QueryPipelineImpl
 
     @Override
     public void evaluate(QueryContext queryContext) {
-        rootPipelineStage.visit(NIL, queryContext);
+        rootPipelineStage.visit(BTreePipelineStage.NIL, queryContext);
     }
 
     @Override

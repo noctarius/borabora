@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.impl.query.stages;
 
-import com.noctarius.borabora.spi.QueryContext;
+import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 
