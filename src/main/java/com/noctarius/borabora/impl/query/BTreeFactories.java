@@ -21,6 +21,7 @@ import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 
 import java.util.List;
@@ -45,7 +46,11 @@ public enum BTreeFactories {
         return BTreePipelineStage::new;
     }
 
-    public static QueryOptimizerStrategy newQueryOptimizerStrategy(List<QueryOptimizer> queryOptimizers) {
+    public static QueryOptimizerStrategyFactory newQueryOptimizerStrategyFactory() {
+        return BTreeFactories::newQueryOptimizerStrategy;
+    }
+
+    private static QueryOptimizerStrategy newQueryOptimizerStrategy(List<QueryOptimizer> queryOptimizers) {
         return (rootPipelineStage, pipelineStageFactory) -> {
             PipelineStage optimizedRootStage = rootPipelineStage;
             for (QueryOptimizer queryOptimizer : queryOptimizers) {

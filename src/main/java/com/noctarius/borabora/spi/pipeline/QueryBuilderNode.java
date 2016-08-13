@@ -67,7 +67,7 @@ public final class QueryBuilderNode {
 
     @Override
     public String toString() {
-        return "QueryBuilderTreeNode{stage=" + stage + ", children=" + children + '}';
+        return "QueryBuilderNode{stage=" + stage + ", children=" + children + '}';
     }
 
     public static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {

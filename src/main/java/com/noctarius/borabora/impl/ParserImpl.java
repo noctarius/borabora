@@ -29,7 +29,10 @@ import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
+import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
@@ -45,13 +48,20 @@ final class ParserImpl
     private final List<TagDecoder> tagDecoders;
     private final QueryContextFactory queryContextFactory;
     private final SelectStatementStrategy selectStatementStrategy;
+    private final QueryPipelineFactory queryPipelineFactory;
+    private final PipelineStageFactory pipelineStageFactory;
+    private final QueryOptimizerStrategyFactory queryOptimizerStrategyFactory;
 
     ParserImpl(List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy,
-               QueryContextFactory queryContextFactory) {
+               QueryContextFactory queryContextFactory, QueryPipelineFactory queryPipelineFactory,
+               PipelineStageFactory pipelineStageFactory, QueryOptimizerStrategyFactory queryOptimizerStrategyFactory) {
 
         this.tagDecoders = tagDecoders;
         this.queryContextFactory = queryContextFactory;
         this.selectStatementStrategy = selectStatementStrategy;
+        this.queryPipelineFactory = queryPipelineFactory;
+        this.pipelineStageFactory = pipelineStageFactory;
+        this.queryOptimizerStrategyFactory = queryOptimizerStrategyFactory;
     }
 
     @Override
@@ -129,7 +139,7 @@ final class ParserImpl
     public Query prepareQuery(String query) {
         try {
 
-            QueryBuilder queryBuilder = Query.newBuilder(selectStatementStrategy);
+            QueryBuilder queryBuilder = Query.configureBuilder().withSelectStatementStrategy(selectStatementStrategy).newBuilder();
             QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 

@@ -16,14 +16,20 @@
  */
 package com.noctarius.borabora.impl;
 
+import com.noctarius.borabora.builder.QueryBuilderBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.impl.query.BTreeFactories;
+import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.builder.QueryBuilder;
-import com.noctarius.borabora.builder.QueryBuilderBuilder;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class QueryBuilderBuilderImpl
         implements QueryBuilderBuilder {
@@ -31,15 +37,41 @@ public class QueryBuilderBuilderImpl
     private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
 
     private SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+    private PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
+    private QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
+    private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
 
     @Override
     public QueryBuilderBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy) {
+        Objects.requireNonNull(selectStatementStrategy, "selectStatementStrategy must not be null");
         this.selectStatementStrategy = selectStatementStrategy;
         return this;
     }
 
     @Override
+    public QueryBuilderBuilder withQueryPipelineFactory(QueryPipelineFactory queryPipelineFactory) {
+        Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");
+        this.queryPipelineFactory = queryPipelineFactory;
+        return this;
+    }
+
+    @Override
+    public QueryBuilderBuilder withPipelineStageFactory(PipelineStageFactory pipelineStageFactory) {
+        Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
+        this.pipelineStageFactory = pipelineStageFactory;
+        return this;
+    }
+
+    @Override
+    public QueryBuilderBuilder withQueryOptimizerStrategyFactory(QueryOptimizerStrategyFactory queryOptimizerStrategyFactory) {
+        Objects.requireNonNull(queryOptimizerStrategyFactory, "queryOptimizerStrategyFactory must not be null");
+        this.queryOptimizerStrategyFactory = queryOptimizerStrategyFactory;
+        return this;
+    }
+
+    @Override
     public QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer) {
+        Objects.requireNonNull(queryOptimizer, "queryOptimizer must not be null");
         if (!this.queryOptimizers.contains(queryOptimizer)) {
             this.queryOptimizers.add(queryOptimizer);
         }
@@ -47,8 +79,28 @@ public class QueryBuilderBuilderImpl
     }
 
     @Override
-    public QueryBuilder newBuilder() {
-        return new QueryBuilderImpl(selectStatementStrategy, queryOptimizers);
+    public QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
+        addQueryOptimizer(queryOptimizer1);
+        addQueryOptimizer(queryOptimizer2);
+        return this;
+    }
+
+    @Override
+    public QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                                 QueryOptimizer... queryOptimizers) {
+
+        addQueryOptimizer(queryOptimizer1);
+        addQueryOptimizer(queryOptimizer2);
+        for (QueryOptimizer queryOptimizer : queryOptimizers) {
+            addQueryOptimizer(queryOptimizer);
+        }
+        return this;
+    }
+
+    @Override
+    public StreamQueryBuilder newBuilder() {
+        QueryOptimizerStrategy queryOptimizerStrategy = queryOptimizerStrategyFactory.newQueryOptimizerStrategy(queryOptimizers);
+        return new QueryBuilderImpl(selectStatementStrategy, queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
     }
 
 }

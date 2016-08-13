@@ -18,9 +18,13 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.builder.ParserBuilder;
+import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
@@ -36,8 +40,12 @@ public final class ParserBuilderImpl
 
     private final List<TagDecoder> tagDecoders = new ArrayList<>();
     private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
+
     private QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
     private SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+    private PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
+    private QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
+    private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
 
     public ParserBuilderImpl() {
         addTagDecoder(CommonTagCodec.INSTANCE);
@@ -75,6 +83,27 @@ public final class ParserBuilderImpl
     public ParserBuilder withQueryContextFactory(QueryContextFactory queryContextFactory) {
         Objects.requireNonNull(queryContextFactory, "queryContextFactory must not be null");
         this.queryContextFactory = queryContextFactory;
+        return this;
+    }
+
+    @Override
+    public ParserBuilder withQueryPipelineFactory(QueryPipelineFactory queryPipelineFactory) {
+        Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");
+        this.queryPipelineFactory = queryPipelineFactory;
+        return this;
+    }
+
+    @Override
+    public ParserBuilder withPipelineStageFactory(PipelineStageFactory pipelineStageFactory) {
+        Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
+        this.pipelineStageFactory = pipelineStageFactory;
+        return this;
+    }
+
+    @Override
+    public ParserBuilder withQueryOptimizerStrategyFactory(QueryOptimizerStrategyFactory queryOptimizerStrategyFactory) {
+        Objects.requireNonNull(queryOptimizerStrategyFactory, "queryOptimizerStrategyFactory must not be null");
+        this.queryOptimizerStrategyFactory = queryOptimizerStrategyFactory;
         return this;
     }
 
@@ -120,7 +149,8 @@ public final class ParserBuilderImpl
 
     @Override
     public Parser build() {
-        return new ParserImpl(tagDecoders, selectStatementStrategy, queryContextFactory);
+        return new ParserImpl(tagDecoders, selectStatementStrategy, queryContextFactory, queryPipelineFactory,
+                pipelineStageFactory, queryOptimizerStrategyFactory);
     }
 
 }

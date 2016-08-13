@@ -22,7 +22,6 @@ import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
@@ -34,7 +33,6 @@ import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
@@ -49,11 +47,17 @@ public final class QueryBuilderImpl
         extends AbstractQueryBuilder
         implements StreamQueryBuilder {
 
-    private final List<QueryOptimizer> queryOptimizers;
+    private final PipelineStageFactory pipelineStageFactory;
+    private final QueryPipelineFactory queryPipelineFactory;
+    private final QueryOptimizerStrategy queryOptimizerStrategy;
 
-    public QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy, List<QueryOptimizer> queryOptimizers) {
+    public QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy, QueryOptimizerStrategy queryOptimizerStrategy,
+                            PipelineStageFactory pipelineStageFactory, QueryPipelineFactory queryPipelineFactory) {
+
         super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE), selectStatementStrategy);
-        this.queryOptimizers = queryOptimizers;
+        this.queryOptimizerStrategy = queryOptimizerStrategy;
+        this.pipelineStageFactory = pipelineStageFactory;
+        this.queryPipelineFactory = queryPipelineFactory;
     }
 
     @Override
@@ -101,15 +105,6 @@ public final class QueryBuilderImpl
 
         // Fix selector multiple consumers
         fixSelectorConsumers(parentTreeNode);
-
-        // New pipeline stage factory
-        PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
-
-        // New query optimizer strategy
-        QueryOptimizerStrategy queryOptimizerStrategy = BTreeFactories.newQueryOptimizerStrategy(queryOptimizers);
-
-        // New query pipeline factory
-        QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
 
         // Build query pipeline with optimized query execution plan
         QueryPipeline queryPipeline = queryPipelineFactory
