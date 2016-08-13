@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
+import com.noctarius.borabora.spi.query.QueryContext;
+
 public enum VisitResult {
 
     /**
@@ -24,7 +26,7 @@ public enum VisitResult {
     Continue,
 
     /**
-     * Loop on current {@link QueryStage#evaluate(PipelineStage, PipelineStage, Object)}
+     * Loop on current {@link QueryStage#evaluate(PipelineStage, PipelineStage, QueryContext)}
      */
     Loop,
 
