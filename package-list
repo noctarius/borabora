@@ -1,4 +1,6 @@
 com.noctarius.borabora
 com.noctarius.borabora.builder
 com.noctarius.borabora.spi
+com.noctarius.borabora.spi.codec
 com.noctarius.borabora.spi.pipeline
+com.noctarius.borabora.spi.query
