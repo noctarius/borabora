@@ -19,17 +19,17 @@ package com.noctarius.borabora.spi;
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.Input;
-import com.noctarius.borabora.Predicates;
-import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
+import com.noctarius.borabora.Predicates;
+import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.impl.SequenceImpl;
+import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -380,6 +380,28 @@ public class SequenceTestCase
             assertEqualsNumber(i + 1, parser.read(Query.newBuilder().sequence(i).build()).number());
             assertEqualsNumber(i + 1, sequence.get(i).number());
         }
+    }
+
+    @Test
+    public void test_sequence_asstring() {
+        String expected = "[UInt{ 1 }, UInt{ 2 }, UInt{ 3 }]";
+        SimplifiedTestParser parser = buildParser("0x83010203");
+        Value value = parser.read(Query.newBuilder().build());
+        Sequence sequence = value.sequence();
+        String actual = sequence.asString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_sequence_tostring() {
+        String expected = "[StreamValue{valueType=UInt, offset=1, value=1}, " //
+                + "StreamValue{valueType=UInt, offset=2, value=2}, " //
+                + "StreamValue{valueType=UInt, offset=3, value=3}]";
+        SimplifiedTestParser parser = buildParser("0x83010203");
+        Value value = parser.read(Query.newBuilder().build());
+        Sequence sequence = value.sequence();
+        String actual = sequence.toString();
+        assertEquals(expected, actual);
     }
 
     @Test

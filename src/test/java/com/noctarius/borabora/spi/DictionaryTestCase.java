@@ -463,6 +463,29 @@ public class DictionaryTestCase
     }
 
     @Test
+    public void test_dictionary_asstring() {
+        String expected = "[UInt{ 1 }=UInt{ 2 }, UInt{ 3 }=UInt{ 4 }]";
+        SimplifiedTestParser parser = buildParser("0xa201020304");
+        Query query = Query.newBuilder().build();
+        Value value = parser.read(query);
+        Dictionary dictionary = value.dictionary();
+        String actual = dictionary.asString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_dictionary_tostring() {
+        String expected = "[StreamValue{valueType=UInt, offset=1, value=1}=StreamValue{valueType=UInt, offset=2, value=2}, "
+                + "StreamValue{valueType=UInt, offset=3, value=3}=StreamValue{valueType=UInt, offset=4, value=4}]";
+        SimplifiedTestParser parser = buildParser("0xa201020304");
+        Query query = Query.newBuilder().build();
+        Value value = parser.read(query);
+        Dictionary dictionary = value.dictionary();
+        String actual = dictionary.toString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void test_indefinite_dictionary_bool_number()
             throws Exception {
 

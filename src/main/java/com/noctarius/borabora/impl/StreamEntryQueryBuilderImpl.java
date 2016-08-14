@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 class StreamEntryQueryBuilderImpl<T>
         extends AbstractQueryBuilder
-        implements StreamEntryQueryBuilder<T> {
+        implements StreamEntryQueryBuilder<T>, EntryQueryBuilder<T> {
 
     private final T queryBuilder;
     private final QueryStage endQueryStage;

@@ -17,7 +17,8 @@
 package com.noctarius.borabora.builder;
 
 public interface StreamEntryQueryBuilder<T>
-        extends EntryQueryBuilder<T>, StreamElementQueryBuilder<EntryQueryBuilder<T>>,
-                SelectorQueryBuilder<EntryQueryBuilder<T>> {
+        extends StreamElementQueryBuilder<EntryQueryBuilder<T>>, SelectorQueryBuilder<EntryQueryBuilder<T>> {
+
+    T endEntry();
 
 }

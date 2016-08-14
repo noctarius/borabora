@@ -22,10 +22,10 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamableIterable;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -122,9 +122,6 @@ public final class DictionaryImpl
             return null;
         }
         long valueOffset = Decoder.skip(input, keyOffset);
-        if (valueOffset == -1) {
-            return null;
-        }
         return Decoder.readValue(valueOffset, queryContext);
     }
 

@@ -17,10 +17,10 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,6 +29,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static com.noctarius.borabora.Predicates.matchString;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class SelectStatementTestCase
@@ -55,7 +58,7 @@ public class SelectStatementTestCase
                 sgb -> sgb.putNumber(1), //
                 () -> "(a: #)", //
                 gqb -> gqb.asDictionary().putEntry("a").stream(0).endEntry().endDictionary(), //
-                v -> assertEqualsNumber(1, v.dictionary().get(Predicates.matchString("a")).number()) //
+                v -> assertEqualsNumber(1, v.dictionary().get(matchString("a")).number()) //
         );
     }
 
@@ -75,7 +78,7 @@ public class SelectStatementTestCase
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "(a: #1)", //
                 gqb -> gqb.asDictionary().putEntry("a").stream(1).endEntry().endDictionary(), //
-                v -> assertEqualsNumber(2, v.dictionary().get(Predicates.matchString("a")).number()) //
+                v -> assertEqualsNumber(2, v.dictionary().get(matchString("a")).number()) //
         );
     }
 
@@ -92,7 +95,7 @@ public class SelectStatementTestCase
 
                           .putEntry(3.0).stream(2).endEntry().endDictionary(), //
                 v -> {
-                    assertEqualsNumber(2, v.dictionary().get(Predicates.matchString("a")).number());
+                    assertEqualsNumber(2, v.dictionary().get(matchString("a")).number());
                     assertEqualsNumber(1, v.dictionary().get(Predicates.matchInt(2)).number());
                     assertEqualsNumber(3, v.dictionary().get(Predicates.matchFloat(3.0)).number());
                 } //
@@ -112,9 +115,9 @@ public class SelectStatementTestCase
 
                           .endEntry().endDictionary(), //
                 v -> {
-                    Value v2 = v.dictionary().get(Predicates.matchString("a"));
-                    assertEqualsNumber(2, v2.dictionary().get(Predicates.matchString("c")).number());
-                    assertEqualsNumber(1, v2.dictionary().get(Predicates.matchString("d")).number());
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEqualsNumber(2, v2.dictionary().get(matchString("c")).number());
+                    assertEqualsNumber(1, v2.dictionary().get(matchString("d")).number());
                 } //
         );
     }
@@ -132,7 +135,7 @@ public class SelectStatementTestCase
 
                           .endEntry().endDictionary(), //
                 v -> {
-                    Value v2 = v.dictionary().get(Predicates.matchString("a"));
+                    Value v2 = v.dictionary().get(matchString("a"));
                     assertEqualsNumber(2, v2.sequence().get(0).number());
                     assertEqualsNumber(1, v2.sequence().get(1).number());
                 } //
@@ -180,8 +183,8 @@ public class SelectStatementTestCase
                           .endEntry().endSequence(), //
                 v -> {
                     Value v2 = v.sequence().get(0);
-                    assertEqualsNumber(2, v2.dictionary().get(Predicates.matchString("c")).number());
-                    assertEqualsNumber(1, v2.dictionary().get(Predicates.matchString("d")).number());
+                    assertEqualsNumber(2, v2.dictionary().get(matchString("c")).number());
+                    assertEqualsNumber(1, v2.dictionary().get(matchString("d")).number());
                 } //
         );
     }
@@ -202,6 +205,62 @@ public class SelectStatementTestCase
                     Value v2 = v.sequence().get(0);
                     assertEqualsNumber(2, v2.sequence().get(0).number());
                     assertEqualsNumber(1, v2.sequence().get(1).number());
+                } //
+        );
+    }
+
+    @Test
+    public void test_select_dictionary_predicate() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(),
+                () -> "(a: #{'foo'})", //
+                gqb -> gqb.asDictionary().putEntry("a").stream(0).dictionary(matchString("foo")).endEntry().endDictionary(),
+                v -> {
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEquals("bar", v2.string());
+
+                } //
+        );
+    }
+
+    @Test
+    public void test_select_dictionary_string() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
+                () -> "(a: #{'foo'})", //
+                gqb -> gqb.asDictionary().putEntry("a").stream(0).dictionary("foo").endEntry().endDictionary(), //
+                v -> {
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEquals("bar", v2.string());
+
+                } //
+        );
+    }
+
+    @Test
+    public void test_select_dictionary_double() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putNumber(12.d).putString("bar").endEntry().endDictionary(), //
+                () -> "(a: #{12.0})", //
+                gqb -> gqb.asDictionary().putEntry("a").stream(0).dictionary(12.d).endEntry().endDictionary(), //
+                v -> {
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEquals("bar", v2.string());
+
+                } //
+        );
+    }
+
+    @Test
+    public void test_select_dictionary_long() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putNumber(12l).putString("bar").endEntry().endDictionary(), //
+                () -> "(a: #{12})", //
+                gqb -> gqb.asDictionary().putEntry("a").stream(0).dictionary(12l).endEntry().endDictionary(), //
+                v -> {
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEquals("bar", v2.string());
+
                 } //
         );
     }
