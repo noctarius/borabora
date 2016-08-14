@@ -28,31 +28,4 @@ public interface QueryPipeline {
 
     String printQueryGraph();
 
-    static boolean equals(Object first, Object second) {
-        if (!(first instanceof QueryPipeline) || !(second instanceof QueryPipeline)) {
-            return false;
-        }
-
-        String name = first.getClass().getName();
-        String otherName = second.getClass().getName();
-
-        if (name.contains("$$Lambda$") && !otherName.contains("$$Lambda$") //
-                || !name.contains("$$Lambda$") && otherName.contains("$$Lambda$")) {
-
-            return false;
-        }
-
-        if (!name.contains("$$Lambda$") && !otherName.contains("$$Lambda$")) {
-            return first == second;
-        }
-
-        int nameIndex = name.indexOf("$$Lambda$");
-        int otherNameIndex = otherName.indexOf("$$Lambda$");
-
-        int nameEndIndex = name.indexOf('/', nameIndex);
-        int otherNameEndIndex = name.indexOf('/', otherNameIndex);
-
-        return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
-    }
-
 }
