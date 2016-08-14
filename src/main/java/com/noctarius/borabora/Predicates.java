@@ -100,9 +100,10 @@ public enum Predicates {
                 return false;
             }
             Number n = v.number();
+            /* TODO not yet supported
             if (n instanceof BigDecimal) {
                 return n.equals(BigDecimal.valueOf(value));
-            }
+            }*/
             return value == n.doubleValue();
         };
     }
