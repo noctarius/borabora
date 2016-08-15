@@ -106,6 +106,11 @@ public class BinarySelectStatementStrategy
     }
 
     @Override
+    public void putDictionaryNullValue(QueryContext queryContext) {
+        putValue(queryContext);
+    }
+
+    @Override
     public void beginSequence(QueryContext queryContext) {
         putStructureHead(MajorType.Sequence, queryContext);
     }
@@ -122,6 +127,11 @@ public class BinarySelectStatementStrategy
 
             queryContext.offset(putValue(queryContext));
         }
+    }
+
+    @Override
+    public void putSequenceNullValue(QueryContext queryContext) {
+        putValue(queryContext);
     }
 
     private void putStructureHead(MajorType majorType, QueryContext queryContext) {

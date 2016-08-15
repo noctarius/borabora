@@ -23,6 +23,8 @@ import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.function.Consumer;
 
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+
 public abstract class AsDictionarySelectorEntryQueryStage
         implements QueryStage {
 
@@ -40,6 +42,9 @@ public abstract class AsDictionarySelectorEntryQueryStage
         // Try execution of the child query subtree
         VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
         if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
+            if (pipelineContext.offset() == OFFSET_CODE_NULL) {
+                pipelineContext.selectStatementStrategy().putDictionaryNullValue(pipelineContext);
+            }
             return visitResult;
         }
 

@@ -36,10 +36,14 @@ public interface SelectStatementStrategy {
 
     void putDictionaryValue(PipelineStage previousPipelineStage, QueryContext queryContext);
 
+    void putDictionaryNullValue(QueryContext queryContext);
+
     void beginSequence(QueryContext queryContext);
 
     void endSequence(QueryContext queryContext);
 
     void putSequenceValue(PipelineStage previousPipelineStage, QueryContext queryContext);
+
+    void putSequenceNullValue(QueryContext queryContext);
 
 }

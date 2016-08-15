@@ -125,6 +125,14 @@ public class ObjectSelectStatementStrategy
     }
 
     @Override
+    public void putDictionaryNullValue(QueryContext queryContext) {
+        Value key = queryContext.queryStackPop();
+        Value value = Value.NULL_VALUE;
+        Map<Value, Value> entries = queryContext.queryStackPeek();
+        entries.put(key, value);
+    }
+
+    @Override
     public void beginSequence(QueryContext queryContext) {
         // Create a new List to store entries, thanks to thread-safetyness :)
         List<Value> entries = new ArrayList<>();
@@ -163,6 +171,12 @@ public class ObjectSelectStatementStrategy
         }
         List<Value> entries = queryContext.queryStackPeek();
         entries.add(value);
+    }
+
+    @Override
+    public void putSequenceNullValue(QueryContext queryContext) {
+        List<Value> entries = queryContext.queryStackPeek();
+        entries.add(Value.NULL_VALUE);
     }
 
     private static abstract class AbstractJavaBackedDataStructure {

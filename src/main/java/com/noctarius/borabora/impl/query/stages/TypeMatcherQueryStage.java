@@ -21,6 +21,7 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
+import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
@@ -29,6 +30,8 @@ import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Objects;
+
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 
 public class TypeMatcherQueryStage
         implements QueryStage {
@@ -50,9 +53,14 @@ public class TypeMatcherQueryStage
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         ValueType valueType = ValueTypes.valueType(input, offset);
-        if (!typeSpec.valid(majorType, input, offset) && required) {
-            String msg = String.format("Element at offset %s is not of type %s but %s", offset, this.typeSpec, valueType);
-            throw new WrongTypeException(msg);
+        if (!typeSpec.valid(majorType, input, offset)) {
+            if (required) {
+                String msg = String.format("Element at offset %s is not of type %s but %s", offset, this.typeSpec, valueType);
+                throw new WrongTypeException(msg);
+            }
+
+            pipelineContext.offset(OFFSET_CODE_NULL);
+            return VisitResult.Break;
         }
 
         return pipelineStage.visitChildren(pipelineContext);

@@ -185,6 +185,9 @@ final class ParserImpl
 
         @Override
         public void accept(Value value) {
+            if (this.value != null) {
+                throw new IllegalStateException("value already set");
+            }
             this.value = value;
         }
     }

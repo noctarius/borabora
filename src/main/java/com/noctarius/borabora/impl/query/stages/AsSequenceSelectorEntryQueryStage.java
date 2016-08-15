@@ -21,6 +21,8 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+
 public class AsSequenceSelectorEntryQueryStage
         implements QueryStage {
 
@@ -37,6 +39,9 @@ public class AsSequenceSelectorEntryQueryStage
         // Try execution of the child query subtree
         VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
         if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
+            if (pipelineContext.offset() == OFFSET_CODE_NULL) {
+                pipelineContext.selectStatementStrategy().putSequenceNullValue(pipelineContext);
+            }
             return visitResult;
         }
 

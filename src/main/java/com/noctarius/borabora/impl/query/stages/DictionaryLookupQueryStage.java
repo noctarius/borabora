@@ -62,7 +62,7 @@ public class DictionaryLookupQueryStage
         // Execute the key lookup
         offset = Decoder.findByDictionaryKey(predicate, offset, pipelineContext);
         if (offset == Constants.OFFSET_CODE_NULL) {
-            pipelineContext.consume(offset);
+            pipelineContext.offset(-1);
             return VisitResult.Break;
         }
 

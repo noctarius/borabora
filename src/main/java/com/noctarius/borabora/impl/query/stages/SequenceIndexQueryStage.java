@@ -52,7 +52,7 @@ public class SequenceIndexQueryStage
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
-            pipelineContext.consume(Constants.OFFSET_CODE_NULL);
+            pipelineContext.offset(-1);
             return VisitResult.Break;
         }
 

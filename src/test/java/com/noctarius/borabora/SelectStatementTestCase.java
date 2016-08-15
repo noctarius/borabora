@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.spi.TypeSpecs;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
@@ -50,6 +51,54 @@ public class SelectStatementTestCase
 
     public SelectStatementTestCase(SelectStatementStrategy selectStatementStrategy, String typename) {
         this.selectStatementStrategy = selectStatementStrategy;
+    }
+
+    @Test
+    public void test_select_dictionary_wrong_type() {
+        executeExercise( //
+                sgb -> sgb.putNumber(1), //
+                () -> "(a: #->?dictionary{'foo'})", //
+                gqb -> gqb.asDictionary().putEntry("a") //
+                          .stream(0).nullOrType(TypeSpecs.Dictionary).dictionary(matchString("foo")) //
+                          .endEntry().endDictionary(), //
+                v -> assertEquals(ValueTypes.Null, v.dictionary().get(matchString("a")).valueType()) //
+        );
+    }
+
+    @Test
+    public void test_select_dictionary_non_existing_lookup() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("test").endEntry().endDictionary(), //
+                () -> "(a: #{'bar'})", //
+                gqb -> gqb.asDictionary().putEntry("a") //
+                          .stream(0).dictionary(matchString("bar")) //
+                          .endEntry().endDictionary(), //
+                v -> assertEquals(ValueTypes.Null, v.dictionary().get(matchString("a")).valueType()) //
+        );
+    }
+
+    @Test
+    public void test_select_sequence_wrong_type() {
+        executeExercise( //
+                sgb -> sgb.putNumber(1), //
+                () -> "(#0->?dictionary{'foo'})", //
+                gqb -> gqb.asSequence().putEntry() //
+                          .stream(0).nullOrType(TypeSpecs.Dictionary).dictionary(matchString("foo")) //
+                          .endEntry().endSequence(), //
+                v -> assertEquals(ValueTypes.Null, v.sequence().get(0).valueType()) //
+        );
+    }
+
+    @Test
+    public void test_select_sequence_non_existing_lookup() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("test").endEntry().endDictionary(), //
+                () -> "(#{'bar'})", //
+                gqb -> gqb.asSequence().putEntry() //
+                          .stream(0).dictionary(matchString("bar")) //
+                          .endEntry().endSequence(), //
+                v -> assertEquals(ValueTypes.Null, v.sequence().get(0).valueType()) //
+        );
     }
 
     @Test
