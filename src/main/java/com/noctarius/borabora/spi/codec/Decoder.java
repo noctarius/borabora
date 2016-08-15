@@ -17,19 +17,19 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.impl.DictionaryImpl;
 import com.noctarius.borabora.impl.SequenceImpl;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigInteger;
 import java.util.function.Predicate;

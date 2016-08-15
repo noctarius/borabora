@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora.impl;
 
-import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
-import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.builder.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
+import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
+import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 class SequenceQueryBuilderImpl<T>
         implements SequenceQueryBuilder<T> {
@@ -30,8 +30,7 @@ class SequenceQueryBuilderImpl<T>
     private final QueryBuilderNode parentTreeNode;
     private SelectStatementStrategy selectStatementStrategy;
 
-    SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode,
-                             SelectStatementStrategy selectStatementStrategy) {
+    SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;
         this.parentTreeNode = parentTreeNode;
@@ -43,7 +42,8 @@ class SequenceQueryBuilderImpl<T>
         Tracer.traceCall("SequenceQueryBuilderImpl#putEntry", this);
         QueryBuilderNode entry = new QueryBuilderNode(AsSequenceSelectorEntryQueryStage.INSTANCE);
         parentTreeNode.children().add(entry);
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE, selectStatementStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE,
+                selectStatementStrategy);
     }
 
     @Override

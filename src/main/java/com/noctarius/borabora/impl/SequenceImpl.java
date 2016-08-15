@@ -22,9 +22,9 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

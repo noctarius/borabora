@@ -17,13 +17,13 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.codec.TagWriter;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.StringEncoders;
 import com.noctarius.borabora.spi.codec.TagReader;
+import com.noctarius.borabora.spi.codec.TagWriter;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,14 +48,18 @@ public enum ValueTypes
     Bool(Value::bool), //
     Null((v) -> null), //
     Undefined((v) -> null), //
-    DateTime(
-            CommonTagCodec.TAG_READER.DATE_TIME_READER, CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER, CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER, Value::tag), //
-    Timestamp(
-            CommonTagCodec.TAG_READER.TIMESTAMP_READER, CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER, CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(CommonTagCodec.TAG_READER.UBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER, CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
-    NBigNum(CommonTagCodec.TAG_READER.NBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER, CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
-    EncCBOR(CommonTagCodec.TAG_READER.ENCODED_CBOR_READER, CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER, CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER, Value::tag), //
-    URI(CommonTagCodec.TAG_READER.URI_READER, CommonTagCodec.TAG_WRITER.URI_WRITER, CommonTagCodec.TYPE_MATCHER.URI_MATCHER, Value::tag), //
+    DateTime(CommonTagCodec.TAG_READER.DATE_TIME_READER, CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER,
+            CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER, Value::tag), //
+    Timestamp(CommonTagCodec.TAG_READER.TIMESTAMP_READER, CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER,
+            CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER, Value::tag), //
+    UBigNum(CommonTagCodec.TAG_READER.UBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER,
+            CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
+    NBigNum(CommonTagCodec.TAG_READER.NBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER,
+            CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
+    EncCBOR(CommonTagCodec.TAG_READER.ENCODED_CBOR_READER, CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER,
+            CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER, Value::tag), //
+    URI(CommonTagCodec.TAG_READER.URI_READER, CommonTagCodec.TAG_WRITER.URI_WRITER, CommonTagCodec.TYPE_MATCHER.URI_MATCHER,
+            Value::tag), //
     Unknown(CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER, null, null, Value::raw);
 
     private final Predicate<Object> encodeableTypeMatcher;

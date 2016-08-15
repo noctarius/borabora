@@ -113,33 +113,6 @@ public final class QueryBuilderImpl
         return new QueryImpl(queryPipeline, selectStatementStrategy);
     }
 
-    private void fixSelectorConsumers(QueryBuilderNode node) {
-        if (node.childrenCount() > 0) {
-            node.children().forEach(this::fixSelectorConsumers);
-        }
-
-        List<QueryBuilderNode> newChildren = new ArrayList<>();
-        Iterator<QueryBuilderNode> iterator = node.children().iterator();
-        while (iterator.hasNext()) {
-            QueryBuilderNode child = iterator.next();
-            if (child.stage() instanceof ConsumerQueryStage && child.childrenCount() > 0) {
-                iterator.remove();
-                newChildren.addAll(child.children());
-            }
-        }
-        node.children().addAll(newChildren);
-    }
-
-    private void fixConsumers(QueryBuilderNode node) {
-        if (node.childrenCount() > 0) {
-            node.children().forEach(this::fixConsumers);
-        } else {
-            if (!(node.stage() instanceof ConsumerQueryStage)) {
-                node.children().add(new QueryBuilderNode(ConsumerQueryStage.INSTANCE));
-            }
-        }
-    }
-
     @Override
     public QueryBuilder sequence(long index) {
         Tracer.traceInfo("QueryBuilderImpl#sequence", this);
@@ -194,6 +167,33 @@ public final class QueryBuilderImpl
         Tracer.traceInfo("QueryBuilderImpl#requireType", this);
         requireType0(typeSpec);
         return this;
+    }
+
+    private void fixSelectorConsumers(QueryBuilderNode node) {
+        if (node.childrenCount() > 0) {
+            node.children().forEach(this::fixSelectorConsumers);
+        }
+
+        List<QueryBuilderNode> newChildren = new ArrayList<>();
+        Iterator<QueryBuilderNode> iterator = node.children().iterator();
+        while (iterator.hasNext()) {
+            QueryBuilderNode child = iterator.next();
+            if (child.stage() instanceof ConsumerQueryStage && child.childrenCount() > 0) {
+                iterator.remove();
+                newChildren.addAll(child.children());
+            }
+        }
+        node.children().addAll(newChildren);
+    }
+
+    private void fixConsumers(QueryBuilderNode node) {
+        if (node.childrenCount() > 0) {
+            node.children().forEach(this::fixConsumers);
+        } else {
+            if (!(node.stage() instanceof ConsumerQueryStage)) {
+                node.children().add(new QueryBuilderNode(ConsumerQueryStage.INSTANCE));
+            }
+        }
     }
 
     private void fixQueryStartup(QueryBuilderNode parentTreeNode) {

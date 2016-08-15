@@ -22,7 +22,6 @@ import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
 
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.Predicate;

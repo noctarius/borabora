@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
 
 public interface TypeSpec {
 

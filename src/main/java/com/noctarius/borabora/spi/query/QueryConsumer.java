@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;

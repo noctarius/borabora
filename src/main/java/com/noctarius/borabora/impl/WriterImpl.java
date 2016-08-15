@@ -19,7 +19,6 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.impl.GraphBuilderImpl;
 
 final class WriterImpl
         implements Writer {

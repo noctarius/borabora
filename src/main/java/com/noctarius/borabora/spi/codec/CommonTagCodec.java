@@ -18,14 +18,14 @@ package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Output;
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.TypeSpecs;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigInteger;
 import java.net.URI;

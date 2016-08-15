@@ -20,8 +20,8 @@ import com.noctarius.borabora.builder.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeDictionaryEntryValueQueryStage;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 class DictionaryQueryBuilderImpl<T>
         implements DictionaryQueryBuilder<T> {
@@ -30,8 +30,7 @@ class DictionaryQueryBuilderImpl<T>
     private final QueryBuilderNode parentTreeNode;
     private SelectStatementStrategy selectStatementStrategy;
 
-    DictionaryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode,
-                               SelectStatementStrategy selectStatementStrategy) {
+    DictionaryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, SelectStatementStrategy selectStatementStrategy) {
 
         this.queryBuilder = queryBuilder;
         this.parentTreeNode = parentTreeNode;
@@ -43,7 +42,8 @@ class DictionaryQueryBuilderImpl<T>
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-string", this);
         QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withStringKey(key));
         parentTreeNode.children().add(entry);
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, selectStatementStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
+                selectStatementStrategy);
     }
 
     @Override
@@ -51,7 +51,8 @@ class DictionaryQueryBuilderImpl<T>
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-double", this);
         QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
         parentTreeNode.children().add(entry);
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, selectStatementStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
+                selectStatementStrategy);
     }
 
     @Override
@@ -59,7 +60,8 @@ class DictionaryQueryBuilderImpl<T>
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-long", this);
         QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withIntKey(key));
         parentTreeNode.children().add(entry);
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, selectStatementStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
+                selectStatementStrategy);
     }
 
     @Override

@@ -19,11 +19,11 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.builder.SequenceBuilder;
-import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.builder.DictionaryBuilder;
 import com.noctarius.borabora.builder.DictionaryEntryBuilder;
 import com.noctarius.borabora.builder.IndefiniteStringBuilder;
+import com.noctarius.borabora.builder.SequenceBuilder;
+import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.codec.Encoder;
 
 import java.math.BigDecimal;
