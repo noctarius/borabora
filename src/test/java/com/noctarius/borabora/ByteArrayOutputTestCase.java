@@ -72,6 +72,12 @@ public class ByteArrayOutputTestCase {
         output.write(new byte[0], 0, 1);
     }
 
+    @Test(expected = NoSuchByteException.class)
+    public void test_write_array_offset_plus_length_less_than_array_length() {
+        ByteArrayOutput output = new ByteArrayOutput(new byte[1]);
+        output.write(new byte[0], 0, 2);
+    }
+
     @Test
     public void test_write_array_offset() {
         byte[] data = new byte[1];

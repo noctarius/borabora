@@ -61,6 +61,9 @@ final class UnsafeByteInput
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
+        if (length > array.length) {
+            throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
+        }
 
         long l = Math.min(length, size - offset);
         UNSAFE.copyMemory(null, address + offset, array, BYTE_ARRAY_BASE_OFFSET, l);

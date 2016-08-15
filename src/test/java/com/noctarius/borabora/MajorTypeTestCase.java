@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.spi.Constants;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -39,14 +40,110 @@ public class MajorTypeTestCase {
     }
 
     @Test
-    public void test_match_majortype() {
+    public void test_type_id() {
+        assertEquals(Constants.MT_UNSINGED_INT, MajorType.UnsignedInteger.typeId());
+        assertEquals(Constants.MT_NEGATIVE_INT, MajorType.NegativeInteger.typeId());
+        assertEquals(Constants.MT_BYTESTRING, MajorType.ByteString.typeId());
+        assertEquals(Constants.MT_TEXTSTRING, MajorType.TextString.typeId());
+        assertEquals(Constants.MT_SEQUENCE, MajorType.Sequence.typeId());
+        assertEquals(Constants.MT_DICTIONARY, MajorType.Dictionary.typeId());
+        assertEquals(Constants.MT_SEMANTIC_TAG, MajorType.SemanticTag.typeId());
+        assertEquals(Constants.MT_FLOAT_SIMPLE, MajorType.FloatingPointOrSimple.typeId());
+    }
+
+    @Test
+    public void test_match_majortype_uint() {
         assertTrue(MajorType.UnsignedInteger.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.UnsignedInteger.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_nint() {
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_UNSINGED_INT << 5)));
         assertTrue(MajorType.NegativeInteger.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.NegativeInteger.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_bytestring() {
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_NEGATIVE_INT << 5)));
         assertTrue(MajorType.ByteString.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.ByteString.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_textstring() {
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_BYTESTRING << 5)));
         assertTrue(MajorType.TextString.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.TextString.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_sequence() {
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_TEXTSTRING << 5)));
         assertTrue(MajorType.Sequence.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.Sequence.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_dictionary() {
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_SEQUENCE << 5)));
         assertTrue(MajorType.Dictionary.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.Dictionary.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_semantictag() {
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_DICTIONARY << 5)));
         assertTrue(MajorType.SemanticTag.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
+        assertFalse(MajorType.SemanticTag.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
+    }
+
+    @Test
+    public void test_match_majortype_floatorsimple() {
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_UNSINGED_INT << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_NEGATIVE_INT << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_BYTESTRING << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_TEXTSTRING << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_SEQUENCE << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_DICTIONARY << 5)));
+        assertFalse(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_SEMANTIC_TAG << 5)));
         assertTrue(MajorType.FloatingPointOrSimple.match((short) (Constants.MT_FLOAT_SIMPLE << 5)));
     }
 

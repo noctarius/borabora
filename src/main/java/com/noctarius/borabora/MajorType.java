@@ -58,7 +58,7 @@ public enum MajorType {
 
     public boolean match(short head) {
         int highBits = (head & HIGH_BITS_MASK) >>> 5;
-        return (highBits | mask) == mask;
+        return highBits == mask;
     }
 
     public static MajorType findMajorType(short head) {
@@ -77,10 +77,8 @@ public enum MajorType {
                 return Dictionary;
             case MT_SEMANTIC_TAG:
                 return SemanticTag;
-            case MT_FLOAT_SIMPLE:
+            default: // Always MT_FLOAT_SIMPLE
                 return FloatingPointOrSimple;
-            default:
-                throw new IllegalArgumentException("Unknown MajorType: " + ((head & HIGH_BITS_MASK) >>> 5));
         }
     }
 

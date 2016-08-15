@@ -24,6 +24,9 @@ import sun.misc.Unsafe;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
@@ -34,7 +37,7 @@ public class InputTestCase
     public static Iterable<Object[]> parameters() {
         return Arrays.asList( //
                 new Object[][]{ //
-                                {input((d) -> Input.fromByteArray(d)), "ByteArrayInput"}, //
+                                {input(Input::fromByteArray), "ByteArrayInput"}, //
                                 {input(InputTestCase::unsafeInput), "UnsafeByteInput"}});
     }
 
@@ -56,39 +59,82 @@ public class InputTestCase
     }
 
     @Test
-    public void test_byte_extraction()
-            throws Exception {
+    public void test_read_bytearray() {
+        byte[] data = new byte[]{(byte) 0xff};
+        Input input = function.apply(data);
+        byte[] actual = new byte[1];
+        assertEquals(1, input.read(actual, 0, 1));
+        assertArrayEquals(data, actual);
+    }
 
+    @Test(expected = NoSuchByteException.class)
+    public void test_read_bytearray_offset_larger_than_readable_data() {
+        byte[] data = new byte[0];
+        Input input = function.apply(data);
+        input.read(new byte[0], 1, 0);
+    }
+
+    @Test(expected = NoSuchByteException.class)
+    public void test_read_bytearray_length_larger_than_writeableable_data() {
+        byte[] data = new byte[1];
+        Input input = function.apply(data);
+        input.read(new byte[0], 0, 1);
+    }
+
+    @Test(expected = NoSuchByteException.class)
+    public void test_read_bytearray_offset_less_than_zero() {
+        byte[] data = new byte[0];
+        Input input = function.apply(data);
+        input.read(new byte[0], -1, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_read_bytearray_outside_legal_bytearray_range() {
+        byte[] data = new byte[0];
+        Input input = function.apply(data);
+        input.read(new byte[0], Integer.MAX_VALUE + 1L, 0);
+    }
+
+    @Test
+    public void test_read() {
         byte[] data = new byte[]{(byte) 0xff};
         Input input = function.apply(data);
         assertEquals(data[0], input.read(0));
     }
 
     @Test(expected = NoSuchByteException.class)
-    public void test_byte_larger_than_bytearray()
-            throws Exception {
-
+    public void test_read_offset_larger_than_bytearray() {
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(1);
     }
 
     @Test(expected = NoSuchByteException.class)
-    public void test_byte_less_than_zero()
-            throws Exception {
-
+    public void test_read_offset_less_than_zero() {
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void test_byte_outside_legal_bytearray_range()
-            throws Exception {
-
+    public void test_read_outside_legal_bytearray_range() {
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(Integer.MAX_VALUE + 1L);
+    }
+
+    @Test
+    public void test_offset_valid() {
+        byte[] data = new byte[]{(byte) 0};
+        Input input = function.apply(data);
+        assertTrue(input.offsetValid(0));
+    }
+
+    @Test
+    public void test_offset_invalid() {
+        byte[] data = new byte[]{(byte) 0};
+        Input input = function.apply(data);
+        assertFalse(input.offsetValid(1));
     }
 
 }

@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.StreamableIterable;
 
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -131,14 +130,8 @@ public interface Dictionary
     default void forEach(BiConsumer<Value, Value> action) {
         Objects.requireNonNull(action);
         for (Map.Entry<Value, Value> entry : entries()) {
-            Value k;
-            Value v;
-            try {
-                k = entry.getKey();
-                v = entry.getValue();
-            } catch (IllegalStateException e) {
-                throw new ConcurrentModificationException(e);
-            }
+            Value k = entry.getKey();
+            Value v = entry.getValue();
             action.accept(k, v);
         }
     }

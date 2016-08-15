@@ -49,6 +49,9 @@ final class ByteArrayInput
         if (offset < 0 || length < 0 || offset >= this.array.length || offset + length > this.array.length) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
+        if (length > array.length) {
+            throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
+        }
 
         long l = Math.min(length, this.array.length - offset);
         System.arraycopy(this.array, (int) offset, array, 0, (int) l);
