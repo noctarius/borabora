@@ -31,7 +31,9 @@ public interface ParserBuilder {
 
     <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2);
 
-    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders);
+    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders);
+
+    ParserBuilder addTagDecoder(Iterable<TagDecoder> tagDecoders);
 
     ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer);
 
@@ -39,6 +41,8 @@ public interface ParserBuilder {
 
     ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
                                     QueryOptimizer... queryOptimizers);
+
+    ParserBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers);
 
     ParserBuilder asBinarySelectStatementStrategy();
 

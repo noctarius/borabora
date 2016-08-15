@@ -31,7 +31,7 @@ import com.noctarius.borabora.spi.query.QueryContextFactory;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,22 +53,35 @@ public final class ParserBuilderImpl
 
     @Override
     public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder) {
-        tagDecoders.add(tagDecoder);
+        Objects.requireNonNull(tagDecoder, "tagDecoder must not be null");
+        if (!tagDecoders.contains(tagDecoder)) {
+            tagDecoders.add(tagDecoder);
+        }
         return this;
     }
 
     @Override
     public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
-        tagDecoders.add(tagDecoder1);
-        tagDecoders.add(tagDecoder2);
+        addTagDecoder(tagDecoder1);
+        addTagDecoder(tagDecoder2);
         return this;
     }
 
     @Override
-    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder<V>... tagDecoders) {
-        this.tagDecoders.add(tagDecoder1);
-        this.tagDecoders.add(tagDecoder2);
-        this.tagDecoders.addAll(Arrays.asList(tagDecoders));
+    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders) {
+        addTagDecoder(tagDecoder1);
+        addTagDecoder(tagDecoder2);
+        for (TagDecoder tagDecoder : tagDecoders) {
+            addTagDecoder(tagDecoder);
+        }
+        return this;
+    }
+
+    @Override
+    public ParserBuilder addTagDecoder(Iterable<TagDecoder> tagDecoders) {
+        for (TagDecoder tagDecoder : tagDecoders) {
+            addTagDecoder(tagDecoder);
+        }
         return this;
     }
 
@@ -136,6 +149,14 @@ public final class ParserBuilderImpl
     }
 
     @Override
+    public ParserBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers) {
+        for (QueryOptimizer queryOptimizer : queryOptimizers) {
+            addQueryOptimizer(queryOptimizer);
+        }
+        return this;
+    }
+
+    @Override
     public ParserBuilder asBinarySelectStatementStrategy() {
         selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
         return this;
@@ -150,7 +171,7 @@ public final class ParserBuilderImpl
     @Override
     public Parser build() {
         return new ParserImpl(tagDecoders, selectStatementStrategy, queryContextFactory, queryPipelineFactory,
-                pipelineStageFactory, queryOptimizerStrategyFactory);
+                pipelineStageFactory, queryOptimizerStrategyFactory, Collections.unmodifiableList(queryOptimizers));
     }
 
 }

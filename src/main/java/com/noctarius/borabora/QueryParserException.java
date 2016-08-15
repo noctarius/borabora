@@ -19,10 +19,6 @@ package com.noctarius.borabora;
 public class QueryParserException
         extends RuntimeException {
 
-    public QueryParserException(String message) {
-        super(message);
-    }
-
     public QueryParserException(Throwable cause) {
         super(cause);
     }

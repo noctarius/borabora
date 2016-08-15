@@ -37,6 +37,9 @@ public class NullValueTestCase {
         assertNull(nullValue.bool());
         assertNull(nullValue.byValueType());
         assertArrayEquals(new byte[0], nullValue.raw());
+        assertEquals(-1, nullValue.offset());
+        assertEquals("NullValue{valueType=Null, offset=-1, value=null}", nullValue.toString());
+        assertEquals("Null{ null }", nullValue.asString());
     }
 
 }

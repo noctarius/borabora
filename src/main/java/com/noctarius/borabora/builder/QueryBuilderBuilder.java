@@ -39,6 +39,8 @@ public interface QueryBuilderBuilder {
     QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
                                           QueryOptimizer... queryOptimizers);
 
+    QueryBuilderBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers);
+
     StreamQueryBuilder newBuilder();
 
 }

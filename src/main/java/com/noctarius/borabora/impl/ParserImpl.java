@@ -30,6 +30,7 @@ import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
@@ -51,10 +52,12 @@ final class ParserImpl
     private final QueryPipelineFactory queryPipelineFactory;
     private final PipelineStageFactory pipelineStageFactory;
     private final QueryOptimizerStrategyFactory queryOptimizerStrategyFactory;
+    private final List<QueryOptimizer> queryOptimizers;
 
     ParserImpl(List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy,
                QueryContextFactory queryContextFactory, QueryPipelineFactory queryPipelineFactory,
-               PipelineStageFactory pipelineStageFactory, QueryOptimizerStrategyFactory queryOptimizerStrategyFactory) {
+               PipelineStageFactory pipelineStageFactory, QueryOptimizerStrategyFactory queryOptimizerStrategyFactory,
+               List<QueryOptimizer> queryOptimizers) {
 
         this.tagDecoders = tagDecoders;
         this.queryContextFactory = queryContextFactory;
@@ -62,6 +65,7 @@ final class ParserImpl
         this.queryPipelineFactory = queryPipelineFactory;
         this.pipelineStageFactory = pipelineStageFactory;
         this.queryOptimizerStrategyFactory = queryOptimizerStrategyFactory;
+        this.queryOptimizers = queryOptimizers;
     }
 
     @Override
@@ -139,7 +143,11 @@ final class ParserImpl
     public Query prepareQuery(String query) {
         try {
 
-            QueryBuilder queryBuilder = Query.configureBuilder().withSelectStatementStrategy(selectStatementStrategy).newBuilder();
+            QueryBuilder queryBuilder = Query.configureBuilder().withSelectStatementStrategy(selectStatementStrategy)
+                                             .withPipelineStageFactory(pipelineStageFactory)
+                                             .withQueryPipelineFactory(queryPipelineFactory)
+                                             .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
+                                             .addQueryOptimizer(queryOptimizers).newBuilder();
             QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 

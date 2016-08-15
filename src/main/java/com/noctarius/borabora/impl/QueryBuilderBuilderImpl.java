@@ -98,6 +98,14 @@ public class QueryBuilderBuilderImpl
     }
 
     @Override
+    public QueryBuilderBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers) {
+        for (QueryOptimizer queryOptimizer : queryOptimizers) {
+            addQueryOptimizer(queryOptimizer);
+        }
+        return this;
+    }
+
+    @Override
     public StreamQueryBuilder newBuilder() {
         QueryOptimizerStrategy queryOptimizerStrategy = queryOptimizerStrategyFactory.newQueryOptimizerStrategy(queryOptimizers);
         return new QueryBuilderImpl(selectStatementStrategy, queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
