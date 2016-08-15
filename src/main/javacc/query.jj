@@ -188,7 +188,7 @@ void entry(): {
         StreamEntryQueryBuilder streamEntryQueryBuilder = ((SequenceQueryBuilder) queryTokenBuilder()).putEntry();
         generatorStack.addFirst(streamEntryQueryBuilder);
     }
-    ( query() | type() )
+    ( type() | streamElement() (expression())* )
     {
         ((StreamEntryQueryBuilder) queryTokenBuilder()).endEntry();
         generatorStack.removeFirst();
