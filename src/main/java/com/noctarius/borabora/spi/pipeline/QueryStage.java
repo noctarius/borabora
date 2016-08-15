@@ -22,11 +22,7 @@ public interface QueryStage {
 
     VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext);
 
-    static boolean equals(Object first, Object second) {
-        if (!(first instanceof QueryStage) || !(second instanceof QueryStage)) {
-            return false;
-        }
-
+    static boolean equals(QueryStage first, QueryStage second) {
         String name = first.getClass().getName();
         String otherName = second.getClass().getName();
 

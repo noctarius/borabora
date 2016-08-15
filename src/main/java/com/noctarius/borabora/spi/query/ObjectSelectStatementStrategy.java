@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+
 public class ObjectSelectStatementStrategy
         implements SelectStatementStrategy {
 
@@ -108,9 +110,7 @@ public class ObjectSelectStatementStrategy
         Value value;
         if (!(v2 instanceof Value)) {
             key = v1;
-            if (offset == -2) {
-                value = queryContext.queryStackPop();
-            } else if (offset == -1) {
+            if (offset == OFFSET_CODE_NULL) {
                 value = Value.NULL_VALUE;
             } else {
                 value = Decoder.readValue(offset, queryContext);
@@ -161,9 +161,7 @@ public class ObjectSelectStatementStrategy
         } else {
             long offset = queryContext.offset();
 
-            if (offset == -2) {
-                value = queryContext.queryStackPop();
-            } else if (offset == -1) {
+            if (offset == OFFSET_CODE_NULL) {
                 value = Value.NULL_VALUE;
             } else {
                 value = Decoder.readValue(offset, queryContext);
