@@ -20,6 +20,8 @@ import com.noctarius.borabora.spi.TypeSpecs;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static com.noctarius.borabora.Predicates.matchString;
+
 public class QueryLanguageAcceptanceTestCase
         extends AbstractTestCase {
 
@@ -139,13 +141,13 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_dictionary_access_string() {
-        Query query = Query.newBuilder().dictionary(Predicates.matchString("test")).build();
+        Query query = Query.newBuilder().dictionary(matchString("test")).build();
         evaluate(query, "#{'test'}");
     }
 
     @Test
     public void test_stream_dictionary_access_string() {
-        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchString("test")).build();
+        Query query = Query.newBuilder().stream(1).dictionary(matchString("test")).build();
         evaluate(query, "#1{'test'}");
     }
 
@@ -362,6 +364,42 @@ public class QueryLanguageAcceptanceTestCase
     public void test_type_check_bool() {
         Query query = Query.newBuilder().requireType(TypeSpecs.Bool).build();
         assertQueryEquals(query, parser.prepareQuery("#->bool"));
+    }
+
+    @Test
+    public void test_dictionary_select_typecheck() {
+        Query query = Query.newBuilder().asDictionary() //
+                           .putEntry("a").stream(0).requireType(TypeSpecs.Number).endEntry() //
+                           .putEntry("b").stream(0).nullOrType(TypeSpecs.Number).endEntry() //
+                           .endDictionary().build();
+        evaluate(query, "(a: #->number, b: #->?number)");
+    }
+
+    @Test
+    public void test_dictionary_select_stream_number_typecheck() {
+        Query query = Query.newBuilder().asDictionary() //
+                           .putEntry("a").stream(1).requireType(TypeSpecs.Number).endEntry() //
+                           .putEntry("b").stream(1).nullOrType(TypeSpecs.Number).endEntry() //
+                           .endDictionary().build();
+        evaluate(query, "(a: #1->number, b: #1->?number)");
+    }
+
+    @Test
+    public void test_dictionary_select_dictionary_lookup() {
+        Query query = Query.newBuilder().asDictionary() //
+                           .putEntry("a").stream(0).dictionary(matchString("foo")).endEntry() //
+                           .putEntry("b").stream(1).dictionary(matchString("foo")).endEntry() //
+                           .endDictionary().build();
+        evaluate(query, "(a: #{'foo'}, b: #1{'foo'})");
+    }
+
+    @Test
+    public void test_dictionary_select_sequence_lookup() {
+        Query query = Query.newBuilder().asDictionary() //
+                           .putEntry("a").stream(0).sequence(1).endEntry() //
+                           .putEntry("b").stream(1).sequence(1).endEntry() //
+                           .endDictionary().build();
+        evaluate(query, "(a: #(1), b: #1(1))");
     }
 
     @Test
