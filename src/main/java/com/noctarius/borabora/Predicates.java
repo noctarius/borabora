@@ -26,6 +26,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
+
 public enum Predicates {
     ;
 
@@ -46,51 +48,54 @@ public enum Predicates {
     }
 
     public static Predicate<Value> matchString(String value) {
-        // If indefinite or large string or ObjectValue we have to go the slow path
         Predicate<Value> slowPathPredicate = matchString0(value);
-        if (value.length() * 4L > Integer.MAX_VALUE) {
+
+        // For more than 1024 chars we use the slow path for now
+        if (value.length() > MATCH_STRING_FAST_PATH_TRESHOLD) {
             return slowPathPredicate;
         }
 
-        // Pre-encode matching value
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(value.length() * 2);
-        Encoder.putString(value, 0, Output.toOutputStream(baos));
+        // Predefine both possible matchers
+        Predicate<Value> byteStringMatcher;
+        Predicate<Value> textStringMatcher;
 
-        byte[] expected = baos.toByteArray();
-        int expectedLength = expected.length;
+        // Pre-encode matching value
+        byte[] expected = buildStringMatcherByteArray(value, Encoder::putString);
+
+        MajorType currentMajorType = MajorType.findMajorType((short) (expected[0] & 0xFF));
+        switch (currentMajorType) {
+            case ByteString:
+                byteStringMatcher = buildStringMatcher(expected);
+
+                // Encode specifically as TextString
+                expected = buildStringMatcherByteArray(value, Encoder::putTextString);
+                textStringMatcher = buildStringMatcher(expected);
+                break;
+
+            default: // Always TextString
+                byteStringMatcher = slowPathPredicate;
+                textStringMatcher = buildStringMatcher(expected);
+        }
 
         return (v) -> {
             if (!v.valueType().matches(ValueTypes.String)) {
                 return false;
             }
 
+            // Stream values can be tried to match them on an array level
             if (v instanceof QueryContextAware) {
-                QueryContext queryContext = ((QueryContextAware) v).queryContext();
-                // TODO Match majorType ByteString vs TextString
                 MajorType majorType = v.majorType();
-                long offset = v.offset();
 
-                Input input = queryContext.input();
-                long length = Decoder.length(input, majorType, offset);
-                if (length < expectedLength) {
-                    return false;
-                }
-
-                if (length == expectedLength) {
-                    byte[] data = new byte[expectedLength];
-                    input.read(data, offset, expectedLength);
-                    if (Arrays.equals(expected, data)) {
-                        return true;
-                    }
+                switch (majorType) {
+                    case ByteString:
+                        return byteStringMatcher.test(v);
+                    case TextString:
+                        return textStringMatcher.test(v);
                 }
             }
 
             return slowPathPredicate.test(v);
         };
-    }
-
-    private static Predicate<Value> matchString0(String value) {
-        return (v) -> v.string().equals(value);
     }
 
     public static Predicate<Value> matchFloat(double value) {
@@ -141,6 +146,46 @@ public enum Predicates {
         int otherNameEndIndex = name.indexOf('/', otherNameIndex);
 
         return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
+    }
+
+    private static byte[] buildStringMatcherByteArray(String value, StringPreencoder preencoder) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(value.length() * 2);
+        preencoder.apply(value, 0, Output.toOutputStream(baos));
+        return baos.toByteArray();
+    }
+
+    private static Predicate<Value> buildStringMatcher(byte[] expected) {
+        int expectedLength = expected.length;
+        return (v) -> {
+            QueryContext queryContext = ((QueryContextAware) v).queryContext();
+
+            MajorType majorType = v.majorType();
+            long offset = v.offset();
+
+            Input input = queryContext.input();
+            long length = Decoder.length(input, majorType, offset);
+            if (length < expectedLength) {
+                return false;
+            }
+
+            byte[] data = new byte[expectedLength];
+            input.read(data, offset, expectedLength);
+            return Arrays.equals(expected, data);
+        };
+    }
+
+    private static Predicate<Value> matchString0(String value) {
+        return (v) -> {
+            if (!v.valueType().matches(ValueTypes.String)) {
+                return false;
+            }
+
+            return v.string().equals(value);
+        };
+    }
+
+    private interface StringPreencoder {
+        void apply(String value, int offset, Output output);
     }
 
 }

@@ -95,4 +95,6 @@ public interface Constants {
 
     QueryConsumer EMPTY_QUERY_CONSUMER = ((offset) -> false);
 
+    int MATCH_STRING_FAST_PATH_TRESHOLD = 1024;
+
 }
