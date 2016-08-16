@@ -18,10 +18,10 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.spi.EqualsSupport;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
@@ -92,8 +92,7 @@ public class SequenceMatcherQueryStage
 
         SequenceMatcherQueryStage that = (SequenceMatcherQueryStage) o;
 
-        return predicate != null ? Predicates.predicateEquals(predicate, that.predicate) : that.predicate == null;
-
+        return predicate != null ? EqualsSupport.equals(predicate, that.predicate) : that.predicate == null;
     }
 
     @Override

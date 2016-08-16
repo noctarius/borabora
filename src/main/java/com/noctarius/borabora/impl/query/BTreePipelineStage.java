@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.impl.query;
 
+import com.noctarius.borabora.spi.EqualsSupport;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
@@ -120,7 +121,7 @@ class BTreePipelineStage
             if ((a.stage() == null) || (b.stage() == null)) {
                 return false;
             }
-            if (!QueryStage.equals(a.stage(), b.stage())) {
+            if (!EqualsSupport.equals(a.stage(), b.stage())) {
                 return false;
             }
         }

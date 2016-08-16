@@ -22,6 +22,7 @@ import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.EqualsSupport;
 import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
@@ -82,7 +83,7 @@ public class DictionaryLookupQueryStage
 
         DictionaryLookupQueryStage that = (DictionaryLookupQueryStage) o;
 
-        return predicate != null ? Predicates.predicateEquals(predicate, that.predicate) : that.predicate == null;
+        return predicate != null ? EqualsSupport.equals(predicate, that.predicate) : that.predicate == null;
     }
 
     @Override

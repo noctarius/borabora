@@ -22,27 +22,4 @@ public interface QueryStage {
 
     VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext);
 
-    static boolean equals(QueryStage first, QueryStage second) {
-        String name = first.getClass().getName();
-        String otherName = second.getClass().getName();
-
-        if (name.contains("$$Lambda$") && !otherName.contains("$$Lambda$") //
-                || !name.contains("$$Lambda$") && otherName.contains("$$Lambda$")) {
-
-            return false;
-        }
-
-        if (!name.contains("$$Lambda$") && !otherName.contains("$$Lambda$")) {
-            return first.equals(second);
-        }
-
-        int nameIndex = name.indexOf("$$Lambda$");
-        int otherNameIndex = otherName.indexOf("$$Lambda$");
-
-        int nameEndIndex = name.indexOf('/', nameIndex);
-        int otherNameEndIndex = name.indexOf('/', otherNameIndex);
-
-        return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
-    }
-
 }

@@ -26,6 +26,7 @@ import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Constructor;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +38,16 @@ import static org.junit.Assert.assertEquals;
 public abstract class AbstractTestCase {
 
     private static final Random RANDOM = new Random();
+
+    public static void callConstructor(Class<?> type) {
+        try {
+            Constructor<?> constructor = type.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static String buildString(int nbOfLetters) {
         StringBuilder sb = new StringBuilder();

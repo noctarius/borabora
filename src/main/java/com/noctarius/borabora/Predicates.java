@@ -28,10 +28,12 @@ import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
 
-public enum Predicates {
-    ;
+public final class Predicates {
 
     private static final Predicate<Value> MATCH_ANY = (v) -> true;
+
+    private Predicates() {
+    }
 
     public static final Predicate<Value> any() {
         return MATCH_ANY;
@@ -73,7 +75,9 @@ public enum Predicates {
                 break;
 
             default: // Always TextString
-                byteStringMatcher = slowPathPredicate;
+                // If the matcher string must be a TextString the matched string
+                // can never match if a ByteString (only ASCII)
+                byteStringMatcher = (v) -> false;
                 textStringMatcher = buildStringMatcher(expected);
         }
 
@@ -94,6 +98,7 @@ public enum Predicates {
                 }
             }
 
+            // Match ObjectValue instances
             return slowPathPredicate.test(v);
         };
     }
@@ -108,7 +113,7 @@ public enum Predicates {
             if (n instanceof BigDecimal) {
                 return n.equals(BigDecimal.valueOf(value));
             }*/
-            return value == n.doubleValue();
+            return Double.compare(value, n.doubleValue()) == 0;
         };
     }
 
@@ -123,29 +128,6 @@ public enum Predicates {
             }
             return value == n.longValue();
         };
-    }
-
-    public static boolean predicateEquals(Predicate first, Predicate second) {
-        String name = first.getClass().getName();
-        String otherName = second.getClass().getName();
-
-        if (name.contains("$$Lambda$") && !otherName.contains("$$Lambda$") //
-                || !name.contains("$$Lambda$") && otherName.contains("$$Lambda$")) {
-
-            return false;
-        }
-
-        if (!name.contains("$$Lambda$") && !otherName.contains("$$Lambda$")) {
-            return first.equals(second);
-        }
-
-        int nameIndex = name.indexOf("$$Lambda$");
-        int otherNameIndex = otherName.indexOf("$$Lambda$");
-
-        int nameEndIndex = name.indexOf('/', nameIndex);
-        int otherNameEndIndex = name.indexOf('/', otherNameIndex);
-
-        return name.substring(nameIndex, nameEndIndex).equals(otherName.substring(otherNameIndex, otherNameEndIndex));
     }
 
     private static byte[] buildStringMatcherByteArray(String value, StringPreencoder preencoder) {
@@ -164,7 +146,7 @@ public enum Predicates {
 
             Input input = queryContext.input();
             long length = Decoder.length(input, majorType, offset);
-            if (length < expectedLength) {
+            if (length != expectedLength) {
                 return false;
             }
 

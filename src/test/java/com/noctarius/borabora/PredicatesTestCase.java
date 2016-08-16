@@ -17,16 +17,38 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.ObjectValue;
+import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
+import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.util.Collections;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.Predicates.any;
+import static com.noctarius.borabora.Predicates.matchFloat;
+import static com.noctarius.borabora.Predicates.matchInt;
 import static com.noctarius.borabora.Predicates.matchString;
 import static com.noctarius.borabora.Predicates.matchStringIgnoreCase;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-public class PredicatesTestCase {
+public class PredicatesTestCase
+        extends AbstractTestCase {
+
+    @Test
+    public void call_constructor() {
+        callConstructor(Predicates.class);
+    }
+
+    @Test
+    public void test_any() {
+        Predicate<Value> predicate = any();
+        assertTrue(predicate.test(Value.NULL_VALUE));
+    }
 
     @Test
     public void test_matchignorecase_bytestring() {
@@ -118,6 +140,148 @@ public class PredicatesTestCase {
 
         Value value5 = new ObjectValue(MajorType.Unknown, ValueTypes.Unknown, null);
         assertFalse(predicate.test(value5));
+    }
+
+    @Test
+    public void test_matchstring_bytestring() {
+        Predicate<Value> predicate = matchString("foo");
+
+        Value ascii = asValue("foo");
+        assertTrue(predicate.test(ascii));
+
+        Value utf8 = asValue("äöü");
+        assertFalse(predicate.test(utf8));
+
+        Value ascii_non_match = asValue("oof");
+        assertFalse(predicate.test(ascii_non_match));
+
+        Value ascii_diff_length = asValue("fooo");
+        assertFalse(predicate.test(ascii_diff_length));
+    }
+
+    @Test
+    public void test_matchstring_textstring() {
+        Predicate<Value> predicate = matchString("äöü");
+
+        Value ascii = asValue("abc");
+        assertFalse(predicate.test(ascii));
+
+        Value utf8 = asValue("äöü");
+        assertTrue(predicate.test(utf8));
+
+        Value utf8_non_match = asValue("üöä");
+        assertFalse(predicate.test(utf8_non_match));
+
+        Value utf8_diff_length = asValue("üöää");
+        assertFalse(predicate.test(utf8_diff_length));
+    }
+
+    @Test
+    public void test_matchstring_nonstring() {
+        Predicate<Value> predicate = matchString("foo");
+        assertFalse(predicate.test(Value.NULL_VALUE));
+    }
+
+    @Test
+    public void test_matchstring_objectvalue_match_bytestring() {
+        Predicate<Value> predicate = matchString("foo");
+        Value value = new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo");
+        assertTrue(predicate.test(value));
+    }
+
+    @Test
+    public void test_matchstring_objectvalue_match_textstring() {
+        Predicate<Value> predicate = matchString("foo");
+        Value value = new ObjectValue(MajorType.TextString, ValueTypes.TextString, "foo");
+        assertTrue(predicate.test(value));
+    }
+
+    @Test
+    public void test_matchstring_objectvalue_match_string() {
+        Predicate<Value> predicate = matchString("foo");
+        Value value = new ObjectValue(MajorType.TextString, ValueTypes.String, "foo");
+        assertTrue(predicate.test(value));
+    }
+
+    @Test
+    public void test_matchfloat_nonfloat() {
+        Predicate<Value> predicate = matchFloat(12.d);
+        assertFalse(predicate.test(Value.NULL_VALUE));
+    }
+
+    @Test
+    public void test_matchfloat_float() {
+        Predicate<Value> predicate = matchFloat(12.f);
+        Value value = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 12.f);
+        assertTrue(predicate.test(value));
+
+        Value value2 = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 12.d);
+        assertTrue(predicate.test(value2));
+
+        HalfPrecisionFloat halfPrecisionFloat = HalfPrecisionFloat.valueOf(12.f);
+        Value value3 = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, halfPrecisionFloat);
+        assertTrue(predicate.test(value3));
+    }
+
+    @Test
+    public void test_matchfloat_double() {
+        Predicate<Value> predicate = matchFloat(12.d);
+        Value value = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 12.f);
+        assertTrue(predicate.test(value));
+
+        Value value2 = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 12.d);
+        assertTrue(predicate.test(value2));
+
+        HalfPrecisionFloat halfPrecisionFloat = HalfPrecisionFloat.valueOf(12.f);
+        Value value3 = new ObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, halfPrecisionFloat);
+        assertTrue(predicate.test(value3));
+    }
+
+    @Test
+    public void test_matchint_nonint() {
+        Predicate<Value> predicate = matchInt(12);
+        assertFalse(predicate.test(Value.NULL_VALUE));
+    }
+
+    @Test
+    public void test_matchint_int() {
+        Predicate<Value> predicate = matchInt(12);
+        Value value = new ObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, 12.f);
+        assertTrue(predicate.test(value));
+
+        Value value2 = new ObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, 12.d);
+        assertTrue(predicate.test(value2));
+
+        Value value3 = new ObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, new BigInteger("12"));
+        assertTrue(predicate.test(value3));
+    }
+
+    @Test
+    public void test_matchint_long() {
+        Predicate<Value> predicate = matchInt(12L);
+        Value value = new ObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, 12);
+        assertTrue(predicate.test(value));
+
+        Value value2 = new ObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, 12L);
+        assertTrue(predicate.test(value2));
+
+        Value value3 = new ObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, new BigInteger("12"));
+        assertTrue(predicate.test(value3));
+    }
+
+    private Value asValue(String value) {
+        byte[] bytes = encode(value);
+        Input input = Input.fromByteArray(bytes);
+        MajorType majorType = MajorType.findMajorType((short) (bytes[0] & 0xFF));
+        ValueType valueType = majorType == MajorType.ByteString ? ValueTypes.ByteString : ValueTypes.TextString;
+        QueryContext queryContext = newQueryContext(input, Collections.emptyList(), BinarySelectStatementStrategy.INSTANCE);
+        return new StreamValue(majorType, valueType, 0, queryContext);
+    }
+
+    private byte[] encode(String value) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Encoder.putString(value, 0, Output.toOutputStream(baos));
+        return baos.toByteArray();
     }
 
 }

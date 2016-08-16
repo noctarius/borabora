@@ -36,7 +36,6 @@ public class UtilsClassEnumMethodsTestCase {
         call(ValueTypes.class.getName());
         call(ValuePrettyPrinter.class.getName());
         call(UnsafeUtils.class.getName());
-        call(Predicates.class.getName());
         call(MajorType.class.getName());
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());
