@@ -62,6 +62,8 @@ public enum ValueTypes
             Value::tag), //
     Unknown(CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER, null, null, Value::raw);
 
+    private static final ValueTypes[] VALUE_TYPES_VALUES = values();
+
     private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
     private final TagReader<Object> tagReader;
@@ -209,7 +211,7 @@ public enum ValueTypes
         } else if (value instanceof Boolean) {
             return Bool;
         }
-        for (ValueTypes valueType : ValueTypes.values()) {
+        for (ValueTypes valueType : VALUE_TYPES_VALUES) {
             if (valueType.typeEncodeable(value)) {
                 return valueType;
             }

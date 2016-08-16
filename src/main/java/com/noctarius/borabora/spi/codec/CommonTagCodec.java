@@ -191,6 +191,8 @@ public final class CommonTagCodec
 
     public static final TagDecoder INSTANCE = new CommonTagCodec();
 
+    private static final TypeSpecs[] TYPE_SPECS_VALUES = TypeSpecs.values();
+
     private CommonTagCodec() {
     }
 
@@ -206,7 +208,7 @@ public final class CommonTagCodec
 
     @Override
     public TypeSpec handles(int tagId) {
-        for (TypeSpec typeSpec : TypeSpecs.values()) {
+        for (TypeSpec typeSpec : TYPE_SPECS_VALUES) {
             if (typeSpec.tagId() == tagId) {
                 return typeSpec;
             }
