@@ -202,14 +202,14 @@ public class ObjectSelectStatementStrategy
 
     }
 
-    private static class ListBackedSequence
+    static class ListBackedSequence
             extends AbstractJavaBackedDataStructure
             implements Sequence {
 
         private final List<Value> entries;
         private final QueryContext queryContext;
 
-        private ListBackedSequence(List<Value> entries, QueryContext queryContext) {
+        ListBackedSequence(List<Value> entries, QueryContext queryContext) {
             this.entries = entries;
             this.queryContext = queryContext;
         }
@@ -226,7 +226,7 @@ public class ObjectSelectStatementStrategy
 
         @Override
         public boolean contains(Predicate<Value> predicate) {
-            return findValue(predicate, iterator(), queryContext) != null;
+            return findValue(predicate, iterator(), queryContext) != Value.NULL_VALUE   ;
         }
 
         @Override
@@ -263,14 +263,14 @@ public class ObjectSelectStatementStrategy
         }
     }
 
-    private static class MapBackedDictionary
+    static class MapBackedDictionary
             extends AbstractJavaBackedDataStructure
             implements Dictionary {
 
         private final Map<Value, Value> entries;
         private final QueryContext queryContext;
 
-        private MapBackedDictionary(Map<Value, Value> entries, QueryContext queryContext) {
+        MapBackedDictionary(Map<Value, Value> entries, QueryContext queryContext) {
             this.entries = entries;
             this.queryContext = queryContext;
         }

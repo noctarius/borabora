@@ -146,16 +146,16 @@ public class PredicatesTestCase
     public void test_matchstring_bytestring() {
         Predicate<Value> predicate = matchString("foo");
 
-        Value ascii = asValue("foo");
+        Value ascii = asStreamValue("foo");
         assertTrue(predicate.test(ascii));
 
-        Value utf8 = asValue("äöü");
+        Value utf8 = asStreamValue("äöü");
         assertFalse(predicate.test(utf8));
 
-        Value ascii_non_match = asValue("oof");
+        Value ascii_non_match = asStreamValue("oof");
         assertFalse(predicate.test(ascii_non_match));
 
-        Value ascii_diff_length = asValue("fooo");
+        Value ascii_diff_length = asStreamValue("fooo");
         assertFalse(predicate.test(ascii_diff_length));
     }
 
@@ -163,16 +163,16 @@ public class PredicatesTestCase
     public void test_matchstring_textstring() {
         Predicate<Value> predicate = matchString("äöü");
 
-        Value ascii = asValue("abc");
+        Value ascii = asStreamValue("abc");
         assertFalse(predicate.test(ascii));
 
-        Value utf8 = asValue("äöü");
+        Value utf8 = asStreamValue("äöü");
         assertTrue(predicate.test(utf8));
 
-        Value utf8_non_match = asValue("üöä");
+        Value utf8_non_match = asStreamValue("üöä");
         assertFalse(predicate.test(utf8_non_match));
 
-        Value utf8_diff_length = asValue("üöää");
+        Value utf8_diff_length = asStreamValue("üöää");
         assertFalse(predicate.test(utf8_diff_length));
     }
 
@@ -267,21 +267,6 @@ public class PredicatesTestCase
 
         Value value3 = new ObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, new BigInteger("12"));
         assertTrue(predicate.test(value3));
-    }
-
-    private Value asValue(String value) {
-        byte[] bytes = encode(value);
-        Input input = Input.fromByteArray(bytes);
-        MajorType majorType = MajorType.findMajorType((short) (bytes[0] & 0xFF));
-        ValueType valueType = majorType == MajorType.ByteString ? ValueTypes.ByteString : ValueTypes.TextString;
-        QueryContext queryContext = newQueryContext(input, Collections.emptyList(), BinarySelectStatementStrategy.INSTANCE);
-        return new StreamValue(majorType, valueType, 0, queryContext);
-    }
-
-    private byte[] encode(String value) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Encoder.putString(value, 0, Output.toOutputStream(baos));
-        return baos.toByteArray();
     }
 
 }

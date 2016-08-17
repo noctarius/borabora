@@ -106,7 +106,16 @@ public class ObjectValue
 
     @Override
     public String asString() {
-        return valueType + "{ " + byValueType() + " }";
+        Object value = byValueType();
+        String valueAsString;
+        if (value instanceof Dictionary) {
+            valueAsString = ((Dictionary) value).asString();
+        } else if (value instanceof Sequence) {
+            valueAsString = ((Sequence) value).asString();
+        } else {
+            valueAsString = value == null ? "null" : value.toString();
+        }
+        return valueType + "{ " + valueAsString + " }";
     }
 
 }

@@ -51,79 +51,79 @@ public class ValueTypesTest
 
     @Test
     public void test_value_number() {
-        Value value = asValue(gb -> gb.putNumber(Byte.MAX_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Byte.MAX_VALUE).finishStream());
         assertEquals(Byte.MAX_VALUE, ((Number) ValueTypes.Number.value(value, true)).intValue());
     }
 
     @Test
     public void test_value_int() {
-        Value value = asValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
         assertEquals(Integer.MAX_VALUE, ((Number) ValueTypes.Int.value(value, true)).intValue());
     }
 
     @Test
     public void test_value_uint() {
-        Value value = asValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
         assertEquals(Integer.MAX_VALUE, ((Number) ValueTypes.UInt.value(value, true)).intValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_uint_nonpositive() {
-        Value value = asValue(gb -> gb.putNumber(Integer.MIN_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Integer.MIN_VALUE).finishStream());
         assertEquals(Integer.MAX_VALUE, ((Number) ValueTypes.UInt.value(value, true)).intValue());
     }
 
     @Test
     public void test_value_nint() {
-        Value value = asValue(gb -> gb.putNumber(Integer.MIN_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Integer.MIN_VALUE).finishStream());
         assertEquals(Integer.MIN_VALUE, ((Number) ValueTypes.NInt.value(value, true)).intValue());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_nint_nonnegative() {
-        Value value = asValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(Integer.MAX_VALUE).finishStream());
         assertEquals(Integer.MIN_VALUE, ((Number) ValueTypes.NInt.value(value, true)).intValue());
     }
 
     @Test
     public void test_value_string_bytestring() {
-        Value value = asValue(gb -> gb.putByteString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
         assertEquals("foo", ValueTypes.String.value(value, true));
     }
 
     @Test
     public void test_value_string_textstring() {
-        Value value = asValue(gb -> gb.putTextString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putTextString("foo").finishStream());
         assertEquals("foo", ValueTypes.String.value(value, true));
     }
 
     @Test
     public void test_value_bytestring() {
-        Value value = asValue(gb -> gb.putByteString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
         assertEquals("foo", ValueTypes.ByteString.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_bytestring_textstring() {
-        Value value = asValue(gb -> gb.putTextString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putTextString("foo").finishStream());
         assertEquals("foo", ValueTypes.ByteString.value(value, true));
     }
 
     @Test
     public void test_value_textstring() {
-        Value value = asValue(gb -> gb.putTextString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putTextString("foo").finishStream());
         assertEquals("foo", ValueTypes.TextString.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_textstring_bytestring() {
-        Value value = asValue(gb -> gb.putByteString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
         assertEquals("foo", ValueTypes.TextString.value(value, true));
     }
 
     @Test
     public void test_value_sequence() {
-        Value value = asValue(gb -> gb.putSequence(1).putString("foo").endSequence().finishStream());
+        Value value = asStreamValue(gb -> gb.putSequence(1).putString("foo").endSequence().finishStream());
         assertEquals(ValueTypes.Sequence, value.valueType());
         Sequence sequence = ValueTypes.Sequence.value(value, true);
         assertEquals(1, sequence.size());
@@ -131,7 +131,7 @@ public class ValueTypesTest
 
     @Test
     public void test_value_indefinite_sequence() {
-        Value value = asValue(gb -> gb.putSequence().putString("foo").endSequence().finishStream());
+        Value value = asStreamValue(gb -> gb.putSequence().putString("foo").endSequence().finishStream());
         assertEquals(ValueTypes.Sequence, value.valueType());
         Sequence sequence = ValueTypes.Sequence.value(value, true);
         assertEquals(1, sequence.size());
@@ -139,7 +139,7 @@ public class ValueTypesTest
 
     @Test
     public void test_value_dictionary() {
-        Value value = asValue(gb -> gb.putDictionary(1)
+        Value value = asStreamValue(gb -> gb.putDictionary(1)
 
                                       .putEntry().putString("key").putString("foo").endEntry()
 
@@ -151,7 +151,7 @@ public class ValueTypesTest
 
     @Test
     public void test_value_indefinite_dictionary() {
-        Value value = asValue(gb -> gb.putDictionary()
+        Value value = asStreamValue(gb -> gb.putDictionary()
 
                                       .putEntry().putString("key").putString("foo").endEntry()
 
@@ -163,94 +163,94 @@ public class ValueTypesTest
 
     @Test
     public void test_value_float_halffloat() {
-        Value value = asValue(gb -> gb.putHalfPrecision(1.0f).finishStream());
+        Value value = asStreamValue(gb -> gb.putHalfPrecision(1.0f).finishStream());
         assertEquals(HalfPrecisionFloat.valueOf(1.0f), ValueTypes.Float.value(value, true));
     }
 
     @Test
     public void test_value_float_float() {
-        Value value = asValue(gb -> gb.putNumber(1.0f).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(1.0f).finishStream());
         assertEquals(Float.valueOf(1.0f), ValueTypes.Float.value(value, true));
     }
 
     @Test
     public void test_value_float_double() {
-        Value value = asValue(gb -> gb.putNumber(1.0d).finishStream());
+        Value value = asStreamValue(gb -> gb.putNumber(1.0d).finishStream());
         assertEquals(Double.valueOf(1.0), ValueTypes.Float.value(value, true));
     }
 
     @Test
     public void test_value_bool() {
-        Value value = asValue(gb -> gb.putBoolean(true).finishStream());
+        Value value = asStreamValue(gb -> gb.putBoolean(true).finishStream());
         assertEquals(true, ValueTypes.Bool.value(value, true));
     }
 
     @Test
     public void test_value_null() {
-        Value value = asValue(gb -> gb.putString(null).finishStream());
+        Value value = asStreamValue(gb -> gb.putString(null).finishStream());
         assertNull(ValueTypes.Null.value(value, true));
     }
 
     @Test
     public void test_value_undefined() {
         byte[] bytes = new byte[]{(byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | Constants.FP_VALUE_UNDEF)};
-        Value value = asValue(bytes);
+        Value value = asStreamValue(bytes);
         assertNull(ValueTypes.Undefined.value(value, true));
     }
 
     @Test
     public void test_value_datetime_date() {
         Date expected = new Date();
-        Value value = asValue(gb -> gb.putDateTime(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putDateTime(expected).finishStream());
         assertEquals(expected, ValueTypes.DateTime.value(value, true));
     }
 
     @Test
     public void test_value_datetime_instant() {
         Instant instant = Instant.now();
-        Value value = asValue(gb -> gb.putDateTime(instant).finishStream());
+        Value value = asStreamValue(gb -> gb.putDateTime(instant).finishStream());
         assertEquals(instant, ((Date) ValueTypes.DateTime.value(value, true)).toInstant());
     }
 
     @Test
     public void test_value_timestamp_long() {
         long expected = Instant.now().getEpochSecond();
-        Value value = asValue(gb -> gb.putTimestamp(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putTimestamp(expected).finishStream());
         assertEquals(expected, ((Long) ValueTypes.Timestamp.value(value, true)).longValue());
     }
 
     @Test
     public void test_value_timestamp_instant() {
         Instant instant = Instant.now();
-        Value value = asValue(gb -> gb.putTimestamp(instant).finishStream());
+        Value value = asStreamValue(gb -> gb.putTimestamp(instant).finishStream());
         assertEquals(instant.getEpochSecond(), ((Long) ValueTypes.Timestamp.value(value, true)).longValue());
     }
 
     @Test
     public void test_value_ubignum() {
         BigInteger expected = new BigInteger("1234");
-        Value value = asValue(gb -> gb.putBigInteger(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putBigInteger(expected).finishStream());
         assertEquals(expected, ValueTypes.UBigNum.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_ubignum_nonpositive() {
         BigInteger expected = new BigInteger("-1234");
-        Value value = asValue(gb -> gb.putBigInteger(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putBigInteger(expected).finishStream());
         assertEquals(expected, ValueTypes.UBigNum.value(value, true));
     }
 
     @Test
     public void test_value_nbignum() {
         BigInteger expected = new BigInteger("-1234");
-        Value value = asValue(gb -> gb.putBigInteger(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putBigInteger(expected).finishStream());
         assertEquals(expected, ValueTypes.NBigNum.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_nbignum_nonnegative() {
         BigInteger expected = new BigInteger("1234");
-        Value value = asValue(gb -> gb.putBigInteger(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putBigInteger(expected).finishStream());
         assertEquals(expected, ValueTypes.NBigNum.value(value, true));
     }
 
@@ -258,7 +258,7 @@ public class ValueTypesTest
     public void test_value_cborenc() {
         String expected = new String(hexToBytes("0x6449455446"), Constants.ASCII);
         byte[] bytes = hexToBytes("0xd818456449455446");
-        Value value = asValue(bytes);
+        Value value = asStreamValue(bytes);
         assertEquals(expected, ((Value) ValueTypes.EncCBOR.value(value, true)).string());
     }
 
@@ -267,13 +267,13 @@ public class ValueTypesTest
             throws Exception {
 
         URI expected = new URI("www.noctarius.com");
-        Value value = asValue(gb -> gb.putURI(expected).finishStream());
+        Value value = asStreamValue(gb -> gb.putURI(expected).finishStream());
         assertEquals(expected, ValueTypes.URI.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_value_semantic_tag_ubignum() {
-        Value value = asValue(gb -> gb.putBigInteger(new BigInteger("1234")).finishStream());
+        Value value = asStreamValue(gb -> gb.putBigInteger(new BigInteger("1234")).finishStream());
         ValueTypes.URI.value(value, true);
     }
 
@@ -285,7 +285,7 @@ public class ValueTypesTest
         Encoder.putByteString("foo", offset, output);
         byte[] bytes = baos.toByteArray();
         byte[] expected = Arrays.copyOfRange(bytes, 2, 6);
-        Value value = asValue(bytes);
+        Value value = asStreamValue(bytes);
         assertArrayEquals(expected, ValueTypes.Unknown.value(value, true));
     }
 
@@ -551,31 +551,6 @@ public class ValueTypesTest
         Output output = Output.toOutputStream(baos);
         Encoder.putSemanticTag(tagId, 0, output);
         return Input.fromByteArray(baos.toByteArray());
-    }
-
-    private Value asValue(Consumer<GraphBuilder> consumer) {
-        Writer writer = Writer.newBuilder().build();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Output output = Output.toOutputStream(baos);
-        GraphBuilder graphBuilder = writer.newGraphBuilder(output);
-        consumer.accept(graphBuilder);
-        return asValue(baos.toByteArray());
-    }
-
-    private Value asValue(byte[] bytes) {
-        Input input = Input.fromByteArray(bytes);
-        short head = Decoder.readUInt8(input, 0);
-        MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(input, 0);
-
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
-
-        QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
-        QueryContext queryContext = queryContextFactory
-                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
-
-        return new StreamValue(majorType, valueType, 0, queryContext);
     }
 
 }

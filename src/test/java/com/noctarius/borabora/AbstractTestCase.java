@@ -19,7 +19,13 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.QueryImpl;
+import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
@@ -28,6 +34,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -109,6 +116,41 @@ public abstract class AbstractTestCase {
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
         return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+    }
+
+    public static Value asStreamValue(Consumer<GraphBuilder> consumer) {
+        Writer writer = Writer.newBuilder().build();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        GraphBuilder graphBuilder = writer.newGraphBuilder(output);
+        consumer.accept(graphBuilder);
+        return asStreamValue(baos.toByteArray());
+    }
+
+    public static Value asStreamValue(byte[] bytes) {
+        Input input = Input.fromByteArray(bytes);
+        short head = Decoder.readUInt8(input, 0);
+        MajorType majorType = MajorType.findMajorType(head);
+        ValueType valueType = ValueTypes.valueType(input, 0);
+
+        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+
+        QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
+        QueryContext queryContext = queryContextFactory
+                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+
+        return new StreamValue(majorType, valueType, 0, queryContext);
+    }
+
+    public static Value asStreamValue(String value) {
+        return asStreamValue(encode(value));
+    }
+
+    public static byte[] encode(String value) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Encoder.putString(value, 0, Output.toOutputStream(baos));
+        return baos.toByteArray();
     }
 
     public static class SimplifiedTestParser {
