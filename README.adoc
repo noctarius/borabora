@@ -28,6 +28,11 @@ Christoph Engelbert <https://github.com/noctarius[@noctarius2k]>
 | image:https://raw.githubusercontent.com/noctarius/borabora/master/borabora_250_250.png[] | borabora is a link:http://cbor.io[CBOR] parser and generator library. In difference to other existing CBOR libraries, borabora handles parsing and data extraction (deserialization) as lazy as possible. While writing CBOR values, borabora goes the other way around and emits the bytes immediately, therefore elements can be directly sent to sockets. Another difference is the way borabora extracts data using queries. 
 |===
 
+Status:
+image:https://noctarius.ci.cloudbees.com/job/borabora/badge/icon[link="https://noctarius.ci.cloudbees.com/job/borabora"]
+image:https://codecov.io/gh/noctarius/borabora/branch/master/graph/badge.svg[link="https://codecov.io/github/noctarius/borabora?branch=master"]
+image:https://img.shields.io/badge/license-Apache%20License%202-brightgreen.svg[link="http://www.apache.org/licenses/LICENSE-2.0"]
+
 == Documentation
 === JavaDoc
 link:http://noctarius.github.io/borabora/[Javadoc]
