@@ -21,7 +21,6 @@ import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 public interface Query {
@@ -35,12 +34,7 @@ public interface Query {
     }
 
     static StreamQueryBuilder newBuilder() {
-        return newBuilder(true);
-    }
-
-    static StreamQueryBuilder newBuilder(boolean binarySelectStatement) {
-        return newBuilder(binarySelectStatement ? //
-                BinarySelectStatementStrategy.INSTANCE : ObjectSelectStatementStrategy.INSTANCE);
+        return newBuilder(BinarySelectStatementStrategy.INSTANCE);
     }
 
     static StreamQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {

@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNull;
  * limitations under the License.
  */
 
-public class ValueTypesTest
+public class ValueTypesTestCase
         extends AbstractTestCase {
 
     @Test

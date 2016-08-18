@@ -16,10 +16,21 @@
  */
 package com.noctarius.borabora;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
-enum ValueValidators {
-    ;
+final class ValueValidators {
+
+    private ValueValidators() {
+    }
+
+    public static void isString(Value value, Object extracted) {
+        if (!ValueTypes.ByteString.matches(value.valueType()) //
+                && !ValueTypes.TextString.matches(value.valueType())) {
+
+            throw new IllegalArgumentException("value is neither a bytestring nor a textstring");
+        }
+    }
 
     public static void isByteString(Value value, Object extracted) {
         if (!ValueTypes.ByteString.matches(value.valueType())) {
@@ -50,6 +61,9 @@ enum ValueValidators {
     private static boolean isNegative(Number number) {
         if (number instanceof BigInteger) {
             return ((BigInteger) number).signum() < 0;
+        }
+        if (number instanceof BigDecimal) {
+            return ((BigDecimal) number).signum() < 0;
         }
         if (number instanceof HalfPrecisionFloat //
                 || number instanceof Float //

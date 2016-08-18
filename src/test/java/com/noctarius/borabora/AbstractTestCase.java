@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.Decoder;
@@ -116,6 +117,10 @@ public abstract class AbstractTestCase {
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
         return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+    }
+
+    public static Value asObjectValue(MajorType majorType, ValueType valueType, String value) {
+        return new ObjectValue(majorType, valueType, value);
     }
 
     public static Value asStreamValue(Consumer<GraphBuilder> consumer) {

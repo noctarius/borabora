@@ -1,6 +1,8 @@
+package com.noctarius.borabora.impl;
+
+import org.junit.Test;
 /*
- * Copyright (c) 2016, Christoph Engelbert (aka noctarius) and
- * contributors. All rights reserved.
+ * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.impl.query.stages;
 
-import org.junit.Test;
-
-public class QueryStagesTestCase {
+public class TokenMgrErrorTestCase {
 
     @Test
-    public void test_exit() {
+    public void testcoverage_addEscapes()
+            throws Exception {
 
+        TokenMgrError.addEscapes("\b\t\n\f\r\"\'\\" + (char) 0x19 + (char) 0x7f);
+    }
+
+    @Test
+    public void testcoverage_useless_constructor() {
+        new TokenMgrError();
     }
 
 }
