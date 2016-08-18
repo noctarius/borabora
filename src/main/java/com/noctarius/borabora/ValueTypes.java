@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.StringEncoders;
@@ -31,6 +30,28 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.DATE_TIME_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.DECIMAL_FRACTION_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.ENCODED_CBOR_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.URI_READER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.DECIMAL_FRACTION_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.URI_WRITER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.DECIMAL_FRACTION_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
+import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER;
 
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {
@@ -48,19 +69,14 @@ public enum ValueTypes
     Bool(Value::bool), //
     Null((v) -> null), //
     Undefined((v) -> null), //
-    DateTime(CommonTagCodec.TAG_READER.DATE_TIME_READER, CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER,
-            CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER, Value::tag), //
-    Timestamp(CommonTagCodec.TAG_READER.TIMESTAMP_READER, CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER,
-            CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(CommonTagCodec.TAG_READER.UBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER,
-            CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
-    NBigNum(CommonTagCodec.TAG_READER.NBIG_NUM_READER, CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER,
-            CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
-    EncCBOR(CommonTagCodec.TAG_READER.ENCODED_CBOR_READER, CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER,
-            CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER, Value::tag), //
-    URI(CommonTagCodec.TAG_READER.URI_READER, CommonTagCodec.TAG_WRITER.URI_WRITER, CommonTagCodec.TYPE_MATCHER.URI_MATCHER,
-            Value::tag), //
-    Unknown(CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER, null, null, Value::raw);
+    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), //
+    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag), //
+    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
+    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
+    Fraction(DECIMAL_FRACTION_READER, DECIMAL_FRACTION_WRITER, DECIMAL_FRACTION_MATCHER, Value::tag, Float), //
+    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
+    URI(URI_READER, URI_WRITER, TYPE_MATCHER.URI_MATCHER, Value::tag), //
+    Unknown(UNKNOWN_TAG_READER, null, null, Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
 
@@ -87,6 +103,12 @@ public enum ValueTypes
                Function<Value, Object> byValueType) {
 
         this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null, null);
+    }
+
+    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
+               Function<Value, Object> byValueType, ValueType identity) {
+
+        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, identity, null);
     }
 
     ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,

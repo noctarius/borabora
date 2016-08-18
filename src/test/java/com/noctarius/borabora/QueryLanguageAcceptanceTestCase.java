@@ -342,14 +342,14 @@ public class QueryLanguageAcceptanceTestCase
     @Test
     public void test_type_check_enccbor() {
         Query query = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
-        assertQueryEquals(query, parser.prepareQuery("#->tag$24"));
+        assertQueryEquals(query, parser.prepareQuery("#->tag$55799"));
         assertQueryEquals(query, parser.prepareQuery("#->enccbor"));
     }
 
     @Test
     public void test_type_check_optional_enccbor() {
         Query query = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
-        assertQueryEquals(query, parser.prepareQuery("#->?tag$24"));
+        assertQueryEquals(query, parser.prepareQuery("#->?tag$55799"));
         assertQueryEquals(query, parser.prepareQuery("#->?enccbor"));
     }
 

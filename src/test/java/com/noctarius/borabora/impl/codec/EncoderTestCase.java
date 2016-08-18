@@ -28,6 +28,11 @@ public class EncoderTestCase
         extends AbstractTestCase {
 
     @Test
+    public void call_constructor() {
+        callConstructor(Encoder.class);
+    }
+
+    @Test
     public void test_put_boolean_value_true() {
         byte[] result = new byte[1];
         Output output = Output.toByteArray(result);

@@ -31,11 +31,15 @@ import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Predicate;
 
-public enum Decoder {
-    ;
+public final class Decoder
+        implements Constants {
+
+    private Decoder() {
+    }
 
     public static short readUInt8(Input input, long offset) {
         return Bytes.readUInt8(input, offset);
@@ -65,7 +69,7 @@ public enum Decoder {
                 }
                 break;
             default:
-                number = mask ^ (head & Constants.ADDITIONAL_INFORMATION_MASK);
+                number = mask ^ (head & ADDITIONAL_INFORMATION_MASK);
         }
         return number;
     }
@@ -88,7 +92,7 @@ public enum Decoder {
                 number = Bytes.readUInt64BigInt(input, offset + 1);
                 break;
             default:
-                number = head & Constants.ADDITIONAL_INFORMATION_MASK;
+                number = head & ADDITIONAL_INFORMATION_MASK;
         }
         return number;
     }
@@ -96,11 +100,11 @@ public enum Decoder {
     public static Number readFloat(Input input, long offset) {
         int addInfo = additionalInfo(input, offset);
         switch (addInfo) {
-            case Constants.FP_VALUE_HALF_PRECISION:
+            case FP_VALUE_HALF_PRECISION:
                 return readHalfFloatValue(input, offset + 1);
-            case Constants.FP_VALUE_SINGLE_PRECISION:
+            case FP_VALUE_SINGLE_PRECISION:
                 return readSinglePrecisionFloat(input, offset + 1);
-            case Constants.FP_VALUE_DOUBLE_PRECISION:
+            case FP_VALUE_DOUBLE_PRECISION:
                 return readDoublePrecisionFloat(input, offset + 1);
             default:
                 throw new IllegalStateException("Additional Info '" + addInfo + "' is not a floating point value");
@@ -122,7 +126,7 @@ public enum Decoder {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 short h = Bytes.readUInt8(input, position);
-                if ((h & Constants.OPCODE_BREAK_MASK) == Constants.OPCODE_BREAK_MASK) {
+                if ((h & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                     break;
                 }
                 sb.append(readString(input, position));
@@ -186,19 +190,19 @@ public enum Decoder {
         if (MajorType.FloatingPointOrSimple != majorType) {
             return false;
         }
-        int addInfo = head & Constants.ADDITIONAL_INFORMATION_MASK;
-        return addInfo == Constants.FP_VALUE_NULL;
+        int addInfo = head & ADDITIONAL_INFORMATION_MASK;
+        return addInfo == FP_VALUE_NULL;
     }
 
     public static boolean getBooleanValue(Input input, long offset) {
         short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (MajorType.FloatingPointOrSimple == majorType) {
-            int addInfo = head & Constants.ADDITIONAL_INFORMATION_MASK;
+            int addInfo = head & ADDITIONAL_INFORMATION_MASK;
             switch (addInfo) {
-                case Constants.FP_VALUE_FALSE:
+                case FP_VALUE_FALSE:
                     return false;
-                case Constants.FP_VALUE_TRUE:
+                case FP_VALUE_TRUE:
                     return true;
             }
         }
@@ -218,11 +222,37 @@ public enum Decoder {
         return Double.longBitsToDouble(Bytes.readUInt64Long(input, offset));
     }
 
+    public static BigDecimal readDecimalFraction(Input input, long offset) {
+        // Skip semantic tag header
+        offset += ByteSizes.headByteSize(input, offset);
+        // Verify sequence header
+        short sequenceHead = readUInt8(input, offset);
+        if (sequenceHead != DECIMAL_FRACTION_TWO_ELEMENT_SEQUENCE_HEAD) {
+            throw new IllegalArgumentException("Cannot read fraction, wrong data element");
+        }
+        // If ok skip sequence head
+        offset++;
+        // Read scale (always int)
+        int scale = readInt(input, offset).intValue();
+        // Read unscaled part, normally int, can be BigInteger
+        Number unscaledValue = readInt(input, offset);
+
+        BigInteger unscaled;
+        if (unscaledValue instanceof BigInteger) {
+            unscaled = (BigInteger) unscaledValue;
+        } else {
+            unscaled = BigInteger.valueOf(unscaledValue.longValue());
+        }
+
+        // Rebuild the BigDecimal
+        return new BigDecimal(unscaled, scale);
+    }
+
     public static long findByDictionaryKey(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         // Search for key element
         long position = findByPredicate(predicate, offset, queryContext);
-        if (position == Constants.OFFSET_CODE_NULL) {
-            return Constants.OFFSET_CODE_NULL;
+        if (position == OFFSET_CODE_NULL) {
+            return OFFSET_CODE_NULL;
         }
         return skip(queryContext.input(), position);
     }
@@ -240,13 +270,13 @@ public enum Decoder {
     }
 
     public static int additionalInfo(short head) {
-        return head & Constants.ADDITIONAL_INFORMATION_MASK;
+        return head & ADDITIONAL_INFORMATION_MASK;
     }
 
     public static byte[] readRaw(Input input, MajorType majorType, long offset) {
         long length = length(input, majorType, offset);
         if (length == 0) {
-            return Constants.EMPTY_BYTE_ARRAY;
+            return EMPTY_BYTE_ARRAY;
         }
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         byte[] data = new byte[(int) length];
@@ -259,7 +289,7 @@ public enum Decoder {
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         int dataSize = (int) ByteSizes.stringDataSize(input, offset);
         if (dataSize == 0) {
-            return Constants.EMPTY_BYTE_ARRAY;
+            return EMPTY_BYTE_ARRAY;
         }
         byte[] bytes = new byte[dataSize];
         input.read(bytes, offset + headByteSize, dataSize);
@@ -280,8 +310,8 @@ public enum Decoder {
             }
             long length = length(input, majorType, offset);
             offset = skip(input, offset + length);
-        } while (input.offsetValid(offset) && Bytes.readUInt8(input, offset) != Constants.OPCODE_BREAK_MASK);
-        return Constants.OFFSET_CODE_NULL;
+        } while (input.offsetValid(offset) && Bytes.readUInt8(input, offset) != OPCODE_BREAK_MASK);
+        return OFFSET_CODE_NULL;
 
     }
 
@@ -293,10 +323,11 @@ public enum Decoder {
         }
         short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
+        System.out.println(majorType);
         if (MajorType.ByteString == majorType) {
-            return new String(bytes, Constants.ASCII);
+            return new String(bytes, ASCII);
         }
-        return new String(bytes, Constants.UTF8);
+        return new String(bytes, UTF8);
     }
 
     private static long[][] readElementIndexes(Input input, long offset, long elementSize) {

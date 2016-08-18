@@ -29,6 +29,11 @@ import static org.junit.Assert.fail;
 public class DecoderTestCase
         extends AbstractTestCase {
 
+    @Test
+    public void call_constructor() {
+        callConstructor(Decoder.class);
+    }
+
     @Test(expected = IllegalStateException.class)
     public void fail_illegal_boolean_value() {
         Input input = Input.fromByteArray(hexToBytes("0xf6"));

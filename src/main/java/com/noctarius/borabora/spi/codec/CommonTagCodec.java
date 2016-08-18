@@ -27,6 +27,7 @@ import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.TypeSpecs;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,6 +54,9 @@ public final class CommonTagCodec
 
         NBIG_NUM_MATCHER((v) -> //
                 BigInteger.class.isAssignableFrom(v.getClass()) && ((BigInteger) v).signum() < 0),
+
+        DECIMAL_FRACTION_MATCHER((v) -> //
+                BigDecimal.class.isAssignableFrom(v.getClass())),
 
         URI_MATCHER((v) -> URI.class.isAssignableFrom(v.getClass())),
 
@@ -83,6 +87,11 @@ public final class CommonTagCodec
         BIG_NUM_WRITER((value, offset, encoderContext) -> {
             Output output = encoderContext.output();
             return Encoder.putNumber((BigInteger) value, offset, output);
+        }),
+
+        DECIMAL_FRACTION_WRITER((value, offset, encoderContext) -> {
+            Output output = encoderContext.output();
+            return Encoder.putDecimalFraction((BigDecimal) value, offset, output);
         }),
 
         TIMESTAMP_WRITER((value, offset, encoderContext) -> {
@@ -132,6 +141,11 @@ public final class CommonTagCodec
 
         NBIG_NUM_READER((valueType, offset, length, queryContext) -> //
                 BigInteger.valueOf(-1).xor((BigInteger) UBIG_NUM_READER.process(valueType, offset, length, queryContext))),
+
+        DECIMAL_FRACTION_READER((valueType, offset, length, queryContext) -> {
+            Input input = queryContext.input();
+            return Decoder.readDecimalFraction(input, offset);
+        }),
 
         URI_READER((valueType, offset, length, queryContext) -> {
             Input input = queryContext.input();

@@ -56,7 +56,7 @@ public interface Constants {
     int TAG_SIGNED_BIGNUM = 3;
     int TAG_FRACTION = 4;
     int TAG_BIGFLOAT = 5;
-    int TAG_ENCCBOR = 24;
+    int TAG_ENCCBOR = 24;//55799;
     int TAG_URI = 32;
     int TAG_REGEX = 35;
     int TAG_MIME = 36;
@@ -73,6 +73,8 @@ public interface Constants {
     byte SIMPLE_VALUE_NULL_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_NULL);
     byte SIMPLE_VALUE_FALSE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_FALSE);
     byte SIMPLE_VALUE_TRUE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_TRUE);
+
+    short DECIMAL_FRACTION_TWO_ELEMENT_SEQUENCE_HEAD = (short) ((MajorType.Sequence.typeId() << 5) | 2);
 
     long NUMBER_VAL_ONE_BYTE = 23;
     long NUMBER_VAL_TWO_BYTE = 256;
