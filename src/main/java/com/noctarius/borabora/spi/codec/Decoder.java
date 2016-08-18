@@ -323,7 +323,6 @@ public final class Decoder
         }
         short head = Bytes.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
-        System.out.println(majorType);
         if (MajorType.ByteString == majorType) {
             return new String(bytes, ASCII);
         }

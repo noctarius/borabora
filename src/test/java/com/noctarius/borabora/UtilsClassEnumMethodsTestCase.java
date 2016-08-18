@@ -39,9 +39,7 @@ public class UtilsClassEnumMethodsTestCase {
         call(MajorType.class.getName());
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());
-        call(Encoder.class.getName());
         call(ElementCounts.class.getName());
-        call(Decoder.class.getName());
         call("com.noctarius.borabora.spi.codec.DateParser");
         call(ByteSizes.class.getName());
         call("com.noctarius.borabora.spi.codec.Bytes");

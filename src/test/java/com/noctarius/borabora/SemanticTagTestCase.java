@@ -29,6 +29,14 @@ public class SemanticTagTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_magic_header_skip() {
+        SimplifiedTestParser parser = buildParser("0xd9d9f700");
+        Value value = parser.read(Query.newBuilder().build());
+        assertEquals(MajorType.UnsignedInteger, value.majorType());
+        assertEquals(0, value.number().intValue());
+    }
+
+    @Test
     public void test_semantic_tag_uri()
             throws Exception {
 

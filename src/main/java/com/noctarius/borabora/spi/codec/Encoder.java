@@ -85,11 +85,6 @@ public final class Encoder
     }
 
     public static long putBigInteger(BigInteger value, long offset, Output output) {
-        // 63 bits fit into a signed long value
-        if (value.bitLength() <= 63) {
-            return putNumber(value.longValue(), offset, output);
-        }
-
         // Otherwise write as XBigNum
         MajorType majorType;
         BigInteger absValue;
@@ -159,20 +154,20 @@ public final class Encoder
         if (length == -1) {
             return Bytes.putInt8((byte) (head | ADD_INFO_INDEFINITE), offset, output);
 
-        } else if (length <= NUMBER_VAL_ONE_BYTE) {
+        } else if (length <= NUMBER_VAL_MAX_ONE_BYTE) {
             return Bytes.putInt8((byte) (head | length), offset, output);
 
-        } else if (length <= NUMBER_VAL_TWO_BYTE) {
+        } else if (length <= NUMBER_VAL_MAX_TWO_BYTE) {
             head |= ADD_INFO_ONE_BYTE;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt8((byte) length, offset, output);
 
-        } else if (length <= NUMBER_VAL_THREE_BYTE) {
+        } else if (length <= NUMBER_VAL_MAX_THREE_BYTE) {
             head |= ADD_INFO_TWO_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt16((short) length, offset, output);
 
-        } else if (length <= NUMBER_VAL_FIVE_BYTE) {
+        } else if (length <= NUMBER_VAL_MAX_FIVE_BYTE) {
             head |= ADD_INFO_FOUR_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt32((int) length, offset, output);

@@ -56,10 +56,11 @@ public interface Constants {
     int TAG_SIGNED_BIGNUM = 3;
     int TAG_FRACTION = 4;
     int TAG_BIGFLOAT = 5;
-    int TAG_ENCCBOR = 24;//55799;
+    int TAG_ENCCBOR = 24;
     int TAG_URI = 32;
     int TAG_REGEX = 35;
     int TAG_MIME = 36;
+    int TAG_MAGIC_CBOR_HEADER = 55799;
 
     int ADD_INFO_ONE_BYTE = 24;
     int ADD_INFO_TWO_BYTES = 25;
@@ -76,10 +77,10 @@ public interface Constants {
 
     short DECIMAL_FRACTION_TWO_ELEMENT_SEQUENCE_HEAD = (short) ((MajorType.Sequence.typeId() << 5) | 2);
 
-    long NUMBER_VAL_ONE_BYTE = 23;
-    long NUMBER_VAL_TWO_BYTE = 256;
-    long NUMBER_VAL_THREE_BYTE = 65536;
-    long NUMBER_VAL_FIVE_BYTE = 4294967296L;
+    long NUMBER_VAL_MAX_ONE_BYTE = 23L;
+    long NUMBER_VAL_MAX_TWO_BYTE = 255L;
+    long NUMBER_VAL_MAX_THREE_BYTE = 65535L;
+    long NUMBER_VAL_MAX_FIVE_BYTE = 4294967295L;
 
     BigInteger BI_VAL_MINUS_ONE = BigInteger.valueOf(-1);
     BigInteger BI_VAL_24 = BigInteger.valueOf(24);

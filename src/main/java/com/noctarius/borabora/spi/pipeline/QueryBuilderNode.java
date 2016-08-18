@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.spi.pipeline;
 
-import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.impl.query.stages.BaseQueryStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +25,7 @@ import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
 public final class QueryBuilderNode {
 
-    public static final QueryStage QUERY_BASE = new QueryStage() {
-        @Override
-        public VisitResult evaluate(PipelineStage previousPipelineStage,//
-                                    PipelineStage pipelineStage, //
-                                    QueryContext pipelineContext) {
-
-            return pipelineStage.visitChildren(pipelineContext);
-        }
-
-        @Override
-        public String toString() {
-            return "QUERY_BASE";
-        }
-    };
+    public static final QueryStage QUERY_BASE = BaseQueryStage.INSTANCE;
 
     private final List<QueryBuilderNode> children = new ArrayList<>();
     private final QueryStage stage;
