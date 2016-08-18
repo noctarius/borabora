@@ -18,9 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.TypeSpecs;
 import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.ElementCounts;
-import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.StringEncoders;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import org.junit.Test;
@@ -39,7 +37,6 @@ public class UtilsClassEnumMethodsTestCase {
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());
         call(ElementCounts.class.getName());
-        call("com.noctarius.borabora.spi.codec.DateParser");
         call(ByteSizes.class.getName());
         call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());

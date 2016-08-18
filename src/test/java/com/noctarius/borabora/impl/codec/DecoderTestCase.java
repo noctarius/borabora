@@ -23,6 +23,10 @@ import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.spi.codec.Decoder;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -96,6 +100,58 @@ public class DecoderTestCase
         } catch (NoSuchByteException e) {
             assertEquals(0, e.getOffset());
         }
+    }
+
+    @Test
+    public void test_T_Z() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2003, 11, 13, 18, 30, 02);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(Calendar.MILLISECOND, 0);
+        Instant expected = calendar.toInstant();
+
+        String date = "2003-12-13T18:30:02Z";
+        Instant actual = Decoder.parseDate(date);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_T_Fraction_Z() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2003, 11, 13, 18, 30, 02);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(Calendar.MILLISECOND, 250);
+        Instant expected = calendar.toInstant();
+
+        String date = "2003-12-13T18:30:02.25Z";
+        Instant actual = Decoder.parseDate(date);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_T_Offset() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2003, 11, 13, 18, 30, 02);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(Calendar.MILLISECOND, 0);
+        Instant expected = calendar.toInstant();
+
+        String date = "2003-12-13T18:30:02+01:00";
+        Instant actual = Decoder.parseDate(date);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_T_Fraction_Offset() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2003, 11, 13, 18, 30, 02);
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(Calendar.MILLISECOND, 250);
+        Instant expected = calendar.toInstant();
+
+        String date = "2003-12-13T18:30:02.25+01:00";
+        Instant actual = Decoder.parseDate(date);
+        assertEquals(expected, actual);
     }
 
 }

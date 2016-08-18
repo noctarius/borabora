@@ -97,7 +97,8 @@ public interface Constants {
 
     ZoneId UTC = ZoneId.of("UTC");
 
-    DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd't'HH:mm:ss.SSSz", Locale.US);
+    DateTimeFormatter DATE_TIME_FRACTION_OFFSET_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US);
+    DateTimeFormatter DATE_TIME_FRACTION_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
 
     byte[] EMPTY_BYTE_ARRAY = new byte[0];
 

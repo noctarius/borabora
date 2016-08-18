@@ -131,7 +131,7 @@ public final class Encoder
 
     public static long putDateTime(ZonedDateTime dateTime, long offset, Output output) {
         offset = putSemanticTag(TAG_DATE_TIME, offset, output);
-        String string = dateTime.format(DATE_TIME_FORMAT);
+        String string = dateTime.format(DATE_TIME_FRACTION_OFFSET_FORMAT);
         return putString(string.getBytes(UTF8), MajorType.TextString, offset, output);
     }
 

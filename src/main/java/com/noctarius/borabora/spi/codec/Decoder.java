@@ -33,7 +33,11 @@ import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.function.Predicate;
+
+import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 public final class Decoder
         implements Constants {
@@ -295,6 +299,23 @@ public final class Decoder
         byte[] bytes = new byte[dataSize];
         input.read(bytes, offset + headByteSize, dataSize);
         return bytes;
+    }
+
+    public static Instant parseDate(String date) {
+        boolean fraction = false;
+        boolean offset = true;
+        if (date.indexOf(".") > -1) {
+            fraction = true;
+        }
+        if (date.indexOf("Z") > -1) {
+            offset = false;
+        }
+        if (!fraction && offset) {
+            return LocalDateTime.parse(date, ISO_OFFSET_DATE_TIME).atZone(UTC).toInstant();
+        } else if (!fraction && !offset) {
+            return Instant.parse(date);
+        }
+        return LocalDateTime.parse(date, DATE_TIME_FRACTION_OFFSET_FORMAT).atZone(UTC).toInstant();
     }
 
     private static long findByPredicate(Predicate<Value> predicate, long offset, QueryContext queryContext) {

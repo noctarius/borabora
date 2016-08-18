@@ -35,7 +35,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.Locale;
 import java.util.function.Predicate;
 
 public final class CommonTagCodec
@@ -127,7 +126,7 @@ public final class CommonTagCodec
             Input input = queryContext.input();
             int byteSize = ByteSizes.intByteSize(input, offset);
             String date = Decoder.readString(input, offset + byteSize);
-            return DateParser.parseDate(date, Locale.ENGLISH).toInstant();
+            return Decoder.parseDate(date);
         }),
 
         UBIG_NUM_READER((valueType, offset, length, queryContext) -> {
