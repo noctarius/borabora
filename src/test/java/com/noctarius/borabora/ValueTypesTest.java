@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.Instant;
@@ -388,8 +389,8 @@ public class ValueTypesTest
         ValueTypes.valueType(input, 0);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void fail_valueType_semtag_unimplemented_fraction() {
+    @Test
+    public void fail_valueType_semtag_fraction() {
         Input input = semanticTag(Constants.TAG_FRACTION);
         ValueTypes.valueType(input, 0);
     }
@@ -483,6 +484,12 @@ public class ValueTypesTest
     public void test_valueType_obj_semtag_nbigint() {
         ValueType valueType = ValueTypes.valueType(new BigInteger("-1234"));
         assertEquals(ValueTypes.NBigNum, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_semtag_fraction() {
+        ValueType valueType = ValueTypes.valueType(new BigDecimal(12.d));
+        assertEquals(ValueTypes.Fraction, valueType);
     }
 
     @Test

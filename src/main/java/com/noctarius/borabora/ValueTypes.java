@@ -217,12 +217,15 @@ public enum ValueTypes
         Class<?> type = value.getClass();
         if (java.lang.Number.class.isAssignableFrom(type)) {
             if (value instanceof HalfPrecisionFloat || value instanceof java.lang.Float //
-                    || value instanceof Double || value instanceof BigDecimal) {
+                    || value instanceof Double) {
 
                 return Float;
             }
             if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
                 return ((Number) value).longValue() < 0 ? NInt : UInt;
+            }
+            if (value instanceof BigDecimal) {
+                return Fraction;
             }
         } else if (java.lang.String.class.isAssignableFrom(type)) {
             return StringEncoders.ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
@@ -273,8 +276,7 @@ public enum ValueTypes
             case Constants.TAG_ENCCBOR:
                 return EncCBOR;
             case Constants.TAG_FRACTION:
-                //return Fraction;
-                throw new IllegalStateException("Fraction is not supported");
+                return Fraction;
             case Constants.TAG_URI:
                 return URI;
             case Constants.TAG_REGEX:
