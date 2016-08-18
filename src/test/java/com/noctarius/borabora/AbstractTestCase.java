@@ -64,7 +64,7 @@ public abstract class AbstractTestCase {
         return sb.toString();
     }
 
-    public static SimplifiedTestParser executeStreamWriterTest(Consumer<GraphBuilder> test) {
+    public static SimplifiedTestParser buildParser(Consumer<GraphBuilder> test) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 
@@ -169,6 +169,14 @@ public abstract class AbstractTestCase {
 
         public Value read(String query) {
             return parser.read(input, query);
+        }
+
+        public void read(Query query, Consumer<Value> callback) {
+            parser.read(input, query, callback);
+        }
+
+        public void read(String query, Consumer<Value> callback) {
+            parser.read(input, query, callback);
         }
 
         public Query prepareQuery(String query) {

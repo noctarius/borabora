@@ -39,8 +39,13 @@ public class MultiStreamElementQueryStage
         do {
             // Visit children
             VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
-            if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
+            if (visitResult == VisitResult.Exit) {
                 return visitResult;
+            }
+
+            if (visitResult == VisitResult.Break) {
+                long itemOffset = pipelineContext.offset();
+                pipelineContext.consume(itemOffset);
             }
 
             // Skip the whole item

@@ -35,11 +35,15 @@ public class AsSequenceSelectorQueryStage
         SelectStatementStrategy selectStatementStrategy = pipelineContext.selectStatementStrategy();
         selectStatementStrategy.beginSequence(pipelineContext);
 
-        try {
-            return pipelineStage.visitChildren(pipelineContext);
-        } finally {
-            selectStatementStrategy.endSequence(pipelineContext);
+        VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+
+        // If exit is set, we ignore all further executions
+        if (VisitResult.Exit == visitResult) {
+            return visitResult;
         }
+
+        selectStatementStrategy.endSequence(pipelineContext);
+        return visitResult;
     }
 
     @Override

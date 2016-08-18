@@ -175,8 +175,7 @@ public final class Decoder
     }
 
     public static long skip(Input input, long offset) {
-        short head = Bytes.readUInt8(input, offset);
-        MajorType majorType = MajorType.findMajorType(head);
+        MajorType majorType = getMajorType(offset, input);
         return skip(input, majorType, offset);
     }
 
@@ -258,8 +257,7 @@ public final class Decoder
     }
 
     public static Value readValue(long offset, QueryContext queryContext) {
-        short head = Bytes.readUInt8(queryContext.input(), offset);
-        MajorType majorType = MajorType.findMajorType(head);
+        MajorType majorType = getMajorType(offset, queryContext.input());
         ValueType valueType = ValueTypes.valueType(queryContext.input(), offset);
         if (ValueTypes.Null == valueType) {
             return Value.NULL_VALUE;
@@ -300,22 +298,62 @@ public final class Decoder
     }
 
     private static long findByPredicate(Predicate<Value> predicate, long offset, QueryContext queryContext) {
-        RelocatableStreamValue streamValue = new RelocatableStreamValue();
         Input input = queryContext.input();
-        do {
-            short head = Bytes.readUInt8(input, offset);
-            MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
+        long position = offset + ByteSizes.headByteSize(input, offset);
 
-            streamValue.relocate(queryContext, majorType, valueType, offset);
-            if (predicate.test(streamValue)) {
+        // Is fixed sized?
+        int addInfo = additionalInfo(input, offset);
+        if (addInfo == ADD_INFO_INDEFINITE) {
+            return findByPredicateIndefinite(predicate, position, input, queryContext);
+        }
+
+        RelocatableStreamValue streamValue = new RelocatableStreamValue();
+        long elements = ElementCounts.dictionaryElementCount(input, offset);
+        for (long i = 0; i < elements; i++) {
+            MajorType majorType = getMajorType(position, input);
+            if (predicateMatch(predicate, position, majorType, input, queryContext, streamValue)) {
+                return position;
+            }
+
+            // Key length
+            long length = length(input, majorType, position);
+
+            // Skip over value
+            position = skip(input, position + length);
+        }
+        return OFFSET_CODE_NULL;
+    }
+
+    private static long findByPredicateIndefinite(Predicate<Value> predicate, long offset, //
+                                                  Input input, QueryContext queryContext) {
+
+        RelocatableStreamValue streamValue = new RelocatableStreamValue();
+        do {
+            MajorType majorType = getMajorType(offset, input);
+            if (predicateMatch(predicate, offset, majorType, input, queryContext, streamValue)) {
                 return offset;
             }
+
+            // Key length
             long length = length(input, majorType, offset);
+
+            // Skip over value
             offset = skip(input, offset + length);
         } while (input.offsetValid(offset) && Bytes.readUInt8(input, offset) != OPCODE_BREAK_MASK);
         return OFFSET_CODE_NULL;
+    }
 
+    private static boolean predicateMatch(Predicate<Value> predicate, long offset, MajorType majorType, Input input, //
+                                          QueryContext queryContext, RelocatableStreamValue streamValue) {
+
+        ValueType valueType = ValueTypes.valueType(input, offset);
+        streamValue.relocate(queryContext, majorType, valueType, offset);
+        return predicate.test(streamValue);
+    }
+
+    private static MajorType getMajorType(long offset, Input input) {
+        short head = Bytes.readUInt8(input, offset);
+        return MajorType.findMajorType(head);
     }
 
     private static String readString0(Input input, long offset) {
@@ -324,8 +362,8 @@ public final class Decoder
         if (bytes.length == 0) {
             return "";
         }
-        short head = Bytes.readUInt8(input, offset);
-        MajorType majorType = MajorType.findMajorType(head);
+
+        MajorType majorType = getMajorType(offset, input);
         if (MajorType.ByteString == majorType) {
             return new String(bytes, ASCII);
         }
@@ -346,8 +384,7 @@ public final class Decoder
                 elementIndexes[base][elIndex] = position;
 
                 // Skip elements content to next element
-                short head = Bytes.readUInt8(input, position);
-                MajorType majorType = MajorType.findMajorType(head);
+                MajorType majorType = getMajorType(position, input);
                 position += length(input, majorType, position);
             }
         }

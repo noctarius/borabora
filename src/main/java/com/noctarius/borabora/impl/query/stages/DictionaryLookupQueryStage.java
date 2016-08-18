@@ -56,10 +56,6 @@ public class DictionaryLookupQueryStage
             throw new WrongTypeException("Not a dictionary");
         }
 
-        // Skip head
-        long headByteSize = ByteSizes.headByteSize(input, offset);
-        offset += headByteSize;
-
         // Execute the key lookup
         offset = Decoder.findByDictionaryKey(predicate, offset, pipelineContext);
         if (offset == Constants.OFFSET_CODE_NULL) {

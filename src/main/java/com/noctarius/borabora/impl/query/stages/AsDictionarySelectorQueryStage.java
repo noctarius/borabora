@@ -35,11 +35,15 @@ public class AsDictionarySelectorQueryStage
         SelectStatementStrategy selectStatementStrategy = pipelineContext.selectStatementStrategy();
         selectStatementStrategy.beginDictionary(pipelineContext);
 
-        try {
-            return pipelineStage.visitChildren(pipelineContext);
-        } finally {
-            selectStatementStrategy.endDictionary(pipelineContext);
+        VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+
+        // If exit is set, we ignore all further executions
+        if (VisitResult.Exit == visitResult) {
+            return visitResult;
         }
+
+        selectStatementStrategy.endDictionary(pipelineContext);
+        return visitResult;
     }
 
     @Override

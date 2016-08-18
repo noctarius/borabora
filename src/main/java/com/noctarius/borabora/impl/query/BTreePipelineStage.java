@@ -45,6 +45,11 @@ class BTreePipelineStage
             } while (visitResult == VisitResult.Loop);
         }
 
+        // Stop any further execution
+        if (visitResult == VisitResult.Exit) {
+            return visitResult;
+        }
+
         // Evaluate possibly existing siblings
         if (right != NIL) {
             if (visitResult != VisitResult.Exit) {

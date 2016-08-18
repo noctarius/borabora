@@ -18,11 +18,30 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.noctarius.borabora.Value.NULL_VALUE;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class QueryTestCase
         extends AbstractTestCase {
+
+    @Test
+    public void test_multistream_dictionary_query_first_element_break_second_found() {
+        SimplifiedTestParser parser = buildParser(gb -> //
+                gb.putDictionary(1).putEntry().putString("bar").putString("bar").endEntry().endDictionary() //
+                  .putDictionary(1).putEntry().putString("foo").putString("foo").endEntry().endDictionary());
+
+        List<Value> values = new ArrayList<>();
+        Query query = Query.newBuilder().multiStream().dictionary("foo").build();
+        parser.read(query, values::add);
+
+        assertEquals(2, values.size());
+        assertEquals(Value.NULL_VALUE, values.get(0));
+        assertEquals("foo", values.get(1).string());
+    }
 
     @Test(expected = WrongTypeException.class)
     public void test_not_a_dictionary()

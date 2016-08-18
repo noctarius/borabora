@@ -71,6 +71,7 @@ public class SequenceMatcherQueryStage
             if (predicate.test(streamValue)) {
                 pipelineContext.offset(offset);
                 VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+                // TODO break is exit?
                 if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
                     return visitResult;
                 }

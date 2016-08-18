@@ -41,7 +41,7 @@ public class WriterTestCase
     public void test_write_immediate()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putString("foo") //
                .putString("äüö")
 
@@ -78,7 +78,7 @@ public class WriterTestCase
     public void test_write_boolean()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putBoolean(false) //
                .putBoolean(true) //
                .putBoolean(Boolean.FALSE) //
@@ -103,7 +103,7 @@ public class WriterTestCase
     public void test_write_byte()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Byte.MAX_VALUE);
             sgb.putNumber(Byte.MIN_VALUE);
             sgb.putNumber(Byte.valueOf(Byte.MAX_VALUE));
@@ -128,7 +128,7 @@ public class WriterTestCase
     public void test_write_short()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Short.MAX_VALUE);
             sgb.putNumber(Short.MIN_VALUE);
             sgb.putNumber(Short.valueOf(Short.MAX_VALUE));
@@ -153,7 +153,7 @@ public class WriterTestCase
     public void test_write_int()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Integer.MAX_VALUE);
             sgb.putNumber(Integer.MIN_VALUE);
             sgb.putNumber(Integer.valueOf(Integer.MAX_VALUE));
@@ -178,7 +178,7 @@ public class WriterTestCase
     public void test_write_long()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Long.MAX_VALUE);
             sgb.putNumber(Long.MIN_VALUE);
             sgb.putNumber(Long.valueOf(Long.MAX_VALUE));
@@ -203,7 +203,7 @@ public class WriterTestCase
     public void test_write_half_precision()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putHalfPrecision(Float.POSITIVE_INFINITY);
             sgb.putHalfPrecision(Float.NEGATIVE_INFINITY);
             sgb.putHalfPrecision(Float.valueOf(Float.POSITIVE_INFINITY));
@@ -228,7 +228,7 @@ public class WriterTestCase
     public void test_write_float()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Float.MAX_VALUE);
             sgb.putNumber(Float.MIN_VALUE);
             sgb.putNumber(Float.valueOf(Float.MAX_VALUE));
@@ -253,7 +253,7 @@ public class WriterTestCase
     public void test_write_double()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Double.MAX_VALUE);
             sgb.putNumber(Double.MIN_VALUE);
             sgb.putNumber(Double.valueOf(Double.MAX_VALUE));
@@ -278,7 +278,7 @@ public class WriterTestCase
     public void test_write_number_null()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) null);
         });
 
@@ -290,7 +290,7 @@ public class WriterTestCase
     public void test_write_number_byte()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Byte.MAX_VALUE);
         });
 
@@ -302,7 +302,7 @@ public class WriterTestCase
     public void test_write_number_short()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Short.MAX_VALUE);
         });
 
@@ -314,7 +314,7 @@ public class WriterTestCase
     public void test_write_number_int()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Integer.MAX_VALUE);
         });
 
@@ -326,7 +326,7 @@ public class WriterTestCase
     public void test_write_number_long()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Long.MAX_VALUE);
         });
 
@@ -338,7 +338,7 @@ public class WriterTestCase
     public void test_write_number_float()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Float.MAX_VALUE);
         });
 
@@ -350,7 +350,7 @@ public class WriterTestCase
     public void test_write_number_double()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber((Number) Double.MAX_VALUE);
         });
 
@@ -362,7 +362,7 @@ public class WriterTestCase
     public void test_write_number_biginteger()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putNumber(Constants.BI_VAL_MAX_VALUE);
         });
 
@@ -374,7 +374,7 @@ public class WriterTestCase
     public void test_write_number_bigdecimal()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putNumber(BigDecimal.TEN);
         });
     }
@@ -383,7 +383,7 @@ public class WriterTestCase
     public void test_write_indefinite_textstring()
             throws Exception {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putIndefiniteTextString() //
                .putString("abc") //
                .putString("def") //
@@ -400,7 +400,7 @@ public class WriterTestCase
     public void test_write_indefinite_string_null_parameter()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putIndefiniteTextString() //
                .putString(null);
         });
@@ -418,7 +418,7 @@ public class WriterTestCase
 
         String expected = a + b + c + d + e;
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putIndefiniteByteString() //
                .putString(a) //
                .putString(b) //
@@ -436,7 +436,7 @@ public class WriterTestCase
     public void test_write_indefinite_bytestring_fail()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putIndefiniteByteString() //
                .putString("äöü");
         });
@@ -458,7 +458,7 @@ public class WriterTestCase
 
     private void test_writing_sequence(Function<GraphBuilder, SequenceBuilder<GraphBuilder>> function) {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             function.apply(sgb)
 
                     .putString("a") //
@@ -477,7 +477,7 @@ public class WriterTestCase
     public void test_write_sequence_fail_too_many_elements()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putSequence(0) //
                .putString("a");
         });
@@ -499,7 +499,7 @@ public class WriterTestCase
 
     private void test_writing_dictionary(Function<GraphBuilder, DictionaryBuilder<GraphBuilder>> function) {
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             function.apply(sgb)
 
                     .putEntry() //
@@ -526,7 +526,7 @@ public class WriterTestCase
     public void test_write_dictionary_fail_too_many_elements()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putDictionary(0) //
                .putEntry();
         });
@@ -536,7 +536,7 @@ public class WriterTestCase
     public void test_write_dictionary_fail_key_value_already_set()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> {
+        buildParser((sgb) -> {
             sgb.putDictionary(1) //
                .putEntry() //
                .putBoolean(true) //
@@ -551,7 +551,7 @@ public class WriterTestCase
 
         long expected = 12345678;
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putTimestamp(expected) //
                .putTimestamp(Instant.ofEpochSecond(expected)) //
                .putTimestamp(null);
@@ -572,7 +572,7 @@ public class WriterTestCase
 
         URI expected = URI.create("file://test-äüö.dat");
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putURI(expected) //
                .putURI(null);
         });
@@ -591,7 +591,7 @@ public class WriterTestCase
         Instant expected = Instant.now();
         Date date = Date.from(expected);
 
-        SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
+        SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putDateTime(expected) //
                .putDateTime(date) //
                .putDateTime((Instant) null).putDateTime((Date) null);
@@ -610,7 +610,7 @@ public class WriterTestCase
     public void test_write_unknown_number_type()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> sgb.putNumber(new Number() {
+        buildParser((sgb) -> sgb.putNumber(new Number() {
             @Override
             public int intValue() {
                 return 0;
@@ -637,14 +637,14 @@ public class WriterTestCase
     public void test_write_unfinished_sequence()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> sgb.putSequence(2).putString("test").endSequence());
+        buildParser((sgb) -> sgb.putSequence(2).putString("test").endSequence());
     }
 
     @Test(expected = IllegalStateException.class)
     public void test_write_unfinished_dictionary()
             throws Exception {
 
-        executeStreamWriterTest(
+        buildParser(
                 (sgb) -> sgb.putDictionary(2).putEntry().putString("te").putString("st").endEntry().endDictionary());
     }
 
@@ -652,7 +652,7 @@ public class WriterTestCase
     public void test_write_unfinished_dictionary_entry()
             throws Exception {
 
-        executeStreamWriterTest((sgb) -> sgb.putDictionary(2).putEntry().putString("te").endEntry());
+        buildParser((sgb) -> sgb.putDictionary(2).putEntry().putString("te").endEntry());
     }
 
 }

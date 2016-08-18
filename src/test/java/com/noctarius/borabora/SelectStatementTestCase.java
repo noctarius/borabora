@@ -327,6 +327,51 @@ public class SelectStatementTestCase
                 });
     }
 
+    @Test
+    public void test_select_sequence_query_dictionary_on_existing_key() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
+                () -> "(#{'non-existing'})", //
+                gqb -> gqb.asSequence().putEntry() //
+                          .stream(0).dictionary(matchString("non-existing")).endEntry().endSequence(), //
+                v -> {
+                    Value v2 = v.sequence().get(0);
+                    assertEquals(Value.NULL_VALUE, v2);
+                });
+    }
+
+    @Test
+    public void test_select_dictionary_query_dictionary_on_existing_key_break_with_followup() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
+                () -> "(a: #{'non-existing'}, b: #{'foo'})", //
+                gqb -> gqb.asDictionary() //
+                          .putEntry("a").stream(0).dictionary(matchString("non-existing")).endEntry() //
+                          .putEntry("b").stream(0).dictionary(matchString("foo")).endEntry() //
+                          .endDictionary(), //
+                v -> {
+                    Dictionary dictionary = v.dictionary();
+                    assertEquals(Value.NULL_VALUE, dictionary.get(matchString("a")));
+                    assertEquals("bar", dictionary.get(matchString("b")).string());
+                });
+    }
+
+    @Test
+    public void test_select_sequence_query_dictionary_on_existing_key_break_with_followup() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
+                () -> "(#{'non-existing'}, #{'foo'})", //
+                gqb -> gqb.asSequence() //
+                          .putEntry().stream(0).dictionary(matchString("non-existing")).endEntry() //
+                          .putEntry().stream(0).dictionary(matchString("foo")).endEntry() //
+                          .endSequence(), //
+                v -> {
+                    Sequence sequence = v.sequence();
+                    assertEquals(Value.NULL_VALUE, sequence.get(0));
+                    assertEquals("bar", sequence.get(1).string());
+                });
+    }
+
     private void executeExercise(Consumer<GraphBuilder> streamProducer, Supplier<String> textQueryProducer,
                                  Consumer<StreamQueryBuilder> graphQueryConfigurator, Consumer<Value> assertionTest) {
 
