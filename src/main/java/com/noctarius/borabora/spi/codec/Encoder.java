@@ -20,12 +20,16 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.spi.Constants;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
-public enum Encoder {
-    ;
+public final class Encoder
+        implements Constants {
+
+    private Encoder() {
+    }
 
     public static long putString(String value, long offset, Output output) {
         if (StringEncoders.ASCII_ENCODER.canEncode(value)) {
@@ -35,11 +39,11 @@ public enum Encoder {
     }
 
     public static long putBoolean(boolean value, long offset, Output output) {
-        return Bytes.putInt8(value ? Constants.SIMPLE_VALUE_TRUE_BYTE : Constants.SIMPLE_VALUE_FALSE_BYTE, offset, output);
+        return Bytes.putInt8(value ? SIMPLE_VALUE_TRUE_BYTE : SIMPLE_VALUE_FALSE_BYTE, offset, output);
     }
 
     public static long putNull(long offset, Output output) {
-        return Bytes.putInt8(Constants.SIMPLE_VALUE_NULL_BYTE, offset, output);
+        return Bytes.putInt8(SIMPLE_VALUE_NULL_BYTE, offset, output);
     }
 
     public static long putTextString(String value, long offset, Output output) {
@@ -69,9 +73,9 @@ public enum Encoder {
     public static long putNumber(BigInteger value, long offset, Output output) {
         MajorType majorType;
         BigInteger absValue;
-        if (value.compareTo(BigInteger.ZERO) == Constants.COMPARATOR_LESS_THAN) {
+        if (value.compareTo(BigInteger.ZERO) == COMPARATOR_LESS_THAN) {
             majorType = MajorType.NegativeInteger;
-            absValue = Constants.BI_VAL_MINUS_ONE.subtract(value).abs();
+            absValue = BI_VAL_MINUS_ONE.subtract(value).abs();
 
         } else {
             majorType = MajorType.UnsignedInteger;
@@ -81,37 +85,43 @@ public enum Encoder {
     }
 
     public static long putBigInteger(BigInteger value, long offset, Output output) {
+        // 63 bits fit into a signed long value
+        if (value.bitLength() <= 63) {
+            return putNumber(value.longValue(), offset, output);
+        }
+
+        // Otherwise write as XBigNum
         MajorType majorType;
         BigInteger absValue;
-        if (value.compareTo(BigInteger.ZERO) == Constants.COMPARATOR_LESS_THAN) {
+        if (value.compareTo(BigInteger.ZERO) == COMPARATOR_LESS_THAN) {
             majorType = MajorType.NegativeInteger;
-            absValue = Constants.BI_VAL_MINUS_ONE.subtract(value).abs();
+            absValue = BI_VAL_MINUS_ONE.subtract(value).abs();
 
         } else {
             majorType = MajorType.UnsignedInteger;
             absValue = value;
         }
         if (majorType == MajorType.NegativeInteger) {
-            offset = putSemanticTag(Constants.TAG_SIGNED_BIGNUM, offset, output);
+            offset = putSemanticTag(TAG_SIGNED_BIGNUM, offset, output);
         } else {
-            offset = putSemanticTag(Constants.TAG_UNSIGNED_BIGNUM, offset, output);
+            offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
         }
         return putString(absValue.toByteArray(), MajorType.ByteString, offset, output);
     }
 
     public static long putHalfPrecision(float value, long offset, Output output) {
         int intValue = HalfPrecision.fromFloat(value);
-        return encodeFloat(Constants.FP_VALUE_HALF_PRECISION, intValue, offset, output);
+        return encodeFloat(FP_VALUE_HALF_PRECISION, intValue, offset, output);
     }
 
     public static long putFloat(float value, long offset, Output output) {
         int intValue = Float.floatToIntBits(value);
-        return encodeFloat(Constants.FP_VALUE_SINGLE_PRECISION, intValue, offset, output);
+        return encodeFloat(FP_VALUE_SINGLE_PRECISION, intValue, offset, output);
     }
 
     public static long putDouble(double value, long offset, Output output) {
         long longValue = Double.doubleToLongBits(value);
-        return encodeFloat(Constants.FP_VALUE_DOUBLE_PRECISION, longValue, offset, output);
+        return encodeFloat(FP_VALUE_DOUBLE_PRECISION, longValue, offset, output);
     }
 
     public static long putSemanticTag(int tagId, long offset, Output output) {
@@ -119,47 +129,56 @@ public enum Encoder {
     }
 
     public static long putUri(URI uri, long offset, Output output) {
-        offset = putSemanticTag(Constants.TAG_URI, offset, output);
+        offset = putSemanticTag(TAG_URI, offset, output);
         String string = uri.toString();
-        return putString(string.getBytes(Constants.UTF8), MajorType.TextString, offset, output);
+        return putString(string.getBytes(UTF8), MajorType.TextString, offset, output);
     }
 
     public static long putDateTime(ZonedDateTime dateTime, long offset, Output output) {
-        offset = putSemanticTag(Constants.TAG_DATE_TIME, offset, output);
-        String string = dateTime.format(Constants.DATE_TIME_FORMAT);
-        return putString(string.getBytes(Constants.UTF8), MajorType.TextString, offset, output);
+        offset = putSemanticTag(TAG_DATE_TIME, offset, output);
+        String string = dateTime.format(DATE_TIME_FORMAT);
+        return putString(string.getBytes(UTF8), MajorType.TextString, offset, output);
     }
 
     public static long putTimestamp(long timestamp, long offset, Output output) {
-        offset = putSemanticTag(Constants.TAG_TIMESTAMP, offset, output);
+        offset = putSemanticTag(TAG_TIMESTAMP, offset, output);
         return putNumber(timestamp, offset, output);
+    }
+
+    public static long putDecimalFraction(BigDecimal value, long offset, Output output) {
+        offset = putSemanticTag(TAG_FRACTION, offset, output);
+        offset = encodeLengthAndValue(MajorType.Sequence, 2, offset, output);
+        int scale = value.scale();
+        BigInteger unscaledValue = value.unscaledValue();
+        offset = putNumber(scale, offset, output);
+        return putNumber(unscaledValue, offset, output);
     }
 
     public static long encodeLengthAndValue(MajorType majorType, long length, long offset, Output output) {
         int head = majorType.typeId() << 5;
         if (length == -1) {
-            return Bytes.putInt8((byte) (head | Constants.ADD_INFO_INDEFINITE), offset, output);
+            return Bytes.putInt8((byte) (head | ADD_INFO_INDEFINITE), offset, output);
 
-        } else if (length <= 23L) {
+        } else if (length <= NUMBER_VAL_ONE_BYTE) {
             return Bytes.putInt8((byte) (head | length), offset, output);
 
-        } else if (length <= 255L) {
-            head |= Constants.ADD_INFO_ONE_BYTE;
+        } else if (length <= NUMBER_VAL_TWO_BYTE) {
+            head |= ADD_INFO_ONE_BYTE;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt8((byte) length, offset, output);
 
-        } else if (length <= 65535L) {
-            head |= Constants.ADD_INFO_TWO_BYTES;
+        } else if (length <= NUMBER_VAL_THREE_BYTE) {
+            head |= ADD_INFO_TWO_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt16((short) length, offset, output);
 
-        } else if (length <= 4294967295L) {
-            head |= Constants.ADD_INFO_FOUR_BYTES;
+        } else if (length <= NUMBER_VAL_FIVE_BYTE) {
+            head |= ADD_INFO_FOUR_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt32((int) length, offset, output);
 
         } else {
-            head |= Constants.ADD_INFO_EIGHT_BYTES;
+            head |= ADD_INFO_EIGHT_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt64(length, offset, output);
         }
@@ -168,41 +187,41 @@ public enum Encoder {
 
     public static long encodeLengthAndValue(MajorType majorType, BigInteger length, long offset, Output output) {
         int head = majorType.typeId() << 5;
-        if (length.compareTo(Constants.BI_VAL_24) == Constants.COMPARATOR_LESS_THAN) {
+        if (length.compareTo(BI_VAL_24) == COMPARATOR_LESS_THAN) {
             return Bytes.putInt8((byte) (head | length.intValue()), offset, output);
 
-        } else if (length.compareTo(Constants.BI_VAL_256) == Constants.COMPARATOR_LESS_THAN) {
-            head |= Constants.ADD_INFO_ONE_BYTE;
+        } else if (length.compareTo(BI_VAL_256) == COMPARATOR_LESS_THAN) {
+            head |= ADD_INFO_ONE_BYTE;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt8((byte) length.intValue(), offset, output);
 
-        } else if (length.compareTo(Constants.BI_VAL_65536) == Constants.COMPARATOR_LESS_THAN) {
-            head |= Constants.ADD_INFO_TWO_BYTES;
+        } else if (length.compareTo(BI_VAL_65536) == COMPARATOR_LESS_THAN) {
+            head |= ADD_INFO_TWO_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt16((short) length.intValue(), offset, output);
 
-        } else if (length.compareTo(Constants.BI_VAL_4294967296) == Constants.COMPARATOR_LESS_THAN) {
-            head |= Constants.ADD_INFO_FOUR_BYTES;
+        } else if (length.compareTo(BI_VAL_4294967296) == COMPARATOR_LESS_THAN) {
+            head |= ADD_INFO_FOUR_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt32((int) length.longValue(), offset, output);
 
-        } else if (length.compareTo(Constants.BI_VAL_MAX_VALUE) == Constants.COMPARATOR_LESS_THAN) {
-            head |= Constants.ADD_INFO_EIGHT_BYTES;
+        } else if (length.compareTo(BI_VAL_MAX_VALUE) == COMPARATOR_LESS_THAN) {
+            head |= ADD_INFO_EIGHT_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
-            output.write(offset++, (byte) length.shiftRight(56).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(48).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(40).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(32).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(24).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(16).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(8).and(Constants.BI_MASK).intValue());
-            output.write(offset++, (byte) length.shiftRight(0).and(Constants.BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(56).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(48).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(40).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(32).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(24).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(16).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(8).and(BI_MASK).intValue());
+            output.write(offset++, (byte) length.shiftRight(0).and(BI_MASK).intValue());
 
         } else {
             if (majorType == MajorType.NegativeInteger) {
-                offset = putSemanticTag(Constants.TAG_SIGNED_BIGNUM, offset, output);
+                offset = putSemanticTag(TAG_SIGNED_BIGNUM, offset, output);
             } else {
-                offset = putSemanticTag(Constants.TAG_UNSIGNED_BIGNUM, offset, output);
+                offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
             }
             offset = putString(length.toByteArray(), MajorType.ByteString, offset, output);
         }
@@ -219,9 +238,9 @@ public enum Encoder {
         int head = MajorType.FloatingPointOrSimple.typeId() << 5;
         offset = Bytes.putInt8((byte) (head | fpType), offset, output);
         switch (fpType) {
-            case Constants.FP_VALUE_HALF_PRECISION:
+            case FP_VALUE_HALF_PRECISION:
                 return Bytes.putInt16((short) bits, offset, output);
-            case Constants.FP_VALUE_SINGLE_PRECISION:
+            case FP_VALUE_SINGLE_PRECISION:
                 return Bytes.putInt32((int) bits, offset, output);
             default:
                 return Bytes.putInt64(bits, offset, output);

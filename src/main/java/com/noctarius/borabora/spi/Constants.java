@@ -74,6 +74,11 @@ public interface Constants {
     byte SIMPLE_VALUE_FALSE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_FALSE);
     byte SIMPLE_VALUE_TRUE_BYTE = (byte) ((MajorType.FloatingPointOrSimple.typeId() << 5) | FP_VALUE_TRUE);
 
+    long NUMBER_VAL_ONE_BYTE = 23;
+    long NUMBER_VAL_TWO_BYTE = 256;
+    long NUMBER_VAL_THREE_BYTE = 65536;
+    long NUMBER_VAL_FIVE_BYTE = 4294967296L;
+
     BigInteger BI_VAL_MINUS_ONE = BigInteger.valueOf(-1);
     BigInteger BI_VAL_24 = BigInteger.valueOf(24);
     BigInteger BI_VAL_256 = BigInteger.valueOf(256);
