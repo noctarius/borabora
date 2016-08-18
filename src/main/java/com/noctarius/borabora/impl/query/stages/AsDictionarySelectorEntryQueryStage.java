@@ -45,7 +45,8 @@ public abstract class AsDictionarySelectorEntryQueryStage
             if (pipelineContext.offset() == OFFSET_CODE_NULL) {
                 pipelineContext.selectStatementStrategy().putDictionaryNullValue(pipelineContext);
             }
-            return visitResult;
+            // If break, move on with the next sibling, for exit: stop here
+            return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
         }
 
         pipelineContext.offset(offset);

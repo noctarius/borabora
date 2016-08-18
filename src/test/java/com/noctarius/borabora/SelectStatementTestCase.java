@@ -314,6 +314,19 @@ public class SelectStatementTestCase
         );
     }
 
+    @Test
+    public void test_select_dictionary_query_dictionary_on_existing_key() {
+        executeExercise( //
+                sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
+                () -> "(a: #{'non-existing'})", //
+                gqb -> gqb.asDictionary().putEntry("a") //
+                          .stream(0).dictionary(matchString("non-existing")).endEntry().endDictionary(), //
+                v -> {
+                    Value v2 = v.dictionary().get(matchString("a"));
+                    assertEquals(Value.NULL_VALUE, v2);
+                });
+    }
+
     private void executeExercise(Consumer<GraphBuilder> streamProducer, Supplier<String> textQueryProducer,
                                  Consumer<StreamQueryBuilder> graphQueryConfigurator, Consumer<Value> assertionTest) {
 

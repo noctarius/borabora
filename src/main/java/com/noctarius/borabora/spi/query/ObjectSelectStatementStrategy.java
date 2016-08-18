@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
-
 public class ObjectSelectStatementStrategy
         implements SelectStatementStrategy {
 
@@ -110,11 +108,7 @@ public class ObjectSelectStatementStrategy
         Value value;
         if (!(v2 instanceof Value)) {
             key = v1;
-            if (offset == OFFSET_CODE_NULL) {
-                value = Value.NULL_VALUE;
-            } else {
-                value = Decoder.readValue(offset, queryContext);
-            }
+            value = Decoder.readValue(offset, queryContext);
         } else {
             value = v1;
             key = queryContext.queryStackPop();
@@ -160,12 +154,7 @@ public class ObjectSelectStatementStrategy
             value = queryContext.queryStackPop();
         } else {
             long offset = queryContext.offset();
-
-            if (offset == OFFSET_CODE_NULL) {
-                value = Value.NULL_VALUE;
-            } else {
-                value = Decoder.readValue(offset, queryContext);
-            }
+            value = Decoder.readValue(offset, queryContext);
         }
         List<Value> entries = queryContext.queryStackPeek();
         entries.add(value);
@@ -226,7 +215,7 @@ public class ObjectSelectStatementStrategy
 
         @Override
         public boolean contains(Predicate<Value> predicate) {
-            return findValue(predicate, iterator(), queryContext) != Value.NULL_VALUE   ;
+            return findValue(predicate, iterator(), queryContext) != Value.NULL_VALUE;
         }
 
         @Override

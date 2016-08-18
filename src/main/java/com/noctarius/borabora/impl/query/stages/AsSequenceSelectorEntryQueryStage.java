@@ -42,7 +42,8 @@ public class AsSequenceSelectorEntryQueryStage
             if (pipelineContext.offset() == OFFSET_CODE_NULL) {
                 pipelineContext.selectStatementStrategy().putSequenceNullValue(pipelineContext);
             }
-            return visitResult;
+            // If break, move on with the next sibling, for exit: stop here
+            return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
         }
 
         pipelineContext.offset(offset);

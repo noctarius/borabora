@@ -257,11 +257,14 @@ public final class Decoder
         return skip(queryContext.input(), position);
     }
 
-    public static StreamValue readValue(long offset, QueryContext queryContext) {
+    public static Value readValue(long offset, QueryContext queryContext) {
         short head = Bytes.readUInt8(queryContext.input(), offset);
-        MajorType mt = MajorType.findMajorType(head);
-        ValueType vt = ValueTypes.valueType(queryContext.input(), offset);
-        return new StreamValue(mt, vt, offset, queryContext);
+        MajorType majorType = MajorType.findMajorType(head);
+        ValueType valueType = ValueTypes.valueType(queryContext.input(), offset);
+        if (ValueTypes.Null == valueType) {
+            return Value.NULL_VALUE;
+        }
+        return new StreamValue(majorType, valueType, offset, queryContext);
     }
 
     public static int additionalInfo(Input input, long offset) {
