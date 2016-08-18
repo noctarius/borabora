@@ -118,7 +118,7 @@ public final class CommonTagCodec
             Input input = queryContext.input();
             int byteSize = ByteSizes.intByteSize(input, offset);
             String date = Decoder.readString(input, offset + byteSize);
-            return DateParser.parseDate(date, Locale.ENGLISH);
+            return DateParser.parseDate(date, Locale.ENGLISH).toInstant();
         }),
 
         UBIG_NUM_READER((valueType, offset, length, queryContext) -> {

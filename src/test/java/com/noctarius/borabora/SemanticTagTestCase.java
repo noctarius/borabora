@@ -57,7 +57,7 @@ public class SemanticTagTestCase
         Value value = parser.read(Query.newBuilder().build());
 
         assertEquals(ValueTypes.DateTime, value.valueType());
-        assertEquals(calendar.getTime(), value.tag());
+        assertEquals(calendar.toInstant(), value.tag());
     }
 
     @Test

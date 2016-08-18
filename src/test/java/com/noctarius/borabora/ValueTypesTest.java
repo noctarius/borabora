@@ -1,17 +1,7 @@
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
-import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.codec.TagDecoder;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -21,11 +11,8 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -141,9 +128,9 @@ public class ValueTypesTest
     public void test_value_dictionary() {
         Value value = asStreamValue(gb -> gb.putDictionary(1)
 
-                                      .putEntry().putString("key").putString("foo").endEntry()
+                                            .putEntry().putString("key").putString("foo").endEntry()
 
-                                      .endDictionary().finishStream());
+                                            .endDictionary().finishStream());
         assertEquals(ValueTypes.Dictionary, value.valueType());
         Dictionary dictionary = ValueTypes.Dictionary.value(value, true);
         assertEquals(1, dictionary.size());
@@ -153,9 +140,9 @@ public class ValueTypesTest
     public void test_value_indefinite_dictionary() {
         Value value = asStreamValue(gb -> gb.putDictionary()
 
-                                      .putEntry().putString("key").putString("foo").endEntry()
+                                            .putEntry().putString("key").putString("foo").endEntry()
 
-                                      .endDictionary().finishStream());
+                                            .endDictionary().finishStream());
         assertEquals(ValueTypes.Dictionary, value.valueType());
         Dictionary dictionary = ValueTypes.Dictionary.value(value, true);
         assertEquals(1, dictionary.size());
@@ -200,8 +187,9 @@ public class ValueTypesTest
 
     @Test
     public void test_value_datetime_date() {
-        Date expected = new Date();
-        Value value = asStreamValue(gb -> gb.putDateTime(expected).finishStream());
+        Date date = new Date();
+        Instant expected = date.toInstant();
+        Value value = asStreamValue(gb -> gb.putDateTime(date).finishStream());
         assertEquals(expected, ValueTypes.DateTime.value(value, true));
     }
 
@@ -209,7 +197,7 @@ public class ValueTypesTest
     public void test_value_datetime_instant() {
         Instant instant = Instant.now();
         Value value = asStreamValue(gb -> gb.putDateTime(instant).finishStream());
-        assertEquals(instant, ((Date) ValueTypes.DateTime.value(value, true)).toInstant());
+        assertEquals(instant, ValueTypes.DateTime.value(value, true));
     }
 
     @Test

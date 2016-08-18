@@ -588,11 +588,11 @@ public class WriterTestCase
     public void test_write_datetime()
             throws Exception {
 
-        Instant instant = Instant.now();
-        Date date = Date.from(instant);
+        Instant expected = Instant.now();
+        Date date = Date.from(expected);
 
         SimplifiedTestParser parser = executeStreamWriterTest((sgb) -> {
-            sgb.putDateTime(instant) //
+            sgb.putDateTime(expected) //
                .putDateTime(date) //
                .putDateTime((Instant) null).putDateTime((Date) null);
         });
@@ -601,8 +601,8 @@ public class WriterTestCase
         Value value2 = parser.read(Query.newBuilder().stream(1).build());
         Value value3 = parser.read(Query.newBuilder().stream(2).build());
 
-        assertEquals(date, value1.tag());
-        assertEquals(date, value2.tag());
+        assertEquals(expected, value1.tag());
+        assertEquals(expected, value2.tag());
         assertNull(value3.tag());
     }
 
