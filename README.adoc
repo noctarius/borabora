@@ -29,9 +29,9 @@ Christoph Engelbert <https://github.com/noctarius[@noctarius2k]>
 |===
 
 Status:
-image:https://noctarius.ci.cloudbees.com/job/borabora/badge/icon[link="https://noctarius.ci.cloudbees.com/job/borabora"]
-image:https://codecov.io/gh/noctarius/borabora/branch/master/graph/badge.svg[link="https://codecov.io/github/noctarius/borabora?branch=master"]
-image:https://img.shields.io/badge/license-Apache%20License%202-brightgreen.svg[link="http://www.apache.org/licenses/LICENSE-2.0"]
+image:https://noctarius.ci.cloudbees.com/job/borabora/badge/icon[align="center", link="https://noctarius.ci.cloudbees.com/job/borabora"]
+image:https://codecov.io/gh/noctarius/borabora/branch/master/graph/badge.svg[align="center", link="https://codecov.io/github/noctarius/borabora?branch=master"]
+image:https://img.shields.io/badge/license-Apache%20License%202-brightgreen.svg[align="center", link="http://www.apache.org/licenses/LICENSE-2.0"]
 
 == Documentation
 === JavaDoc
