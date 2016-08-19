@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.codec.CompositeBuffer;
+
 import java.io.OutputStream;
 
 public interface Output {
@@ -23,6 +25,10 @@ public interface Output {
     void write(long offset, byte value);
 
     long write(byte[] array, long offset, long length);
+
+    static Output toCompositeBuffer(CompositeBuffer compositeBuffer) {
+        return compositeBuffer;
+    }
 
     static Output toByteArray(byte[] array) {
         return new ByteArrayOutput(array);

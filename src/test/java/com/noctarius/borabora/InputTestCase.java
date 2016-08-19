@@ -46,7 +46,7 @@ public class InputTestCase
     }
 
     private static Input unsafeInput(byte[] data) {
-        Unsafe unsafe = UnsafeUtils.findUnsafe();
+        Unsafe unsafe = UnsafeUtils.getUnsafe();
         long address = unsafe.allocateMemory(data.length);
         unsafe.copyMemory(data, Unsafe.ARRAY_BYTE_BASE_OFFSET, null, address, data.length);
         return Input.fromNative(address, data.length);

@@ -32,7 +32,6 @@ public class UtilsClassEnumMethodsTestCase {
     public void call_all_shitty_utils_class_enum_methods() {
         call(ValueTypes.class.getName());
         call(ValuePrettyPrinter.class.getName());
-        call(UnsafeUtils.class.getName());
         call(MajorType.class.getName());
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());

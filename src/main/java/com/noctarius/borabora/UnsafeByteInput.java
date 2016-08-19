@@ -27,7 +27,7 @@ final class UnsafeByteInput
     private static final long BYTE_ARRAY_BASE_OFFSET;
 
     static {
-        UNSAFE = UnsafeUtils.findUnsafe();
+        UNSAFE = UnsafeUtils.getUnsafe();
         UNSAFE_AVAILABLE = UNSAFE == null ? false : true;
         BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset(byte[].class, UNSAFE);
     }
