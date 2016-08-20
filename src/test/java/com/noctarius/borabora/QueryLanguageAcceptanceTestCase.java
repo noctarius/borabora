@@ -498,7 +498,6 @@ public class QueryLanguageAcceptanceTestCase
                            .putEntry(2).stream(0).endEntry() //
                            .endDictionary().endEntry() //
                            .endDictionary().build();
-        System.out.println("");
         evaluate(query, "(3: #, 4: (1: #, 2: #))");
     }
 

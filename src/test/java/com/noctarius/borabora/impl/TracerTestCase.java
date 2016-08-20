@@ -18,6 +18,8 @@ package com.noctarius.borabora.impl;
 
 import org.junit.Test;
 
+import java.lang.reflect.Field;
+
 public class TracerTestCase {
 
     @Test
@@ -25,6 +27,8 @@ public class TracerTestCase {
         Tracer tracer = new Tracer.ConsoleTracer();
         tracer.traceCall0("test_console_tracer");
         tracer.traceInfo0("test_console_tracer");
+        tracer.traceCall0("test_console_tracer");
+        tracer.traceReturn0("test_console_tracer");
         tracer.traceReturn0("test_console_tracer");
     }
 
@@ -34,6 +38,29 @@ public class TracerTestCase {
         tracer.traceCall0("test_console_tracer");
         tracer.traceInfo0("test_console_tracer");
         tracer.traceReturn0("test_console_tracer");
+    }
+
+    @Test
+    public void test_tracer_disabled() {
+        Tracer.traceCall("", null);
+        Tracer.traceInfo("", null);
+        Tracer.traceReturn("", null);
+    }
+
+    @Test
+    public void test_tracer_enabled()
+            throws Exception {
+
+        Field field = Tracer.class.getDeclaredField("TRACE_ENABLED");
+        try {
+            field.setAccessible(true);
+            field.set(Tracer.class, true);
+            Tracer.traceCall("", new Object());
+            Tracer.traceInfo("", new Object());
+            Tracer.traceReturn("", new Object());
+        } finally {
+            field.set(Tracer.class, false);
+        }
     }
 
 }

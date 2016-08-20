@@ -20,7 +20,7 @@ abstract class Tracer {
 
     private static boolean TRACE_ENABLED = false;
 
-    private static ThreadLocal<Tracer> TRACER_THREAD_LOCAL = new ThreadLocal<Tracer>() {
+    private final static ThreadLocal<Tracer> TRACER_THREAD_LOCAL = new ThreadLocal<Tracer>() {
         @Override
         protected Tracer initialValue() {
             return new ConsoleTracer();
