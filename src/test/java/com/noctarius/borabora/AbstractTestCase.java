@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
 import static org.junit.Assert.assertEquals;
 
@@ -110,6 +111,12 @@ public abstract class AbstractTestCase {
         QueryImpl exp = (QueryImpl) expected;
         QueryImpl act = (QueryImpl) actual;
         assertEquals(exp, act);
+    }
+
+    public static QueryContext newQueryContext() {
+        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+        return newQueryContext(Input.fromByteArray(EMPTY_BYTE_ARRAY), tagDecoders, selectStatementStrategy);
     }
 
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,

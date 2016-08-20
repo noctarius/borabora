@@ -53,11 +53,6 @@ public final class RelocatableStreamValue
     }
 
     @Override
-    public String asString() {
-        return valueType + "{ " + byValueType() + " }";
-    }
-
-    @Override
     protected <T> T extractTag() {
         return queryContext().applyDecoder(offset(), majorType(), valueType());
     }

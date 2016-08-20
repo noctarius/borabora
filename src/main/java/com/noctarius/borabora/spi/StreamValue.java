@@ -30,8 +30,8 @@ public final class StreamValue
     public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
         super(queryContext);
 
-        if (offset == -1) {
-            throw new IllegalArgumentException("No offset available for CBOR type");
+        if (offset <= -1) {
+            throw new IllegalArgumentException("No offset available for CBOR type, offset=" + offset);
         }
 
         this.offset = offset;

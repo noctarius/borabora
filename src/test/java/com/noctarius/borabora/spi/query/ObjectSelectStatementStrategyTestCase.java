@@ -16,32 +16,27 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.Input;
+import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.impl.DefaultQueryContextFactory;
-import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.ObjectValue;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
-import com.noctarius.borabora.spi.codec.TagDecoder;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.noctarius.borabora.Predicates.matchString;
-import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy.ListBackedSequence;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class ObjectSelectStatementStrategyTestCase {
+public class ObjectSelectStatementStrategyTestCase
+        extends AbstractTestCase {
 
     @Test
     public void test_listbackedsequence_asstring() {
@@ -183,13 +178,7 @@ public class ObjectSelectStatementStrategyTestCase {
     }
 
     private Value asObjectSequence(List<Value> values) {
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
-
-        QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
-        QueryContext queryContext = queryContextFactory.newQueryContext( //
-                Input.fromByteArray(EMPTY_BYTE_ARRAY), Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
-
+        QueryContext queryContext = newQueryContext();
         return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, new ListBackedSequence(values, queryContext));
     }
 
