@@ -17,7 +17,9 @@
 package com.noctarius.borabora;
 
 import org.junit.Test;
+import sun.misc.Unsafe;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertNotNull;
@@ -25,6 +27,8 @@ import static org.junit.Assert.assertNull;
 
 public class UnsafeUtilsTestCase
         extends AbstractTestCase {
+
+    private static final Object theUnsafe = new Object();
 
     @Test
     public void call_constructor() {
@@ -41,12 +45,45 @@ public class UnsafeUtilsTestCase
     }
 
     @Test
+    public void fail_getunsafe_findunsafe()
+            throws Exception {
+
+        Method method = UnsafeUtils.class.getDeclaredMethod("getUnsafe");
+        method.setAccessible(true);
+        assertNotNull(method.invoke(UnsafeUtils.class));
+    }
+
+    @Test
     public void test_findunsafe()
             throws Exception {
 
-        Method method = UnsafeUtils.class.getDeclaredMethod("findUnsafe");
+        Method method = UnsafeUtils.class.getDeclaredMethod("findUnsafe", Class.class);
         method.setAccessible(true);
-        assertNotNull(method.invoke(UnsafeUtils.class));
+        assertNotNull(method.invoke(UnsafeUtils.class, Unsafe.class));
+    }
+
+    @Test
+    public void test_findunsafe_myunsafe()
+            throws Exception {
+
+        Method method = UnsafeUtils.class.getDeclaredMethod("findUnsafe", Class.class);
+        method.setAccessible(true);
+        assertNotNull(method.invoke(UnsafeUtils.class, MyUnsafe.class));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void fail_findunsafe()
+            throws Throwable {
+
+        Method method = UnsafeUtils.class.getDeclaredMethod("findUnsafe", Class.class);
+        method.setAccessible(true);
+
+        try {
+            method.invoke(UnsafeUtils.class, this.getClass());
+        } catch (InvocationTargetException e) {
+            // Unwrap
+            throw e.getCause();
+        }
     }
 
     @Test
@@ -65,6 +102,11 @@ public class UnsafeUtilsTestCase
         Method method = UnsafeUtils.class.getDeclaredMethod("searchField", Class.class);
         method.setAccessible(true);
         assertNull(method.invoke(UnsafeUtils.class, this.getClass()));
+    }
+
+    private static class MyUnsafe {
+        private static final Object theUnsafe = new Object();
+        private static final Unsafe THE_ONE = UnsafeUtils.getUnsafe();
     }
 
 }

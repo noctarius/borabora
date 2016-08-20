@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 
 final class UnsafeUtils {
 
-    private static final Unsafe UNSAFE = findUnsafe();
+    private static final Unsafe UNSAFE = findUnsafe(Unsafe.class);
 
     private UnsafeUtils() {
     }
@@ -31,13 +31,13 @@ final class UnsafeUtils {
         return UNSAFE;
     }
 
-    private static Unsafe findUnsafe() {
+    private static Unsafe findUnsafe(Class<?> type) {
         try {
             try {
-                return theUnsafe();
+                return theUnsafe(type);
 
             } catch (Exception e) {
-                Unsafe unsafe = searchField(Unsafe.class);
+                Unsafe unsafe = searchField(type);
                 if (unsafe == null) {
                     throw new Exception("No legal Unsafe field was found");
                 }
@@ -48,10 +48,10 @@ final class UnsafeUtils {
         }
     }
 
-    private static Unsafe theUnsafe()
+    private static Unsafe theUnsafe(Class<?> type)
             throws Exception {
 
-        Field field = Unsafe.class.getDeclaredField("theUnsafe");
+        Field field = type.getDeclaredField("theUnsafe");
         field.setAccessible(true);
         return Unsafe.class.cast(field.get(Unsafe.class));
     }
