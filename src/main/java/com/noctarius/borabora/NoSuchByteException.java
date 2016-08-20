@@ -21,11 +21,6 @@ public class NoSuchByteException
 
     private final long offset;
 
-    public NoSuchByteException(long offset, Throwable cause) {
-        super(cause);
-        this.offset = offset;
-    }
-
     public NoSuchByteException(long offset, String message) {
         super(message);
         this.offset = offset;

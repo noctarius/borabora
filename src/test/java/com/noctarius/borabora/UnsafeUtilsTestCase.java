@@ -19,6 +19,7 @@ package com.noctarius.borabora;
 import org.junit.Test;
 import sun.misc.Unsafe;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -37,15 +38,6 @@ public class UnsafeUtilsTestCase
 
     @Test
     public void test_getunsafe_findunsafe()
-            throws Exception {
-
-        Method method = UnsafeUtils.class.getDeclaredMethod("getUnsafe");
-        method.setAccessible(true);
-        assertNotNull(method.invoke(UnsafeUtils.class));
-    }
-
-    @Test
-    public void fail_getunsafe_findunsafe()
             throws Exception {
 
         Method method = UnsafeUtils.class.getDeclaredMethod("getUnsafe");

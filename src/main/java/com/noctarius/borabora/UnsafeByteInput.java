@@ -21,24 +21,12 @@ import sun.misc.Unsafe;
 final class UnsafeByteInput
         implements Input {
 
-    static final boolean UNSAFE_AVAILABLE;
-
-    private static final Unsafe UNSAFE;
-    private static final long BYTE_ARRAY_BASE_OFFSET;
-
-    static {
-        UNSAFE = UnsafeUtils.getUnsafe();
-        UNSAFE_AVAILABLE = UNSAFE == null ? false : true;
-        BYTE_ARRAY_BASE_OFFSET = arrayBaseOffset(byte[].class, UNSAFE);
-    }
+    private static final Unsafe UNSAFE = UnsafeUtils.getUnsafe();
 
     private final long size;
     private final long address;
 
     UnsafeByteInput(long address, long size) {
-        if (!UNSAFE_AVAILABLE) {
-            throw new IllegalStateException("sun.misc.Unsafe not available, no native memory support");
-        }
         this.size = size;
         this.address = address;
     }
@@ -72,7 +60,7 @@ final class UnsafeByteInput
         }
 
         long l = Math.min(length, size - offset);
-        UNSAFE.copyMemory(null, address + offset, array, BYTE_ARRAY_BASE_OFFSET, l);
+        UNSAFE.copyMemory(null, address + offset, array, Unsafe.ARRAY_BOOLEAN_BASE_OFFSET, l);
         return l;
     }
 

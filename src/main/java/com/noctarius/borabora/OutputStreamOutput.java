@@ -33,7 +33,7 @@ final class OutputStreamOutput
         try {
             out.write(value);
         } catch (IOException e) {
-            throw new NoSuchByteException(offset, e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -43,7 +43,7 @@ final class OutputStreamOutput
             out.write(array, 0, (int) length);
             return length;
         } catch (IOException e) {
-            throw new NoSuchByteException(offset, e);
+            throw new IllegalStateException(e);
         }
     }
 
