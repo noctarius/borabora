@@ -20,10 +20,8 @@ import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
-import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.ObjectValue;
-import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamableIterable;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
@@ -169,21 +167,10 @@ public class ObjectSelectStatementStrategy
     private static abstract class AbstractJavaBackedDataStructure {
 
         protected Value findValue(Predicate<Value> predicate, Iterator<Value> iterator, QueryContext queryContext) {
-            RelocatableStreamValue streamValue = new RelocatableStreamValue();
             while (iterator.hasNext()) {
-                Value value = iterator.next();
-
-                MajorType majorType = value.majorType();
-                ValueType valueType = value.valueType();
-
-                Value candidate = value;
-                if (!(value instanceof ObjectValue)) {
-                    streamValue.relocate(queryContext, majorType, valueType, value.offset());
-                    candidate = streamValue;
-                }
-
+                Value candidate = iterator.next();
                 if (predicate.test(candidate)) {
-                    return value;
+                    return candidate;
                 }
             }
             return Value.NULL_VALUE;
@@ -276,12 +263,12 @@ public class ObjectSelectStatementStrategy
 
         @Override
         public boolean containsKey(Predicate<Value> predicate) {
-            return findValue(predicate, keys().iterator(), queryContext) != null;
+            return findValue(predicate, keys().iterator(), queryContext) != Value.NULL_VALUE;
         }
 
         @Override
         public boolean containsValue(Predicate<Value> predicate) {
-            return findValue(predicate, values().iterator(), queryContext) != null;
+            return findValue(predicate, values().iterator(), queryContext) != Value.NULL_VALUE;
         }
 
         @Override

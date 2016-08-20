@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.noctarius.borabora.Predicates.matchInt;
 import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 
@@ -204,7 +205,7 @@ public class SelectStatementTestCase
     @Test
     public void test_select_multiple_stream_elements_as_sequence() {
         executeExercise( //
-                sgb -> sgb.putNumber(1).putNumber(2), //
+                sgb -> sgb.putNumber(-1).putNumber(2), //
                 () -> "(#1, #0)", //
                 gqb -> gqb.asSequence()
 
@@ -213,7 +214,7 @@ public class SelectStatementTestCase
                           .putEntry().stream(0).endEntry().endSequence(), //
                 v -> {
                     assertEqualsNumber(2, v.sequence().get(0).number());
-                    assertEqualsNumber(1, v.sequence().get(1).number());
+                    assertEqualsNumber(-1, v.sequence().get(1).number());
                 } //
         );
     }
@@ -222,18 +223,18 @@ public class SelectStatementTestCase
     public void test_select_multiple_stream_elements_as_sequence_in_subdictionary() {
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
-                () -> "((c: #1, d: #0))", //
+                () -> "((c: #1, -1: #0))", //
                 gqb -> gqb.asSequence().putEntry().asDictionary()
 
                           .putEntry("c").stream(1).endEntry()
 
-                          .putEntry("d").stream(0).endEntry().endDictionary()
+                          .putEntry(-1).stream(0).endEntry().endDictionary()
 
                           .endEntry().endSequence(), //
                 v -> {
                     Value v2 = v.sequence().get(0);
                     assertEqualsNumber(2, v2.dictionary().get(matchString("c")).number());
-                    assertEqualsNumber(1, v2.dictionary().get(matchString("d")).number());
+                    assertEqualsNumber(1, v2.dictionary().get(matchInt(-1)).number());
                 } //
         );
     }

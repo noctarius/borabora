@@ -17,26 +17,162 @@
 package com.noctarius.borabora.spi.query;
 
 import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.ObjectValue;
+import com.noctarius.borabora.spi.StreamableIterable;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static com.noctarius.borabora.Predicates.matchString;
 import static com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy.ListBackedSequence;
+import static com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy.MapBackedDictionary;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class ObjectSelectStatementStrategyTestCase
         extends AbstractTestCase {
+
+    @Test
+    public void test_mapbackeddictionary_isempty() {
+        Map<Value, Value> map = new HashMap<>();
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertTrue(dictionary.isEmpty());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_isempty_nonempty() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertFalse(dictionary.isEmpty());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_values() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        StreamableIterable<Value> iterable = dictionary.values();
+        Iterator<Value> iterator = iterable.iterator();
+        assertEquals("bar", iterator.next().string());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_keys() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        StreamableIterable<Value> iterable = dictionary.keys();
+        Iterator<Value> iterator = iterable.iterator();
+        assertEquals("foo", iterator.next().string());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_entries() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        StreamableIterable<Map.Entry<Value, Value>> iterable = dictionary.entries();
+        Iterator<Map.Entry<Value, Value>> iterator = iterable.iterator();
+        Map.Entry<Value, Value> entry = iterator.next();
+        assertEquals("foo", entry.getKey().string());
+        assertEquals("bar", entry.getValue().string());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_iterator() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
+        Map.Entry<Value, Value> entry = iterator.next();
+        assertEquals("foo", entry.getKey().string());
+        assertEquals("bar", entry.getValue().string());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_tostring() {
+        String expected = "[ObjectValue{valueType=ByteString, value=foo}=ObjectValue{valueType=ByteString, value=bar}]";
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertEquals(expected, dictionary.toString());
+    }
+
+    @Test
+    public void test_mapbackeddictionary_containskey_false() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertFalse(dictionary.containsKey(matchString("bar")));
+    }
+
+    @Test
+    public void test_mapbackeddictionary_containskey() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertTrue(dictionary.containsKey(matchString("foo")));
+    }
+
+    @Test
+    public void test_mapbackeddictionary_containsvalue_false() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertFalse(dictionary.containsValue(matchString("foo")));
+    }
+
+    @Test
+    public void test_mapbackeddictionary_containsvalue() {
+        Map<Value, Value> map = new HashMap<>();
+        map.put(new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "foo"),
+                new ObjectValue(MajorType.ByteString, ValueTypes.ByteString, "bar"));
+
+        Value value = asObjectDictionary(map);
+        Dictionary dictionary = value.dictionary();
+        assertTrue(dictionary.containsValue(matchString("bar")));
+    }
 
     @Test
     public void test_listbackedsequence_asstring() {
@@ -177,9 +313,16 @@ public class ObjectSelectStatementStrategyTestCase
         assertEquals(1, sequence2.size());
     }
 
+    private Value asObjectDictionary(Map<Value, Value> values) {
+        QueryContext queryContext = newQueryContext();
+        Dictionary dictionary = new MapBackedDictionary(values, queryContext);
+        return new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary);
+    }
+
     private Value asObjectSequence(List<Value> values) {
         QueryContext queryContext = newQueryContext();
-        return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, new ListBackedSequence(values, queryContext));
+        Sequence sequence = new ListBackedSequence(values, queryContext);
+        return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence);
     }
 
 }
