@@ -97,16 +97,11 @@ public class CompositeBuffer
     public long writeToOutputStream(OutputStream outputStream)
             throws IOException {
 
-        if (highestOffset > Integer.MAX_VALUE) {
-            throw new IllegalStateException(
-                    "Cannot create an array bigger than Integer.MAX_SIZE but " + highestOffset + " bytes would be required");
-        }
-
         Buffer buffer = head;
-        int remaining = ((int) highestOffset) + 1;
+        long remaining = highestOffset + 1;
         for (int i = 0; i < nbOfChunks; i++) {
-            int chunkLength = Math.min(remaining, chunksize);
-            outputStream.write(buffer.buffer, 0, chunkLength);
+            long chunkLength = Math.min(remaining, chunksize);
+            outputStream.write(buffer.buffer, 0, (int) chunkLength);
 
             remaining -= chunkLength;
             buffer = buffer.next;

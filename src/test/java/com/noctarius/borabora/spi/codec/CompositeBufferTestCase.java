@@ -66,15 +66,6 @@ public class CompositeBufferTestCase {
         assertArrayEquals(expected, actual);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void fail_write_tooutputstream_highestoffset_too_large_for_bytearray()
-            throws Exception {
-
-        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
-        fakeHighestOffset(compositeBuffer, Integer.MAX_VALUE + 1L);
-        compositeBuffer.writeToOutputStream(new ByteArrayOutputStream());
-    }
-
     @Test
     public void test_write_tobytebuffer_heap()
             throws Exception {
