@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.codec.CompositeBuffer;
+
 public interface Input {
 
     byte read(long offset)
@@ -31,6 +33,10 @@ public interface Input {
 
     static Input fromNative(long address, long size) {
         return new UnsafeByteInput(address, size);
+    }
+
+    static Input fromCompositeBuffer(CompositeBuffer compositeBuffer) {
+        return new CompositeBufferInput(compositeBuffer);
     }
 
 }

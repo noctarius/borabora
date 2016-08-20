@@ -18,8 +18,8 @@ package com.noctarius.borabora;
 
 import sun.misc.Unsafe;
 
-final class UnsafeByteInput
-        implements Input {
+final class UnsafeByteOutput
+        implements Output {
 
     static final boolean UNSAFE_AVAILABLE;
 
@@ -35,7 +35,7 @@ final class UnsafeByteInput
     private final long size;
     private final long address;
 
-    UnsafeByteInput(long address, long size) {
+    UnsafeByteOutput(long address, long size) {
         if (!UNSAFE_AVAILABLE) {
             throw new IllegalStateException("sun.misc.Unsafe not available, no native memory support");
         }
@@ -44,41 +44,22 @@ final class UnsafeByteInput
     }
 
     @Override
-    public byte read(long offset)
-            throws NoSuchByteException {
-
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
+    public void write(long offset, byte value) {
         if (offset < 0 || offset >= size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
-        return UNSAFE.getByte(address + offset);
+        UNSAFE.putByte(address + offset, value);
     }
 
     @Override
-    public long read(byte[] array, long offset, long length) {
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
-        }
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
+    public long write(byte[] array, long offset, long length) {
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
-            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
-        }
-        if (length > array.length) {
-            throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of writable data");
         }
 
         long l = Math.min(length, size - offset);
-        UNSAFE.copyMemory(null, address + offset, array, BYTE_ARRAY_BASE_OFFSET, l);
+        UNSAFE.copyMemory(array, BYTE_ARRAY_BASE_OFFSET, null, address + offset, l);
         return l;
-    }
-
-    @Override
-    public boolean offsetValid(long offset) {
-        return offset < size;
     }
 
     private static long arrayBaseOffset(Class<?> type, Unsafe unsafe) {

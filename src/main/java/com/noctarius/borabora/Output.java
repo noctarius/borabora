@@ -34,6 +34,10 @@ public interface Output {
         return new ByteArrayOutput(array);
     }
 
+    static Output toNative(long address, long size) {
+        return new UnsafeByteOutput(address, size);
+    }
+
     static Output toOutputStream(OutputStream out) {
         return new OutputStreamOutput(out);
     }

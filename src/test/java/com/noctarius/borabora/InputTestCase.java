@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.codec.CompositeBuffer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,8 +38,9 @@ public class InputTestCase
     public static Iterable<Object[]> parameters() {
         return Arrays.asList( //
                 new Object[][]{ //
-                                {input(Input::fromByteArray), "ByteArrayInput"}, //
-                                {input(InputTestCase::unsafeInput), "UnsafeByteInput"}});
+                                {input(Input::fromByteArray), "ByteArrayInput", false}, //
+                                {input(InputTestCase::unsafeInput), "UnsafeByteInput", false}, //
+                                {input(InputTestCase::compositeBufferInput), "CompositeBufferInput", true}});
     }
 
     private static Function<byte[], Input> input(Function<byte[], Input> function) {
@@ -52,10 +54,18 @@ public class InputTestCase
         return Input.fromNative(address, data.length);
     }
 
-    private final Function<byte[], Input> function;
+    private static Input compositeBufferInput(byte[] data) {
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
+        compositeBuffer.write(data, 0, data.length);
+        return Input.fromCompositeBuffer(compositeBuffer);
+    }
 
-    public InputTestCase(Function<byte[], Input> function, String name) {
+    private final Function<byte[], Input> function;
+    private final boolean longCapable;
+
+    public InputTestCase(Function<byte[], Input> function, String name, boolean longCapable) {
         this.function = function;
+        this.longCapable = longCapable;
     }
 
     @Test
@@ -90,9 +100,19 @@ public class InputTestCase
 
     @Test(expected = IllegalArgumentException.class)
     public void test_read_bytearray_outside_legal_bytearray_range() {
+        if (longCapable) {
+            throw new IllegalArgumentException("Input implementation is long capable");
+        }
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(new byte[0], Integer.MAX_VALUE + 1L, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_read_bytearray_length_outside_legal_bytearray_range() {
+        byte[] data = new byte[0];
+        Input input = function.apply(data);
+        input.read(new byte[0], 0, Integer.MAX_VALUE + 1L);
     }
 
     @Test
@@ -118,6 +138,9 @@ public class InputTestCase
 
     @Test(expected = IllegalArgumentException.class)
     public void test_read_outside_legal_bytearray_range() {
+        if (longCapable) {
+            throw new IllegalArgumentException("Input implementation is long capable");
+        }
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(Integer.MAX_VALUE + 1L);

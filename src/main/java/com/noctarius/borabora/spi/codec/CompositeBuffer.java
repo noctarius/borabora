@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.Output;
 
 import java.io.IOException;
@@ -23,7 +25,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 public class CompositeBuffer
-        implements Output {
+        implements Output, Input {
 
     private final int chunksize;
     private final Buffer head;
@@ -69,6 +71,51 @@ public class CompositeBuffer
         } while (remaining > 0);
         updateHighestOffset(offset + length - 1);
         return length;
+    }
+
+    @Override
+    public byte read(long offset)
+            throws NoSuchByteException {
+
+        Buffer buffer = bufferByOffset(offset);
+        int chunkOffset = chunkOffset(offset);
+        return buffer.buffer[chunkOffset];
+    }
+
+    @Override
+    public boolean offsetValid(long offset) {
+        return offset <= highestOffset;
+    }
+
+    @Override
+    public long read(byte[] array, long offset, long length) {
+        if (length > Integer.MAX_VALUE) {
+            throw new IllegalStateException("length cannot be larger than Integer.MAX_VALUE");
+        }
+
+        Buffer buffer = bufferByOffset(offset);
+        if (length <= chunksize) {
+            int chunkOffset = chunkOffset(offset);
+            System.arraycopy(buffer.buffer, chunkOffset, array, 0, (int) length);
+
+        } else {
+            int remaining = (int) length;
+
+            int targetOffset = 0;
+            do {
+                int chunkLength = Math.min(remaining, chunksize);
+                System.arraycopy(buffer.buffer, 0, array, targetOffset, chunkLength);
+
+                targetOffset += chunkLength;
+                remaining -= chunkLength;
+                buffer = buffer.next;
+            } while (remaining > 0);
+        }
+        return 0;
+    }
+
+    public long size() {
+        return highestOffset + 1;
     }
 
     public byte[] toByteArray() {

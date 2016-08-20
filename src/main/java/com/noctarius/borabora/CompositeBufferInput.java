@@ -16,27 +16,26 @@
  */
 package com.noctarius.borabora;
 
-final class ByteArrayInput
+import com.noctarius.borabora.spi.codec.CompositeBuffer;
+
+final class CompositeBufferInput
         implements Input {
 
-    private final byte[] array;
+    private final CompositeBuffer compositeBuffer;
 
-    ByteArrayInput(byte[] array) {
-        this.array = array;
+    CompositeBufferInput(CompositeBuffer compositeBuffer) {
+        this.compositeBuffer = compositeBuffer;
     }
 
     @Override
     public byte read(long offset)
             throws NoSuchByteException {
 
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
+        if (offset < 0 || offset >= compositeBuffer.size()) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data (length: " //
+                    + compositeBuffer.size() + ", identity: " + this + ")");
         }
-        if (offset < 0 || offset >= array.length) {
-            throw new NoSuchByteException(offset,
-                    "Offset " + offset + " outside of available data (length: " + array.length + ", identity: " + this + ")");
-        }
-        return array[(int) offset];
+        return compositeBuffer.read(offset);
     }
 
     @Override
@@ -46,24 +45,21 @@ final class ByteArrayInput
         if (length > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
-        if (offset < 0 || length < 0 || offset >= this.array.length || offset + length > this.array.length) {
+        if (offset < 0 || length < 0 || offset >= compositeBuffer.size() || offset + length > compositeBuffer.size()) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         if (length > array.length) {
             throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
         }
 
-        long l = Math.min(length, this.array.length - offset);
-        System.arraycopy(this.array, (int) offset, array, 0, (int) l);
+        long l = Math.min(length, compositeBuffer.size() - offset);
+        compositeBuffer.read(array, offset, l);
         return l;
     }
 
     @Override
     public boolean offsetValid(long offset) {
-        return offset < array.length;
+        return compositeBuffer.offsetValid(offset);
     }
 
 }
