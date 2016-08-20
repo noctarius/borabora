@@ -104,18 +104,4 @@ public class ObjectValue
         return "ObjectValue{" + "valueType=" + valueType + ", value=" + byValueType() + '}';
     }
 
-    @Override
-    public String asString() {
-        Object value = byValueType();
-        String valueAsString;
-        if (value instanceof Dictionary) {
-            valueAsString = ((Dictionary) value).asString();
-        } else if (value instanceof Sequence) {
-            valueAsString = ((Sequence) value).asString();
-        } else {
-            valueAsString = value == null ? "null" : value.toString();
-        }
-        return valueType + "{ " + valueAsString + " }";
-    }
-
 }

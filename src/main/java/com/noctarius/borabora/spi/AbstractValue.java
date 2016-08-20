@@ -16,7 +16,9 @@
  */
 package com.noctarius.borabora.spi;
 
+import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
@@ -34,6 +36,20 @@ public abstract class AbstractValue
     public static final String MAJOR_TYPE_DOES_NOT_MATCH = "Requested major type does not match the read value: %s != %s";
     public static final String VALUE_TYPE_NOT_A_DOUBLE = "Requested value type does not match the read value: {%s|%s} != %s";
     public static final String VALUE_TYPE_NOT_A_TRIPPLE = "Requested value type does not match the read value: {%s|%s|%s} != %s";
+
+    @Override
+    public String asString() {
+        Object value = byValueType();
+        String valueAsString;
+        if (value instanceof Dictionary) {
+            valueAsString = ((Dictionary) value).asString();
+        } else if (value instanceof Sequence) {
+            valueAsString = ((Sequence) value).asString();
+        } else {
+            valueAsString = value == null ? "null" : value.toString();
+        }
+        return valueType() + "{ " + valueAsString + " }";
+    }
 
     protected void matchMajorType(MajorType actual, MajorType expected) {
         if (expected != actual) {

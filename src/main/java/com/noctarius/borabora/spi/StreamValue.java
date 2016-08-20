@@ -16,9 +16,7 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.query.QueryContext;
 
@@ -54,20 +52,6 @@ public final class StreamValue
     @Override
     public String toString() {
         return "StreamValue{" + "valueType=" + valueType + ", offset=" + offset + ", value=" + byValueType() + '}';
-    }
-
-    @Override
-    public String asString() {
-        Object value = byValueType();
-        String valueAsString;
-        if (value instanceof Dictionary) {
-            valueAsString = ((Dictionary) value).asString();
-        } else if (value instanceof Sequence) {
-            valueAsString = ((Sequence) value).asString();
-        } else {
-            valueAsString = value == null ? "null" : value.toString();
-        }
-        return valueType + "{ " + valueAsString + " }";
     }
 
     @Override
