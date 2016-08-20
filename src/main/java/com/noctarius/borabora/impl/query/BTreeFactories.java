@@ -26,8 +26,10 @@ import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 
 import java.util.List;
 
-public enum BTreeFactories {
-    ;
+public final class BTreeFactories {
+
+    private BTreeFactories() {
+    }
 
     public static QueryPipelineFactory newQueryPipelineFactory() {
         return (queryRootNode, pipelineStageFactory, queryOptimizerStrategy) -> {

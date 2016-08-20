@@ -40,7 +40,6 @@ public class UtilsClassEnumMethodsTestCase {
         call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());
         call("com.noctarius.borabora.impl.query.PipelineStagePrinter");
-        call(VisitResult.class.getName());
     }
 
     private void call(String className) {

@@ -52,9 +52,7 @@ class BTreePipelineStage
 
         // Evaluate possibly existing siblings
         if (right != NIL) {
-            if (visitResult != VisitResult.Exit) {
-                visitResult = right.visit(this, pipelineContext);
-            }
+            visitResult = right.visit(this, pipelineContext);
         }
 
         return visitResult;
