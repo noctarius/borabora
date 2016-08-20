@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora.spi;
 
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -30,10 +28,6 @@ public interface StreamableIterable<T>
 
     default Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
-    }
-
-    default Spliterator<T> spliterator() {
-        return Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.ORDERED);
     }
 
 }
