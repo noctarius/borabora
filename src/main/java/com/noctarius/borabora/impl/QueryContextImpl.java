@@ -34,14 +34,14 @@ import java.util.List;
 final class QueryContextImpl
         implements QueryContext {
 
-    // Queries are inherently thread-safe!
-    private final Deque<Object> stack = new LinkedList<>();
     private final List<TagDecoder> tagDecoders;
     private final QueryConsumer queryConsumer;
     private final QueryContextFactory queryContextFactory;
     private final SelectStatementStrategy selectStatementStrategy;
     private final Input input;
 
+    // Queries are inherently thread-safe!
+    private Deque<Object> stack;
     private long offset;
 
     QueryContextImpl(Input input, QueryConsumer queryConsumer, List<TagDecoder> tagDecoders,
@@ -106,17 +106,17 @@ final class QueryContextImpl
 
     @Override
     public <T> void queryStackPush(T element) {
-        stack.addFirst(element);
+        getStack().addFirst(element);
     }
 
     @Override
     public <T> T queryStackPop() {
-        return (T) stack.removeFirst();
+        return (T) getStack().removeFirst();
     }
 
     @Override
     public <T> T queryStackPeek() {
-        return (T) stack.peekFirst();
+        return (T) getStack().peekFirst();
     }
 
     private <V> TagDecoder<V> findProcessor(long offset) {
@@ -127,6 +127,14 @@ final class QueryContextImpl
             }
         }
         return null;
+    }
+
+    // Queries are inherently thread-safe!
+    private Deque<Object> getStack() {
+        if (stack == null) {
+            stack = new LinkedList<>();
+        }
+        return stack;
     }
 
 }
