@@ -67,7 +67,7 @@ public class CompositeBuffer
                 buffer = appendBuffer();
             }
         } while (remaining > 0);
-        updateHighestOffset(offset + length);
+        updateHighestOffset(offset + length - 1);
         return length;
     }
 
@@ -77,11 +77,11 @@ public class CompositeBuffer
                     "Cannot create an array bigger than Integer.MAX_SIZE but " + highestOffset + " bytes would be required");
         }
 
-        byte[] data = new byte[(int) highestOffset];
+        int remaining = ((int) highestOffset) + 1;
+        byte[] data = new byte[remaining];
 
         int targetOffset = 0;
         Buffer buffer = head;
-        int remaining = (int) highestOffset;
         for (int i = 0; i < nbOfChunks; i++) {
             int chunkLength = Math.min(remaining, chunksize);
             System.arraycopy(buffer.buffer, 0, data, targetOffset, chunkLength);
@@ -103,7 +103,7 @@ public class CompositeBuffer
         }
 
         Buffer buffer = head;
-        int remaining = (int) highestOffset;
+        int remaining = ((int) highestOffset) + 1;
         for (int i = 0; i < nbOfChunks; i++) {
             int chunkLength = Math.min(remaining, chunksize);
             outputStream.write(buffer.buffer, 0, chunkLength);
@@ -111,12 +111,37 @@ public class CompositeBuffer
             remaining -= chunkLength;
             buffer = buffer.next;
         }
-        return highestOffset;
+        return highestOffset + 1;
     }
 
     public ByteBuffer toByteBuffer() {
-        // TODO
-        return null;
+        return toByteBuffer(false);
+    }
+
+    public ByteBuffer toByteBuffer(boolean directByteBuffer) {
+        if (highestOffset > Integer.MAX_VALUE) {
+            throw new IllegalStateException(
+                    "Cannot create an array bigger than Integer.MAX_SIZE but " + highestOffset + " bytes would be required");
+        }
+
+        int remaining = ((int) highestOffset) + 1;
+
+        ByteBuffer byteBuffer;
+        if (directByteBuffer) {
+            byteBuffer = ByteBuffer.allocateDirect(remaining);
+        } else {
+            byteBuffer = ByteBuffer.allocate(remaining);
+        }
+
+        Buffer buffer = head;
+        for (int i = 0; i < nbOfChunks; i++) {
+            int chunkLength = Math.min(remaining, chunksize);
+            byteBuffer.put(buffer.buffer, 0, chunkLength);
+
+            remaining -= chunkLength;
+            buffer = buffer.next;
+        }
+        return byteBuffer;
     }
 
     private void updateHighestOffset(long maxOffset) {
@@ -138,7 +163,7 @@ public class CompositeBuffer
             }
 
         } else {
-            while (chunk > nbOfChunks) {
+            while (chunk >= nbOfChunks) {
                 buffer = appendBuffer();
             }
         }

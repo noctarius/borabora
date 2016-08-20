@@ -2,6 +2,9 @@ package com.noctarius.borabora.spi.codec;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -24,12 +27,106 @@ import static org.junit.Assert.assertArrayEquals;
 public class CompositeBufferTestCase {
 
     @Test
+    public void test_write_byte() {
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
+        byte[] expected = randomByteArray(32);
+        for (int i = 0; i < expected.length; i++) {
+            compositeBuffer.write(i, expected[i]);
+        }
+        byte[] actual = compositeBuffer.toByteArray();
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
     public void test_write_bytearray() {
         CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
         byte[] expected = randomByteArray(1024);
         compositeBuffer.write(expected, 0, expected.length);
         byte[] actual = compositeBuffer.toByteArray();
         assertArrayEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_tobytearray_highestoffset_too_large_for_bytearray() {
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
+        fakeHighestOffset(compositeBuffer, Integer.MAX_VALUE + 1L);
+        compositeBuffer.toByteArray();
+    }
+
+    @Test
+    public void test_write_tooutputstream()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
+        byte[] expected = randomByteArray(1024);
+        compositeBuffer.write(expected, 0, expected.length);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        compositeBuffer.writeToOutputStream(baos);
+        byte[] actual = baos.toByteArray();
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_tooutputstream_highestoffset_too_large_for_bytearray()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
+        fakeHighestOffset(compositeBuffer, Integer.MAX_VALUE + 1L);
+        compositeBuffer.writeToOutputStream(new ByteArrayOutputStream());
+    }
+
+    @Test
+    public void test_write_tobytebuffer_heap()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
+        byte[] expected = randomByteArray(1024);
+        compositeBuffer.write(expected, 0, expected.length);
+        ByteBuffer byteBuffer = compositeBuffer.toByteBuffer();
+        byte[] actual = byteBuffer.array();
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_tobytebuffer_heap_highestoffset_too_large_for_bytearray()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
+        fakeHighestOffset(compositeBuffer, Integer.MAX_VALUE + 1L);
+        compositeBuffer.toByteBuffer();
+    }
+
+    @Test
+    public void test_write_tobytebuffer_direct()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
+        byte[] expected = randomByteArray(1024);
+        compositeBuffer.write(expected, 0, expected.length);
+        ByteBuffer byteBuffer = compositeBuffer.toByteBuffer(true);
+        byte[] actual = new byte[byteBuffer.position()];
+        byteBuffer.flip();
+        byteBuffer.get(actual, 0, actual.length);
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_tobytebuffer_direct_highestoffset_too_large_for_bytearray()
+            throws Exception {
+
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
+        fakeHighestOffset(compositeBuffer, Integer.MAX_VALUE + 1L);
+        compositeBuffer.toByteBuffer(true);
+    }
+
+    private void fakeHighestOffset(CompositeBuffer compositeBuffer, long highestOffset) {
+        try {
+            Field field = CompositeBuffer.class.getDeclaredField("highestOffset");
+            field.setAccessible(true);
+            field.set(compositeBuffer, highestOffset);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private byte[] randomByteArray(int size) {
