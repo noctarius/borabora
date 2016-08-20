@@ -69,7 +69,4 @@ final class UnsafeByteInput
         return offset < size;
     }
 
-    private static long arrayBaseOffset(Class<?> type, Unsafe unsafe) {
-        return unsafe == null ? -1 : unsafe.arrayBaseOffset(type);
-    }
 }

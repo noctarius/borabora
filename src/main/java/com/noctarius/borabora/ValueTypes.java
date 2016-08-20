@@ -76,7 +76,7 @@ public enum ValueTypes
     Fraction(DECIMAL_FRACTION_READER, DECIMAL_FRACTION_WRITER, DECIMAL_FRACTION_MATCHER, Value::tag, Float), //
     EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
     URI(URI_READER, URI_WRITER, TYPE_MATCHER.URI_MATCHER, Value::tag), //
-    Unknown(UNKNOWN_TAG_READER, null, null, Value::raw);
+    Unknown(UNKNOWN_TAG_READER, null, o -> false, Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
 
@@ -241,7 +241,7 @@ public enum ValueTypes
                 return valueType;
             }
         }
-        return null;
+        return Unknown;
     }
 
     private static ValueTypes floatNullOrBool(short head) {

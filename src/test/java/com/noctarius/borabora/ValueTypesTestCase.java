@@ -408,8 +408,26 @@ public class ValueTypesTestCase
     }
 
     @Test
-    public void test_valueType_obj_uint() {
+    public void test_valueType_obj_uint_byte() {
+        ValueType valueType = ValueTypes.valueType((byte) 1);
+        assertEquals(ValueTypes.UInt, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_uint_short() {
+        ValueType valueType = ValueTypes.valueType((short) 1);
+        assertEquals(ValueTypes.UInt, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_uint_int() {
         ValueType valueType = ValueTypes.valueType(1);
+        assertEquals(ValueTypes.UInt, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_uint_long() {
+        ValueType valueType = ValueTypes.valueType(1L);
         assertEquals(ValueTypes.UInt, valueType);
     }
 
@@ -432,8 +450,14 @@ public class ValueTypesTestCase
     }
 
     @Test
-    public void test_valueType_obj_sequence() {
+    public void test_valueType_obj_sequence_list() {
         ValueType valueType = ValueTypes.valueType(new ArrayList<>());
+        assertEquals(ValueTypes.Sequence, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_sequence_array() {
+        ValueType valueType = ValueTypes.valueType(new Object[0]);
         assertEquals(ValueTypes.Sequence, valueType);
     }
 
@@ -453,6 +477,12 @@ public class ValueTypesTestCase
     public void test_valueType_obj_floatOrSimple_bool() {
         ValueType valueType = ValueTypes.valueType(true);
         assertEquals(ValueTypes.Bool, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_floatOrSimple_halfprecisionfloat() {
+        ValueType valueType = ValueTypes.valueType(HalfPrecisionFloat.valueOf(12.0f));
+        assertEquals(ValueTypes.Float, valueType);
     }
 
     @Test
@@ -506,6 +536,14 @@ public class ValueTypesTestCase
 
         ValueType valueType = ValueTypes.valueType(new URI("www.noctarius.com"));
         assertEquals(ValueTypes.URI, valueType);
+    }
+
+    @Test
+    public void test_valueType_obj_unknown()
+            throws Exception {
+
+        ValueType valueType = ValueTypes.valueType(new Object());
+        assertEquals(ValueTypes.Unknown, valueType);
     }
 
     private Input input(MajorType majorType, ValueType valueType) {
