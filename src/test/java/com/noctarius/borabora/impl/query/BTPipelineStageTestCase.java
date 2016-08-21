@@ -1,18 +1,3 @@
-package com.noctarius.borabora.impl.query;
-
-import com.noctarius.borabora.AbstractTestCase;
-import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
-import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
-import org.junit.Test;
-
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
@@ -28,6 +13,21 @@ import static org.junit.Assert.assertTrue;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.noctarius.borabora.impl.query;
+
+import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
+import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
+import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
+import org.junit.Test;
+
+import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class BTPipelineStageTestCase
         extends AbstractTestCase {

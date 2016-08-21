@@ -1,13 +1,3 @@
-package com.noctarius.borabora.spi.codec;
-
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.util.Random;
-
-import static org.junit.Assert.assertArrayEquals;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
@@ -23,6 +13,16 @@ import static org.junit.Assert.assertArrayEquals;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.noctarius.borabora.spi.codec;
+
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.util.Random;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class CompositeBufferTestCase {
 

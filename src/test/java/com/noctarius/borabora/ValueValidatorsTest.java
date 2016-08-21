@@ -1,9 +1,3 @@
-package com.noctarius.borabora;
-
-import org.junit.Test;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
@@ -19,6 +13,12 @@ import java.math.BigInteger;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.noctarius.borabora;
+
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class ValueValidatorsTest
         extends AbstractTestCase {

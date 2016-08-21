@@ -1,6 +1,3 @@
-package com.noctarius.borabora.impl;
-
-import org.junit.Test;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
@@ -16,6 +13,9 @@ import org.junit.Test;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.noctarius.borabora.impl;
+
+import org.junit.Test;
 
 public class TokenMgrErrorTestCase {
 

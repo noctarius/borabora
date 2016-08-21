@@ -1,9 +1,3 @@
-package com.noctarius.borabora;
-
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.OutputStream;
 /*
  * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
  *
@@ -19,6 +13,12 @@ import java.io.OutputStream;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.noctarius.borabora;
+
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class OutputStreamOutputTestCase {
 
