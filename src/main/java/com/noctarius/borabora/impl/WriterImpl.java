@@ -19,13 +19,22 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.spi.codec.TagEncoder;
+
+import java.util.List;
 
 final class WriterImpl
         implements Writer {
 
+    private final List<TagEncoder> tagEncoders;
+
+    WriterImpl(List<TagEncoder> tagEncoders) {
+        this.tagEncoders = tagEncoders;
+    }
+
     @Override
     public GraphBuilder newGraphBuilder(Output output) {
-        return new GraphBuilderImpl(output);
+        return new GraphBuilderImpl(output, tagEncoders);
     }
 
 }

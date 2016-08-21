@@ -21,8 +21,8 @@ import com.noctarius.borabora.builder.WriterBuilder;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public final class WriterBuilderImpl
         implements WriterBuilder {
@@ -31,28 +31,41 @@ public final class WriterBuilderImpl
 
     @Override
     public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder) {
-        tagEncoders.add(tagEncoder);
+        Objects.requireNonNull(tagEncoder, "tagEncoder must not be null");
+        if (!tagEncoders.contains(tagEncoder)) {
+            tagEncoders.add(tagEncoder);
+        }
         return this;
     }
 
     @Override
     public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2) {
-        tagEncoders.add(tagEncoder1);
-        tagEncoders.add(tagEncoder2);
+        withTagEncoder(tagEncoder1);
+        withTagEncoder(tagEncoder2);
         return this;
     }
 
     @Override
     public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders) {
-        this.tagEncoders.add(tagEncoder1);
-        this.tagEncoders.add(tagEncoder2);
-        this.tagEncoders.addAll(Arrays.asList(tagEncoders));
+        withTagEncoder(tagEncoder1);
+        withTagEncoder(tagEncoder2);
+        for (TagEncoder tagEncoder : tagEncoders) {
+            withTagEncoder(tagEncoder);
+        }
+        return this;
+    }
+
+    @Override
+    public WriterBuilder withTagEncoder(Iterable<TagEncoder> tagEncoders) {
+        for (TagEncoder tagEncoder : tagEncoders) {
+            withTagEncoder(tagEncoder);
+        }
         return this;
     }
 
     @Override
     public Writer build() {
-        return new WriterImpl();
+        return new WriterImpl(tagEncoders);
     }
 
 }

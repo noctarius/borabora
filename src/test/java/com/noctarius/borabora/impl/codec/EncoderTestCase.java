@@ -22,6 +22,8 @@ import com.noctarius.borabora.Output;
 import com.noctarius.borabora.spi.codec.Encoder;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.assertArrayEquals;
 
 public class EncoderTestCase
@@ -85,6 +87,46 @@ public class EncoderTestCase
         byte[] result = new byte[9];
         Output output = Output.toByteArray(result);
         Encoder.putNumber(Long.MAX_VALUE, 0, output);
+        assertArrayEquals(hexToBytes("0x1b7fffffffffffffff"), result);
+    }
+
+    @Test
+    public void test_put_biguint_head_byte() {
+        byte[] result = new byte[1];
+        Output output = Output.toByteArray(result);
+        Encoder.putNumber(BigInteger.ONE, 0, output);
+        assertArrayEquals(hexToBytes("0x01"), result);
+    }
+
+    @Test
+    public void test_put_biguint_1_byte() {
+        byte[] result = new byte[2];
+        Output output = Output.toByteArray(result);
+        Encoder.putNumber(BigInteger.valueOf(Byte.MAX_VALUE), 0, output);
+        assertArrayEquals(hexToBytes("0x187f"), result);
+    }
+
+    @Test
+    public void test_read_biguint_2_byte() {
+        byte[] result = new byte[3];
+        Output output = Output.toByteArray(result);
+        Encoder.putNumber(BigInteger.valueOf(Short.MAX_VALUE), 0, output);
+        assertArrayEquals(hexToBytes("0x197fff"), result);
+    }
+
+    @Test
+    public void test_read_biguint_4_byte() {
+        byte[] result = new byte[5];
+        Output output = Output.toByteArray(result);
+        Encoder.putNumber(BigInteger.valueOf(Integer.MAX_VALUE), 0, output);
+        assertArrayEquals(hexToBytes("0x1a7fffffff"), result);
+    }
+
+    @Test
+    public void test_read_biguint_8_byte() {
+        byte[] result = new byte[9];
+        Output output = Output.toByteArray(result);
+        Encoder.putNumber(BigInteger.valueOf(Long.MAX_VALUE), 0, output);
         assertArrayEquals(hexToBytes("0x1b7fffffffffffffff"), result);
     }
 

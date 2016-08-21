@@ -18,12 +18,16 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.spi.codec.TagEncoder;
+
+import java.util.List;
 
 final class GraphBuilderImpl
         extends AbstractStreamValueBuilder<GraphBuilder>
         implements GraphBuilder {
 
-    GraphBuilderImpl(Output output) {
+    GraphBuilderImpl(Output output, List<TagEncoder> tagEncoders) {
+        // TODO TagEncoders!
         super(output);
     }
 

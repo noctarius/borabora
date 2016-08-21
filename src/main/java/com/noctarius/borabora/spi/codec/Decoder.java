@@ -280,9 +280,6 @@ public final class Decoder
 
     public static byte[] readRaw(Input input, MajorType majorType, long offset) {
         long length = length(input, majorType, offset);
-        if (length == 0) {
-            return EMPTY_BYTE_ARRAY;
-        }
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         byte[] data = new byte[(int) length];
         input.read(data, offset, length);

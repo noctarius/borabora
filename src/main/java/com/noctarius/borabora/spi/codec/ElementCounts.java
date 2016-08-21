@@ -27,14 +27,6 @@ public enum ElementCounts {
 
     public static long elementCountByMajorType(MajorType majorType, Input input, long offset) {
         switch (majorType) {
-            case UnsignedInteger:
-            case NegativeInteger:
-            case ByteString:
-            case TextString:
-            case SemanticTag:
-            case FloatingPointOrSimple:
-                return 1;
-
             case Sequence:
                 return sequenceElementCount(input, offset);
 
@@ -42,7 +34,7 @@ public enum ElementCounts {
                 return dictionaryElementCount(input, offset);
 
             default:
-                return 0;
+                return 1;
         }
     }
 

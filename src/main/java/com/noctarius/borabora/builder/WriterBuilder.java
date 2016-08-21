@@ -27,6 +27,8 @@ public interface WriterBuilder {
 
     <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders);
 
+    WriterBuilder withTagEncoder(Iterable<TagEncoder> tagEncoders);
+
     Writer build();
 
 }

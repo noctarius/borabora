@@ -45,6 +45,12 @@ public class DecoderTestCase
     }
 
     @Test(expected = IllegalStateException.class)
+    public void fail_illegal_boolean_value_wrong_major() {
+        Input input = Input.fromByteArray(hexToBytes("0x06"));
+        Decoder.getBooleanValue(input, 0);
+    }
+
+    @Test(expected = IllegalStateException.class)
     public void fail_illegal_floatingpoint_type() {
         Input input = Input.fromByteArray(hexToBytes("0xf6"));
         Decoder.readFloat(input, 0);
