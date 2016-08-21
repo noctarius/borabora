@@ -154,7 +154,7 @@
             <exclude>LICENSE</exclude>
             <exclude>*.svg</exclude>
             <exclude>book.json</exclude>
-            <exclude>docs/*</exclude>
+            <exclude>docs/**</exclude>
           </excludes>
         </configuration>
       </plugin>

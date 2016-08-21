@@ -2,3 +2,5 @@
 
 . link:introduction/README.adoc[Introduction]
 .. link:introduction/what-is-cbor.adoc[What is CBOR?]
+. link:specification/README.adoc[Language Specification]
+.. link:specification/grammar-definition.adoc[Grammar Definition]
