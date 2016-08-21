@@ -19,7 +19,6 @@ package com.noctarius.borabora;
 import org.junit.Test;
 import sun.misc.Unsafe;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

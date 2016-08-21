@@ -644,8 +644,7 @@ public class WriterTestCase
     public void test_write_unfinished_dictionary()
             throws Exception {
 
-        buildParser(
-                (sgb) -> sgb.putDictionary(2).putEntry().putString("te").putString("st").endEntry().endDictionary());
+        buildParser((sgb) -> sgb.putDictionary(2).putEntry().putString("te").putString("st").endEntry().endDictionary());
     }
 
     @Test(expected = IllegalStateException.class)

@@ -23,7 +23,6 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.EqualsSupport;
-import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryStage;

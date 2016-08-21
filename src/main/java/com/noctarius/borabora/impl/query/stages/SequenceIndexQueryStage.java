@@ -19,7 +19,6 @@ package com.noctarius.borabora.impl.query.stages;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.ElementCounts;

@@ -17,15 +17,9 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.ObjectValue;
-import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.function.Predicate;
 
 import static com.noctarius.borabora.Predicates.any;
