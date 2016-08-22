@@ -42,6 +42,11 @@ public interface Value {
 
     long offset();
 
+    /**
+     * Returns a string-based representation of the internal CBOR bytestream as a human-readable version.
+     *
+     * @return human-readable representation of the CBOR stream
+     */
     String asString();
 
 }

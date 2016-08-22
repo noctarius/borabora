@@ -16,9 +16,31 @@
  */
 package com.noctarius.borabora;
 
+/**
+ * This exception is commonly thrown on occasions where a wrong type
+ * is assumed by a query. Queries have multiple ways to provide type
+ * information to the query execution pipeline implicitly and explicitly:
+ * <ul>
+ * <li>explicit: <tt>#-&gt;dictionary{'...'}</tt> or
+ * <tt>#-&gt;?dictionary{'...'}</tt></li>
+ * <li>implicit: <tt>#{'...'}</tt></li>
+ * </ul>
+ * <p>
+ * For explicit type definitions you can also define if the expected type
+ * is necessary or optional. In case of optional, <tt>null</tt> will be
+ * returned instead of the <tt>WrongTypeException</tt> being thrown. Both
+ * other options will always throw this exception type when the expected
+ * type is not met.
+ */
 public class WrongTypeException
         extends RuntimeException {
 
+    /**
+     * Creates a new instance of the <tt>WrongTypeException</tt> class,
+     * containing the given message.
+     *
+     * @param message the message to present to the user
+     */
     public WrongTypeException(String message) {
         super(message);
     }

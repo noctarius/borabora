@@ -115,6 +115,14 @@ public interface Dictionary
      */
     StreamableIterable<Value> values();
 
+    /**
+     * <p>Returns a lazy evaluating {@link Iterable} implementation to traverse all entries (key-value pairs)
+     * in the dictionary represented by this instance. Also the {@link java.util.Iterator} returned from
+     * {@link Iterable#iterator()} is a fully lazy implementation. Whenever the traversal ends, no more
+     * elements will be evaluated.</p>
+     *
+     * @return a a fully lazy, entries traversing {@link Iterable} instance
+     */
     StreamableIterable<Map.Entry<Value, Value>> entries();
 
     /**
@@ -125,8 +133,23 @@ public interface Dictionary
      */
     Iterator<Map.Entry<Value, Value>> iterator();
 
+    /**
+     * Returns a string-based representation of the internal CBOR bytestream as a human-readable version.
+     *
+     * @return human-readable representation of the CBOR stream
+     */
     String asString();
 
+    /**
+     * Performs the given action for each entry in this map until all entries
+     * have been processed or the action throws an exception.   Unless
+     * otherwise specified by the implementing class, actions are performed in
+     * the order of entry set iteration (if an iteration order is specified.)
+     * Exceptions thrown by the action are relayed to the caller.
+     *
+     * @param action The action to be performed for each entry
+     * @throws NullPointerException if the specified action is null
+     */
     default void forEach(BiConsumer<Value, Value> action) {
         Objects.requireNonNull(action);
         for (Map.Entry<Value, Value> entry : entries()) {

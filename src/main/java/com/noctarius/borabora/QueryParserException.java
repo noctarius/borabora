@@ -16,9 +16,19 @@
  */
 package com.noctarius.borabora;
 
+/**
+ * This exception type is thrown for any kind of parsing exception,
+ * while parsing a query language string.
+ */
 public class QueryParserException
         extends RuntimeException {
 
+    /**
+     * Creates a new instance of the <tt>QueryParserException</tt> based
+     * on the given cause.
+     *
+     * @param cause the cause to base on
+     */
     public QueryParserException(Throwable cause) {
         super(cause);
     }

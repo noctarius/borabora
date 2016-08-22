@@ -93,8 +93,18 @@ public interface Sequence
      */
     Value get(long sequenceIndex);
 
+    /**
+     * Returns a string-based representation of the internal CBOR bytestream as a human-readable version.
+     *
+     * @return human-readable representation of the CBOR stream
+     */
     String asString();
 
+    /**
+     * Creates a {@link Spliterator} over the elements in this list.
+     *
+     * @return a {@code Spliterator} over the elements in this list
+     */
     @Override
     default Spliterator<Value> spliterator() {
         return Spliterators.spliterator(this.iterator(), this.size(), Spliterator.ORDERED);
