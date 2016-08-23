@@ -131,7 +131,6 @@ public final class CommonTagCodec
 
         UBIG_NUM_READER((valueType, offset, length, queryContext) -> {
             Input input = queryContext.input();
-            int byteSize = ByteSizes.intByteSize(input, offset);
             // We need to extract raw bytes to prevent creating strings
             // and since new String(..) transforms the byte array for char[]
             byte[] bytes = Decoder.extractStringBytes(input, offset + 1);

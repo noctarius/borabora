@@ -143,19 +143,11 @@ public final class Decoder
     }
 
     public static Sequence readSequence(long offset, QueryContext queryContext) {
-        Input input = queryContext.input();
-        long headByteSize = ByteSizes.headByteSize(input, offset);
-        long size = ElementCounts.sequenceElementCount(input, offset);
-        long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size);
-        return new SequenceImpl(size, elementIndexes, queryContext);
+        return SequenceImpl.readSequence(offset, queryContext);
     }
 
     public static Dictionary readDictionary(long offset, QueryContext queryContext) {
-        Input input = queryContext.input();
-        long headByteSize = ByteSizes.headByteSize(input, offset);
-        long size = ElementCounts.dictionaryElementCount(input, offset);
-        long[][] elementIndexes = readElementIndexes(input, offset + headByteSize, size * 2);
-        return new DictionaryImpl(size, elementIndexes, queryContext);
+        return DictionaryImpl.readDictionary(offset, queryContext);
     }
 
     public static long length(Input input, MajorType majorType, long offset) {
@@ -315,6 +307,27 @@ public final class Decoder
         return LocalDateTime.parse(date, DATE_TIME_FRACTION_OFFSET_FORMAT).atZone(UTC).toInstant();
     }
 
+    public static long[][] readElementIndexes(Input input, long offset, long elementSize) {
+        int baseSize = (int) (elementSize / Integer.MAX_VALUE) + 1;
+        long[][] elementIndexes = new long[baseSize][];
+
+        long position = offset;
+        long remainingElements = elementSize;
+        for (int base = 0; base < baseSize; base++) {
+            int remain = (int) Math.min(Integer.MAX_VALUE, remainingElements);
+            elementIndexes[base] = new long[remain];
+            for (int elIndex = 0; elIndex < remain; elIndex++) {
+                // Store element position
+                elementIndexes[base][elIndex] = position;
+
+                // Skip elements content to next element
+                MajorType majorType = getMajorType(position, input);
+                position += length(input, majorType, position);
+            }
+        }
+        return elementIndexes;
+    }
+
     private static long findByPredicate(Predicate<Value> predicate, long offset, QueryContext queryContext) {
         Input input = queryContext.input();
         long position = offset + ByteSizes.headByteSize(input, offset);
@@ -386,27 +399,6 @@ public final class Decoder
             return new String(bytes, ASCII);
         }
         return new String(bytes, UTF8);
-    }
-
-    private static long[][] readElementIndexes(Input input, long offset, long elementSize) {
-        int baseSize = (int) (elementSize / Integer.MAX_VALUE) + 1;
-        long[][] elementIndexes = new long[baseSize][];
-
-        long position = offset;
-        long remainingElements = elementSize;
-        for (int base = 0; base < baseSize; base++) {
-            int remain = (int) Math.min(Integer.MAX_VALUE, remainingElements);
-            elementIndexes[base] = new long[remain];
-            for (int elIndex = 0; elIndex < remain; elIndex++) {
-                // Store element position
-                elementIndexes[base][elIndex] = position;
-
-                // Skip elements content to next element
-                MajorType majorType = getMajorType(position, input);
-                position += length(input, majorType, position);
-            }
-        }
-        return elementIndexes;
     }
 
 }

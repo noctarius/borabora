@@ -19,7 +19,10 @@ package com.noctarius.borabora.spi.pipeline;
 import com.noctarius.borabora.impl.query.stages.BaseQueryStage;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
@@ -40,12 +43,24 @@ public final class QueryBuilderNode {
         return child;
     }
 
+    public void pushChildNodes(Collection<QueryBuilderNode> childNodes) {
+        children.addAll(childNodes);
+    }
+
     public int childrenCount() {
         return children.size();
     }
 
-    public List<QueryBuilderNode> children() {
-        return children;
+    public void forEachChild(Consumer<? super QueryBuilderNode> consumer) {
+        children.forEach(consumer);
+    }
+
+    public Iterator<QueryBuilderNode> childIterator() {
+        return children.iterator();
+    }
+
+    public void clearChildren() {
+        children.clear();
     }
 
     public QueryStage stage() {

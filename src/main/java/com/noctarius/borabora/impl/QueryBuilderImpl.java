@@ -171,27 +171,27 @@ public final class QueryBuilderImpl
 
     private void fixSelectorConsumers(QueryBuilderNode node) {
         if (node.childrenCount() > 0) {
-            node.children().forEach(this::fixSelectorConsumers);
+            node.forEachChild(this::fixSelectorConsumers);
         }
 
         List<QueryBuilderNode> newChildren = new ArrayList<>();
-        Iterator<QueryBuilderNode> iterator = node.children().iterator();
+        Iterator<QueryBuilderNode> iterator = node.childIterator();
         while (iterator.hasNext()) {
             QueryBuilderNode child = iterator.next();
             if (child.stage() instanceof ConsumerQueryStage && child.childrenCount() > 0) {
                 iterator.remove();
-                newChildren.addAll(child.children());
+                child.forEachChild(newChildren::add);
             }
         }
-        node.children().addAll(newChildren);
+        node.pushChildNodes(newChildren);
     }
 
     private void fixConsumers(QueryBuilderNode node) {
         if (node.childrenCount() > 0) {
-            node.children().forEach(this::fixConsumers);
+            node.forEachChild(this::fixConsumers);
         } else {
             if (!(node.stage() instanceof ConsumerQueryStage)) {
-                node.children().add(new QueryBuilderNode(ConsumerQueryStage.INSTANCE));
+                node.pushChild(ConsumerQueryStage.INSTANCE);
             }
         }
     }
@@ -200,15 +200,17 @@ public final class QueryBuilderImpl
         if (parentTreeNode.childrenCount() == 0) {
             parentTreeNode.pushChild(new SingleStreamElementQueryStage(0));
         } else {
-            List<QueryBuilderNode> children = parentTreeNode.children();
+            // Copy old children to inject a new hierarchy level
+            List<QueryBuilderNode> children = new ArrayList<>();
+            parentTreeNode.forEachChild(children::add);
+
             QueryBuilderNode node = children.get(0);
             if (!(node.stage() instanceof SingleStreamElementQueryStage) && //
                     !(node.stage() instanceof MultiStreamElementQueryStage)) {
 
-                QueryBuilderNode newNode = new QueryBuilderNode(new SingleStreamElementQueryStage(0));
-                newNode.children().addAll(children);
-                children.clear();
-                children.add(newNode);
+                parentTreeNode.clearChildren();
+                QueryBuilderNode newNode = parentTreeNode.pushChild(new SingleStreamElementQueryStage(0));
+                newNode.pushChildNodes(children);
             }
         }
     }

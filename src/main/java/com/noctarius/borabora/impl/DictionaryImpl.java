@@ -24,7 +24,9 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamableIterable;
+import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
@@ -42,7 +44,7 @@ public final class DictionaryImpl
     private final long[][] elementIndexes;
     private final QueryContext queryContext;
 
-    public DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+    private DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -145,6 +147,14 @@ public final class DictionaryImpl
         int baseIndex = (int) (offset / Integer.MAX_VALUE);
         int elementIndex = (int) (offset % Integer.MAX_VALUE);
         return elementIndexes[baseIndex][elementIndex];
+    }
+
+    public static Dictionary readDictionary(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long size = ElementCounts.dictionaryElementCount(input, offset);
+        long[][] elementIndexes = Decoder.readElementIndexes(input, offset + headByteSize, size * 2);
+        return new DictionaryImpl(size, elementIndexes, queryContext);
     }
 
     private class DictionaryEntryIterable

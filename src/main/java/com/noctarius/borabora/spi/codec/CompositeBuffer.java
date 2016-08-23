@@ -216,7 +216,7 @@ public class CompositeBuffer
         Buffer tail = this.tail;
 
         byte[] buffer = new byte[chunksize];
-        Buffer newTail = new Buffer(tail, buffer);
+        Buffer newTail = new Buffer(buffer);
 
         nbOfChunks++;
         if (tail != null) {
@@ -227,13 +227,11 @@ public class CompositeBuffer
     }
 
     private static class Buffer {
-        private final Buffer previous;
         private final byte[] buffer;
 
         private Buffer next;
 
-        private Buffer(Buffer previous, byte[] buffer) {
-            this.previous = previous;
+        private Buffer(byte[] buffer) {
             this.buffer = buffer;
         }
     }

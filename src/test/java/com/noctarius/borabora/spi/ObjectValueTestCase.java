@@ -23,7 +23,6 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
@@ -155,11 +154,10 @@ public class ObjectValueTestCase
             throws Exception {
 
         Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy$ListBackedSequence");
-        Constructor<Sequence> constructor = (Constructor) type.getDeclaredConstructor(List.class, QueryContext.class);
+        Constructor<Sequence> constructor = (Constructor) type.getDeclaredConstructor(List.class);
         constructor.setAccessible(true);
 
-        QueryContext queryContext = newQueryContext();
-        Sequence sequence = constructor.newInstance(values, queryContext);
+        Sequence sequence = constructor.newInstance(values);
 
         return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence);
     }
@@ -168,11 +166,10 @@ public class ObjectValueTestCase
             throws Exception {
 
         Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy$MapBackedDictionary");
-        Constructor<Dictionary> constructor = (Constructor) type.getDeclaredConstructor(Map.class, QueryContext.class);
+        Constructor<Dictionary> constructor = (Constructor) type.getDeclaredConstructor(Map.class);
         constructor.setAccessible(true);
 
-        QueryContext queryContext = newQueryContext();
-        Dictionary dictionary = constructor.newInstance(values, queryContext);
+        Dictionary dictionary = constructor.newInstance(values);
 
         return new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary);
     }

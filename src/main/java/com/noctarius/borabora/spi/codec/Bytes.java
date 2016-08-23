@@ -72,7 +72,7 @@ public enum Bytes {
         long b7 = readUInt8(input, offset + 6);
         long b8 = readUInt8(input, offset + 7);
         long val = ((b1 << 56) | (b2 << 48) | (b3 << 40) | (b4 << 32) | (b5 << 24) | (b6 << 16) | (b7 << 8) | b8);
-        return val & 0xffffffffffffffffL;
+        return val;
     }
 
     public static BigInteger readUInt64BigInt(Input input, long offset) {

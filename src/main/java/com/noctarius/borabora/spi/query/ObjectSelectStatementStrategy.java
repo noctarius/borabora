@@ -66,7 +66,7 @@ public class ObjectSelectStatementStrategy
         Map<Value, Value> entries = queryContext.queryStackPop();
 
         // Build the new Dictionary based by these entries
-        Dictionary dictionary = new MapBackedDictionary(entries, queryContext);
+        Dictionary dictionary = new MapBackedDictionary(entries);
 
         // Push dictionary value
         queryContext.queryStackPush(new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary));
@@ -139,7 +139,7 @@ public class ObjectSelectStatementStrategy
         List<Value> entries = queryContext.queryStackPop();
 
         // Build the new Sequence based by these entries
-        Sequence sequence = new ListBackedSequence(entries, queryContext);
+        Sequence sequence = new ListBackedSequence(entries);
 
         // Push dictionary value
         queryContext.queryStackPush(new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence));
@@ -166,7 +166,7 @@ public class ObjectSelectStatementStrategy
 
     private static abstract class AbstractJavaBackedDataStructure {
 
-        protected Value findValue(Predicate<Value> predicate, Iterator<Value> iterator, QueryContext queryContext) {
+        protected Value findValue(Predicate<Value> predicate, Iterator<Value> iterator) {
             while (iterator.hasNext()) {
                 Value candidate = iterator.next();
                 if (predicate.test(candidate)) {
@@ -183,11 +183,9 @@ public class ObjectSelectStatementStrategy
             implements Sequence {
 
         private final List<Value> entries;
-        private final QueryContext queryContext;
 
-        ListBackedSequence(List<Value> entries, QueryContext queryContext) {
+        ListBackedSequence(List<Value> entries) {
             this.entries = entries;
-            this.queryContext = queryContext;
         }
 
         @Override
@@ -202,7 +200,7 @@ public class ObjectSelectStatementStrategy
 
         @Override
         public boolean contains(Predicate<Value> predicate) {
-            return findValue(predicate, iterator(), queryContext) != Value.NULL_VALUE;
+            return findValue(predicate, iterator()) != Value.NULL_VALUE;
         }
 
         @Override
@@ -244,11 +242,9 @@ public class ObjectSelectStatementStrategy
             implements Dictionary {
 
         private final Map<Value, Value> entries;
-        private final QueryContext queryContext;
 
-        MapBackedDictionary(Map<Value, Value> entries, QueryContext queryContext) {
+        MapBackedDictionary(Map<Value, Value> entries) {
             this.entries = entries;
-            this.queryContext = queryContext;
         }
 
         @Override
@@ -263,17 +259,17 @@ public class ObjectSelectStatementStrategy
 
         @Override
         public boolean containsKey(Predicate<Value> predicate) {
-            return findValue(predicate, keys().iterator(), queryContext) != Value.NULL_VALUE;
+            return findValue(predicate, keys().iterator()) != Value.NULL_VALUE;
         }
 
         @Override
         public boolean containsValue(Predicate<Value> predicate) {
-            return findValue(predicate, values().iterator(), queryContext) != Value.NULL_VALUE;
+            return findValue(predicate, values().iterator()) != Value.NULL_VALUE;
         }
 
         @Override
         public Value get(Predicate<Value> predicate) {
-            Value key = findValue(predicate, keys().iterator(), queryContext);
+            Value key = findValue(predicate, keys().iterator());
             return entries.get(key);
         }
 

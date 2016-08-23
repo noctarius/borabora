@@ -73,7 +73,7 @@ public final class Encoder
     public static long putNumber(BigInteger value, long offset, Output output) {
         MajorType majorType;
         BigInteger absValue;
-        if (value.compareTo(BigInteger.ZERO) == COMPARATOR_LESS_THAN) {
+        if (value.compareTo(BigInteger.ZERO) <= COMPARATOR_LESS_THAN) {
             majorType = MajorType.NegativeInteger;
             absValue = BI_VAL_MINUS_ONE.subtract(value).abs();
 
@@ -88,7 +88,7 @@ public final class Encoder
         // Otherwise write as XBigNum
         MajorType majorType;
         BigInteger absValue;
-        if (value.compareTo(BigInteger.ZERO) == COMPARATOR_LESS_THAN) {
+        if (value.compareTo(BigInteger.ZERO) <= COMPARATOR_LESS_THAN) {
             majorType = MajorType.NegativeInteger;
             absValue = BI_VAL_MINUS_ONE.subtract(value).abs();
 
@@ -182,25 +182,25 @@ public final class Encoder
 
     public static long encodeLengthAndValue(MajorType majorType, BigInteger length, long offset, Output output) {
         int head = majorType.typeId() << 5;
-        if (length.compareTo(BI_VAL_24) == COMPARATOR_LESS_THAN) {
+        if (length.compareTo(BI_VAL_24) <= COMPARATOR_LESS_THAN) {
             return Bytes.putInt8((byte) (head | length.intValue()), offset, output);
 
-        } else if (length.compareTo(BI_VAL_256) == COMPARATOR_LESS_THAN) {
+        } else if (length.compareTo(BI_VAL_256) <= COMPARATOR_LESS_THAN) {
             head |= ADD_INFO_ONE_BYTE;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt8((byte) length.intValue(), offset, output);
 
-        } else if (length.compareTo(BI_VAL_65536) == COMPARATOR_LESS_THAN) {
+        } else if (length.compareTo(BI_VAL_65536) <= COMPARATOR_LESS_THAN) {
             head |= ADD_INFO_TWO_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt16((short) length.intValue(), offset, output);
 
-        } else if (length.compareTo(BI_VAL_4294967296) == COMPARATOR_LESS_THAN) {
+        } else if (length.compareTo(BI_VAL_4294967296) <= COMPARATOR_LESS_THAN) {
             head |= ADD_INFO_FOUR_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             offset = Bytes.putInt32((int) length.longValue(), offset, output);
 
-        } else if (length.compareTo(BI_VAL_MAX_VALUE) == COMPARATOR_LESS_THAN) {
+        } else if (length.compareTo(BI_VAL_MAX_VALUE) <= COMPARATOR_LESS_THAN) {
             head |= ADD_INFO_EIGHT_BYTES;
             offset = Bytes.putInt8((byte) head, offset, output);
             output.write(offset++, (byte) length.shiftRight(56).and(BI_MASK).intValue());

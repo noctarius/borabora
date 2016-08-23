@@ -23,7 +23,9 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
+import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
@@ -40,7 +42,7 @@ public final class SequenceImpl
     private final long[][] elementIndexes;
     private final QueryContext queryContext;
 
-    public SequenceImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+    SequenceImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -147,6 +149,14 @@ public final class SequenceImpl
                 arrayIndex++;
             }
         }
+    }
+
+    public static Sequence readSequence(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long headByteSize = ByteSizes.headByteSize(input, offset);
+        long size = ElementCounts.sequenceElementCount(input, offset);
+        long[][] elementIndexes = Decoder.readElementIndexes(input, offset + headByteSize, size);
+        return new SequenceImpl(size, elementIndexes, queryContext);
     }
 
 }

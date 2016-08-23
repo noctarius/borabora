@@ -40,8 +40,7 @@ class SequenceQueryBuilderImpl<T>
     @Override
     public StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry() {
         Tracer.traceCall("SequenceQueryBuilderImpl#putEntry", this);
-        QueryBuilderNode entry = new QueryBuilderNode(AsSequenceSelectorEntryQueryStage.INSTANCE);
-        parentTreeNode.children().add(entry);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsSequenceSelectorEntryQueryStage.INSTANCE);
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE,
                 selectStatementStrategy);
     }

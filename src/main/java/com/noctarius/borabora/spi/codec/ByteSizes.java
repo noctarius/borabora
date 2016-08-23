@@ -95,7 +95,7 @@ public enum ByteSizes {
             case Constants.ADD_INFO_RESERVED_1: // Unassigned
             case Constants.ADD_INFO_RESERVED_2: // Unassigned
             case Constants.ADD_INFO_RESERVED_3: // Unassigned
-                throwUnassigned();
+                throw throwUnassigned();
             case Constants.ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset);
             default:
@@ -113,11 +113,11 @@ public enum ByteSizes {
             case Constants.ADD_INFO_FOUR_BYTES:
                 return stringDataSize(input, offset) + 5;
             case Constants.ADD_INFO_EIGHT_BYTES:
-                throwString64bitUnsupported();
+                throw throwString64bitUnsupported();
             case Constants.ADD_INFO_RESERVED_1: // Unassigned
             case Constants.ADD_INFO_RESERVED_2: // Unassigned
             case Constants.ADD_INFO_RESERVED_3: // Unassigned
-                throwUnassigned();
+                throw throwUnassigned();
             case Constants.ADD_INFO_INDEFINITE:
                 return untilBreakCode(input, offset);
             default:
@@ -135,11 +135,11 @@ public enum ByteSizes {
             case Constants.ADD_INFO_FOUR_BYTES:
                 return Bytes.readUInt32(input, offset + 1);
             case Constants.ADD_INFO_EIGHT_BYTES:
-                throwString64bitUnsupported();
+                throw throwString64bitUnsupported();
             case Constants.ADD_INFO_RESERVED_1: // Unassigned
             case Constants.ADD_INFO_RESERVED_2: // Unassigned
             case Constants.ADD_INFO_RESERVED_3: // Unassigned
-                throwUnassigned();
+                throw throwUnassigned();
             default:
                 return addInfo;
         }
@@ -159,18 +159,18 @@ public enum ByteSizes {
             case Constants.ADD_INFO_RESERVED_1: // Unassigned
             case Constants.ADD_INFO_RESERVED_2: // Unassigned
             case Constants.ADD_INFO_RESERVED_3: // Unassigned
-                throwUnassigned();
+                throw throwUnassigned();
             default:
                 return 1;
         }
     }
 
-    private static void throwUnassigned() {
-        throw new IllegalStateException("28|29|30 are unassigned");
+    private static RuntimeException throwUnassigned() {
+        return new IllegalStateException("28|29|30 are unassigned");
     }
 
-    private static void throwString64bitUnsupported() {
-        throw new IllegalStateException("String sizes of 64bit are not yet supported");
+    private static RuntimeException throwString64bitUnsupported() {
+        return new IllegalStateException("String sizes of 64bit are not yet supported");
     }
 
     private static long untilBreakCode(Input input, long offset) {

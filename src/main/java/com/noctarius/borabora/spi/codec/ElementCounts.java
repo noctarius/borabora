@@ -39,14 +39,14 @@ public enum ElementCounts {
     }
 
     public static long sequenceElementCount(Input input, long offset) {
-        return elementCount(input, offset, "Sequence", false);
+        return elementCount(input, offset, false);
     }
 
     public static long dictionaryElementCount(Input input, long offset) {
-        return elementCount(input, offset, "Dictionary", true);
+        return elementCount(input, offset, true);
     }
 
-    private static long elementCount(Input input, long offset, String elementType, boolean keyValue) {
+    private static long elementCount(Input input, long offset, boolean keyValue) {
         int addInfo = Decoder.additionalInfo(input, offset);
         switch (addInfo) {
             case Constants.ADD_INFO_ONE_BYTE:

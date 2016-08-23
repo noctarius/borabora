@@ -40,8 +40,7 @@ class DictionaryQueryBuilderImpl<T>
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-string", this);
-        QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withStringKey(key));
-        parentTreeNode.children().add(entry);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withStringKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
                 selectStatementStrategy);
     }
@@ -49,8 +48,7 @@ class DictionaryQueryBuilderImpl<T>
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-double", this);
-        QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
-        parentTreeNode.children().add(entry);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
                 selectStatementStrategy);
     }
@@ -58,8 +56,7 @@ class DictionaryQueryBuilderImpl<T>
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-long", this);
-        QueryBuilderNode entry = new QueryBuilderNode(AsDictionarySelectorEntryQueryStage.withIntKey(key));
-        parentTreeNode.children().add(entry);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withIntKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
                 selectStatementStrategy);
     }

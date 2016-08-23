@@ -315,13 +315,13 @@ public class ObjectSelectStatementStrategyTestCase
 
     private Value asObjectDictionary(Map<Value, Value> values) {
         QueryContext queryContext = newQueryContext();
-        Dictionary dictionary = new MapBackedDictionary(values, queryContext);
+        Dictionary dictionary = new MapBackedDictionary(values);
         return new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, dictionary);
     }
 
     private Value asObjectSequence(List<Value> values) {
         QueryContext queryContext = newQueryContext();
-        Sequence sequence = new ListBackedSequence(values, queryContext);
+        Sequence sequence = new ListBackedSequence(values);
         return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, sequence);
     }
 
