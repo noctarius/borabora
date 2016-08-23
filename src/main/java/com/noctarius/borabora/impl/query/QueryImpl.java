@@ -24,13 +24,11 @@ import com.noctarius.borabora.spi.query.SelectStatementStrategyAware;
 public final class QueryImpl
         implements Query, SelectStatementStrategyAware {
 
-    private final boolean streamingCapable;
     private final QueryPipeline queryPipeline;
     private SelectStatementStrategy selectStatementStrategy;
 
     public QueryImpl(QueryPipeline queryPipeline, SelectStatementStrategy selectStatementStrategy) {
         this.queryPipeline = queryPipeline;
-        this.streamingCapable = queryPipeline.isStreamQueryCapable();
         this.selectStatementStrategy = selectStatementStrategy;
     }
 
@@ -45,9 +43,6 @@ public final class QueryImpl
 
         QueryImpl query = (QueryImpl) o;
 
-        if (streamingCapable != query.streamingCapable) {
-            return false;
-        }
         if (queryPipeline != null ? !queryPipeline.equals(query.queryPipeline) : query.queryPipeline != null) {
             return false;
         }
@@ -58,8 +53,7 @@ public final class QueryImpl
 
     @Override
     public int hashCode() {
-        int result = (streamingCapable ? 1 : 0);
-        result = 31 * result + (queryPipeline != null ? queryPipeline.hashCode() : 0);
+        int result = queryPipeline != null ? queryPipeline.hashCode() : 0;
         result = 31 * result + (selectStatementStrategy != null ? selectStatementStrategy.hashCode() : 0);
         return result;
     }

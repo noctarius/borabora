@@ -22,10 +22,6 @@ public interface QueryPipeline {
 
     void evaluate(QueryContext pipelineContext);
 
-    default boolean isStreamQueryCapable() {
-        return true;
-    }
-
     String printQueryGraph();
 
 }
