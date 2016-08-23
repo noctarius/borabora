@@ -24,6 +24,7 @@ import com.noctarius.borabora.spi.Constants;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -655,8 +656,54 @@ public class WriterTestCase
         buildParser((sgb) -> sgb.putDictionary(2).putEntry().putString("te").endEntry());
     }
 
+    @Test(expected = WrongTypeException.class)
+    public void fail_write_putvalue_puttag_object()
+            throws Exception {
+
+        buildParser((sgb) -> sgb.putValue(new Object()));
+    }
+
     @Test
-    public void test_write_putvalue_datetime()
+    public void test_write_putvalue_string()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue("foo");
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals("foo", value1.string());
+    }
+
+    @Test
+    public void test_write_putvalue_number()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(1L);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals(1L, value1.number().longValue());
+    }
+
+    @Test
+    public void test_write_putvalue_boolean()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(Boolean.TRUE);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals(Boolean.TRUE, value1.bool());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_datetime()
             throws Exception {
 
         Instant expected = Instant.now();
@@ -675,7 +722,7 @@ public class WriterTestCase
     }
 
     @Test
-    public void test_write_putvalue_timestamp()
+    public void test_write_putvalue_puttag_timestamp()
             throws Exception {
 
         Instant expected = Instant.now();
@@ -694,6 +741,36 @@ public class WriterTestCase
         assertEquals(expected.getEpochSecond(), (long) value1.tag());
         assertEquals(expected.getEpochSecond(), (long) value2.tag());
         assertNull(value3.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_uri()
+            throws Exception {
+
+        URI expected = new URI("www.noctarius.com");
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(expected);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals(expected, value1.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_ubignum()
+            throws Exception {
+
+        BigInteger expected = Constants.BI_VAL_MAX_VALUE.add(BigInteger.ONE);
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(expected);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals(expected, value1.tag());
     }
 
 }

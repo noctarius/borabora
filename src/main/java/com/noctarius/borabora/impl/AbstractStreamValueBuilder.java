@@ -352,7 +352,9 @@ abstract class AbstractStreamValueBuilder<B>
         if (value == null) {
             offset = Encoder.putNull(offset, output);
 
-        } else if (value instanceof Number) {
+        } else if (value instanceof Number //
+                && !(value instanceof BigInteger) && !(value instanceof BigDecimal)) {
+
             return putNumber((Number) value);
 
         } else if (value instanceof Boolean) {

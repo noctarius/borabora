@@ -236,7 +236,7 @@ public final class CommonTagCodec
 
     @Override
     public boolean handles(Object value) {
-        return ValueTypes.valueType(value) != null;
+        return ValueTypes.valueType(value) != ValueTypes.Unknown;
     }
 
     @Override

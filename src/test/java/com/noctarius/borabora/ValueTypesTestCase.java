@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -258,6 +259,26 @@ public class ValueTypesTestCase
         URI expected = new URI("www.noctarius.com");
         Value value = asStreamValue(gb -> gb.putURI(expected).finishStream());
         assertEquals(expected, ValueTypes.URI.value(value, true));
+    }
+
+    @Test(expected = URISyntaxException.class)
+    public void fail_value_uri_parsing()
+            throws Throwable {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        long offset = Encoder.putSemanticTag(Constants.TAG_URI, 0, output);
+        Encoder.putString("BAM://", offset, output);
+
+        try {
+            Value value = asStreamValue(baos.toByteArray());
+            value.tag();
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof URISyntaxException) {
+                throw e.getCause();
+            }
+            throw e;
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
