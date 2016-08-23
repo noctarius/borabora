@@ -79,6 +79,10 @@ public interface ValueBuilder<B> {
 
     B putBoolean(Boolean value);
 
+    B putValue(Object value);
+
+    B putTag(Object value);
+
     SequenceBuilder<B> putSequence();
 
     SequenceBuilder<B> putSequence(long elements);

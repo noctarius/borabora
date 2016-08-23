@@ -99,7 +99,7 @@ public class QueryBuilderBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_double() {
         QueryBuilderBuilder queryBuilderBuilder = new QueryBuilderBuilderImpl();
-        queryBuilderBuilder.addQueryOptimizer(QO_1, QO_2);
+        queryBuilderBuilder.addQueryOptimizers(QO_1, QO_2);
         StreamQueryBuilder queryBuilder = queryBuilderBuilder.newBuilder();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(queryBuilder);
         assertEquals(2, queryOptimizers.size());
@@ -111,7 +111,7 @@ public class QueryBuilderBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_array() {
         QueryBuilderBuilder queryBuilderBuilder = new QueryBuilderBuilderImpl();
-        queryBuilderBuilder.addQueryOptimizer(QO_1, QO_2, QO_3, QO_4);
+        queryBuilderBuilder.addQueryOptimizers(QO_1, QO_2, QO_3, QO_4);
         StreamQueryBuilder queryBuilder = queryBuilderBuilder.newBuilder();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(queryBuilder);
         assertEquals(4, queryOptimizers.size());
@@ -125,7 +125,7 @@ public class QueryBuilderBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_iterable() {
         QueryBuilderBuilder queryBuilderBuilder = new QueryBuilderBuilderImpl();
-        queryBuilderBuilder.addQueryOptimizer(Stream.of(QO_1, QO_2, QO_3, QO_4).collect(Collectors.toList()));
+        queryBuilderBuilder.addQueryOptimizers(Stream.of(QO_1, QO_2, QO_3, QO_4).collect(Collectors.toList()));
         StreamQueryBuilder queryBuilder = queryBuilderBuilder.newBuilder();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(queryBuilder);
         assertEquals(4, queryOptimizers.size());

@@ -79,15 +79,15 @@ public class QueryBuilderBuilderImpl
     }
 
     @Override
-    public QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
+    public QueryBuilderBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
         return this;
     }
 
     @Override
-    public QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
-                                                 QueryOptimizer... queryOptimizers) {
+    public QueryBuilderBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                                  QueryOptimizer... queryOptimizers) {
 
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
@@ -98,7 +98,7 @@ public class QueryBuilderBuilderImpl
     }
 
     @Override
-    public QueryBuilderBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers) {
+    public QueryBuilderBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers) {
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
             addQueryOptimizer(queryOptimizer);
         }

@@ -25,6 +25,7 @@ import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.codec.EncoderContext;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,19 +45,21 @@ abstract class AbstractStreamValueBuilder<B>
     private static final Charset ASCII = Charset.forName("ASCII");
     private static final CharsetEncoder ASCII_ENCODER = ASCII.newEncoder();
 
+    private final EncoderContext encoderContext;
     private final Output output;
     private final B builder;
 
     private long offset;
 
-    AbstractStreamValueBuilder(Output output) {
-        this(0, output);
+    AbstractStreamValueBuilder(EncoderContext encoderContext) {
+        this(0, encoderContext);
     }
 
-    AbstractStreamValueBuilder(long offset, Output output) {
+    AbstractStreamValueBuilder(long offset, EncoderContext encoderContext) {
         this.offset = offset;
-        this.output = output;
         this.builder = (B) this;
+        this.encoderContext = encoderContext;
+        this.output = encoderContext.output();
     }
 
     @Override
@@ -334,8 +337,8 @@ abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putBoolean(Boolean value) {
+        validate();
         if (value == null) {
-            validate();
             offset = Encoder.putNull(offset, output);
         } else {
             putBoolean((boolean) value);
@@ -344,31 +347,66 @@ abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
+    public B putValue(Object value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+
+        } else if (value instanceof Number) {
+            return putNumber((Number) value);
+
+        } else if (value instanceof Boolean) {
+            return putBoolean((Boolean) value);
+
+        } else if (value instanceof String) {
+            return putString((String) value);
+
+        } else {
+            return putTag(value);
+        }
+
+        return builder;
+    }
+
+    @Override
+    public B putTag(Object value) {
+        validate();
+        if (value == null) {
+            offset = Encoder.putNull(offset, output);
+
+        } else {
+            // Try to write as semantic tag
+            offset = encoderContext.applyEncoder(value, offset);
+        }
+        return builder;
+    }
+
+    @Override
     public SequenceBuilder<B> putSequence() {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output);
-        return new SequenceBuilderImpl<>(-1, output, builder);
+        return new SequenceBuilderImpl<>(-1, builder);
     }
 
     @Override
     public SequenceBuilder<B> putSequence(long elements) {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Sequence, elements, offset, output);
-        return new SequenceBuilderImpl<>(elements, output, builder);
+        return new SequenceBuilderImpl<>(elements, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary() {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Dictionary, -1, offset, output);
-        return new DictionaryBuilderImpl<>(-1, output, builder);
+        return new DictionaryBuilderImpl<>(-1, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary(long elements) {
         validate();
         offset = Encoder.encodeLengthAndValue(MajorType.Dictionary, elements, offset, output);
-        return new DictionaryBuilderImpl<>(elements, output, builder);
+        return new DictionaryBuilderImpl<>(elements, builder);
     }
 
     protected long offset() {
@@ -422,8 +460,8 @@ abstract class AbstractStreamValueBuilder<B>
 
         private long elements;
 
-        SequenceBuilderImpl(long maxElements, Output output, B builder) {
-            super(offset, output);
+        SequenceBuilderImpl(long maxElements, B builder) {
+            super(offset, encoderContext);
             this.maxElements = maxElements;
             this.builder = builder;
         }
@@ -453,14 +491,12 @@ abstract class AbstractStreamValueBuilder<B>
     private class DictionaryBuilderImpl<B>
             implements DictionaryBuilder<B> {
 
-        private final Output output;
         private final B builder;
         private final long maxElements;
 
         private long elements;
 
-        DictionaryBuilderImpl(long maxElements, Output output, B builder) {
-            this.output = output;
+        DictionaryBuilderImpl(long maxElements, B builder) {
             this.builder = builder;
             this.maxElements = maxElements;
         }
@@ -468,7 +504,7 @@ abstract class AbstractStreamValueBuilder<B>
         @Override
         public DictionaryEntryBuilder<B> putEntry() {
             validate();
-            return new DictionaryEntryBuilderImpl<>(offset, output, this);
+            return new DictionaryEntryBuilderImpl<>(offset, this);
         }
 
         @Override
@@ -500,8 +536,8 @@ abstract class AbstractStreamValueBuilder<B>
         private boolean key = false;
         private boolean value = false;
 
-        DictionaryEntryBuilderImpl(long offset, Output output, DictionaryBuilder<B> builder) {
-            super(offset, output);
+        DictionaryEntryBuilderImpl(long offset, DictionaryBuilder<B> builder) {
+            super(offset, encoderContext);
             this.builder = builder;
         }
 

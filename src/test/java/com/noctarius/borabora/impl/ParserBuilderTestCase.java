@@ -122,7 +122,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_double() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addQueryOptimizer(QO_1, QO_2);
+        parserBuilder.addQueryOptimizers(QO_1, QO_2);
         Parser parser = parserBuilder.build();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(parser);
         assertEquals(2, queryOptimizers.size());
@@ -134,7 +134,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_array() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addQueryOptimizer(QO_1, QO_2, QO_3, QO_4);
+        parserBuilder.addQueryOptimizers(QO_1, QO_2, QO_3, QO_4);
         Parser parser = parserBuilder.build();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(parser);
         assertEquals(4, queryOptimizers.size());
@@ -148,7 +148,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addqueryoptimizer_iterable() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addQueryOptimizer(Stream.of(QO_1, QO_2, QO_3, QO_4).collect(Collectors.toList()));
+        parserBuilder.addQueryOptimizers(Stream.of(QO_1, QO_2, QO_3, QO_4).collect(Collectors.toList()));
         Parser parser = parserBuilder.build();
         List<QueryOptimizer> queryOptimizers = extractQueryOptimizers(parser);
         assertEquals(4, queryOptimizers.size());
@@ -187,7 +187,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addtagdecoder_double() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoder(TD_1, TD_2);
+        parserBuilder.addTagDecoders(TD_1, TD_2);
         Parser parser = parserBuilder.build();
         List<TagDecoder> tagDecoders = extractTagDecoders(parser);
         assertEquals(3, tagDecoders.size());
@@ -200,7 +200,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addtagdecoder_array() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoder(TD_1, TD_2, TD_3, TD_4);
+        parserBuilder.addTagDecoders(TD_1, TD_2, TD_3, TD_4);
         Parser parser = parserBuilder.build();
         List<TagDecoder> tagDecoders = extractTagDecoders(parser);
         assertEquals(5, tagDecoders.size());
@@ -215,7 +215,7 @@ public class ParserBuilderTestCase {
     @Test
     public void test_addtagdecoder_iterable() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoder(Stream.of(TD_1, TD_2, TD_3, TD_4).collect(Collectors.toList()));
+        parserBuilder.addTagDecoders(Stream.of(TD_1, TD_2, TD_3, TD_4).collect(Collectors.toList()));
         Parser parser = parserBuilder.build();
         List<TagDecoder> tagDecoders = extractTagDecoders(parser);
         assertEquals(5, tagDecoders.size());

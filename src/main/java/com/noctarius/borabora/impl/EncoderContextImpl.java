@@ -17,26 +17,36 @@
 package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.List;
 
-final class WriterImpl
-        implements Writer {
+public class EncoderContextImpl
+        implements EncoderContext {
 
     private final List<TagEncoder> tagEncoders;
+    private final Output output;
 
-    WriterImpl(List<TagEncoder> tagEncoders) {
+    public EncoderContextImpl(Output output, List<TagEncoder> tagEncoders) {
+        this.output = output;
         this.tagEncoders = tagEncoders;
     }
 
     @Override
-    public GraphBuilder newGraphBuilder(Output output) {
-        EncoderContext encoderContext = new EncoderContextImpl(output, tagEncoders);
-        return new GraphBuilderImpl(encoderContext);
+    public Output output() {
+        return output;
+    }
+
+    @Override
+    public long applyEncoder(Object value, long offset) {
+        for (TagEncoder tagEncoder : tagEncoders) {
+            if (tagEncoder.handles(value)) {
+                return tagEncoder.process(value, offset, this);
+            }
+        }
+        throw new WrongTypeException("Found non-encodeable type: " + value.getClass().getName());
     }
 
 }

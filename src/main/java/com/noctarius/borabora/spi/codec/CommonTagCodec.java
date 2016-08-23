@@ -43,10 +43,10 @@ public final class CommonTagCodec
     public enum TYPE_MATCHER
             implements Predicate<Object> {
 
-        DATE_TIME_MATCHER((v) -> //
-                Date.class.isAssignableFrom(v.getClass()) || java.sql.Date.class.isAssignableFrom(v.getClass())),
+        DATE_TIME_MATCHER((v) -> !Timestamp.class.isAssignableFrom(v.getClass()) //
+                && (Date.class.isAssignableFrom(v.getClass()) || java.sql.Date.class.isAssignableFrom(v.getClass()))),
 
-        TIMESTAMP_MATCHER((v) -> Timestamp.class.isAssignableFrom(v.getClass())),
+        TIMESTAMP_MATCHER((v) -> Timestamp.class.isAssignableFrom(v.getClass()) || Instant.class.isAssignableFrom(v.getClass())),
 
         UBIG_NUM_MATCHER((v) -> //
                 BigInteger.class.isAssignableFrom(v.getClass()) && ((BigInteger) v).signum() >= 0),
@@ -95,7 +95,13 @@ public final class CommonTagCodec
 
         TIMESTAMP_WRITER((value, offset, encoderContext) -> {
             Output output = encoderContext.output();
-            return Encoder.putTimestamp(((Number) value).longValue(), offset, output);
+            long epochSeconds;
+            if (value instanceof Instant) {
+                epochSeconds = ((Instant) value).getEpochSecond();
+            } else {
+                epochSeconds = ((Timestamp) value).toInstant().getEpochSecond();
+            }
+            return Encoder.putTimestamp(epochSeconds, offset, output);
         }),
 
         URI_WRITER((value, offset, encoderContext) -> {
@@ -201,7 +207,7 @@ public final class CommonTagCodec
         }
     }
 
-    public static final TagDecoder INSTANCE = new CommonTagCodec();
+    public static final CommonTagCodec INSTANCE = new CommonTagCodec();
 
     private static final TypeSpecs[] TYPE_SPECS_VALUES = TypeSpecs.values();
 

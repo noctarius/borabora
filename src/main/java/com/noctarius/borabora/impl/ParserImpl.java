@@ -147,7 +147,7 @@ final class ParserImpl
                                              .withPipelineStageFactory(pipelineStageFactory)
                                              .withQueryPipelineFactory(queryPipelineFactory)
                                              .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
-                                             .addQueryOptimizer(queryOptimizers).newBuilder();
+                                             .addQueryOptimizers(queryOptimizers).newBuilder();
             QueryParser.parse(query, queryBuilder, tagDecoders);
             return queryBuilder.build();
 

@@ -21,13 +21,13 @@ import com.noctarius.borabora.spi.codec.TagEncoder;
 
 public interface WriterBuilder {
 
-    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder);
+    <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder);
 
-    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2);
+    <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2);
 
-    <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders);
+    <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders);
 
-    WriterBuilder withTagEncoder(Iterable<TagEncoder> tagEncoders);
+    WriterBuilder addTagEncoders(Iterable<TagEncoder> tagEncoders);
 
     Writer build();
 

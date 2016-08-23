@@ -22,12 +22,6 @@ public interface EncoderContext {
 
     Output output();
 
-    <T> long applyEncoder(Object value, long offset);
-
-    <T> void queryStackPush(T element);
-
-    <T> T queryStackPop();
-
-    <T> T queryStackPeek();
+    long applyEncoder(Object value, long offset);
 
 }

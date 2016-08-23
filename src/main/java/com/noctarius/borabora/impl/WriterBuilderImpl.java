@@ -18,6 +18,7 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.WriterBuilder;
+import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.ArrayList;
@@ -29,8 +30,12 @@ public final class WriterBuilderImpl
 
     private final List<TagEncoder> tagEncoders = new ArrayList<>();
 
+    public WriterBuilderImpl() {
+        addTagEncoder(CommonTagCodec.INSTANCE);
+    }
+
     @Override
-    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder) {
+    public <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder) {
         Objects.requireNonNull(tagEncoder, "tagEncoder must not be null");
         if (!tagEncoders.contains(tagEncoder)) {
             tagEncoders.add(tagEncoder);
@@ -39,26 +44,26 @@ public final class WriterBuilderImpl
     }
 
     @Override
-    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2) {
-        withTagEncoder(tagEncoder1);
-        withTagEncoder(tagEncoder2);
+    public <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2) {
+        addTagEncoder(tagEncoder1);
+        addTagEncoder(tagEncoder2);
         return this;
     }
 
     @Override
-    public <V> WriterBuilder withTagEncoder(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders) {
-        withTagEncoder(tagEncoder1);
-        withTagEncoder(tagEncoder2);
+    public <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders) {
+        addTagEncoder(tagEncoder1);
+        addTagEncoder(tagEncoder2);
         for (TagEncoder tagEncoder : tagEncoders) {
-            withTagEncoder(tagEncoder);
+            addTagEncoder(tagEncoder);
         }
         return this;
     }
 
     @Override
-    public WriterBuilder withTagEncoder(Iterable<TagEncoder> tagEncoders) {
+    public WriterBuilder addTagEncoders(Iterable<TagEncoder> tagEncoders) {
         for (TagEncoder tagEncoder : tagEncoders) {
-            withTagEncoder(tagEncoder);
+            addTagEncoder(tagEncoder);
         }
         return this;
     }

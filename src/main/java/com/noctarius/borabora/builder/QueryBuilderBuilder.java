@@ -34,12 +34,12 @@ public interface QueryBuilderBuilder {
 
     QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer);
 
-    QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2);
+    QueryBuilderBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2);
 
-    QueryBuilderBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
-                                          QueryOptimizer... queryOptimizers);
+    QueryBuilderBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                           QueryOptimizer... queryOptimizers);
 
-    QueryBuilderBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers);
+    QueryBuilderBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers);
 
     StreamQueryBuilder newBuilder();
 

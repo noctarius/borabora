@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
@@ -652,6 +653,47 @@ public class WriterTestCase
             throws Exception {
 
         buildParser((sgb) -> sgb.putDictionary(2).putEntry().putString("te").endEntry());
+    }
+
+    @Test
+    public void test_write_putvalue_datetime()
+            throws Exception {
+
+        Instant expected = Instant.now();
+        Date date = Date.from(expected);
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(date) //
+               .putValue(null);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_timestamp()
+            throws Exception {
+
+        Instant expected = Instant.now();
+        Timestamp timestamp = Timestamp.from(expected);
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(expected) //
+               .putValue(timestamp) //
+               .putValue(null);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(Query.newBuilder().stream(2).build());
+
+        assertEquals(expected.getEpochSecond(), (long) value1.tag());
+        assertEquals(expected.getEpochSecond(), (long) value2.tag());
+        assertNull(value3.tag());
     }
 
 }

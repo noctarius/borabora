@@ -17,6 +17,7 @@
 package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
+import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import org.junit.Test;
@@ -39,28 +40,32 @@ public class WriterBuilderTestCase {
 
     @Test
     public void test_addtagencoder_single() {
-        Writer writer = Writer.newBuilder().withTagEncoder(TE_1).build();
+        Writer writer = Writer.newBuilder().addTagEncoder(TE_1).build();
         List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(1, tagEncoders.size());
-        assertSame(TE_1, tagEncoders.iterator().next());
+        assertEquals(2, tagEncoders.size());
+        Iterator<TagEncoder> iterator = tagEncoders.iterator();
+        assertSame(CommonTagCodec.INSTANCE, iterator.next());
+        assertSame(TE_1, iterator.next());
     }
 
     @Test
     public void test_addtagencoder_double() {
-        Writer writer = Writer.newBuilder().withTagEncoder(TE_1, TE_2).build();
+        Writer writer = Writer.newBuilder().addTagEncoders(TE_1, TE_2).build();
         List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(2, tagEncoders.size());
+        assertEquals(3, tagEncoders.size());
         Iterator<TagEncoder> iterator = tagEncoders.iterator();
+        assertSame(CommonTagCodec.INSTANCE, iterator.next());
         assertSame(TE_1, iterator.next());
         assertSame(TE_2, iterator.next());
     }
 
     @Test
     public void test_addtagencoder_array() {
-        Writer writer = Writer.newBuilder().withTagEncoder(TE_1, TE_2, TE_3, TE_4).build();
+        Writer writer = Writer.newBuilder().addTagEncoders(TE_1, TE_2, TE_3, TE_4).build();
         List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(4, tagEncoders.size());
+        assertEquals(5, tagEncoders.size());
         Iterator<TagEncoder> iterator = tagEncoders.iterator();
+        assertSame(CommonTagCodec.INSTANCE, iterator.next());
         assertSame(TE_1, iterator.next());
         assertSame(TE_2, iterator.next());
         assertSame(TE_3, iterator.next());
@@ -70,10 +75,11 @@ public class WriterBuilderTestCase {
     @Test
     public void test_addtagencoder_iterable() {
         List<TagEncoder> encoders = Stream.of(TE_1, TE_2, TE_3, TE_4).collect(Collectors.toList());
-        Writer writer = Writer.newBuilder().withTagEncoder(encoders).build();
+        Writer writer = Writer.newBuilder().addTagEncoders(encoders).build();
         List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(4, tagEncoders.size());
+        assertEquals(5, tagEncoders.size());
         Iterator<TagEncoder> iterator = tagEncoders.iterator();
+        assertSame(CommonTagCodec.INSTANCE, iterator.next());
         assertSame(TE_1, iterator.next());
         assertSame(TE_2, iterator.next());
         assertSame(TE_3, iterator.next());

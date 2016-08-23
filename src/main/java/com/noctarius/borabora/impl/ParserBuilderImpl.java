@@ -61,14 +61,14 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
+    public <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
         addTagDecoder(tagDecoder1);
         addTagDecoder(tagDecoder2);
         return this;
     }
 
     @Override
-    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders) {
+    public <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders) {
         addTagDecoder(tagDecoder1);
         addTagDecoder(tagDecoder2);
         for (TagDecoder tagDecoder : tagDecoders) {
@@ -78,7 +78,7 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder addTagDecoder(Iterable<TagDecoder> tagDecoders) {
+    public ParserBuilder addTagDecoders(Iterable<TagDecoder> tagDecoders) {
         for (TagDecoder tagDecoder : tagDecoders) {
             addTagDecoder(tagDecoder);
         }
@@ -130,15 +130,15 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
+    public ParserBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2) {
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
         return this;
     }
 
     @Override
-    public ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
-                                           QueryOptimizer... queryOptimizers) {
+    public ParserBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
+                                            QueryOptimizer... queryOptimizers) {
 
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
@@ -149,7 +149,7 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder addQueryOptimizer(Iterable<QueryOptimizer> queryOptimizers) {
+    public ParserBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers) {
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
             addQueryOptimizer(queryOptimizer);
         }
