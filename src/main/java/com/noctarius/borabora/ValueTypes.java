@@ -53,18 +53,72 @@ import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.NBIG_
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER;
 
+/**
+ * ValueTypes are a set of prebuilt {@link ValueType} implementations. They define the
+ * common basic {@link MajorType}s, as well as some integrated semantic tag types and
+ * super types to group different types.
+ */
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {
 
-    Number(Value::number), //
-    Int(Value::number, Number), //
-    UInt(Value::number, Int, ValueValidators::isPositive), //
-    NInt(Value::number, Int, ValueValidators::isNegative), //
-    String(Value::string), //
-    ByteString(Value::string, String, ValueValidators::isByteString), //
-    TextString(Value::string, String, ValueValidators::isTextString), //
-    Sequence(Value::sequence), //
-    Dictionary(Value::dictionary), //
+    /**
+     * <tt>Number</tt> defines a group of number related types, like UInt, NInt, Float, ...
+     */
+    Number(Value::number),
+
+    /**
+     * <tt>Int</tt> defines a group of integer related types, like UInt, NInt, UBigNum, ...
+     */
+    Int(Value::number, Number),
+
+    /**
+     * <tt>UInt</tt> defines a value type for {@link MajorType#UnsignedInteger}. It is
+     * also defined as part of the groups {@link #Int} and {@link #Number}.
+     */
+    UInt(Value::number, Int, ValueValidators::isPositive),
+
+    /**
+     * <tt>NInt</tt> defines a value type for {@link MajorType#NegativeInteger}. It is
+     * also defined as part of the groups {@link #Int} and {@link #Number}.
+     */
+    NInt(Value::number, Int, ValueValidators::isNegative),
+
+    /**
+     * <tt>String</tt> defines a group for the string value types {@link #ByteString}
+     * and {@link #TextString}.
+     */
+    String(Value::string),
+
+    /**
+     * <tt>ByteString</tt> defines a value type for ASCII only strings. It is also
+     * defined as part of the group {@link #String}.
+     */
+    ByteString(Value::string, String, ValueValidators::isByteString),
+
+    /**
+     * <tt>ByteString</tt> defines a value type for UTF-8 encoded strings. It is
+     * also defined as part of the group {@link #String}.
+     */
+    TextString(Value::string, String, ValueValidators::isTextString),
+
+    /**
+     * <tt>Sequence</tt> defines a value type representing a collection of values.
+     * Each element in a sequence can have a different value type, and sequences can
+     * have a fixed element count or represent an indefinite number of elements. In
+     * the latter case borabora does a quick pre-scan to find the number and offsets
+     * of the elements.
+     */
+    Sequence(Value::sequence),
+
+    /**
+     * <tt>Dictionary</tt> defines a value type representing a collection of key-value
+     * pairs. Each key and each value in a dictionary can have a different value types,
+     * and dictionaries can have a fixed pair count or represent an indefinite number of
+     * pairs. In the latter case borabora does a quick pre-scan to find the number and
+     * offsets of the pair-elements.
+     */
+    Dictionary(Value::dictionary),
+
     Float(Value::number, Number), //
     Bool(Value::bool), //
     Null((v) -> null), //
