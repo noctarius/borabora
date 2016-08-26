@@ -25,15 +25,88 @@ import static com.noctarius.borabora.spi.Constants.MT_SEQUENCE;
 import static com.noctarius.borabora.spi.Constants.MT_TEXTSTRING;
 import static com.noctarius.borabora.spi.Constants.MT_UNSINGED_INT;
 
+/**
+ * The <tt>MajorType</tt> enum defines the basic types as specified by the CBOR
+ * specification (RFC 7049). Major types are directly encoded in the header,
+ * whereas {@link ValueType}s can be a special case inside a given major type
+ * or a semantic tag tagged element.
+ *
+ * @see ValueType
+ * @see ValueTypes
+ */
 public enum MajorType {
-    UnsignedInteger(MT_UNSINGED_INT, 0b000, false), //
-    NegativeInteger(MT_NEGATIVE_INT, 0b001, false), //
-    ByteString(MT_BYTESTRING, 0b010, true), //
-    TextString(MT_TEXTSTRING, 0b011, true), //
-    Sequence(MT_SEQUENCE, 0b100, true), //
-    Dictionary(MT_DICTIONARY, 0b101, true), //
-    SemanticTag(MT_SEMANTIC_TAG, 0b110, false), //
-    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false), //
+
+    /**
+     * <tt>UnsignedInteger</tt> describes an unsigned integer with a bit-size of
+     * 1 to 64 bit.
+     */
+    UnsignedInteger(MT_UNSINGED_INT, 0b000, false),
+
+    /**
+     * <tt>NegativeInteger</tt> describes an always negative integer. This is not
+     * the commonly expected signed integer as it cannot take positive values.
+     * The bit-size is between 1 and 64 bit.
+     */
+    NegativeInteger(MT_NEGATIVE_INT, 0b001, false),
+
+    /**
+     * <tt>ByteString</tt> describes an ASCII char only containing string. The
+     * length of a string is defined as an {@link #UnsignedInteger} (up to 64
+     * bit), however Java cannot represent string of that size.
+     */
+    ByteString(MT_BYTESTRING, 0b010, true),
+
+    /**
+     * <tt>TextString</tt> describes an UTF-8 encoded char containing string.
+     * The length of a string is defined as an {@link #UnsignedInteger} (up to 64
+     * bit), however Java cannot represent string of that size.
+     */
+    TextString(MT_TEXTSTRING, 0b011, true),
+
+    /**
+     * <tt>Sequence</tt> describes a value type representing a collection of values.
+     * Each element in a sequence can have a different value type, and sequences can
+     * have a fixed element count or represent an indefinite number of elements. In
+     * the latter case borabora does a quick pre-scan to find the number and offsets
+     * of the elements.
+     */
+    Sequence(MT_SEQUENCE, 0b100, true),
+
+    /**
+     * <tt>Dictionary</tt> describes a value type representing a collection of key-value
+     * pairs. Each key and each value in a dictionary can have a different value types,
+     * and dictionaries can have a fixed pair count or represent an indefinite number of
+     * pairs. In the latter case borabora does a quick pre-scan to find the number and
+     * offsets of the pair-elements.
+     */
+    Dictionary(MT_DICTIONARY, 0b101, true),
+
+    /**
+     * <tt>SemanticTag</tt> describes a further specification of a following data item
+     * to flag the containing value as another {@link ValueType}, for example a string
+     * can be flagged as a datetime item.
+     * <p>SemanticTags are defined using tag ids that are specified by the IANA and
+     * available in the <a href="http://www.iana.org/assignments/cbor-tags/cbor-tags.xhtml">
+     * IANA CBOR Tag Registry</a>.</p>
+     */
+    SemanticTag(MT_SEMANTIC_TAG, 0b110, false),
+
+    /**
+     * <tt>FloatingPointOrSimple</tt> describes two distinct types of data. The first
+     * value is either a {@link HalfPrecisionFloat}, a {@link Float} or a {@link Double}
+     * in the Java world. Values can be positive or negative.
+     * <p>The second type of data encoded in this major type are commonly used simple
+     * values like <tt>null</tt>, <tt>true</tt> and <tt>false</tt>.</p>
+     * <p>The corresponding {@link ValueType} will automatically take into account what
+     * is encoded in the actual data item.</p>
+     */
+    FloatingPointOrSimple(MT_FLOAT_SIMPLE, 0b111, false),
+
+    /**
+     * <tt>Unknown</tt> describes an unknown major type that be added to a later version
+     * of the CBOR specification or is returned whenever the type cannot be read for
+     * other, yet unknown, reasons.
+     */
     Unknown(-1, -1, false);
 
     private static final short HIGH_BITS_MASK = 0b1110_0000;

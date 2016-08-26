@@ -57,6 +57,9 @@ import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.UBIG_
  * ValueTypes are a set of prebuilt {@link ValueType} implementations. They define the
  * common basic {@link MajorType}s, as well as some integrated semantic tag types and
  * super types to group different types.
+ *
+ * @see ValueType
+ * @see MajorType
  */
 public enum ValueTypes
         implements ValueType, TagReader, TagWriter {
