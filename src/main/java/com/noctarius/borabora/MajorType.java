@@ -121,19 +121,42 @@ public enum MajorType {
         this.indefinite = indefinite;
     }
 
+    /**
+     * Returns the type id, the CBOR specified id, for this MajorType.
+     *
+     * @return the type id
+     */
     public short typeId() {
         return typeId;
     }
 
+    /**
+     * Returns if this MajorType can be of indefinite size or not.
+     *
+     * @return true if indefinite size is possible, otherwise false
+     */
     public boolean indefinite() {
         return indefinite;
     }
 
+    /**
+     * Matches a given header byte (represented as a short) against this MajorType.
+     *
+     * @param head the header byte to match
+     * @return true if the header represents this MajorType, otherwise false
+     */
     public boolean match(short head) {
         int highBits = (head & HIGH_BITS_MASK) >>> 5;
         return highBits == mask;
     }
 
+    /**
+     * Returns the <tt>MajorType</tt> according to the given header byte (represented
+     * as a short).
+     *
+     * @param head the header byte to match
+     * @return the MajorType matching the given header byte
+     */
     public static MajorType findMajorType(short head) {
         switch ((head & 0xff) >>> 5) {
             case MT_UNSINGED_INT:
