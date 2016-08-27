@@ -122,17 +122,83 @@ public enum ValueTypes
      */
     Dictionary(Value::dictionary),
 
-    Float(Value::number, Number), //
-    Bool(Value::bool), //
-    Null((v) -> null), //
-    Undefined((v) -> null), //
-    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag), //
-    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag), //
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive), //
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative), //
-    Fraction(DECIMAL_FRACTION_READER, DECIMAL_FRACTION_WRITER, DECIMAL_FRACTION_MATCHER, Value::tag, Float), //
-    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag), //
-    URI(URI_READER, URI_WRITER, TYPE_MATCHER.URI_MATCHER, Value::tag), //
+    /**
+     * <tt>Float</tt> defines a value type representing a floating point value of either
+     * of the types: {@link HalfPrecisionFloat}, {@link Float} {@link Double}.
+     */
+    Float(Value::number, Number),
+
+    /**
+     * <tt>Bool</tt> defines a value type representing a boolean (true / false) value.
+     */
+    Bool(Value::bool),
+
+    /**
+     * <tt>Null</tt> defines a value type representing a null value.
+     */
+    Null((v) -> null),
+
+    /**
+     * <tt>Undefined</tt> defines a simple value of an undefined type. Currently CBOR
+     * defines <tt>null</tt>, <tt>true</tt>, <tt>false</tt> as simple values, however
+     * the specification is extensible to add more simple values at a later type.
+     */
+    Undefined((v) -> null),
+
+    /**
+     * <tt>DateTime</tt> defines a value type of date and time. The value is stored as
+     * a semantic tag and a string. The DateTime encoding is defined to be based on
+     * <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a> and refined by
+     * <a href="https://tools.ietf.org/html/rfc4287#section-3.3">RFC 4287</a>.
+     */
+    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag),
+
+    /**
+     * <tt>Timestamp</tt> defines a value type representing a timestamp value of seconds
+     * since 1970-01-01 00:00:00 UTC. The value is of 64 bit and will not exceed at
+     * 2038-01-19 03:14:08 UTC.
+     */
+    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag),
+
+    /**
+     * <tt>UBigNum</tt> represents a value type of an unsigned integer bigger than
+     * {@link Long#MAX_VALUE} which cannot be represented without a
+     * {@link java.math.BigInteger} anymore.
+     */
+    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive),
+
+    /**
+     * <tt>NBigNum</tt> represents a value type of a negative integer smaller than
+     * {@link Long#MIN_VALUE} which cannot be represented without a
+     * {@link java.math.BigInteger} anymore.
+     */
+    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative),
+
+    /**
+     * <tt>Fraction</tt> represents a value type of a floating point number outside
+     * the representable range of {@link #Float}. The value will be represented as
+     * a {@link java.math.BigDecimal}.
+     */
+    Fraction(DECIMAL_FRACTION_READER, DECIMAL_FRACTION_WRITER, DECIMAL_FRACTION_MATCHER, Value::tag, Float),
+
+    /**
+     * <tt>EncCBOR</tt> represents a value type of still encoded CBOR. The value
+     * is represented to the user as a {@link Value}.
+     */
+    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag),
+
+    /**
+     * <tt>URI</tt> represents a value type of an URI encoded value. the URI type
+     * is represented in Java as a {@link java.net.URI} value.
+     */
+    URI(URI_READER, URI_WRITER, TYPE_MATCHER.URI_MATCHER, Value::tag),
+
+    /**
+     * <tt>Unknown</tt> represents a value of an unknown type. The value can still be
+     * extracted using {@link Parser#extract(Input, long)}. Unknown type can happen
+     * for semantic tags which are not known to the parser, however this is valid to
+     * the CBOR specifications as long as the parser is able to ignore the type itself.
+     */
     Unknown(UNKNOWN_TAG_READER, null, o -> false, Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
