@@ -32,7 +32,7 @@ public class SemanticTagSupportTestCase
 
     @Test
     public void call_constructor() {
-        callConstructor(SemanticTagSupport.class);
+        callConstructor(SemanticTagSupport0.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
