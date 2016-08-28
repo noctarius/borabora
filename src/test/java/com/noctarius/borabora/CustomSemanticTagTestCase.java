@@ -35,6 +35,7 @@ import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.util.function.Function;
 
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
@@ -44,7 +45,16 @@ public class CustomSemanticTagTestCase
         extends AbstractTestCase {
 
     @Test
-    public void test_encode_decode_custom_semantic_tag_type() {
+    public void test_encode_decode_custom_semantic_tag_type_value_tag() {
+        execute(Value::tag);
+    }
+
+    @Test
+    public void test_encode_decode_custom_semantic_tag_type_value_byvaluetype() {
+        execute(Value::byValueType);
+    }
+
+    private void execute(Function<Value, Sequence> function) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new CustomTableSemanticTagBuilderFactory()).build();
 
@@ -69,7 +79,7 @@ public class CustomSemanticTagTestCase
 
         Value value = parser.read(input, Query.newBuilder().build());
 
-        Sequence table = value.tag();
+        Sequence table = function.apply(value);
 
         assertEquals(4, table.size());
 

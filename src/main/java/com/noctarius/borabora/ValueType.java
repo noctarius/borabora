@@ -91,14 +91,11 @@ public interface ValueType {
             return true;
         }
         ValueType identity = identity();
-        if (identity == this) {
+        if (identity == this || identity == null) {
             return false;
         }
         if (identity == other) {
             return true;
-        }
-        if (identity == null) {
-            return false;
         }
         return identity.matches(other);
     }
