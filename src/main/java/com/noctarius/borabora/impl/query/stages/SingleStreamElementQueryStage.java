@@ -33,9 +33,9 @@ public class SingleStreamElementQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         // Skip unnecessary objects
         if (streamElementIndex > 0) {
@@ -45,10 +45,10 @@ public class SingleStreamElementQueryStage
         }
 
         // Set up new offset
-        pipelineContext.offset(offset);
+        queryContext.offset(offset);
 
         // Visit children
-        return pipelineStage.visitChildren(pipelineContext);
+        return pipelineStage.visitChildren(queryContext);
     }
 
     @Override

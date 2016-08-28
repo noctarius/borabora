@@ -31,18 +31,18 @@ public class AsSequenceSelectorQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        SelectStatementStrategy selectStatementStrategy = pipelineContext.selectStatementStrategy();
-        selectStatementStrategy.beginSequence(pipelineContext);
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        SelectStatementStrategy selectStatementStrategy = queryContext.selectStatementStrategy();
+        selectStatementStrategy.beginSequence(queryContext);
 
-        VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+        VisitResult visitResult = pipelineStage.visitChildren(queryContext);
 
         // If exit is set, we ignore all further executions
         if (VisitResult.Exit == visitResult) {
             return visitResult;
         }
 
-        selectStatementStrategy.endSequence(pipelineContext);
+        selectStatementStrategy.endSequence(queryContext);
         return visitResult;
     }
 

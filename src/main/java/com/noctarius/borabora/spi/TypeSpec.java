@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 public interface TypeSpec {
 
@@ -33,6 +33,6 @@ public interface TypeSpec {
 
     boolean matchesExact(TypeSpec other);
 
-    boolean valid(MajorType majorType, Input input, long offset);
+    boolean valid(MajorType majorType, QueryContext queryContext, long offset);
 
 }

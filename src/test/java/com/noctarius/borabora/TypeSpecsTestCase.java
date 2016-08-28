@@ -35,23 +35,23 @@ public class TypeSpecsTestCase
     @Test
     public void test_match_illegal_value_type() {
         Input input = Input.fromByteArray(hexToBytes("0x40"));
-        assertFalse(TypeSpecs.Bool.valid(MajorType.ByteString, input, 0));
+        assertFalse(TypeSpecs.Bool.valid(MajorType.ByteString, newQueryContext(input), 0));
     }
 
     @Test
     public void test_valid_uint() {
         Input input = Input.fromByteArray(hexToBytes("0x01"));
-        assertTrue(TypeSpecs.Int.valid(MajorType.UnsignedInteger, input, 0));
-        assertTrue(TypeSpecs.UInt.valid(MajorType.UnsignedInteger, input, 0));
-        assertTrue(TypeSpecs.Number.valid(MajorType.UnsignedInteger, input, 0));
+        assertTrue(TypeSpecs.Int.valid(MajorType.UnsignedInteger, newQueryContext(input), 0));
+        assertTrue(TypeSpecs.UInt.valid(MajorType.UnsignedInteger, newQueryContext(input), 0));
+        assertTrue(TypeSpecs.Number.valid(MajorType.UnsignedInteger, newQueryContext(input), 0));
     }
 
     @Test
     public void test_valid_nint() {
         Input input = Input.fromByteArray(hexToBytes("0x21"));
-        assertTrue(TypeSpecs.Int.valid(MajorType.NegativeInteger, input, 0));
-        assertTrue(TypeSpecs.NInt.valid(MajorType.NegativeInteger, input, 0));
-        assertTrue(TypeSpecs.Number.valid(MajorType.NegativeInteger, input, 0));
+        assertTrue(TypeSpecs.Int.valid(MajorType.NegativeInteger, newQueryContext(input), 0));
+        assertTrue(TypeSpecs.NInt.valid(MajorType.NegativeInteger, newQueryContext(input), 0));
+        assertTrue(TypeSpecs.Number.valid(MajorType.NegativeInteger, newQueryContext(input), 0));
     }
 
     @Test

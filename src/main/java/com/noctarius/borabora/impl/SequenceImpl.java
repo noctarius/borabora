@@ -21,7 +21,6 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
@@ -66,7 +65,7 @@ public final class SequenceImpl
             long offset = calculateArrayIndex(i);
             short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
+            ValueType valueType = queryContext.valueType(offset);
 
             streamValue.relocate(queryContext, majorType, valueType, offset);
             if (predicate.test(streamValue)) {

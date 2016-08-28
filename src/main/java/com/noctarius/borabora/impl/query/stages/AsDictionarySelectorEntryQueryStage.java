@@ -32,24 +32,24 @@ public abstract class AsDictionarySelectorEntryQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
         Consumer<QueryContext> keyWriter = keyWriter();
-        keyWriter.accept(pipelineContext);
+        keyWriter.accept(queryContext);
 
-        long offset = pipelineContext.offset();
-        pipelineContext.offset(0);
+        long offset = queryContext.offset();
+        queryContext.offset(0);
 
         // Try execution of the child query subtree
-        VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+        VisitResult visitResult = pipelineStage.visitChildren(queryContext);
         if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
-            if (pipelineContext.offset() == OFFSET_CODE_NULL) {
-                pipelineContext.selectStatementStrategy().putDictionaryNullValue(pipelineContext);
+            if (queryContext.offset() == OFFSET_CODE_NULL) {
+                queryContext.selectStatementStrategy().putDictionaryNullValue(queryContext);
             }
             // If break, move on with the next sibling, for exit: stop here
             return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
         }
 
-        pipelineContext.offset(offset);
+        queryContext.offset(offset);
         return VisitResult.Continue;
     }
 

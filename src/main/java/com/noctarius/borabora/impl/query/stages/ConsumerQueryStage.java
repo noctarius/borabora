@@ -30,12 +30,12 @@ public class ConsumerQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
         // Retrieve current objects offset
-        long offset = pipelineContext.offset();
+        long offset = queryContext.offset();
 
         // Consume that offset to transform it into an Value
-        pipelineContext.consume(offset);
+        queryContext.consume(offset);
 
         // Continue querying
         return VisitResult.Continue;

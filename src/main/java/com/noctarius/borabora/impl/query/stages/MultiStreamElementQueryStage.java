@@ -32,25 +32,25 @@ public class MultiStreamElementQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         do {
             // Visit children
-            VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+            VisitResult visitResult = pipelineStage.visitChildren(queryContext);
             if (visitResult == VisitResult.Exit) {
                 return visitResult;
             }
 
             if (visitResult == VisitResult.Break) {
-                long itemOffset = pipelineContext.offset();
-                pipelineContext.consume(itemOffset);
+                long itemOffset = queryContext.offset();
+                queryContext.consume(itemOffset);
             }
 
             // Skip the whole item
             offset = Decoder.skip(input, offset);
-            pipelineContext.offset(offset);
+            queryContext.offset(offset);
 
         } while (input.offsetValid(offset));
 

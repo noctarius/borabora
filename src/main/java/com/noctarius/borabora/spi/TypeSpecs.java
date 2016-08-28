@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Collection;
 
@@ -107,8 +107,8 @@ public enum TypeSpecs
     }
 
     @Override
-    public boolean valid(MajorType majorType, Input input, long offset) {
-        ValueType valueType = ValueTypes.valueType(input, offset);
+    public boolean valid(MajorType majorType, QueryContext queryContext, long offset) {
+        ValueType valueType = queryContext.valueType(offset);
         for (ValueType legalValueType : legalValueTypes) {
             if (valueType.matches(legalValueType)) {
                 return true;

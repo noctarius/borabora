@@ -254,7 +254,7 @@ public final class Decoder
 
     public static Value readValue(long offset, QueryContext queryContext) {
         MajorType majorType = getMajorType(offset, queryContext.input());
-        ValueType valueType = ValueTypes.valueType(queryContext.input(), offset);
+        ValueType valueType = queryContext.valueType(offset);
         if (ValueTypes.Null == valueType) {
             return Value.NULL_VALUE;
         }
@@ -377,7 +377,7 @@ public final class Decoder
     private static boolean predicateMatch(Predicate<Value> predicate, long offset, MajorType majorType, Input input, //
                                           QueryContext queryContext, RelocatableStreamValue streamValue) {
 
-        ValueType valueType = ValueTypes.valueType(input, offset);
+        ValueType valueType = queryContext.valueType(offset);
         streamValue.relocate(queryContext, majorType, valueType, offset);
         return predicate.test(streamValue);
     }

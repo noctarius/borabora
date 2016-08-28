@@ -20,7 +20,6 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.EqualsSupport;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.codec.ByteSizes;
@@ -43,9 +42,9 @@ public class SequenceMatcherQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
@@ -59,18 +58,18 @@ public class SequenceMatcherQueryStage
 
         // Skip sequence header and make element 1 accessible
         offset += ByteSizes.headByteSize(input, offset);
-        pipelineContext.offset(offset);
+        queryContext.offset(offset);
 
         RelocatableStreamValue streamValue = new RelocatableStreamValue();
         for (int i = 0; i < elementCount; i++) {
             short itemHead = Decoder.readUInt8(input, offset);
             MajorType itemMajorType = MajorType.findMajorType(itemHead);
-            ValueType itemValueType = ValueTypes.valueType(input, offset);
-            streamValue.relocate(pipelineContext, itemMajorType, itemValueType, offset);
+            ValueType itemValueType = queryContext.valueType(offset);
+            streamValue.relocate(queryContext, itemMajorType, itemValueType, offset);
 
             if (predicate.test(streamValue)) {
-                pipelineContext.offset(offset);
-                VisitResult visitResult = pipelineStage.visitChildren(pipelineContext);
+                queryContext.offset(offset);
+                VisitResult visitResult = pipelineStage.visitChildren(queryContext);
                 // TODO break is exit?
                 if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
                     return visitResult;

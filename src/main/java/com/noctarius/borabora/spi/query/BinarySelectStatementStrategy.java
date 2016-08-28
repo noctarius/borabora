@@ -21,7 +21,6 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
 import com.noctarius.borabora.spi.StreamValue;
@@ -58,12 +57,12 @@ public class BinarySelectStatementStrategy
 
         short head = input.read(0);
         MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(input, 0);
 
         QueryContextFactory queryContextFactory = queryContext.queryContextFactory();
         QueryContext newQueryContext = queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, //
                 queryContext.tagDecoders(), queryContext.selectStatementStrategy());
 
+        ValueType valueType = newQueryContext.valueType(0);
         Value value = new StreamValue(majorType, valueType, 0, newQueryContext);
         queryContext.consume(value);
     }

@@ -167,7 +167,7 @@ public final class CommonTagCodec
             // Move offset to the actual data item
             offset += ByteSizes.headByteSize(input, offset);
             // Timestamp might have different types of items
-            ValueType valueType = ValueTypes.valueType(input, offset);
+            ValueType valueType = queryContext.valueType(offset);
             return Decoder.readNumber(input, valueType, offset);
         }),
 
@@ -179,7 +179,7 @@ public final class CommonTagCodec
             short head = Decoder.readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
             // Normally this is a bytestring for real
-            ValueType valueType = ValueTypes.valueType(input, offset);
+            ValueType valueType = queryContext.valueType(offset);
             return new StreamValue(majorType, valueType, offset, queryContext);
         }),
 

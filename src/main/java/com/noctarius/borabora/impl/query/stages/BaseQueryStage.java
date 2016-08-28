@@ -36,9 +36,9 @@ public class BaseQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         // Is the first item a semantic tag?
         short head = Decoder.readUInt8(input, offset);
@@ -48,11 +48,11 @@ public class BaseQueryStage
             if (tagType.intValue() == TAG_MAGIC_CBOR_HEADER) {
                 // Seems like so skip the header and handle as normal CBOR encoded data
                 offset += ByteSizes.headByteSize(input, offset);
-                pipelineContext.offset(offset);
+                queryContext.offset(offset);
             }
         }
 
-        return pipelineStage.visitChildren(pipelineContext);
+        return pipelineStage.visitChildren(queryContext);
     }
 
     @Override

@@ -37,9 +37,9 @@ public class SequenceIndexQueryStage
     }
 
     @Override
-    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext) {
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+    public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
@@ -51,7 +51,7 @@ public class SequenceIndexQueryStage
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
         if (elementCount < sequenceIndex) {
-            pipelineContext.offset(-1);
+            queryContext.offset(-1);
             return VisitResult.Break;
         }
 
@@ -61,9 +61,9 @@ public class SequenceIndexQueryStage
 
         // Skip items until sequenceIndex
         offset = skip(input, offset);
-        pipelineContext.offset(offset);
+        queryContext.offset(offset);
 
-        return pipelineStage.visitChildren(pipelineContext);
+        return pipelineStage.visitChildren(queryContext);
     }
 
     private long skip(Input input, long offset) {

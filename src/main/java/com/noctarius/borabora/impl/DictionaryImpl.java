@@ -133,7 +133,7 @@ public final class DictionaryImpl
             long offset = calculateArrayIndex(i);
             short head = readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
+            ValueType valueType = queryContext.valueType(offset);
 
             streamValue.relocate(queryContext, majorType, valueType, offset);
             if (predicate.test(streamValue)) {

@@ -20,6 +20,6 @@ import com.noctarius.borabora.spi.query.QueryContext;
 
 public interface QueryStage {
 
-    VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext pipelineContext);
+    VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext);
 
 }

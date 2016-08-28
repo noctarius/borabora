@@ -44,10 +44,10 @@ public class DictionaryLookupQueryStage
 
     @Override
     public final VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage,
-                                      QueryContext pipelineContext) {
+                                      QueryContext queryContext) {
 
-        Input input = pipelineContext.input();
-        long offset = pipelineContext.offset();
+        Input input = queryContext.input();
+        long offset = queryContext.offset();
 
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
@@ -56,15 +56,15 @@ public class DictionaryLookupQueryStage
         }
 
         // Execute the key lookup
-        offset = Decoder.findByDictionaryKey(predicate, offset, pipelineContext);
+        offset = Decoder.findByDictionaryKey(predicate, offset, queryContext);
         if (offset == Constants.OFFSET_CODE_NULL) {
-            pipelineContext.offset(Constants.OFFSET_CODE_NULL);
+            queryContext.offset(Constants.OFFSET_CODE_NULL);
             return VisitResult.Break;
         }
 
-        pipelineContext.offset(offset);
+        queryContext.offset(offset);
 
-        return pipelineStage.visitChildren(pipelineContext);
+        return pipelineStage.visitChildren(queryContext);
     }
 
     @Override
