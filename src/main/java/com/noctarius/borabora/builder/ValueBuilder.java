@@ -17,7 +17,7 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.spi.BuilderEnter;
-import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
+import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
 
 import java.math.BigInteger;
 import java.net.URI;
@@ -88,7 +88,7 @@ public interface ValueBuilder<B> {
 
     B putTag(Object value);
 
-    B putTag(SemanticTagBuilderConsumer<B> consumer);
+    B putTag(TagBuilderConsumer<B> consumer);
 
     @BuilderEnter
     SequenceBuilder<B> putSequence();

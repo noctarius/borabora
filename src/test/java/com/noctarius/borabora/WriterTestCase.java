@@ -21,11 +21,12 @@ import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.SemanticTagBuilder;
-import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagBuilder;
+import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.spi.codec.TagEncoder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 import static com.noctarius.borabora.spi.Constants.UTC;
-import static com.noctarius.borabora.spi.SemanticTagSupport.semanticTag;
+import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -802,17 +803,17 @@ public class WriterTestCase
     }
 
     public interface DateTimeBuilder
-            extends SemanticTagBuilder {
+            extends TagBuilder {
 
         DateTimeBuilder putDateTime(Instant instant);
 
     }
 
     public static class DateTimeSemanticTagBuilderFactory
-            implements SemanticTagBuilderFactory<DateTimeBuilder> {
+            implements TagBuilderFactory<DateTimeBuilder, Instant> {
 
         @Override
-        public DateTimeBuilder newSemanticTagBuilder(EncoderContext encoderContext) {
+        public DateTimeBuilder newTagBuilder(EncoderContext encoderContext) {
             return new Impl(encoderContext);
         }
 
@@ -822,8 +823,13 @@ public class WriterTestCase
         }
 
         @Override
-        public Class<DateTimeBuilder> semanticTagBuilderType() {
+        public Class<DateTimeBuilder> tagBuilderType() {
             return DateTimeBuilder.class;
+        }
+
+        @Override
+        public TagEncoder<Instant> tagEncoder() {
+            return null;
         }
 
         private void putDateTime0(Instant instant, EncoderContext encoderContext) {
@@ -849,7 +855,7 @@ public class WriterTestCase
             }
 
             @Override
-            public <B> SemanticTagBuilderConsumer<B> endSemanticTag() {
+            public <B> TagBuilderConsumer<B> endSemanticTag() {
                 return null;
             }
         }

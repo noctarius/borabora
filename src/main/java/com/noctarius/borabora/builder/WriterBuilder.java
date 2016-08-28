@@ -17,29 +17,20 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
-import com.noctarius.borabora.spi.codec.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 
 public interface WriterBuilder {
 
-    <S> WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory<S> semanticTagBuilderFactory);
+    <S, V> WriterBuilder addSemanticTagBuilderFactory(TagBuilderFactory<S, V> semanticTagBuilderFactory);
 
-    WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
-                                                 SemanticTagBuilderFactory semanticTagBuilderFactory2);
+    WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
+                                                 TagBuilderFactory semanticTagBuilderFactory2);
 
-    WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
-                                                 SemanticTagBuilderFactory semanticTagBuilderFactory2,
-                                                 SemanticTagBuilderFactory... semanticTagBuilderFactories);
+    WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
+                                                 TagBuilderFactory semanticTagBuilderFactory2,
+                                                 TagBuilderFactory... semanticTagBuilderFactories);
 
-    WriterBuilder addSemanticTagBuilderFactories(Iterable<SemanticTagBuilderFactory> semanticTagBuilderFactories);
-
-    <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder);
-
-    WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2);
-
-    WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2, TagEncoder... tagEncoders);
-
-    WriterBuilder addTagEncoders(Iterable<TagEncoder> tagEncoders);
+    WriterBuilder addSemanticTagBuilderFactories(Iterable<TagBuilderFactory> semanticTagBuilderFactories);
 
     Writer build();
 

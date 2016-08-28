@@ -24,7 +24,6 @@ import com.noctarius.borabora.builder.DictionaryEntryBuilder;
 import com.noctarius.borabora.builder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
-import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -55,7 +54,7 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public B putTag(SemanticTagBuilderConsumer<B> consumer) {
+    public B putTag(TagBuilderConsumer<B> consumer) {
         validate();
         consumer.execute(encoderContext, builder);
         return builder;
@@ -493,7 +492,7 @@ public abstract class AbstractStreamValueBuilder<B>
         }
 
         @Override
-        public SequenceBuilder<B> putTag(SemanticTagBuilderConsumer<SequenceBuilder<B>> consumer) {
+        public SequenceBuilder<B> putTag(TagBuilderConsumer<SequenceBuilder<B>> consumer) {
             consumer.execute(encoderContext, this);
             return this;
         }
@@ -578,7 +577,7 @@ public abstract class AbstractStreamValueBuilder<B>
         }
 
         @Override
-        public DictionaryEntryBuilder<B> putTag(SemanticTagBuilderConsumer<DictionaryEntryBuilder<B>> consumer) {
+        public DictionaryEntryBuilder<B> putTag(TagBuilderConsumer<DictionaryEntryBuilder<B>> consumer) {
             consumer.execute(encoderContext, this);
             return this;
         }

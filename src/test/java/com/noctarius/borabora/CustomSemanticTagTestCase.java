@@ -20,23 +20,24 @@ import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.BuilderEnter;
 import com.noctarius.borabora.spi.BuilderReturn;
-import com.noctarius.borabora.spi.SemanticTagBuilder;
-import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.AbstractStreamValueBuilder;
 import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.spi.codec.TagBuilder;
+import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.spi.SemanticTagSupport.semanticTag;
+import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 
 public class CustomSemanticTagTestCase
@@ -103,7 +104,7 @@ public class CustomSemanticTagTestCase
     }
 
     public interface CustomTableRowBuilder
-            extends SemanticTagBuilder {
+            extends TagBuilder {
 
         @BuilderEnter
         CustomTableColumnBuilder<CustomTableRowBuilder> putRow();
@@ -119,10 +120,10 @@ public class CustomSemanticTagTestCase
     }
 
     public static class CustomTableSemanticTagBuilderFactory
-            implements SemanticTagBuilderFactory<CustomTableBuilder> {
+            implements TagBuilderFactory<CustomTableBuilder, Object> {
 
         @Override
-        public CustomTableBuilder newSemanticTagBuilder(EncoderContext encoderContext) {
+        public CustomTableBuilder newTagBuilder(EncoderContext encoderContext) {
             return new CustomTableBuilderImpl(encoderContext);
         }
 
@@ -132,8 +133,13 @@ public class CustomSemanticTagTestCase
         }
 
         @Override
-        public Class<CustomTableBuilder> semanticTagBuilderType() {
+        public Class<CustomTableBuilder> tagBuilderType() {
             return CustomTableBuilder.class;
+        }
+
+        @Override
+        public TagEncoder<Object> tagEncoder() {
+            return null;
         }
 
         private static class CustomTableBuilderImpl
@@ -177,7 +183,7 @@ public class CustomSemanticTagTestCase
             }
 
             @Override
-            public <B> SemanticTagBuilderConsumer<B> endSemanticTag() {
+            public <B> TagBuilderConsumer<B> endSemanticTag() {
                 encoderContext.encode(offset -> encoderContext.output().write(offset++, (byte) OPCODE_BREAK_MASK));
                 return null;
             }

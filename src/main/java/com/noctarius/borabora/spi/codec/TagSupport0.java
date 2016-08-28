@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.BuilderReturn;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -26,9 +27,9 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-final class SemanticTagSupport0 {
+final class TagSupport0 {
 
-    private SemanticTagSupport0() {
+    private TagSupport0() {
     }
 
     static <S> S proxy(Class<S> type, MethodInvocationHandler methodInvocationHandler) {
@@ -66,7 +67,7 @@ final class SemanticTagSupport0 {
             }
 
             if ("endSemanticTag".equals(method.getName()) //
-                    && method.getReturnType().isAssignableFrom(SemanticTagBuilderConsumer.class)) {
+                    && method.getReturnType().isAssignableFrom(TagBuilderConsumer.class)) {
 
                 return new MethodInvocationPipeline(type, methodInvocations);
             }
@@ -88,7 +89,7 @@ final class SemanticTagSupport0 {
     }
 
     static class MethodInvocationPipeline<B>
-            implements SemanticTagBuilderConsumer<B> {
+            implements TagBuilderConsumer<B> {
 
         private final Class<?> type;
         private final List<MethodInvocation> methodInvocations;
@@ -101,8 +102,8 @@ final class SemanticTagSupport0 {
         @Override
         public B execute(EncoderContext encoderContext, B builder) {
             try {
-                SemanticTagBuilderFactory factory = encoderContext.findSemanticTagBuilderFactory(type);
-                Object target = factory.newSemanticTagBuilder(encoderContext);
+                TagBuilderFactory factory = encoderContext.findSemanticTagBuilderFactory(type);
+                Object target = factory.newTagBuilder(encoderContext);
                 for (MethodInvocation methodInvocation : methodInvocations) {
                     target = methodInvocation.invoke(target);
                 }

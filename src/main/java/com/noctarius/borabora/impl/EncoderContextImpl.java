@@ -18,7 +18,7 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
@@ -28,13 +28,13 @@ import java.util.Map;
 public class EncoderContextImpl
         implements EncoderContext {
 
-    private final Map<Class<?>, SemanticTagBuilderFactory> factories;
+    private final Map<Class<?>, TagBuilderFactory> factories;
     private final List<TagEncoder> tagEncoders;
     private final Output output;
 
     private long offset;
 
-    public EncoderContextImpl(Output output, List<TagEncoder> tagEncoders, Map<Class<?>, SemanticTagBuilderFactory> factories) {
+    public EncoderContextImpl(Output output, List<TagEncoder> tagEncoders, Map<Class<?>, TagBuilderFactory> factories) {
         this.output = output;
         this.factories = factories;
         this.tagEncoders = tagEncoders;
@@ -66,7 +66,7 @@ public class EncoderContextImpl
     }
 
     @Override
-    public <S> SemanticTagBuilderFactory findSemanticTagBuilderFactory(Class<S> type) {
+    public <S> TagBuilderFactory findSemanticTagBuilderFactory(Class<S> type) {
         return factories.get(type);
     }
 

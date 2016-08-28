@@ -14,25 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.codec.EncoderContext;
 import org.junit.Test;
 
 import javax.xml.soap.SOAPException;
 
 import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
-import static com.noctarius.borabora.spi.SemanticTagSupport.semanticTag;
+import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 
-public class SemanticTagSupportTestCase
+public class TagSupportTestCase
         extends AbstractTestCase {
 
     @Test
     public void call_constructor() {
-        callConstructor(SemanticTagSupport0.class);
+        callConstructor(TagSupport0.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -77,16 +76,16 @@ public class SemanticTagSupportTestCase
     }
 
     public interface NullPointer1
-            extends SemanticTagBuilder {
+            extends TagBuilder {
     }
 
     private static class NullPointer1Factory
-            implements SemanticTagBuilderFactory<NullPointer1> {
+            implements TagBuilderFactory<NullPointer1, Object> {
 
-        private static final SemanticTagBuilderFactory INSTANCE = new NullPointer1Factory();
+        private static final TagBuilderFactory INSTANCE = new NullPointer1Factory();
 
         @Override
-        public NullPointer1 newSemanticTagBuilder(EncoderContext encoderContext) {
+        public NullPointer1 newTagBuilder(EncoderContext encoderContext) {
             return null;
         }
 
@@ -96,24 +95,29 @@ public class SemanticTagSupportTestCase
         }
 
         @Override
-        public Class<NullPointer1> semanticTagBuilderType() {
+        public Class<NullPointer1> tagBuilderType() {
             return NullPointer1.class;
+        }
+
+        @Override
+        public TagEncoder<Object> tagEncoder() {
+            return null;
         }
     }
 
     public interface InvocationTargetException1
-            extends SemanticTagBuilder {
+            extends TagBuilder {
 
         InvocationTargetException1 test();
     }
 
     private static class InvocationTargetException1Factory
-            implements SemanticTagBuilderFactory<InvocationTargetException1> {
+            implements TagBuilderFactory<InvocationTargetException1, Object> {
 
-        private static final SemanticTagBuilderFactory INSTANCE = new InvocationTargetException1Factory();
+        private static final TagBuilderFactory INSTANCE = new InvocationTargetException1Factory();
 
         @Override
-        public InvocationTargetException1 newSemanticTagBuilder(EncoderContext encoderContext) {
+        public InvocationTargetException1 newTagBuilder(EncoderContext encoderContext) {
             return new InvocationTargetException1Impl();
         }
 
@@ -123,15 +127,20 @@ public class SemanticTagSupportTestCase
         }
 
         @Override
-        public Class<InvocationTargetException1> semanticTagBuilderType() {
+        public Class<InvocationTargetException1> tagBuilderType() {
             return InvocationTargetException1.class;
+        }
+
+        @Override
+        public TagEncoder<Object> tagEncoder() {
+            return null;
         }
 
         private static class InvocationTargetException1Impl
                 implements InvocationTargetException1 {
 
             @Override
-            public <B> SemanticTagBuilderConsumer<B> endSemanticTag() {
+            public <B> TagBuilderConsumer<B> endSemanticTag() {
                 return null;
             }
 
@@ -143,19 +152,19 @@ public class SemanticTagSupportTestCase
     }
 
     public interface InvocationTargetException2
-            extends SemanticTagBuilder {
+            extends TagBuilder {
 
         InvocationTargetException2 test()
                 throws Exception;
     }
 
     private static class InvocationTargetException2Factory
-            implements SemanticTagBuilderFactory<InvocationTargetException2> {
+            implements TagBuilderFactory<InvocationTargetException2, Object> {
 
-        private static final SemanticTagBuilderFactory INSTANCE = new InvocationTargetException2Factory();
+        private static final TagBuilderFactory INSTANCE = new InvocationTargetException2Factory();
 
         @Override
-        public InvocationTargetException2 newSemanticTagBuilder(EncoderContext encoderContext) {
+        public InvocationTargetException2 newTagBuilder(EncoderContext encoderContext) {
             return new InvocationTargetException2Impl();
         }
 
@@ -165,15 +174,20 @@ public class SemanticTagSupportTestCase
         }
 
         @Override
-        public Class<InvocationTargetException2> semanticTagBuilderType() {
+        public Class<InvocationTargetException2> tagBuilderType() {
             return InvocationTargetException2.class;
+        }
+
+        @Override
+        public TagEncoder<Object> tagEncoder() {
+            return null;
         }
 
         private static class InvocationTargetException2Impl
                 implements InvocationTargetException2 {
 
             @Override
-            public <B> SemanticTagBuilderConsumer<B> endSemanticTag() {
+            public <B> TagBuilderConsumer<B> endSemanticTag() {
                 return null;
             }
 

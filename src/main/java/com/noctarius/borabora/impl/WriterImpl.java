@@ -19,7 +19,7 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
@@ -30,9 +30,9 @@ final class WriterImpl
         implements Writer {
 
     private final List<TagEncoder> tagEncoders;
-    private final Map<Class<?>, SemanticTagBuilderFactory> factories;
+    private final Map<Class<?>, TagBuilderFactory> factories;
 
-    WriterImpl(Map<Class<?>, SemanticTagBuilderFactory> factories, List<TagEncoder> tagEncoders) {
+    WriterImpl(Map<Class<?>, TagBuilderFactory> factories, List<TagEncoder> tagEncoders) {
         this.factories = factories;
         this.tagEncoders = tagEncoders;
     }

@@ -18,8 +18,8 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.WriterBuilder;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.codec.TagBuilderFactory;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.ArrayList;
@@ -31,15 +31,10 @@ import java.util.Objects;
 public final class WriterBuilderImpl
         implements WriterBuilder {
 
-    private final List<SemanticTagBuilderFactory> factories = new ArrayList<>();
-    private final List<TagEncoder> tagEncoders = new ArrayList<>();
-
-    public WriterBuilderImpl() {
-        addTagEncoder(CommonTagCodec.INSTANCE);
-    }
+    private final List<TagBuilderFactory> factories = new ArrayList<>();
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory semanticTagBuilderFactory) {
+    public WriterBuilder addSemanticTagBuilderFactory(TagBuilderFactory semanticTagBuilderFactory) {
         Objects.requireNonNull(semanticTagBuilderFactory, "semanticTagBuilderFactory must not be null");
         if (!factories.contains(semanticTagBuilderFactory)) {
             factories.add(semanticTagBuilderFactory);
@@ -48,8 +43,8 @@ public final class WriterBuilderImpl
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
-                                                        SemanticTagBuilderFactory semanticTagBuilderFactory2) {
+    public WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
+                                                        TagBuilderFactory semanticTagBuilderFactory2) {
 
         addSemanticTagBuilderFactory(semanticTagBuilderFactory1);
         addSemanticTagBuilderFactory(semanticTagBuilderFactory2);
@@ -57,65 +52,39 @@ public final class WriterBuilderImpl
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
-                                                        SemanticTagBuilderFactory semanticTagBuilderFactory2,
-                                                        SemanticTagBuilderFactory... semanticTagBuilderFactories) {
+    public WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
+                                                        TagBuilderFactory semanticTagBuilderFactory2,
+                                                        TagBuilderFactory... semanticTagBuilderFactories) {
 
         addSemanticTagBuilderFactory(semanticTagBuilderFactory1);
         addSemanticTagBuilderFactory(semanticTagBuilderFactory2);
-        for (SemanticTagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
+        for (TagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
             addSemanticTagBuilderFactory(semanticTagBuilderFactory);
         }
         return this;
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(Iterable<SemanticTagBuilderFactory> semanticTagBuilderFactories) {
-        for (SemanticTagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
+    public WriterBuilder addSemanticTagBuilderFactories(Iterable<TagBuilderFactory> semanticTagBuilderFactories) {
+        for (TagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
             addSemanticTagBuilderFactory(semanticTagBuilderFactory);
-        }
-        return this;
-    }
-
-    @Override
-    public <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder) {
-        Objects.requireNonNull(tagEncoder, "tagEncoder must not be null");
-        if (!tagEncoders.contains(tagEncoder)) {
-            tagEncoders.add(tagEncoder);
-        }
-        return this;
-    }
-
-    @Override
-    public WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2) {
-        addTagEncoder(tagEncoder1);
-        addTagEncoder(tagEncoder2);
-        return this;
-    }
-
-    @Override
-    public WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2, TagEncoder... tagEncoders) {
-        addTagEncoder(tagEncoder1);
-        addTagEncoder(tagEncoder2);
-        for (TagEncoder tagEncoder : tagEncoders) {
-            addTagEncoder(tagEncoder);
-        }
-        return this;
-    }
-
-    @Override
-    public WriterBuilder addTagEncoders(Iterable<TagEncoder> tagEncoders) {
-        for (TagEncoder tagEncoder : tagEncoders) {
-            addTagEncoder(tagEncoder);
         }
         return this;
     }
 
     @Override
     public Writer build() {
-        Map<Class<?>, SemanticTagBuilderFactory> factoryMap = new HashMap<>();
-        for (SemanticTagBuilderFactory factory : factories) {
-            factoryMap.put(factory.semanticTagBuilderType(), factory);
+        Map<Class<?>, TagBuilderFactory> factoryMap = new HashMap<>();
+        List<TagEncoder> tagEncoders = new ArrayList<>();
+        tagEncoders.add(CommonTagCodec.INSTANCE);
+
+        for (TagBuilderFactory factory : factories) {
+            factoryMap.put(factory.tagBuilderType(), factory);
+
+            TagEncoder tagEncoder = factory.tagEncoder();
+            if (tagEncoder != null && !tagEncoders.contains(tagEncoder)) {
+                tagEncoders.add(tagEncoder);
+            }
         }
         return new WriterImpl(factoryMap, tagEncoders);
     }

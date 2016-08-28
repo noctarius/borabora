@@ -17,7 +17,6 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 
 public interface EncoderContext {
 
@@ -29,7 +28,7 @@ public interface EncoderContext {
 
     long applyEncoder(Object value, long offset);
 
-    <S> SemanticTagBuilderFactory findSemanticTagBuilderFactory(Class<S> type);
+    <S> TagBuilderFactory findSemanticTagBuilderFactory(Class<S> type);
 
     default void encodeNull() {
         encode(offset -> Encoder.putNull(offset, this.output()));
