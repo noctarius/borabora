@@ -16,9 +16,12 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface StreamEntryQueryBuilder<T>
         extends StreamElementQueryBuilder<EntryQueryBuilder<T>>, SelectorQueryBuilder<EntryQueryBuilder<T>> {
 
+    @BuilderReturn
     T endEntry();
 
 }

@@ -40,11 +40,12 @@ public class CompositeBuffer
     }
 
     @Override
-    public void write(long offset, byte value) {
+    public long write(long offset, byte value) {
         Buffer buffer = bufferByOffset(offset);
         int chunkOffset = chunkOffset(offset);
         buffer.buffer[chunkOffset] = value;
         updateHighestOffset(offset);
+        return offset;
     }
 
     @Override

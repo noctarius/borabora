@@ -246,35 +246,8 @@ public enum ValueTypes
     }
 
     @Override
-    public boolean matches(ValueType other) {
-        if (matchesExact(other)) {
-            return true;
-        }
-        if (identity == other) {
-            return true;
-        }
-        if (identity == null) {
-            return false;
-        }
-        return identity.matches(other);
-    }
-
-    @Override
-    public boolean matchesExact(ValueType other) {
-        if (this == other) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public ValueType identity() {
         return identity != null ? identity : this;
-    }
-
-    @Override
-    public <T> T value(Value value) {
-        return value(value, false);
     }
 
     @Override
@@ -328,7 +301,7 @@ public enum ValueTypes
             case FloatingPointOrSimple:
                 return floatNullOrBool(head);
             default: // Always a semantic tag
-                return semanticTagType(input, offset);
+                return Unknown;
         }
     }
 
@@ -380,36 +353,6 @@ public enum ValueTypes
             default:
                 return Float;
         }
-    }
-
-    private static ValueTypes semanticTagType(Input input, long offset) {
-        Number tagType = Decoder.readUint(input, offset);
-        switch (tagType.intValue()) {
-            case Constants.TAG_DATE_TIME:
-                return DateTime;
-            case Constants.TAG_TIMESTAMP:
-                return Timestamp;
-            case Constants.TAG_UNSIGNED_BIGNUM:
-                return UBigNum;
-            case Constants.TAG_SIGNED_BIGNUM:
-                return NBigNum;
-            case Constants.TAG_BIGFLOAT:
-                // return BigFloat;
-                throw new IllegalStateException("BigFloat is not supported");
-            case Constants.TAG_ENCCBOR:
-                return EncCBOR;
-            case Constants.TAG_FRACTION:
-                return Fraction;
-            case Constants.TAG_URI:
-                return URI;
-            case Constants.TAG_REGEX:
-                //return RegEx;
-                throw new IllegalStateException("RegEx is not supported");
-            case Constants.TAG_MIME:
-                //return Mime;
-                throw new IllegalStateException("Mime is not supported");
-        }
-        return Unknown;
     }
 
 }

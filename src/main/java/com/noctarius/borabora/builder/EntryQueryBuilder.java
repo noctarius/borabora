@@ -16,9 +16,12 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface EntryQueryBuilder<T>
         extends QueryTokenBuilder<EntryQueryBuilder<T>> {
 
+    @BuilderReturn
     T endEntry();
 
 }

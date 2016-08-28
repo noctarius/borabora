@@ -114,9 +114,13 @@ public abstract class AbstractTestCase {
     }
 
     public static QueryContext newQueryContext() {
+        return newQueryContext(Input.fromByteArray(EMPTY_BYTE_ARRAY));
+    }
+
+    public static QueryContext newQueryContext(Input input) {
         List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
-        return newQueryContext(Input.fromByteArray(EMPTY_BYTE_ARRAY), tagDecoders, selectStatementStrategy);
+        return newQueryContext(input, tagDecoders, selectStatementStrategy);
     }
 
     public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
@@ -143,7 +147,6 @@ public abstract class AbstractTestCase {
         Input input = Input.fromByteArray(bytes);
         short head = Decoder.readUInt8(input, 0);
         MajorType majorType = MajorType.findMajorType(head);
-        ValueType valueType = ValueTypes.valueType(input, 0);
 
         List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
@@ -152,6 +155,7 @@ public abstract class AbstractTestCase {
         QueryContext queryContext = queryContextFactory
                 .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
 
+        ValueType valueType = queryContext.valueType(0);
         return new StreamValue(majorType, valueType, 0, queryContext);
     }
 

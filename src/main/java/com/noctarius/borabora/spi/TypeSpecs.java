@@ -79,7 +79,7 @@ public enum TypeSpecs
     }
 
     @Override
-    public int tagId() {
+    public long tagId() {
         return tagId;
     }
 

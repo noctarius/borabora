@@ -21,6 +21,7 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.spi.codec.ByteSizes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
@@ -72,7 +73,14 @@ public abstract class AbstractStreamValue
 
     @Override
     public byte[] raw() {
-        return extract(() -> Decoder.readRaw(input(), majorType(), offset()));
+        long offset = offset();
+        MajorType majorType = majorType();
+        if (majorType == MajorType.SemanticTag) {
+            offset += ByteSizes.headByteSize(input(), offset);
+            short itemHead = Decoder.readUInt8(input(), offset);
+            majorType = MajorType.findMajorType(itemHead);
+        }
+        return Decoder.readRaw(input(), majorType, offset);
     }
 
     @Override

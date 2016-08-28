@@ -32,11 +32,12 @@ final class UnsafeByteOutput
     }
 
     @Override
-    public void write(long offset, byte value) {
+    public long write(long offset, byte value) {
         if (offset < 0 || offset >= size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         UNSAFE.putByte(address + offset, value);
+        return offset;
     }
 
     @Override

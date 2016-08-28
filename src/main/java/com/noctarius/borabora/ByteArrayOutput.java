@@ -26,7 +26,7 @@ final class ByteArrayOutput
     }
 
     @Override
-    public void write(long offset, byte value) {
+    public long write(long offset, byte value) {
         if (offset > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
         }
@@ -34,6 +34,7 @@ final class ByteArrayOutput
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         array[(int) offset] = value;
+        return offset;
     }
 
     @Override

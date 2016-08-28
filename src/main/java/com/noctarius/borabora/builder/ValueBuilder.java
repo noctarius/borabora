@@ -16,6 +16,9 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
+
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.Instant;
@@ -71,8 +74,10 @@ public interface ValueBuilder<B> {
 
     B putTimestamp(Instant instant);
 
+    @BuilderEnter
     IndefiniteStringBuilder<B> putIndefiniteByteString();
 
+    @BuilderEnter
     IndefiniteStringBuilder<B> putIndefiniteTextString();
 
     B putBoolean(boolean value);
@@ -83,12 +88,18 @@ public interface ValueBuilder<B> {
 
     B putTag(Object value);
 
+    B putTag(SemanticTagBuilderConsumer<B> consumer);
+
+    @BuilderEnter
     SequenceBuilder<B> putSequence();
 
+    @BuilderEnter
     SequenceBuilder<B> putSequence(long elements);
 
+    @BuilderEnter
     DictionaryBuilder<B> putDictionary();
 
+    @BuilderEnter
     DictionaryBuilder<B> putDictionary(long elements);
 
 }

@@ -39,7 +39,9 @@ public interface ValueType {
      *
      * @return the identity in case of defined, otherwise the value type itself
      */
-    ValueType identity();
+    default ValueType identity() {
+        return this;
+    }
 
     /**
      * Returns the extracted {@link Value} based on this value type. Calling this method
@@ -52,7 +54,9 @@ public interface ValueType {
      * @throws IllegalArgumentException in case the encoded value is not representable
      *                                  with this ValueType
      */
-    <T> T value(Value value);
+    default <T> T value(Value value) {
+        return value(value, false);
+    }
 
     /**
      * Returns the extracted {@link Value} based on this value type. Calling this method
@@ -66,7 +70,13 @@ public interface ValueType {
      * @throws IllegalArgumentException in case the encoded value is not representable
      *                                  with this ValueType
      */
-    <T> T value(Value value, boolean validate);
+    default <T> T value(Value value, boolean validate) {
+        if (!value.valueType().matches(this)) {
+            String msg = java.lang.String.format("ValueType does not match: %s, %s", this, value.valueType());
+            throw new IllegalArgumentException(msg);
+        }
+        return value.tag();
+    }
 
     /**
      * Matches the given value type against this instance. This method also matches
@@ -76,7 +86,22 @@ public interface ValueType {
      * @return true if the value type matches directly or if the identity of any higher
      * level matches
      */
-    boolean matches(ValueType other);
+    default boolean matches(ValueType other) {
+        if (matchesExact(other)) {
+            return true;
+        }
+        ValueType identity = identity();
+        if (identity == this) {
+            return false;
+        }
+        if (identity == other) {
+            return true;
+        }
+        if (identity == null) {
+            return false;
+        }
+        return identity.matches(other);
+    }
 
     /**
      * Matches the given value type against this instance. This method <b>does not</b>
@@ -85,6 +110,11 @@ public interface ValueType {
      * @param other the other value type to match against
      * @return true if the value type matches exactly
      */
-    boolean matchesExact(ValueType other);
+    default boolean matchesExact(ValueType other) {
+        if (this == other) {
+            return true;
+        }
+        return false;
+    }
 
 }

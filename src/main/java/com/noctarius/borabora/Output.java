@@ -22,7 +22,7 @@ import java.io.OutputStream;
 
 public interface Output {
 
-    void write(long offset, byte value);
+    long write(long offset, byte value);
 
     long write(byte[] array, long offset, long length);
 

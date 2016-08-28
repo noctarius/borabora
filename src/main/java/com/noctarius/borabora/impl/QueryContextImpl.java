@@ -20,6 +20,7 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.query.QueryConsumer;
@@ -67,6 +68,21 @@ final class QueryContextImpl
     @Override
     public void offset(long offset) {
         this.offset = offset;
+    }
+
+    @Override
+    public ValueType valueType(long offset) {
+        short head = Decoder.readUInt8(input, offset);
+        if (MajorType.SemanticTag == MajorType.findMajorType(head)) {
+            for (TagDecoder tagDecoder : tagDecoders) {
+                ValueType valueType = tagDecoder.valueType(input, offset);
+                if (valueType != ValueTypes.Unknown) {
+                    return valueType;
+                }
+            }
+            return ValueTypes.Unknown;
+        }
+        return ValueTypes.valueType(input, offset);
     }
 
     @Override

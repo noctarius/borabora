@@ -216,7 +216,7 @@ public final class CommonTagCodec
 
     @Override
     public boolean handles(Input input, long offset) {
-        return ValueTypes.valueType(input, offset) != null;
+        return valueType(input, offset) != ValueTypes.Unknown;
     }
 
     @Override
@@ -225,13 +225,51 @@ public final class CommonTagCodec
     }
 
     @Override
-    public TypeSpec handles(int tagId) {
+    public TypeSpec handles(long tagId) {
         for (TypeSpec typeSpec : TYPE_SPECS_VALUES) {
             if (typeSpec.tagId() == tagId) {
                 return typeSpec;
             }
         }
         return null;
+    }
+
+    @Override
+    public ValueType valueType(Input input, long offset) {
+        Number tagType = Decoder.readUint(input, offset);
+        if (tagType instanceof BigInteger) {
+            return ValueTypes.Unknown;
+        }
+        if (tagType.longValue() > Integer.MAX_VALUE) {
+            return ValueTypes.Unknown;
+        }
+        int tagId = tagType.intValue();
+        switch (tagId) {
+            case Constants.TAG_DATE_TIME:
+                return ValueTypes.DateTime;
+            case Constants.TAG_TIMESTAMP:
+                return ValueTypes.Timestamp;
+            case Constants.TAG_UNSIGNED_BIGNUM:
+                return ValueTypes.UBigNum;
+            case Constants.TAG_SIGNED_BIGNUM:
+                return ValueTypes.NBigNum;
+            case Constants.TAG_BIGFLOAT:
+                // return BigFloat;
+                throw new IllegalStateException("BigFloat is not supported");
+            case Constants.TAG_ENCCBOR:
+                return ValueTypes.EncCBOR;
+            case Constants.TAG_FRACTION:
+                return ValueTypes.Fraction;
+            case Constants.TAG_URI:
+                return ValueTypes.URI;
+            case Constants.TAG_REGEX:
+                //return RegEx;
+                throw new IllegalStateException("RegEx is not supported");
+            case Constants.TAG_MIME:
+                //return Mime;
+                throw new IllegalStateException("Mime is not supported");
+        }
+        return ValueTypes.Unknown;
     }
 
     @Override

@@ -29,12 +29,13 @@ final class OutputStreamOutput
     }
 
     @Override
-    public void write(long offset, byte value) {
+    public long write(long offset, byte value) {
         try {
             out.write(value);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+        return offset;
     }
 
     @Override

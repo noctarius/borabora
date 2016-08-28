@@ -349,7 +349,12 @@ public class ParserBuilderTestCase {
         }
 
         @Override
-        public TypeSpec handles(int tagId) {
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
             return null;
         }
     }

@@ -44,6 +44,8 @@ public interface QueryContext {
 
     void offset(long offset);
 
+    ValueType valueType(long offset);
+
     List<TagDecoder> tagDecoders();
 
     SelectStatementStrategy selectStatementStrategy();

@@ -17,6 +17,7 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.TypeSpec;
 
 public interface TagDecoder<V>
@@ -24,6 +25,8 @@ public interface TagDecoder<V>
 
     boolean handles(Input input, long offset);
 
-    TypeSpec handles(int tagId);
+    TypeSpec handles(long tagId);
+
+    ValueType valueType(Input input, long offset);
 
 }

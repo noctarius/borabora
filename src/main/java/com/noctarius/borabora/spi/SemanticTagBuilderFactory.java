@@ -14,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora.spi;
 
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.codec.EncoderContext;
 
-public interface DictionaryEntryBuilder<B>
-        extends ValueBuilder<DictionaryEntryBuilder<B>> {
+public interface SemanticTagBuilderFactory<S> {
 
-    @BuilderReturn
-    DictionaryBuilder<B> endEntry();
+    S newSemanticTagBuilder(EncoderContext encoderContext);
+
+    int tagId();
+
+    Class<S> semanticTagBuilderType();
 
 }

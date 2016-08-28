@@ -17,6 +17,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -365,67 +366,77 @@ public class ValueTypesTestCase
     @Test
     public void test_valueType_semtag_datetime() {
         Input input = semanticTag(ValueTypes.DateTime);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.DateTime, valueType);
     }
 
     @Test
     public void test_valueType_semtag_timestamp() {
         Input input = semanticTag(ValueTypes.Timestamp);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.Timestamp, valueType);
     }
 
     @Test
     public void test_valueType_semtag_ubigint() {
         Input input = semanticTag(ValueTypes.UBigNum);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.UBigNum, valueType);
     }
 
     @Test
     public void test_valueType_semtag_nbigint() {
         Input input = semanticTag(ValueTypes.NBigNum);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.NBigNum, valueType);
     }
 
     @Test
     public void test_valueType_semtag_enccbor() {
         Input input = semanticTag(ValueTypes.EncCBOR);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.EncCBOR, valueType);
     }
 
     @Test
     public void test_valueType_semtag_uri() {
         Input input = semanticTag(ValueTypes.URI);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.URI, valueType);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_bigfloat() {
         Input input = semanticTag(Constants.TAG_BIGFLOAT);
-        ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        queryContext.valueType(0);
     }
 
     @Test
     public void fail_valueType_semtag_fraction() {
         Input input = semanticTag(Constants.TAG_FRACTION);
-        ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        queryContext.valueType(0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_regex() {
         Input input = semanticTag(Constants.TAG_REGEX);
-        ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        queryContext.valueType(0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void fail_valueType_semtag_unimplemented_mime() {
         Input input = semanticTag(Constants.TAG_MIME);
-        ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        queryContext.valueType(0);
     }
 
     @Test
@@ -521,7 +532,8 @@ public class ValueTypesTestCase
     @Test
     public void test_valueType_obj_semtag_timestamp() {
         Input input = semanticTag(ValueTypes.Timestamp);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        QueryContext queryContext = newQueryContext(input);
+        ValueType valueType = queryContext.valueType(0);
         assertEquals(ValueTypes.Timestamp, valueType);
     }
 

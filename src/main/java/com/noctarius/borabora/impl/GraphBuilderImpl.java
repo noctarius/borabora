@@ -17,6 +17,7 @@
 package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.spi.codec.AbstractStreamValueBuilder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 
 final class GraphBuilderImpl

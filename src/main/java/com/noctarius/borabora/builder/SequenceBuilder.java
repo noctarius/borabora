@@ -16,9 +16,12 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface SequenceBuilder<B>
         extends ValueBuilder<SequenceBuilder<B>> {
 
+    @BuilderReturn
     B endSequence();
 
 }

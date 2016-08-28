@@ -16,14 +16,21 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface DictionaryQueryBuilder<T> {
 
+    @BuilderEnter
     StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key);
 
+    @BuilderEnter
     StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key);
 
+    @BuilderEnter
     StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key);
 
+    @BuilderReturn
     T endDictionary();
 
 }

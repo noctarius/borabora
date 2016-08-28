@@ -17,9 +17,12 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Writer;
+import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 public interface WriterBuilder {
+
+    WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory semanticTagBuilderFactory);
 
     <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder);
 

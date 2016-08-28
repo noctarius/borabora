@@ -20,7 +20,6 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
 
@@ -40,7 +39,7 @@ public interface QueryConsumer {
         } else {
             short head = Decoder.readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);
-            ValueType valueType = ValueTypes.valueType(input, offset);
+            ValueType valueType = queryContext.valueType(offset);
             value = new StreamValue(majorType, valueType, offset, queryContext);
         }
 

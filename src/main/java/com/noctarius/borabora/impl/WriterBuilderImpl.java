@@ -18,20 +18,30 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.WriterBuilder;
+import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public final class WriterBuilderImpl
         implements WriterBuilder {
 
+    private final Map<Class<?>, SemanticTagBuilderFactory> factories = new HashMap<>();
     private final List<TagEncoder> tagEncoders = new ArrayList<>();
 
     public WriterBuilderImpl() {
         addTagEncoder(CommonTagCodec.INSTANCE);
+    }
+
+    @Override
+    public WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory semanticTagBuilderFactory) {
+        factories.put(semanticTagBuilderFactory.semanticTagBuilderType(), semanticTagBuilderFactory);
+        return this;
     }
 
     @Override
@@ -70,7 +80,7 @@ public final class WriterBuilderImpl
 
     @Override
     public Writer build() {
-        return new WriterImpl(tagEncoders);
+        return new WriterImpl(factories, tagEncoders);
     }
 
 }

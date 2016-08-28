@@ -16,10 +16,14 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderEnter;
+
 public interface SelectorQueryBuilder<T> {
 
+    @BuilderEnter
     DictionaryQueryBuilder<T> asDictionary();
 
+    @BuilderEnter
     SequenceQueryBuilder<T> asSequence();
 
 }

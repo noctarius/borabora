@@ -27,7 +27,7 @@ public interface TypeSpec {
 
     String spec();
 
-    int tagId();
+    long tagId();
 
     boolean matches(TypeSpec other);
 

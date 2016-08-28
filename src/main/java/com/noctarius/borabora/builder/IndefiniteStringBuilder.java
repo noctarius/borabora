@@ -16,10 +16,15 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface IndefiniteStringBuilder<B> {
 
+    @BuilderEnter
     IndefiniteStringBuilder<B> putString(String value);
 
+    @BuilderReturn
     B endIndefiniteString();
 
 }

@@ -21,8 +21,14 @@ import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.SemanticTagBuilder;
+import com.noctarius.borabora.spi.SemanticTagBuilderConsumer;
+import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
+import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.codec.EncoderContext;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -31,6 +37,8 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
 
+import static com.noctarius.borabora.spi.Constants.UTC;
+import static com.noctarius.borabora.spi.SemanticTagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -771,6 +779,80 @@ public class WriterTestCase
         Value value1 = parser.read(Query.newBuilder().stream(0).build());
 
         assertEquals(expected, value1.tag());
+    }
+
+    @Test
+    public void test_write_semtag_datetime() {
+        Instant expected = Instant.now();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new DateTimeSemanticTagBuilderFactory()).build();
+
+        GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
+
+        graphBuilder.putTag( //
+                semanticTag(DateTimeBuilder.class).putDateTime(expected).endSemanticTag() //
+        ).finishStream();
+
+        Parser parser = Parser.newBuilder().build();
+        Input input = Input.fromByteArray(baos.toByteArray());
+
+        Value value = parser.read(input, Query.newBuilder().build());
+        assertEquals(expected, value.tag());
+    }
+
+    public interface DateTimeBuilder
+            extends SemanticTagBuilder {
+
+        DateTimeBuilder putDateTime(Instant instant);
+
+    }
+
+    public static class DateTimeSemanticTagBuilderFactory
+            implements SemanticTagBuilderFactory<DateTimeBuilder> {
+
+        @Override
+        public DateTimeBuilder newSemanticTagBuilder(EncoderContext encoderContext) {
+            return new Impl(encoderContext);
+        }
+
+        @Override
+        public int tagId() {
+            return Constants.TAG_DATE_TIME;
+        }
+
+        @Override
+        public Class<DateTimeBuilder> semanticTagBuilderType() {
+            return DateTimeBuilder.class;
+        }
+
+        private void putDateTime0(Instant instant, EncoderContext encoderContext) {
+            Output output = encoderContext.output();
+            long offset = encoderContext.offset();
+            offset = Encoder.putDateTime(instant.atZone(UTC), offset, output);
+            encoderContext.offset(offset);
+        }
+
+        private class Impl
+                implements DateTimeBuilder {
+
+            private final EncoderContext encoderContext;
+
+            private Impl(EncoderContext encoderContext) {
+                this.encoderContext = encoderContext;
+            }
+
+            @Override
+            public DateTimeBuilder putDateTime(Instant instant) {
+                putDateTime0(instant, encoderContext);
+                return this;
+            }
+
+            @Override
+            public <B> SemanticTagBuilderConsumer<B> endSemanticTag() {
+                return null;
+            }
+        }
     }
 
 }

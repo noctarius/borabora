@@ -16,10 +16,15 @@
  */
 package com.noctarius.borabora.builder;
 
+import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.BuilderReturn;
+
 public interface SequenceQueryBuilder<T> {
 
+    @BuilderEnter
     StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry();
 
+    @BuilderReturn
     T endSequence();
 
 }
