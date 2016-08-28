@@ -31,7 +31,7 @@ import java.util.Objects;
 public final class WriterBuilderImpl
         implements WriterBuilder {
 
-    private final Map<Class<?>, SemanticTagBuilderFactory> factories = new HashMap<>();
+    private final List<SemanticTagBuilderFactory> factories = new ArrayList<>();
     private final List<TagEncoder> tagEncoders = new ArrayList<>();
 
     public WriterBuilderImpl() {
@@ -40,7 +40,40 @@ public final class WriterBuilderImpl
 
     @Override
     public WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory semanticTagBuilderFactory) {
-        factories.put(semanticTagBuilderFactory.semanticTagBuilderType(), semanticTagBuilderFactory);
+        Objects.requireNonNull(semanticTagBuilderFactory, "semanticTagBuilderFactory must not be null");
+        if (!factories.contains(semanticTagBuilderFactory)) {
+            factories.add(semanticTagBuilderFactory);
+        }
+        return this;
+    }
+
+    @Override
+    public WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
+                                                        SemanticTagBuilderFactory semanticTagBuilderFactory2) {
+
+        addSemanticTagBuilderFactory(semanticTagBuilderFactory1);
+        addSemanticTagBuilderFactory(semanticTagBuilderFactory2);
+        return this;
+    }
+
+    @Override
+    public WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
+                                                        SemanticTagBuilderFactory semanticTagBuilderFactory2,
+                                                        SemanticTagBuilderFactory... semanticTagBuilderFactories) {
+
+        addSemanticTagBuilderFactory(semanticTagBuilderFactory1);
+        addSemanticTagBuilderFactory(semanticTagBuilderFactory2);
+        for (SemanticTagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
+            addSemanticTagBuilderFactory(semanticTagBuilderFactory);
+        }
+        return this;
+    }
+
+    @Override
+    public WriterBuilder addSemanticTagBuilderFactories(Iterable<SemanticTagBuilderFactory> semanticTagBuilderFactories) {
+        for (SemanticTagBuilderFactory semanticTagBuilderFactory : semanticTagBuilderFactories) {
+            addSemanticTagBuilderFactory(semanticTagBuilderFactory);
+        }
         return this;
     }
 
@@ -54,14 +87,14 @@ public final class WriterBuilderImpl
     }
 
     @Override
-    public <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2) {
+    public WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2) {
         addTagEncoder(tagEncoder1);
         addTagEncoder(tagEncoder2);
         return this;
     }
 
     @Override
-    public <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders) {
+    public WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2, TagEncoder... tagEncoders) {
         addTagEncoder(tagEncoder1);
         addTagEncoder(tagEncoder2);
         for (TagEncoder tagEncoder : tagEncoders) {
@@ -80,7 +113,11 @@ public final class WriterBuilderImpl
 
     @Override
     public Writer build() {
-        return new WriterImpl(factories, tagEncoders);
+        Map<Class<?>, SemanticTagBuilderFactory> factoryMap = new HashMap<>();
+        for (SemanticTagBuilderFactory factory : factories) {
+            factoryMap.put(factory.semanticTagBuilderType(), factory);
+        }
+        return new WriterImpl(factoryMap, tagEncoders);
     }
 
 }

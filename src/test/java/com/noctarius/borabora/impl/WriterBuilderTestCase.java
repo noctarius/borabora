@@ -17,19 +17,23 @@
 package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
+import com.noctarius.borabora.spi.SemanticTagBuilderFactory;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class WriterBuilderTestCase {
 
@@ -37,6 +41,11 @@ public class WriterBuilderTestCase {
     private static final TagEncoder TE_2 = new TagEncoderTestImpl();
     private static final TagEncoder TE_3 = new TagEncoderTestImpl();
     private static final TagEncoder TE_4 = new TagEncoderTestImpl();
+
+    private static final SemanticTagBuilderFactory STBF_1 = new SemanticTagBuilderFactory1TestImpl();
+    private static final SemanticTagBuilderFactory STBF_2 = new SemanticTagBuilderFactory2TestImpl();
+    private static final SemanticTagBuilderFactory STBF_3 = new SemanticTagBuilderFactory3TestImpl();
+    private static final SemanticTagBuilderFactory STBF_4 = new SemanticTagBuilderFactory4TestImpl();
 
     @Test
     public void test_addtagencoder_single() {
@@ -86,11 +95,62 @@ public class WriterBuilderTestCase {
         assertSame(TE_4, iterator.next());
     }
 
+    @Test
+    public void test_addsemantictagbuilderfactory_single() {
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(STBF_1).build();
+        List<SemanticTagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        assertEquals(1, semanticTagBuilderFactories.size());
+        Iterator<SemanticTagBuilderFactory> iterator = semanticTagBuilderFactories.iterator();
+        assertSame(STBF_1, iterator.next());
+    }
+
+    @Test
+    public void test_addsemantictagbuilderfactory_double() {
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2).build();
+        List<SemanticTagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        assertEquals(2, semanticTagBuilderFactories.size());
+        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
+    }
+
+    @Test
+    public void test_addsemantictagbuilderfactory_array() {
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2, STBF_3, STBF_4).build();
+        List<SemanticTagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        assertEquals(4, semanticTagBuilderFactories.size());
+        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_3));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_4));
+    }
+
+    @Test
+    public void test_addsemantictagbuilderfactory_iterable() {
+        List<SemanticTagBuilderFactory> factories = Stream.of(STBF_1, STBF_2, STBF_3, STBF_4).collect(Collectors.toList());
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(factories).build();
+        List<SemanticTagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        assertEquals(4, semanticTagBuilderFactories.size());
+        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_3));
+        assertTrue(semanticTagBuilderFactories.contains(STBF_4));
+    }
+
     private List<TagEncoder> extractTagEncoders(Writer writer) {
         try {
             Field field = WriterImpl.class.getDeclaredField("tagEncoders");
             field.setAccessible(true);
             return (List<TagEncoder>) field.get(writer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<SemanticTagBuilderFactory> extractSemanticTagBuilderFactories(Writer writer) {
+        try {
+            Field field = WriterImpl.class.getDeclaredField("factories");
+            field.setAccessible(true);
+            return (List<SemanticTagBuilderFactory>) new ArrayList<>(((Map) field.get(writer)).values());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -107,6 +167,82 @@ public class WriterBuilderTestCase {
         @Override
         public boolean handles(Object value) {
             return false;
+        }
+    }
+
+    private static class SemanticTagBuilderFactory1TestImpl
+            implements SemanticTagBuilderFactory {
+
+        @Override
+        public Object newSemanticTagBuilder(EncoderContext encoderContext) {
+            return null;
+        }
+
+        @Override
+        public int tagId() {
+            return 0;
+        }
+
+        @Override
+        public Class semanticTagBuilderType() {
+            return Byte.class;
+        }
+    }
+
+    private static class SemanticTagBuilderFactory2TestImpl
+            implements SemanticTagBuilderFactory {
+
+        @Override
+        public Object newSemanticTagBuilder(EncoderContext encoderContext) {
+            return null;
+        }
+
+        @Override
+        public int tagId() {
+            return 0;
+        }
+
+        @Override
+        public Class semanticTagBuilderType() {
+            return Short.class;
+        }
+    }
+
+    private static class SemanticTagBuilderFactory3TestImpl
+            implements SemanticTagBuilderFactory {
+
+        @Override
+        public Object newSemanticTagBuilder(EncoderContext encoderContext) {
+            return null;
+        }
+
+        @Override
+        public int tagId() {
+            return 0;
+        }
+
+        @Override
+        public Class semanticTagBuilderType() {
+            return Integer.class;
+        }
+    }
+
+    private static class SemanticTagBuilderFactory4TestImpl
+            implements SemanticTagBuilderFactory {
+
+        @Override
+        public Object newSemanticTagBuilder(EncoderContext encoderContext) {
+            return null;
+        }
+
+        @Override
+        public int tagId() {
+            return 0;
+        }
+
+        @Override
+        public Class semanticTagBuilderType() {
+            return Long.class;
         }
     }
 

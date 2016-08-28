@@ -61,14 +61,14 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2) {
+    public ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2) {
         addTagDecoder(tagDecoder1);
         addTagDecoder(tagDecoder2);
         return this;
     }
 
     @Override
-    public <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders) {
+    public ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2, TagDecoder... tagDecoders) {
         addTagDecoder(tagDecoder1);
         addTagDecoder(tagDecoder2);
         for (TagDecoder tagDecoder : tagDecoders) {

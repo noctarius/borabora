@@ -29,9 +29,9 @@ public interface ParserBuilder {
 
     <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder);
 
-    <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2);
+    ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2);
 
-    <V> ParserBuilder addTagDecoders(TagDecoder<V> tagDecoder1, TagDecoder<V> tagDecoder2, TagDecoder... tagDecoders);
+    ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2, TagDecoder... tagDecoders);
 
     ParserBuilder addTagDecoders(Iterable<TagDecoder> tagDecoders);
 

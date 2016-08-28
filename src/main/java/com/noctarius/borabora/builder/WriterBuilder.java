@@ -22,13 +22,22 @@ import com.noctarius.borabora.spi.codec.TagEncoder;
 
 public interface WriterBuilder {
 
-    WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory semanticTagBuilderFactory);
+    <S> WriterBuilder addSemanticTagBuilderFactory(SemanticTagBuilderFactory<S> semanticTagBuilderFactory);
+
+    WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
+                                                 SemanticTagBuilderFactory semanticTagBuilderFactory2);
+
+    WriterBuilder addSemanticTagBuilderFactories(SemanticTagBuilderFactory semanticTagBuilderFactory1,
+                                                 SemanticTagBuilderFactory semanticTagBuilderFactory2,
+                                                 SemanticTagBuilderFactory... semanticTagBuilderFactories);
+
+    WriterBuilder addSemanticTagBuilderFactories(Iterable<SemanticTagBuilderFactory> semanticTagBuilderFactories);
 
     <V> WriterBuilder addTagEncoder(TagEncoder<V> tagEncoder);
 
-    <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2);
+    WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2);
 
-    <V> WriterBuilder addTagEncoders(TagEncoder<V> tagEncoder1, TagEncoder<V> tagEncoder2, TagEncoder<V>... tagEncoders);
+    WriterBuilder addTagEncoders(TagEncoder tagEncoder1, TagEncoder tagEncoder2, TagEncoder... tagEncoders);
 
     WriterBuilder addTagEncoders(Iterable<TagEncoder> tagEncoders);
 
