@@ -181,18 +181,6 @@ public final class CommonTagCodec
             // Normally this is a bytestring for real
             ValueType valueType = queryContext.valueType(offset);
             return new StreamValue(majorType, valueType, offset, queryContext);
-        }),
-
-        UNKNOWN_TAG_READER((valueType, offset, length, queryContext) -> {
-            Input input = queryContext.input();
-            // Move offset to the actual data item
-            offset += ByteSizes.headByteSize(input, offset);
-            short itemHead = Decoder.readUInt8(input, offset);
-            MajorType majorType = MajorType.findMajorType(itemHead);
-            long size = ByteSizes.byteSizeByMajorType(majorType, input, offset);
-            byte[] bytes = new byte[(int) size];
-            input.read(bytes, offset, size);
-            return bytes;
         });
 
         private final TagReader<Object> tagReader;

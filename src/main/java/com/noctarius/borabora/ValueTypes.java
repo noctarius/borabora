@@ -37,7 +37,6 @@ import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.ENCODED
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.UNKNOWN_TAG_READER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.URI_READER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
 import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
@@ -199,7 +198,7 @@ public enum ValueTypes
      * for semantic tags which are not known to the parser, however this is valid to
      * the CBOR specifications as long as the parser is able to ignore the type itself.
      */
-    Unknown(UNKNOWN_TAG_READER, null, o -> false, Value::raw);
+    Unknown(null, null, o -> false, Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
 
