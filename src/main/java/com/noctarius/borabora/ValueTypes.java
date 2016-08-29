@@ -20,7 +20,11 @@ import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.StringEncoders;
+import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.codec.TagReader;
+import com.noctarius.borabora.spi.codec.TagReaders;
+import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.TagWriter;
 import com.noctarius.borabora.spi.query.QueryContext;
 
@@ -29,28 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.DATE_TIME_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.DECIMAL_FRACTION_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.ENCODED_CBOR_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.NBIG_NUM_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.TIMESTAMP_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.UBIG_NUM_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_READER.URI_READER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.BIG_NUM_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.DATE_TIME_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.DECIMAL_FRACTION_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.ENCODED_CBOR_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.TIMESTAMP_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TAG_WRITER.URI_WRITER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.DATE_TIME_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.DECIMAL_FRACTION_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.ENCODED_CBOR_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.NBIG_NUM_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.TIMESTAMP_MATCHER;
-import static com.noctarius.borabora.spi.codec.CommonTagCodec.TYPE_MATCHER.UBIG_NUM_MATCHER;
 
 /**
  * ValueTypes are a set of prebuilt {@link ValueType} implementations. They define the
@@ -150,47 +132,47 @@ public enum ValueTypes
      * <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a> and refined by
      * <a href="https://tools.ietf.org/html/rfc4287#section-3.3">RFC 4287</a>.
      */
-    DateTime(DATE_TIME_READER, DATE_TIME_WRITER, DATE_TIME_MATCHER, Value::tag),
+    DateTime(TagReaders.DateTime, TagStrategies.DateTime, Value::tag),
 
     /**
      * <tt>Timestamp</tt> defines a value type representing a timestamp value of seconds
      * since 1970-01-01 00:00:00 UTC. The value is of 64 bit and will not exceed at
      * 2038-01-19 03:14:08 UTC.
      */
-    Timestamp(TIMESTAMP_READER, TIMESTAMP_WRITER, TIMESTAMP_MATCHER, Value::tag),
+    Timestamp(TagReaders.Timestamp, TagStrategies.Timestamp, Value::tag),
 
     /**
      * <tt>UBigNum</tt> represents a value type of an unsigned integer bigger than
      * {@link Long#MAX_VALUE} which cannot be represented without a
      * {@link java.math.BigInteger} anymore.
      */
-    UBigNum(UBIG_NUM_READER, BIG_NUM_WRITER, UBIG_NUM_MATCHER, Value::tag, UInt, ValueValidators::isPositive),
+    UBigNum(TagReaders.UBigNum, TagStrategies.UBigNum, Value::tag, UInt, ValueValidators::isPositive),
 
     /**
      * <tt>NBigNum</tt> represents a value type of a negative integer smaller than
      * {@link Long#MIN_VALUE} which cannot be represented without a
      * {@link java.math.BigInteger} anymore.
      */
-    NBigNum(NBIG_NUM_READER, BIG_NUM_WRITER, NBIG_NUM_MATCHER, Value::tag, NInt, ValueValidators::isNegative),
+    NBigNum(TagReaders.NBigNum, TagStrategies.NBigNum, Value::tag, NInt, ValueValidators::isNegative),
 
     /**
      * <tt>Fraction</tt> represents a value type of a floating point number outside
      * the representable range of {@link #Float}. The value will be represented as
      * a {@link java.math.BigDecimal}.
      */
-    Fraction(DECIMAL_FRACTION_READER, DECIMAL_FRACTION_WRITER, DECIMAL_FRACTION_MATCHER, Value::tag, Float),
+    Fraction(TagReaders.Fraction, TagStrategies.Fraction, Value::tag, Float),
 
     /**
      * <tt>EncCBOR</tt> represents a value type of still encoded CBOR. The value
      * is represented to the user as a {@link Value}.
      */
-    EncCBOR(ENCODED_CBOR_READER, ENCODED_CBOR_WRITER, ENCODED_CBOR_MATCHER, Value::tag),
+    EncCBOR(TagReaders.EncCBOR, TagStrategies.EncCBOR, Value::tag),
 
     /**
      * <tt>URI</tt> represents a value type of an URI encoded value. the URI type
      * is represented in Java as a {@link java.net.URI} value.
      */
-    URI(URI_READER, URI_WRITER, TYPE_MATCHER.URI_MATCHER, Value::tag),
+    URI(TagReaders.URI, TagStrategies.URI, Value::tag),
 
     /**
      * <tt>Unknown</tt> represents a value of an unknown type. The value can still be
@@ -198,48 +180,44 @@ public enum ValueTypes
      * for semantic tags which are not known to the parser, however this is valid to
      * the CBOR specifications as long as the parser is able to ignore the type itself.
      */
-    Unknown(null, null, o -> false, Value::raw);
+    Unknown(null, null, Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
 
-    private final Predicate<Object> encodeableTypeMatcher;
     private final Function<Value, Object> byValueType;
     private final TagReader<Object> tagReader;
-    private final TagWriter<Object> tagWriter;
+    private final TagStrategy<Object, Object> tagStrategy;
     private final BiConsumer<Value, Object> validator;
     private final ValueType identity;
 
     ValueTypes(Function<Value, Object> byValueType) {
-        this(null, null, (v) -> false, byValueType, null, null);
+        this(null, null, byValueType, null, null);
     }
 
     ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
-        this(null, null, (v) -> false, byValueType, identity, null);
+        this(null, null, byValueType, identity, null);
     }
 
     ValueTypes(Function<Value, Object> byValueType, ValueType identity, BiConsumer<Value, Object> validator) {
-        this(null, null, (v) -> false, byValueType, identity, validator);
+        this(null, null, byValueType, identity, validator);
     }
 
-    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
-               Function<Value, Object> byValueType) {
-
-        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, null, null);
+    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType) {
+        this(tagReader, tagStrategy, byValueType, null, null);
     }
 
-    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
-               Function<Value, Object> byValueType, ValueType identity) {
+    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType,
+               ValueType identity) {
 
-        this(tagReader, tagWriter, encodeableTypeMatcher, byValueType, identity, null);
+        this(tagReader, tagStrategy, byValueType, identity, null);
     }
 
-    ValueTypes(TagReader<Object> tagReader, TagWriter<Object> tagWriter, Predicate<Object> encodeableTypeMatcher,
-               Function<Value, Object> byValueType, ValueType identity, BiConsumer<Value, Object> validator) {
+    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType,
+               ValueType identity, BiConsumer<Value, Object> validator) {
 
-        this.encodeableTypeMatcher = encodeableTypeMatcher;
+        this.tagStrategy = tagStrategy;
         this.byValueType = byValueType;
         this.tagReader = tagReader;
-        this.tagWriter = tagWriter;
         this.validator = validator;
         this.identity = identity;
     }
@@ -270,11 +248,19 @@ public enum ValueTypes
 
     @Override
     public long process(Object value, long offset, EncoderContext encoderContext) {
-        return tagWriter.process(value, offset, encoderContext);
+        TagEncoder<Object> tagEncoder = tagStrategy.tagEncoder();
+        if (tagEncoder == null) {
+            throw new NonImplicitEncodableException("Value of type " + value.getClass() + " is not implicitly encodeable");
+        }
+        return tagEncoder.process(value, offset, encoderContext);
     }
 
     private boolean typeEncodeable(Object value) {
-        return encodeableTypeMatcher.test(value);
+        if (tagStrategy == null) {
+            return false;
+        }
+        TagEncoder<Object> tagEncoder = tagStrategy.tagEncoder();
+        return tagEncoder != null && tagEncoder.handles(value);
     }
 
     public static ValueTypes valueType(Input input, long offset) {

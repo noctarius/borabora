@@ -14,33 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.codec;
+package com.noctarius.borabora.builder.semantictag;
 
-import com.noctarius.borabora.Output;
+import com.noctarius.borabora.spi.codec.TagBuilder;
 
-public interface EncoderContext {
+import java.sql.Timestamp;
+import java.time.Instant;
 
-    Output output();
+public interface TimestampBuilder {
 
-    long offset();
+    TagBuilder putTimestamp(long timestamp);
 
-    void offset(long offset);
+    TagBuilder putTimestamp(Instant timestamp);
 
-    long applyEncoder(Object value, long offset);
+    TagBuilder putTimestamp(Timestamp timestamp);
 
-    <S> TagStrategy findSemanticTagBuilderFactory(Class<S> type);
-
-    default void encodeNull() {
-        encode(offset -> Encoder.putNull(offset, this.output()));
-    }
-
-    default void encode(EncoderFunction encoderFunction) {
-        long offset = offset();
-        offset = encoderFunction.encode(offset);
-        offset(offset);
-    }
-
-    interface EncoderFunction {
-        long encode(long offset);
-    }
 }

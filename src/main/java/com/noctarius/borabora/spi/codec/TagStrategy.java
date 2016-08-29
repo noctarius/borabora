@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-public interface TagBuilderFactory<S, V> {
+public interface TagStrategy<S, V> {
 
     S newTagBuilder(EncoderContext encoderContext);
 

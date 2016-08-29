@@ -80,9 +80,9 @@ public class TagSupportTestCase
     }
 
     private static class NullPointer1Factory
-            implements TagBuilderFactory<NullPointer1, Object> {
+            implements TagStrategy<NullPointer1, Object> {
 
-        private static final TagBuilderFactory INSTANCE = new NullPointer1Factory();
+        private static final TagStrategy INSTANCE = new NullPointer1Factory();
 
         @Override
         public NullPointer1 newTagBuilder(EncoderContext encoderContext) {
@@ -112,9 +112,9 @@ public class TagSupportTestCase
     }
 
     private static class InvocationTargetException1Factory
-            implements TagBuilderFactory<InvocationTargetException1, Object> {
+            implements TagStrategy<InvocationTargetException1, Object> {
 
-        private static final TagBuilderFactory INSTANCE = new InvocationTargetException1Factory();
+        private static final TagStrategy INSTANCE = new InvocationTargetException1Factory();
 
         @Override
         public InvocationTargetException1 newTagBuilder(EncoderContext encoderContext) {
@@ -159,9 +159,9 @@ public class TagSupportTestCase
     }
 
     private static class InvocationTargetException2Factory
-            implements TagBuilderFactory<InvocationTargetException2, Object> {
+            implements TagStrategy<InvocationTargetException2, Object> {
 
-        private static final TagBuilderFactory INSTANCE = new InvocationTargetException2Factory();
+        private static final TagStrategy INSTANCE = new InvocationTargetException2Factory();
 
         @Override
         public InvocationTargetException2 newTagBuilder(EncoderContext encoderContext) {

@@ -23,7 +23,7 @@ import com.noctarius.borabora.builder.ValueBuilder;
 import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
-import com.noctarius.borabora.spi.codec.TagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
@@ -787,7 +787,7 @@ public class WriterTestCase
         Instant expected = Instant.now();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new DateTimeSemanticTagBuilderFactory()).build();
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new DateTimeSemanticTagStrategy()).build();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -809,8 +809,8 @@ public class WriterTestCase
 
     }
 
-    public static class DateTimeSemanticTagBuilderFactory
-            implements TagBuilderFactory<DateTimeBuilder, Instant> {
+    public static class DateTimeSemanticTagStrategy
+            implements TagStrategy<DateTimeBuilder, Instant> {
 
         @Override
         public DateTimeBuilder newTagBuilder(EncoderContext encoderContext) {

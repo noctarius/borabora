@@ -602,7 +602,7 @@ public class ValueTypesTestCase
             case UBigNum:
                 return semanticTag(Constants.TAG_UNSIGNED_BIGNUM);
             case NBigNum:
-                return semanticTag(Constants.TAG_SIGNED_BIGNUM);
+                return semanticTag(Constants.TAG_NEGATIVE_BIGNUM);
             case EncCBOR:
                 return semanticTag(Constants.TAG_ENCCBOR);
             case URI:

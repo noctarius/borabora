@@ -28,7 +28,7 @@ import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
-import com.noctarius.borabora.spi.codec.TagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.query.QueryContext;
@@ -56,7 +56,7 @@ public class CustomSemanticTagTestCase
 
     private void execute(Function<Value, Sequence> function) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new CustomTableSemanticTagBuilderFactory()).build();
+        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new CustomTableSemanticTagStrategy()).build();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -129,8 +129,8 @@ public class CustomSemanticTagTestCase
 
     }
 
-    public static class CustomTableSemanticTagBuilderFactory
-            implements TagBuilderFactory<CustomTableBuilder, Object> {
+    public static class CustomTableSemanticTagStrategy
+            implements TagStrategy<CustomTableBuilder, Object> {
 
         @Override
         public CustomTableBuilder newTagBuilder(EncoderContext encoderContext) {

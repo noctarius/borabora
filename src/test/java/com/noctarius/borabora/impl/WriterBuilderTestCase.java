@@ -19,7 +19,7 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import org.junit.Test;
 
@@ -42,15 +42,15 @@ public class WriterBuilderTestCase {
     private static final TagEncoder TE_3 = new TagEncoderTestImpl();
     private static final TagEncoder TE_4 = new TagEncoderTestImpl();
 
-    private static final TagBuilderFactory STBF_1 = new SemanticTagBuilderFactory1TestImpl();
-    private static final TagBuilderFactory STBF_2 = new SemanticTagBuilderFactory2TestImpl();
-    private static final TagBuilderFactory STBF_3 = new SemanticTagBuilderFactory3TestImpl();
-    private static final TagBuilderFactory STBF_4 = new SemanticTagBuilderFactory4TestImpl();
+    private static final TagStrategy STBF_1 = new SemanticTagStrategy1TestImpl();
+    private static final TagStrategy STBF_2 = new SemanticTagStrategy2TestImpl();
+    private static final TagStrategy STBF_3 = new SemanticTagStrategy3TestImpl();
+    private static final TagStrategy STBF_4 = new SemanticTagStrategy4TestImpl();
 
     @Test
     public void test_addsemantictagbuilderfactory_single() {
         Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(STBF_1).build();
-        List<TagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
         assertEquals(1, semanticTagBuilderFactories.size());
         assertSame(STBF_1, semanticTagBuilderFactories.iterator().next());
 
@@ -64,7 +64,7 @@ public class WriterBuilderTestCase {
     @Test
     public void test_addsemantictagbuilderfactory_double() {
         Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2).build();
-        List<TagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
         assertEquals(2, semanticTagBuilderFactories.size());
         assertTrue(semanticTagBuilderFactories.contains(STBF_1));
         assertTrue(semanticTagBuilderFactories.contains(STBF_2));
@@ -80,7 +80,7 @@ public class WriterBuilderTestCase {
     @Test
     public void test_addsemantictagbuilderfactory_array() {
         Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2, STBF_3, STBF_4).build();
-        List<TagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
         assertEquals(4, semanticTagBuilderFactories.size());
         assertTrue(semanticTagBuilderFactories.contains(STBF_1));
         assertTrue(semanticTagBuilderFactories.contains(STBF_2));
@@ -99,9 +99,9 @@ public class WriterBuilderTestCase {
 
     @Test
     public void test_addsemantictagbuilderfactory_iterable() {
-        List<TagBuilderFactory> factories = Stream.of(STBF_1, STBF_2, STBF_3, STBF_4).collect(Collectors.toList());
+        List<TagStrategy> factories = Stream.of(STBF_1, STBF_2, STBF_3, STBF_4).collect(Collectors.toList());
         Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(factories).build();
-        List<TagBuilderFactory> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
+        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
         assertEquals(4, semanticTagBuilderFactories.size());
         assertTrue(semanticTagBuilderFactories.contains(STBF_1));
         assertTrue(semanticTagBuilderFactories.contains(STBF_2));
@@ -128,11 +128,11 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private List<TagBuilderFactory> extractSemanticTagBuilderFactories(Writer writer) {
+    private List<TagStrategy> extractSemanticTagBuilderFactories(Writer writer) {
         try {
             Field field = WriterImpl.class.getDeclaredField("factories");
             field.setAccessible(true);
-            return (List<TagBuilderFactory>) new ArrayList<>(((Map) field.get(writer)).values());
+            return (List<TagStrategy>) new ArrayList<>(((Map) field.get(writer)).values());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -152,8 +152,8 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private static class SemanticTagBuilderFactory1TestImpl
-            implements TagBuilderFactory {
+    private static class SemanticTagStrategy1TestImpl
+            implements TagStrategy {
 
         @Override
         public Object newTagBuilder(EncoderContext encoderContext) {
@@ -176,8 +176,8 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private static class SemanticTagBuilderFactory2TestImpl
-            implements TagBuilderFactory {
+    private static class SemanticTagStrategy2TestImpl
+            implements TagStrategy {
 
         @Override
         public Object newTagBuilder(EncoderContext encoderContext) {
@@ -200,8 +200,8 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private static class SemanticTagBuilderFactory3TestImpl
-            implements TagBuilderFactory {
+    private static class SemanticTagStrategy3TestImpl
+            implements TagStrategy {
 
         @Override
         public Object newTagBuilder(EncoderContext encoderContext) {
@@ -224,8 +224,8 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private static class SemanticTagBuilderFactory4TestImpl
-            implements TagBuilderFactory {
+    private static class SemanticTagStrategy4TestImpl
+            implements TagStrategy {
 
         @Override
         public Object newTagBuilder(EncoderContext encoderContext) {

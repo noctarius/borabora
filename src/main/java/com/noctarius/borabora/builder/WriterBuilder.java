@@ -17,20 +17,20 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.codec.TagBuilderFactory;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 
 public interface WriterBuilder {
 
-    <S, V> WriterBuilder addSemanticTagBuilderFactory(TagBuilderFactory<S, V> semanticTagBuilderFactory);
+    <S, V> WriterBuilder addSemanticTagBuilderFactory(TagStrategy<S, V> semanticTagStrategy);
 
-    WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
-                                                 TagBuilderFactory semanticTagBuilderFactory2);
+    WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
+                                                 TagStrategy semanticTagStrategy2);
 
-    WriterBuilder addSemanticTagBuilderFactories(TagBuilderFactory semanticTagBuilderFactory1,
-                                                 TagBuilderFactory semanticTagBuilderFactory2,
-                                                 TagBuilderFactory... semanticTagBuilderFactories);
+    WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
+                                                 TagStrategy semanticTagStrategy2,
+                                                 TagStrategy... semanticTagBuilderFactories);
 
-    WriterBuilder addSemanticTagBuilderFactories(Iterable<TagBuilderFactory> semanticTagBuilderFactories);
+    WriterBuilder addSemanticTagBuilderFactories(Iterable<TagStrategy> semanticTagBuilderFactories);
 
     Writer build();
 

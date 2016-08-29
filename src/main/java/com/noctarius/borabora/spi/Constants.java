@@ -53,7 +53,7 @@ public interface Constants {
     int TAG_DATE_TIME = 0;
     int TAG_TIMESTAMP = 1;
     int TAG_UNSIGNED_BIGNUM = 2;
-    int TAG_SIGNED_BIGNUM = 3;
+    int TAG_NEGATIVE_BIGNUM = 3;
     int TAG_FRACTION = 4;
     int TAG_BIGFLOAT = 5;
     int TAG_ENCCBOR = 24;

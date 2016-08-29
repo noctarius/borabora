@@ -14,33 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.codec;
+package com.noctarius.borabora;
 
-import com.noctarius.borabora.Output;
+public class NonImplicitEncodableException
+        extends RuntimeException {
 
-public interface EncoderContext {
-
-    Output output();
-
-    long offset();
-
-    void offset(long offset);
-
-    long applyEncoder(Object value, long offset);
-
-    <S> TagStrategy findSemanticTagBuilderFactory(Class<S> type);
-
-    default void encodeNull() {
-        encode(offset -> Encoder.putNull(offset, this.output()));
-    }
-
-    default void encode(EncoderFunction encoderFunction) {
-        long offset = offset();
-        offset = encoderFunction.encode(offset);
-        offset(offset);
-    }
-
-    interface EncoderFunction {
-        long encode(long offset);
+    public NonImplicitEncodableException(String message) {
+        super(message);
     }
 }

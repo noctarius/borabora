@@ -14,33 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.codec;
+package com.noctarius.borabora.builder.semantictag;
 
-import com.noctarius.borabora.Output;
+import com.noctarius.borabora.spi.codec.TagBuilder;
 
-public interface EncoderContext {
+import java.math.BigInteger;
 
-    Output output();
+public interface BigNumberBuilder {
 
-    long offset();
+    TagBuilder putNumber(BigInteger value);
 
-    void offset(long offset);
+    TagBuilder putBigInteger(BigInteger value);
 
-    long applyEncoder(Object value, long offset);
-
-    <S> TagStrategy findSemanticTagBuilderFactory(Class<S> type);
-
-    default void encodeNull() {
-        encode(offset -> Encoder.putNull(offset, this.output()));
-    }
-
-    default void encode(EncoderFunction encoderFunction) {
-        long offset = offset();
-        offset = encoderFunction.encode(offset);
-        offset(offset);
-    }
-
-    interface EncoderFunction {
-        long encode(long offset);
-    }
 }

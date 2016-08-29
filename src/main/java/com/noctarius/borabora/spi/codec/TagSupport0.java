@@ -102,7 +102,7 @@ final class TagSupport0 {
         @Override
         public B execute(EncoderContext encoderContext, B builder) {
             try {
-                TagBuilderFactory factory = encoderContext.findSemanticTagBuilderFactory(type);
+                TagStrategy factory = encoderContext.findSemanticTagBuilderFactory(type);
                 Object target = factory.newTagBuilder(encoderContext);
                 for (MethodInvocation methodInvocation : methodInvocations) {
                     target = methodInvocation.invoke(target);

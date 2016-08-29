@@ -97,7 +97,7 @@ public final class Encoder
             absValue = value;
         }
         if (majorType == MajorType.NegativeInteger) {
-            offset = putSemanticTag(TAG_SIGNED_BIGNUM, offset, output);
+            offset = putSemanticTag(TAG_NEGATIVE_BIGNUM, offset, output);
         } else {
             offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
         }
@@ -140,7 +140,7 @@ public final class Encoder
         return putNumber(timestamp, offset, output);
     }
 
-    public static long putDecimalFraction(BigDecimal value, long offset, Output output) {
+    public static long putFraction(BigDecimal value, long offset, Output output) {
         offset = putSemanticTag(TAG_FRACTION, offset, output);
         offset = encodeLengthAndValue(MajorType.Sequence, 2, offset, output);
         int scale = value.scale();
@@ -214,7 +214,7 @@ public final class Encoder
 
         } else {
             if (majorType == MajorType.NegativeInteger) {
-                offset = putSemanticTag(TAG_SIGNED_BIGNUM, offset, output);
+                offset = putSemanticTag(TAG_NEGATIVE_BIGNUM, offset, output);
             } else {
                 offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
             }
