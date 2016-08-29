@@ -16,8 +16,6 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.spi.codec.EncoderContext;
-
 public interface TagBuilderConsumer<B> {
 
     B execute(EncoderContext encoderContext, B builder);

@@ -19,27 +19,23 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 
-import java.util.List;
 import java.util.Map;
 
 final class WriterImpl
         implements Writer {
 
-    private final List<TagEncoder> tagEncoders;
-    private final Map<Class<?>, TagStrategy> factories;
+    private final Map<Class<?>, TagStrategy> tagStrategies;
 
-    WriterImpl(Map<Class<?>, TagStrategy> factories, List<TagEncoder> tagEncoders) {
-        this.factories = factories;
-        this.tagEncoders = tagEncoders;
+    WriterImpl(Map<Class<?>, TagStrategy> tagStrategies) {
+        this.tagStrategies = tagStrategies;
     }
 
     @Override
     public GraphBuilder newGraphBuilder(Output output) {
-        EncoderContext encoderContext = new EncoderContextImpl(output, tagEncoders, factories);
+        EncoderContext encoderContext = new EncoderContextImpl(output, tagStrategies);
         return new GraphBuilderImpl(encoderContext);
     }
 

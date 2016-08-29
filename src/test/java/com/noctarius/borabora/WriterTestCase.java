@@ -20,13 +20,8 @@ import com.noctarius.borabora.builder.DictionaryBuilder;
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.SequenceBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
+import com.noctarius.borabora.builder.semantictag.DateTimeBuilder;
 import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.codec.TagBuilder;
-import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
-import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagEncoder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -38,7 +33,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
 
-import static com.noctarius.borabora.spi.Constants.UTC;
 import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -787,7 +781,7 @@ public class WriterTestCase
         Instant expected = Instant.now();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new DateTimeSemanticTagStrategy()).build();
+        Writer writer = Writer.newBuilder().build();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -800,65 +794,6 @@ public class WriterTestCase
 
         Value value = parser.read(input, Query.newBuilder().build());
         assertEquals(expected, value.tag());
-    }
-
-    public interface DateTimeBuilder
-            extends TagBuilder {
-
-        DateTimeBuilder putDateTime(Instant instant);
-
-    }
-
-    public static class DateTimeSemanticTagStrategy
-            implements TagStrategy<DateTimeBuilder, Instant> {
-
-        @Override
-        public DateTimeBuilder newTagBuilder(EncoderContext encoderContext) {
-            return new Impl(encoderContext);
-        }
-
-        @Override
-        public int tagId() {
-            return Constants.TAG_DATE_TIME;
-        }
-
-        @Override
-        public Class<DateTimeBuilder> tagBuilderType() {
-            return DateTimeBuilder.class;
-        }
-
-        @Override
-        public TagEncoder<Instant> tagEncoder() {
-            return null;
-        }
-
-        private void putDateTime0(Instant instant, EncoderContext encoderContext) {
-            Output output = encoderContext.output();
-            long offset = encoderContext.offset();
-            offset = Encoder.putDateTime(instant.atZone(UTC), offset, output);
-            encoderContext.offset(offset);
-        }
-
-        private class Impl
-                implements DateTimeBuilder {
-
-            private final EncoderContext encoderContext;
-
-            private Impl(EncoderContext encoderContext) {
-                this.encoderContext = encoderContext;
-            }
-
-            @Override
-            public DateTimeBuilder putDateTime(Instant instant) {
-                putDateTime0(instant, encoderContext);
-                return this;
-            }
-
-            @Override
-            public <B> TagBuilderConsumer<B> endSemanticTag() {
-                return null;
-            }
-        }
     }
 
 }

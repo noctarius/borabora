@@ -59,21 +59,21 @@ PARSER_BEGIN(QueryParser)
      * </ul>
      */
     class QueryParser {
-        private Collection<TagDecoder> processors;
+        private Collection<TagStrategy> tagStrategies;
 
         private Deque generatorStack = new LinkedList();
 
-        private QueryParser(Reader reader, QueryBuilder queryBuilder, Collection<TagDecoder> processors) {
+        private QueryParser(Reader reader, QueryBuilder queryBuilder, Collection<TagStrategy> tagStrategies) {
             this(reader);
-            this.processors = processors;
+            this.tagStrategies = tagStrategies;
 
             generatorStack.addFirst(queryBuilder);
         }
 
-        static void parse(String query, QueryBuilder queryBuilder, Collection<TagDecoder> processors)
+        static void parse(String query, QueryBuilder queryBuilder, Collection<TagStrategy> tagStrategies)
                 throws ParseException, TokenMgrError {
 
-            new QueryParser(new StringReader(query), queryBuilder, processors).select();
+            new QueryParser(new StringReader(query), queryBuilder, tagStrategies).select();
         }
 
         private <T> T queryTokenBuilder() {
@@ -317,7 +317,7 @@ void typematch(): {
     {
         boolean required = optToken == null;
         String spec = typeToken.image;
-        TypeSpec typeSpec = TypeSpecs.typeSpec(spec, processors);
+        TypeSpec typeSpec = TypeSpecs.typeSpec(spec, tagStrategies);
         if (required) {
             ((QueryTokenBuilder) queryTokenBuilder()).requireType(typeSpec);
         } else {

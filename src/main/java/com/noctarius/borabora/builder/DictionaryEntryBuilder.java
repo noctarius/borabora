@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPop;
 
 public interface DictionaryEntryBuilder<B>
         extends ValueBuilder<DictionaryEntryBuilder<B>> {
 
-    @BuilderReturn
+    @BuilderStackPop
     DictionaryBuilder<B> endEntry();
 
 }

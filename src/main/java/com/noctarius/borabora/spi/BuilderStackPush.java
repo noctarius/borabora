@@ -23,5 +23,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BuilderReturn {
+public @interface BuilderStackPush {
 }

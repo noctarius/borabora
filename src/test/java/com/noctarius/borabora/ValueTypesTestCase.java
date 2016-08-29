@@ -513,19 +513,19 @@ public class ValueTypesTestCase
 
     @Test
     public void test_valueType_obj_floatOrSimple_halfprecisionfloat() {
-        ValueType valueType = ValueTypes.valueType(HalfPrecisionFloat.valueOf(12.0f));
+        ValueType valueType = valueType(HalfPrecisionFloat.valueOf(12.0f));
         assertEquals(ValueTypes.Float, valueType);
     }
 
     @Test
     public void test_valueType_obj_floatOrSimple_float() {
-        ValueType valueType = ValueTypes.valueType(Float.valueOf(12.0f));
+        ValueType valueType = valueType(Float.valueOf(12.0f));
         assertEquals(ValueTypes.Float, valueType);
     }
 
     @Test
     public void test_valueType_obj_semtag_datetime() {
-        ValueType valueType = ValueTypes.valueType(new Date());
+        ValueType valueType = valueType(new Date());
         assertEquals(ValueTypes.DateTime, valueType);
     }
 
@@ -539,19 +539,19 @@ public class ValueTypesTestCase
 
     @Test
     public void test_valueType_obj_semtag_ubigint() {
-        ValueType valueType = ValueTypes.valueType(new BigInteger("1234"));
+        ValueType valueType = valueType(new BigInteger("1234"));
         assertEquals(ValueTypes.UBigNum, valueType);
     }
 
     @Test
     public void test_valueType_obj_semtag_nbigint() {
-        ValueType valueType = ValueTypes.valueType(new BigInteger("-1234"));
+        ValueType valueType = valueType(new BigInteger("-1234"));
         assertEquals(ValueTypes.NBigNum, valueType);
     }
 
     @Test
     public void test_valueType_obj_semtag_fraction() {
-        ValueType valueType = ValueTypes.valueType(new BigDecimal(12.d));
+        ValueType valueType = valueType(new BigDecimal(12.d));
         assertEquals(ValueTypes.Fraction, valueType);
     }
 
@@ -567,7 +567,7 @@ public class ValueTypesTestCase
     public void test_valueType_obj_semtag_uri()
             throws Exception {
 
-        ValueType valueType = ValueTypes.valueType(new URI("www.noctarius.com"));
+        ValueType valueType = valueType(new URI("www.noctarius.com"));
         assertEquals(ValueTypes.URI, valueType);
     }
 
@@ -577,6 +577,10 @@ public class ValueTypesTestCase
 
         ValueType valueType = ValueTypes.valueType(new Object());
         assertEquals(ValueTypes.Unknown, valueType);
+    }
+
+    private ValueType valueType(Object value) {
+        return ValueTypes.valueType(value);
     }
 
     private Input input(MajorType majorType, ValueType valueType) {

@@ -17,7 +17,7 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
@@ -27,13 +27,13 @@ import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 public interface ParserBuilder {
 
-    <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder);
+    <S, V> ParserBuilder addTagStrategy(TagStrategy<S, V> tagStrategy);
 
-    ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2);
+    ParserBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2);
 
-    ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2, TagDecoder... tagDecoders);
+    ParserBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies);
 
-    ParserBuilder addTagDecoders(Iterable<TagDecoder> tagDecoders);
+    ParserBuilder addTagStrategies(Iterable<TagStrategy> tagStrategies);
 
     ParserBuilder addQueryOptimizer(QueryOptimizer queryOptimizer);
 

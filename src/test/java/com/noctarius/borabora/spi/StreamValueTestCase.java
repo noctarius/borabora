@@ -22,8 +22,8 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -58,10 +58,10 @@ public class StreamValueTestCase
         writer.newGraphBuilder(Output.toOutputStream(baos)).putBigInteger(BigInteger.ONE).finishStream();
         RelocatableStreamValue value = new RelocatableStreamValue();
 
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
         Input input = Input.fromByteArray(baos.toByteArray());
-        QueryContext queryContext = newQueryContext(input, tagDecoders, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, tagStrategies, selectStatementStrategy);
 
         value.relocate(queryContext, MajorType.SemanticTag, ValueTypes.UBigNum, 0);
         assertEquals("RelocatableStreamValue{valueType=UBigNum, offset=0, value=1}", value.toString());
@@ -74,10 +74,10 @@ public class StreamValueTestCase
         writer.newGraphBuilder(Output.toOutputStream(baos)).putBigInteger(BigInteger.ONE).finishStream();
         RelocatableStreamValue value = new RelocatableStreamValue();
 
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
         Input input = Input.fromByteArray(baos.toByteArray());
-        QueryContext queryContext = newQueryContext(input, tagDecoders, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, tagStrategies, selectStatementStrategy);
 
         value.relocate(queryContext, MajorType.SemanticTag, ValueTypes.UBigNum, 0);
         assertEquals(BigInteger.ONE, value.tag());

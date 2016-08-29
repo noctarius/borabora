@@ -45,6 +45,17 @@ public final class Decoder
     private Decoder() {
     }
 
+    public static int readSemanticTagId(Input input, long offset) {
+        Number tagType = Decoder.readUint(input, offset);
+        if (tagType instanceof BigInteger) {
+            throw new UnsupportedOperationException("No tag id larger Integer.MAX_VALUE implemented");
+        }
+        if (tagType.longValue() > Integer.MAX_VALUE) {
+            throw new UnsupportedOperationException("No tag id larger Integer.MAX_VALUE implemented");
+        }
+        return tagType.intValue();
+    }
+
     public static short readUInt8(Input input, long offset) {
         return Bytes.readUInt8(input, offset);
     }

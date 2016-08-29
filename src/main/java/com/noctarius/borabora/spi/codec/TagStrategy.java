@@ -16,11 +16,16 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-public interface TagStrategy<S, V> {
+import com.noctarius.borabora.ValueType;
+
+public interface TagStrategy<S, V>
+        extends TagDecoder<V>, TagEncoder<V> {
 
     S newTagBuilder(EncoderContext encoderContext);
 
     int tagId();
+
+    ValueType valueType();
 
     Class<S> tagBuilderType();
 
@@ -38,5 +43,7 @@ public interface TagStrategy<S, V> {
      * @return a <tt>TagEncoder</tt> instance or <tt>null</tt> to deactivate implicit encoding
      */
     TagEncoder<V> tagEncoder();
+
+    TagDecoder<V> tagDecoder();
 
 }

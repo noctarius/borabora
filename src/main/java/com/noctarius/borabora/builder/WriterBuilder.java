@@ -21,16 +21,13 @@ import com.noctarius.borabora.spi.codec.TagStrategy;
 
 public interface WriterBuilder {
 
-    <S, V> WriterBuilder addSemanticTagBuilderFactory(TagStrategy<S, V> semanticTagStrategy);
+    <S, V> WriterBuilder addTagStrategy(TagStrategy<S, V> tagStrategy);
 
-    WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
-                                                 TagStrategy semanticTagStrategy2);
+    WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2);
 
-    WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
-                                                 TagStrategy semanticTagStrategy2,
-                                                 TagStrategy... semanticTagBuilderFactories);
+    WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies);
 
-    WriterBuilder addSemanticTagBuilderFactories(Iterable<TagStrategy> semanticTagBuilderFactories);
+    WriterBuilder addTagStrategies(Iterable<TagStrategy> tagStrategies);
 
     Writer build();
 

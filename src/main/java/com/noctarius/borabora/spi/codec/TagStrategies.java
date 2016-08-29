@@ -16,12 +16,21 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.builder.semantictag.BigNumberBuilder;
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.builder.semantictag.CBORBuilder;
 import com.noctarius.borabora.builder.semantictag.DateTimeBuilder;
 import com.noctarius.borabora.builder.semantictag.FractionBuilder;
+import com.noctarius.borabora.builder.semantictag.NBigNumberBuilder;
 import com.noctarius.borabora.builder.semantictag.TimestampBuilder;
+import com.noctarius.borabora.builder.semantictag.UBigNumberBuilder;
 import com.noctarius.borabora.builder.semantictag.URIBuilder;
+import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.TypeSpecs;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -33,48 +42,57 @@ import static com.noctarius.borabora.spi.Constants.TAG_NEGATIVE_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.spi.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.Constants.TAG_URI;
-import static com.noctarius.borabora.spi.codec.TagBuilders.BigNumberBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.CBORBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.DateTimeBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.FractionBuilderImpl;
+import static com.noctarius.borabora.spi.codec.TagBuilders.NBigNumberBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.TimestampBuilderImpl;
+import static com.noctarius.borabora.spi.codec.TagBuilders.UBigNumberBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.URIBuilderImpl;
 
 public enum TagStrategies
-        implements TagStrategy, TagEncoder {
+        implements TagStrategy {
 
-    DateTime(TAG_DATE_TIME, DateTimeBuilder.class, TagWriters.DateTime, //
-            TypeMatchers.DateTime, DateTimeBuilderImpl::new),
+    DateTime(TAG_DATE_TIME, ValueTypes.DateTime, DateTimeBuilder.class, TagWriters.DateTime, //
+            TagReaders.DateTime, TypeSpecs.DateTime, TypeMatchers.DateTime, DateTimeBuilderImpl::new),
 
-    Timestamp(TAG_TIMESTAMP, TimestampBuilder.class, TagWriters.Timestamp, //
-            TypeMatchers.Timestamp, TimestampBuilderImpl::new),
+    Timestamp(TAG_TIMESTAMP, ValueTypes.Timestamp, TimestampBuilder.class, TagWriters.Timestamp, //
+            TagReaders.Timestamp, TypeSpecs.Timstamp, TypeMatchers.Timestamp, TimestampBuilderImpl::new),
 
-    UBigNum(TAG_UNSIGNED_BIGNUM, BigNumberBuilder.class, TagWriters.BigNum,//
-            TypeMatchers.UBigNum, BigNumberBuilderImpl::new),
+    UBigNum(TAG_UNSIGNED_BIGNUM, ValueTypes.UBigNum, UBigNumberBuilder.class, TagWriters.BigNum,//
+            TagReaders.UBigNum, TypeSpecs.UInt, TypeMatchers.UBigNum, UBigNumberBuilderImpl::new),
 
-    NBigNum(TAG_NEGATIVE_BIGNUM, BigNumberBuilder.class, TagWriters.BigNum, //
-            TypeMatchers.NBigNum, BigNumberBuilderImpl::new),
+    NBigNum(TAG_NEGATIVE_BIGNUM, ValueTypes.NBigNum, NBigNumberBuilder.class, TagWriters.BigNum, //
+            TagReaders.NBigNum, TypeSpecs.NInt, TypeMatchers.NBigNum, NBigNumberBuilderImpl::new),
 
-    Fraction(TAG_FRACTION, FractionBuilder.class, TagWriters.Fraction, //
-            TypeMatchers.Fraction, FractionBuilderImpl::new),
+    Fraction(TAG_FRACTION, ValueTypes.Fraction, FractionBuilder.class, TagWriters.Fraction, //
+            TagReaders.Fraction, TypeSpecs.Float, TypeMatchers.Fraction, FractionBuilderImpl::new),
 
-    URI(TAG_URI, URIBuilder.class, TagWriters.URI, //
-            TypeMatchers.URI, URIBuilderImpl::new),
+    URI(TAG_URI, ValueTypes.URI, URIBuilder.class, TagWriters.URI, //
+            TagReaders.URI, TypeSpecs.URI, TypeMatchers.URI, URIBuilderImpl::new),
 
-    EncCBOR(TAG_ENCCBOR, CBORBuilder.class, null, //
-            null, CBORBuilderImpl::new);
+    EncCBOR(TAG_ENCCBOR, ValueTypes.EncCBOR, CBORBuilder.class, null, //
+            TagReaders.EncCBOR, TypeSpecs.EncCBOR, null, CBORBuilderImpl::new);
+
+    private static final TagStrategy[] TAG_STRATEGIES = TagStrategies.values();
 
     private final int tagId;
+    private final TypeSpec typeSpec;
+    private final ValueType valueType;
     private final TagWriter tagWriter;
+    private final TagReader tagReader;
     private final Class<?> tagBuilderType;
     private final Predicate<Object> handlesPredicate;
     private final Function<EncoderContext, Object> tagBuilderFunction;
 
-    TagStrategies(int tagId, Class<?> tagBuilderType, TagWriter tagWriter, Predicate<Object> handlesPredicate,
-                  Function<EncoderContext, Object> tagBuilderFunction) {
+    TagStrategies(int tagId, ValueType valueType, Class<?> tagBuilderType, TagWriter tagWriter, TagReader tagReader,
+                  TypeSpec typeSpec, Predicate<Object> handlesPredicate, Function<EncoderContext, Object> tagBuilderFunction) {
 
         this.tagId = tagId;
+        this.typeSpec = typeSpec;
+        this.valueType = valueType;
         this.tagWriter = tagWriter;
+        this.tagReader = tagReader;
         this.tagBuilderType = tagBuilderType;
         this.handlesPredicate = handlesPredicate;
         this.tagBuilderFunction = tagBuilderFunction;
@@ -91,6 +109,11 @@ public enum TagStrategies
     }
 
     @Override
+    public ValueType valueType() {
+        return valueType;
+    }
+
+    @Override
     public Class<?> tagBuilderType() {
         return tagBuilderType;
     }
@@ -98,6 +121,11 @@ public enum TagStrategies
     @Override
     public TagEncoder tagEncoder() {
         return tagWriter == null ? null : this;
+    }
+
+    @Override
+    public TagDecoder tagDecoder() {
+        return tagReader == null ? null : this;
     }
 
     @Override
@@ -109,4 +137,66 @@ public enum TagStrategies
     public boolean handles(Object value) {
         return handlesPredicate != null && handlesPredicate.test(value);
     }
+
+    @Override
+    public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+        return tagReader.process(valueType, offset, length, queryContext);
+    }
+
+    @Override
+    public boolean handles(Input input, long offset) {
+        short head = Decoder.readUInt8(input, offset);
+        MajorType majorType = MajorType.findMajorType(head);
+        if (majorType != MajorType.SemanticTag) {
+            return false;
+        }
+        int tagId = Decoder.readSemanticTagId(input, offset);
+        return this.tagId == tagId;
+    }
+
+    @Override
+    public TypeSpec handles(long tagId) {
+        return this.tagId == tagId ? typeSpec : null;
+    }
+
+    @Override
+    public ValueType valueType(Input input, long offset) {
+        int tagId = Decoder.readSemanticTagId(input, offset);
+        switch (tagId) {
+            case Constants.TAG_DATE_TIME:
+                return ValueTypes.DateTime;
+            case Constants.TAG_TIMESTAMP:
+                return ValueTypes.Timestamp;
+            case Constants.TAG_UNSIGNED_BIGNUM:
+                return ValueTypes.UBigNum;
+            case Constants.TAG_NEGATIVE_BIGNUM:
+                return ValueTypes.NBigNum;
+            case Constants.TAG_BIGFLOAT:
+                // return BigFloat;
+                throw new IllegalStateException("BigFloat is not supported");
+            case Constants.TAG_ENCCBOR:
+                return ValueTypes.EncCBOR;
+            case Constants.TAG_FRACTION:
+                return ValueTypes.Fraction;
+            case Constants.TAG_URI:
+                return ValueTypes.URI;
+            case Constants.TAG_REGEX:
+                //return RegEx;
+                throw new IllegalStateException("RegEx is not supported");
+            case Constants.TAG_MIME:
+                //return Mime;
+                throw new IllegalStateException("Mime is not supported");
+        }
+        return ValueTypes.Unknown;
+    }
+
+    public static ValueType valueyType(Object value) {
+        for (TagStrategy tagStrategy : TAG_STRATEGIES) {
+            if (tagStrategy.handles(value)) {
+                return tagStrategy.valueType();
+            }
+        }
+        return ValueTypes.Unknown;
+    }
+
 }

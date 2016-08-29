@@ -36,7 +36,8 @@ public interface TagSupport {
      */
     static <S> S semanticTag(Class<S> type) {
         List<TagSupport0.MethodInvocation> methodInvocations = new ArrayList<>();
-        TagSupport0.MethodInvocationHandler methodInvocationHandler = new TagSupport0.MethodInvocationHandler(type, methodInvocations);
+        TagSupport0.MethodInvocationHandler methodInvocationHandler = new TagSupport0.MethodInvocationHandler(type,
+                methodInvocations);
         return TagSupport0.proxy(type, methodInvocationHandler);
     }
 

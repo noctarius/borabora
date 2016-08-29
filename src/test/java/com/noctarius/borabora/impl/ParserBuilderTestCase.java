@@ -18,11 +18,8 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.builder.ParserBuilder;
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
@@ -46,7 +43,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.noctarius.borabora.impl.WriterBuilderTestCase.TBF_1;
+import static com.noctarius.borabora.impl.WriterBuilderTestCase.TBF_2;
+import static com.noctarius.borabora.impl.WriterBuilderTestCase.TBF_3;
+import static com.noctarius.borabora.impl.WriterBuilderTestCase.TBF_4;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ParserBuilderTestCase {
 
@@ -54,11 +56,6 @@ public class ParserBuilderTestCase {
     private static final QueryOptimizer QO_2 = new QueryOptimizerTestImpl();
     private static final QueryOptimizer QO_3 = new QueryOptimizerTestImpl();
     private static final QueryOptimizer QO_4 = new QueryOptimizerTestImpl();
-
-    private static final TagDecoder TD_1 = new TagDecoderTestImpl();
-    private static final TagDecoder TD_2 = new TagDecoderTestImpl();
-    private static final TagDecoder TD_3 = new TagDecoderTestImpl();
-    private static final TagDecoder TD_4 = new TagDecoderTestImpl();
 
     private static final PipelineStageFactory PIPELINE_STAGE_FACTORY = new PipelineStageFactoryTestImpl();
     private static final QueryContextFactory QUERY_CONTEXT_FACTORY = new QueryContextFactoryTestImpl();
@@ -160,71 +157,60 @@ public class ParserBuilderTestCase {
     }
 
     @Test
-    public void test_addtagdecoder_single() {
+    public void test_addtagstrategy_single() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoder(TD_1);
+        parserBuilder.addTagStrategy(TBF_1);
         Parser parser = parserBuilder.build();
-        List<TagDecoder> tagDecoders = extractTagDecoders(parser);
-        assertEquals(2, tagDecoders.size());
-        Iterator<TagDecoder> iterator = tagDecoders.iterator();
-        assertEquals(CommonTagCodec.INSTANCE, iterator.next());
-        assertEquals(TD_1, iterator.next());
+        List<TagStrategy> tagStrategies = extractTagStrategies(parser);
+        assertEquals(8, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
     }
 
     @Test
-    public void test_addtagdecoder_prevent_double_registration() {
+    public void test_addtagstrategy_prevent_double_registration() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoder(TD_1);
-        parserBuilder.addTagDecoder(TD_1);
+        parserBuilder.addTagStrategy(TBF_1);
+        parserBuilder.addTagStrategy(TBF_1);
         Parser parser = parserBuilder.build();
-        List<TagDecoder> tagDecoders = extractTagDecoders(parser);
-        assertEquals(2, tagDecoders.size());
-        Iterator<TagDecoder> iterator = tagDecoders.iterator();
-        assertEquals(CommonTagCodec.INSTANCE, iterator.next());
-        assertEquals(TD_1, iterator.next());
+        List<TagStrategy> tagStrategies = extractTagStrategies(parser);
+        assertEquals(8, tagStrategies.size());
     }
 
     @Test
-    public void test_addtagdecoder_double() {
+    public void test_addtagstrategies_double() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoders(TD_1, TD_2);
+        parserBuilder.addTagStrategies(TBF_1, TBF_2);
         Parser parser = parserBuilder.build();
-        List<TagDecoder> tagDecoders = extractTagDecoders(parser);
-        assertEquals(3, tagDecoders.size());
-        Iterator<TagDecoder> iterator = tagDecoders.iterator();
-        assertEquals(CommonTagCodec.INSTANCE, iterator.next());
-        assertEquals(TD_1, iterator.next());
-        assertEquals(TD_2, iterator.next());
+        List<TagStrategy> tagStrategies = extractTagStrategies(parser);
+        assertEquals(9, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
     }
 
     @Test
-    public void test_addtagdecoder_array() {
+    public void test_addtagstrategies_array() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoders(TD_1, TD_2, TD_3, TD_4);
+        parserBuilder.addTagStrategies(TBF_1, TBF_2, TBF_3, TBF_4);
         Parser parser = parserBuilder.build();
-        List<TagDecoder> tagDecoders = extractTagDecoders(parser);
-        assertEquals(5, tagDecoders.size());
-        Iterator<TagDecoder> iterator = tagDecoders.iterator();
-        assertEquals(CommonTagCodec.INSTANCE, iterator.next());
-        assertEquals(TD_1, iterator.next());
-        assertEquals(TD_2, iterator.next());
-        assertEquals(TD_3, iterator.next());
-        assertEquals(TD_4, iterator.next());
+        List<TagStrategy> tagStrategies = extractTagStrategies(parser);
+        assertEquals(11, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
+        assertTrue(tagStrategies.contains(TBF_3));
+        assertTrue(tagStrategies.contains(TBF_4));
     }
 
     @Test
-    public void test_addtagdecoder_iterable() {
+    public void test_addtagstrategies_iterable() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.addTagDecoders(Stream.of(TD_1, TD_2, TD_3, TD_4).collect(Collectors.toList()));
+        parserBuilder.addTagStrategies(Stream.of(TBF_1, TBF_2, TBF_3, TBF_4).collect(Collectors.toList()));
         Parser parser = parserBuilder.build();
-        List<TagDecoder> tagDecoders = extractTagDecoders(parser);
-        assertEquals(5, tagDecoders.size());
-        Iterator<TagDecoder> iterator = tagDecoders.iterator();
-        assertEquals(CommonTagCodec.INSTANCE, iterator.next());
-        assertEquals(TD_1, iterator.next());
-        assertEquals(TD_2, iterator.next());
-        assertEquals(TD_3, iterator.next());
-        assertEquals(TD_4, iterator.next());
+        List<TagStrategy> tagStrategies = extractTagStrategies(parser);
+        assertEquals(11, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
+        assertTrue(tagStrategies.contains(TBF_3));
+        assertTrue(tagStrategies.contains(TBF_4));
     }
 
     @Test
@@ -311,11 +297,11 @@ public class ParserBuilderTestCase {
         }
     }
 
-    private List<TagDecoder> extractTagDecoders(Parser parser) {
+    private List<TagStrategy> extractTagStrategies(Parser parser) {
         try {
-            Field field = ParserImpl.class.getDeclaredField("tagDecoders");
+            Field field = ParserImpl.class.getDeclaredField("tagStrategies");
             field.setAccessible(true);
-            return (List<TagDecoder>) field.get(parser);
+            return (List<TagStrategy>) field.get(parser);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -335,30 +321,6 @@ public class ParserBuilderTestCase {
         }
     }
 
-    private static class TagDecoderTestImpl
-            implements TagDecoder {
-
-        @Override
-        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
-            return null;
-        }
-
-        @Override
-        public boolean handles(Input input, long offset) {
-            return false;
-        }
-
-        @Override
-        public TypeSpec handles(long tagId) {
-            return null;
-        }
-
-        @Override
-        public ValueType valueType(Input input, long offset) {
-            return null;
-        }
-    }
-
     private static class PipelineStageFactoryTestImpl
             implements PipelineStageFactory {
 
@@ -372,7 +334,7 @@ public class ParserBuilderTestCase {
             implements QueryContextFactory {
 
         @Override
-        public QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagDecoder> tagDecoders,
+        public QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
                                             SelectStatementStrategy selectStatementStrategy) {
             return null;
         }

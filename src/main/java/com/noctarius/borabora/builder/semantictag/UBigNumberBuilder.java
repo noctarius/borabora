@@ -14,14 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi;
+package com.noctarius.borabora.builder.semantictag;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.noctarius.borabora.spi.BuilderStackPush;
+import com.noctarius.borabora.spi.codec.TagBuilder;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface BuilderEnter {
+import java.math.BigInteger;
+
+public interface UBigNumberBuilder {
+
+    @BuilderStackPush
+    TagBuilder putNumber(BigInteger value);
+
+    @BuilderStackPush
+    TagBuilder putBigInteger(BigInteger value);
+
 }

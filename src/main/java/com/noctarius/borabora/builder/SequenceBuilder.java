@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPop;
 
 public interface SequenceBuilder<B>
         extends ValueBuilder<SequenceBuilder<B>> {
 
-    @BuilderReturn
+    @BuilderStackPop
     B endSequence();
 
 }

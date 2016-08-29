@@ -28,7 +28,7 @@ public interface EncoderContext {
 
     long applyEncoder(Object value, long offset);
 
-    <S> TagStrategy findSemanticTagBuilderFactory(Class<S> type);
+    <S> TagStrategy findTagStrategy(Class<S> type);
 
     default void encodeNull() {
         encode(offset -> Encoder.putNull(offset, this.output()));

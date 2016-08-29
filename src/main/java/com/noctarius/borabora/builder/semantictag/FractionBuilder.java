@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora.builder.semantictag;
 
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 
 import java.math.BigDecimal;
 
 public interface FractionBuilder {
 
+    @BuilderStackPush
     TagBuilder putFraction(BigDecimal value);
 
 }

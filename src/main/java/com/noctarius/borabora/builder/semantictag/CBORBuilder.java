@@ -17,12 +17,13 @@
 package com.noctarius.borabora.builder.semantictag;
 
 import com.noctarius.borabora.builder.ValueBuilder;
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 
-public interface CBORBuilder extends ValueBuilder<CBORBuilder> {
+public interface CBORBuilder
+        extends ValueBuilder<CBORBuilder> {
 
-    @BuilderReturn
+    @BuilderStackPush
     TagBuilder endCBOR();
 
 }

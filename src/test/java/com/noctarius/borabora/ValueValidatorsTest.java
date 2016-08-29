@@ -15,6 +15,7 @@
  */
 package com.noctarius.borabora;
 
+import com.noctarius.borabora.spi.ValueValidators;
 import org.junit.Test;
 
 import java.math.BigDecimal;

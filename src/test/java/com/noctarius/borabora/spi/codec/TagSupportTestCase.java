@@ -17,8 +17,12 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Input;
 import com.noctarius.borabora.Output;
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Writer;
+import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import javax.xml.soap.SOAPException;
@@ -43,14 +47,14 @@ public class TagSupportTestCase
 
     @Test(expected = NullPointerException.class)
     public void fail_execute_nullpointer_exception1() {
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(NullPointer1Factory.INSTANCE).build();
+        Writer writer = Writer.newBuilder().addTagStrategy(NullPointer1Factory.INSTANCE).build();
         writer.newGraphBuilder(Output.toByteArray(EMPTY_BYTE_ARRAY)) //
               .putTag(semanticTag(NullPointer1.class).endSemanticTag()).finishStream();
     }
 
     @Test(expected = ArithmeticException.class)
     public void fail_execute_invocation_target_exception_unwrapped_arithmetic_exception() {
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(InvocationTargetException1Factory.INSTANCE).build();
+        Writer writer = Writer.newBuilder().addTagStrategy(InvocationTargetException1Factory.INSTANCE).build();
         writer.newGraphBuilder(Output.toByteArray(EMPTY_BYTE_ARRAY)) //
               .putTag(semanticTag(InvocationTargetException1.class).test().endSemanticTag()).finishStream();
     }
@@ -59,7 +63,7 @@ public class TagSupportTestCase
     public void fail_execute_invocation_target_exception_unwrapped_soap_exception()
             throws Exception {
 
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(InvocationTargetException2Factory.INSTANCE).build();
+        Writer writer = Writer.newBuilder().addTagStrategy(InvocationTargetException2Factory.INSTANCE).build();
 
         try {
             writer.newGraphBuilder(Output.toByteArray(EMPTY_BYTE_ARRAY)) //
@@ -95,12 +99,52 @@ public class TagSupportTestCase
         }
 
         @Override
+        public ValueType valueType() {
+            return null;
+        }
+
+        @Override
         public Class<NullPointer1> tagBuilderType() {
             return NullPointer1.class;
         }
 
         @Override
         public TagEncoder<Object> tagEncoder() {
+            return null;
+        }
+
+        @Override
+        public TagDecoder<Object> tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
             return null;
         }
     }
@@ -127,12 +171,52 @@ public class TagSupportTestCase
         }
 
         @Override
+        public ValueType valueType() {
+            return null;
+        }
+
+        @Override
         public Class<InvocationTargetException1> tagBuilderType() {
             return InvocationTargetException1.class;
         }
 
         @Override
         public TagEncoder<Object> tagEncoder() {
+            return null;
+        }
+
+        @Override
+        public TagDecoder<Object> tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
             return null;
         }
 
@@ -174,12 +258,52 @@ public class TagSupportTestCase
         }
 
         @Override
+        public ValueType valueType() {
+            return null;
+        }
+
+        @Override
         public Class<InvocationTargetException2> tagBuilderType() {
             return InvocationTargetException2.class;
         }
 
         @Override
         public TagEncoder<Object> tagEncoder() {
+            return null;
+        }
+
+        @Override
+        public TagDecoder<Object> tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
             return null;
         }
 

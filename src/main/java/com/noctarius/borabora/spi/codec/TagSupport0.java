@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.spi.BuilderEnter;
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPop;
+import com.noctarius.borabora.spi.BuilderStackPush;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +72,7 @@ final class TagSupport0 {
                 return new MethodInvocationPipeline(type, methodInvocations);
             }
 
-            if (method.isAnnotationPresent(BuilderReturn.class)) {
+            if (method.isAnnotationPresent(BuilderStackPop.class)) {
                 // Remove current element from stack
                 stack.pop();
 
@@ -80,7 +80,7 @@ final class TagSupport0 {
                 return stack.peek();
             }
 
-            if (method.isAnnotationPresent(BuilderEnter.class)) {
+            if (method.isAnnotationPresent(BuilderStackPush.class)) {
                 return proxy(method.getReturnType(), this);
             }
 
@@ -102,7 +102,7 @@ final class TagSupport0 {
         @Override
         public B execute(EncoderContext encoderContext, B builder) {
             try {
-                TagStrategy factory = encoderContext.findSemanticTagBuilderFactory(type);
+                TagStrategy factory = encoderContext.findTagStrategy(type);
                 Object target = factory.newTagBuilder(encoderContext);
                 for (MethodInvocation methodInvocation : methodInvocations) {
                     target = methodInvocation.invoke(target);

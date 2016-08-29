@@ -18,11 +18,11 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.WriterBuilder;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.codec.TagEncoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,43 +31,38 @@ import java.util.Objects;
 public final class WriterBuilderImpl
         implements WriterBuilder {
 
-    private final List<TagStrategy> factories = new ArrayList<>();
+    private final List<TagStrategy> tagStrategies = new ArrayList<>(Arrays.asList(TagStrategies.values()));
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactory(TagStrategy semanticTagStrategy) {
-        Objects.requireNonNull(semanticTagStrategy, "semanticTagBuilderFactory must not be null");
-        if (!factories.contains(semanticTagStrategy)) {
-            factories.add(semanticTagStrategy);
+    public WriterBuilder addTagStrategy(TagStrategy tagStrategy) {
+        Objects.requireNonNull(tagStrategy, "tagStrategy must not be null");
+        if (!tagStrategies.contains(tagStrategy)) {
+            tagStrategies.add(tagStrategy);
         }
         return this;
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
-                                                        TagStrategy semanticTagStrategy2) {
-
-        addSemanticTagBuilderFactory(semanticTagStrategy1);
-        addSemanticTagBuilderFactory(semanticTagStrategy2);
+    public WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2) {
+        addTagStrategy(tagStrategy1);
+        addTagStrategy(tagStrategy2);
         return this;
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(TagStrategy semanticTagStrategy1,
-                                                        TagStrategy semanticTagStrategy2,
-                                                        TagStrategy... semanticTagBuilderFactories) {
-
-        addSemanticTagBuilderFactory(semanticTagStrategy1);
-        addSemanticTagBuilderFactory(semanticTagStrategy2);
-        for (TagStrategy semanticTagStrategy : semanticTagBuilderFactories) {
-            addSemanticTagBuilderFactory(semanticTagStrategy);
+    public WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies) {
+        addTagStrategy(tagStrategy1);
+        addTagStrategy(tagStrategy2);
+        for (TagStrategy tagStrategy : tagStrategies) {
+            addTagStrategy(tagStrategy);
         }
         return this;
     }
 
     @Override
-    public WriterBuilder addSemanticTagBuilderFactories(Iterable<TagStrategy> semanticTagBuilderFactories) {
+    public WriterBuilder addTagStrategies(Iterable<TagStrategy> semanticTagBuilderFactories) {
         for (TagStrategy semanticTagStrategy : semanticTagBuilderFactories) {
-            addSemanticTagBuilderFactory(semanticTagStrategy);
+            addTagStrategy(semanticTagStrategy);
         }
         return this;
     }
@@ -75,18 +70,10 @@ public final class WriterBuilderImpl
     @Override
     public Writer build() {
         Map<Class<?>, TagStrategy> factoryMap = new HashMap<>();
-        List<TagEncoder> tagEncoders = new ArrayList<>();
-        tagEncoders.add(CommonTagCodec.INSTANCE);
-
-        for (TagStrategy factory : factories) {
-            factoryMap.put(factory.tagBuilderType(), factory);
-
-            TagEncoder tagEncoder = factory.tagEncoder();
-            if (tagEncoder != null && !tagEncoders.contains(tagEncoder)) {
-                tagEncoders.add(tagEncoder);
-            }
+        for (TagStrategy tagStrategy : tagStrategies) {
+            factoryMap.put(tagStrategy.tagBuilderType(), tagStrategy);
         }
-        return new WriterImpl(factoryMap, tagEncoders);
+        return new WriterImpl(factoryMap);
     }
 
 }

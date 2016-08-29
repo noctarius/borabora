@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.builder.semantictag;
 
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 
 import java.time.Instant;
@@ -23,8 +24,10 @@ import java.util.Date;
 
 public interface DateTimeBuilder {
 
+    @BuilderStackPush
     TagBuilder putDateTime(Date date);
 
+    @BuilderStackPush
     TagBuilder putDateTime(Instant instant);
 
 }

@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.builder.semantictag;
 
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 
 import java.sql.Timestamp;
@@ -23,10 +24,13 @@ import java.time.Instant;
 
 public interface TimestampBuilder {
 
+    @BuilderStackPush
     TagBuilder putTimestamp(long timestamp);
 
+    @BuilderStackPush
     TagBuilder putTimestamp(Instant timestamp);
 
+    @BuilderStackPush
     TagBuilder putTimestamp(Timestamp timestamp);
 
 }

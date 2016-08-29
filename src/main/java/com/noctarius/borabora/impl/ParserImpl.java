@@ -24,7 +24,7 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
@@ -42,7 +42,7 @@ import java.util.function.Consumer;
 final class ParserImpl
         implements Parser {
 
-    private final List<TagDecoder> tagDecoders;
+    private final List<TagStrategy> tagStrategies;
     private final QueryContextFactory queryContextFactory;
     private final SelectStatementStrategy selectStatementStrategy;
     private final QueryPipelineFactory queryPipelineFactory;
@@ -50,12 +50,12 @@ final class ParserImpl
     private final QueryOptimizerStrategyFactory queryOptimizerStrategyFactory;
     private final List<QueryOptimizer> queryOptimizers;
 
-    ParserImpl(List<TagDecoder> tagDecoders, SelectStatementStrategy selectStatementStrategy,
+    ParserImpl(List<TagStrategy> tagStrategies, SelectStatementStrategy selectStatementStrategy,
                QueryContextFactory queryContextFactory, QueryPipelineFactory queryPipelineFactory,
                PipelineStageFactory pipelineStageFactory, QueryOptimizerStrategyFactory queryOptimizerStrategyFactory,
                List<QueryOptimizer> queryOptimizers) {
 
-        this.tagDecoders = tagDecoders;
+        this.tagStrategies = tagStrategies;
         this.queryContextFactory = queryContextFactory;
         this.selectStatementStrategy = selectStatementStrategy;
         this.queryPipelineFactory = queryPipelineFactory;
@@ -135,7 +135,7 @@ final class ParserImpl
                                              .withQueryPipelineFactory(queryPipelineFactory)
                                              .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
                                              .addQueryOptimizers(queryOptimizers).newBuilder();
-            QueryParser.parse(query, queryBuilder, tagDecoders);
+            QueryParser.parse(query, queryBuilder, tagStrategies);
             return queryBuilder.build();
 
         } catch (Exception | TokenMgrError e) {
@@ -146,7 +146,7 @@ final class ParserImpl
     private QueryContext newQueryContext(Input input, QueryConsumer queryConsumer,
                                          SelectStatementStrategy selectStatementStrategy) {
 
-        return queryContextFactory.newQueryContext(input, queryConsumer, tagDecoders, selectStatementStrategy);
+        return queryContextFactory.newQueryContext(input, queryConsumer, tagStrategies, selectStatementStrategy);
     }
 
     private void evaluate(Query query, Input input, QueryConsumer queryConsumer,

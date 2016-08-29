@@ -18,26 +18,22 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 
-import java.util.List;
 import java.util.Map;
 
 public class EncoderContextImpl
         implements EncoderContext {
 
-    private final Map<Class<?>, TagStrategy> factories;
-    private final List<TagEncoder> tagEncoders;
+    private final Map<Class<?>, TagStrategy> tagStrategies;
     private final Output output;
 
     private long offset;
 
-    public EncoderContextImpl(Output output, List<TagEncoder> tagEncoders, Map<Class<?>, TagStrategy> factories) {
+    public EncoderContextImpl(Output output, Map<Class<?>, TagStrategy> tagStrategies) {
         this.output = output;
-        this.factories = factories;
-        this.tagEncoders = tagEncoders;
+        this.tagStrategies = tagStrategies;
     }
 
     @Override
@@ -57,17 +53,17 @@ public class EncoderContextImpl
 
     @Override
     public long applyEncoder(Object value, long offset) {
-        for (TagEncoder tagEncoder : tagEncoders) {
-            if (tagEncoder.handles(value)) {
-                return tagEncoder.process(value, offset, this);
+        for (TagStrategy tagStrategy : tagStrategies.values()) {
+            if (tagStrategy.handles(value)) {
+                return tagStrategy.process(value, offset, this);
             }
         }
         throw new WrongTypeException("Found non-encodeable type: " + value.getClass().getName());
     }
 
     @Override
-    public <S> TagStrategy findSemanticTagBuilderFactory(Class<S> type) {
-        return factories.get(type);
+    public <S> TagStrategy findTagStrategy(Class<S> type) {
+        return tagStrategies.get(type);
     }
 
 }

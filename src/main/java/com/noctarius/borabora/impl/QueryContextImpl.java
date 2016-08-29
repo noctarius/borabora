@@ -23,6 +23,7 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
@@ -35,7 +36,7 @@ import java.util.List;
 final class QueryContextImpl
         implements QueryContext {
 
-    private final List<TagDecoder> tagDecoders;
+    private final List<TagStrategy> tagStrategies;
     private final QueryConsumer queryConsumer;
     private final QueryContextFactory queryContextFactory;
     private final SelectStatementStrategy selectStatementStrategy;
@@ -45,12 +46,12 @@ final class QueryContextImpl
     private Deque<Object> stack;
     private long offset;
 
-    QueryContextImpl(Input input, QueryConsumer queryConsumer, List<TagDecoder> tagDecoders,
+    QueryContextImpl(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
                      SelectStatementStrategy selectStatementStrategy, QueryContextFactory queryContextFactory) {
 
         this.input = input;
         this.queryConsumer = queryConsumer;
-        this.tagDecoders = tagDecoders;
+        this.tagStrategies = tagStrategies;
         this.selectStatementStrategy = selectStatementStrategy;
         this.queryContextFactory = queryContextFactory;
     }
@@ -74,8 +75,8 @@ final class QueryContextImpl
     public ValueType valueType(long offset) {
         short head = Decoder.readUInt8(input, offset);
         if (MajorType.SemanticTag == MajorType.findMajorType(head)) {
-            for (TagDecoder tagDecoder : tagDecoders) {
-                ValueType valueType = tagDecoder.valueType(input, offset);
+            for (TagStrategy tagStrategy : tagStrategies) {
+                ValueType valueType = tagStrategy.valueType(input, offset);
                 if (valueType != ValueTypes.Unknown) {
                     return valueType;
                 }
@@ -86,8 +87,8 @@ final class QueryContextImpl
     }
 
     @Override
-    public List<TagDecoder> tagDecoders() {
-        return tagDecoders;
+    public List<TagStrategy> tagStrategies() {
+        return tagStrategies;
     }
 
     @Override
@@ -135,11 +136,11 @@ final class QueryContextImpl
         return (T) getStack().peekFirst();
     }
 
-    private <V> TagDecoder<V> findProcessor(long offset) {
-        for (int i = 0; i < tagDecoders.size(); i++) {
-            TagDecoder<V> tagDecoder = tagDecoders.get(i);
-            if (tagDecoder.handles(input, offset)) {
-                return tagDecoder;
+    private <S, V> TagStrategy<S, V> findProcessor(long offset) {
+        for (int i = 0; i < tagStrategies.size(); i++) {
+            TagStrategy tagStrategy = tagStrategies.get(i);
+            if (tagStrategy.handles(input, offset)) {
+                return (TagStrategy<S, V>) tagStrategy;
             }
         }
         return null;

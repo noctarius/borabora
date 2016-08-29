@@ -16,15 +16,15 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.BuilderEnter;
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPop;
+import com.noctarius.borabora.spi.BuilderStackPush;
 
 public interface DictionaryBuilder<B> {
 
-    @BuilderEnter
+    @BuilderStackPush
     DictionaryEntryBuilder<B> putEntry();
 
-    @BuilderReturn
+    @BuilderStackPop
     B endDictionary();
 
 }

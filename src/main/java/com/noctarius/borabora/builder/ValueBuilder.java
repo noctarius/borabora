@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.builder;
 
-import com.noctarius.borabora.spi.BuilderEnter;
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
 
 import java.math.BigInteger;
@@ -74,10 +74,10 @@ public interface ValueBuilder<B> {
 
     B putTimestamp(Instant instant);
 
-    @BuilderEnter
+    @BuilderStackPush
     IndefiniteStringBuilder<B> putIndefiniteByteString();
 
-    @BuilderEnter
+    @BuilderStackPush
     IndefiniteStringBuilder<B> putIndefiniteTextString();
 
     B putBoolean(boolean value);
@@ -90,16 +90,16 @@ public interface ValueBuilder<B> {
 
     B putTag(TagBuilderConsumer<B> consumer);
 
-    @BuilderEnter
+    @BuilderStackPush
     SequenceBuilder<B> putSequence();
 
-    @BuilderEnter
+    @BuilderStackPush
     SequenceBuilder<B> putSequence(long elements);
 
-    @BuilderEnter
+    @BuilderStackPush
     DictionaryBuilder<B> putDictionary();
 
-    @BuilderEnter
+    @BuilderStackPush
     DictionaryBuilder<B> putDictionary(long elements);
 
 }

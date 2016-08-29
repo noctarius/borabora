@@ -22,10 +22,10 @@ import com.noctarius.borabora.impl.query.QueryImpl;
 import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
@@ -35,7 +35,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -118,16 +118,16 @@ public abstract class AbstractTestCase {
     }
 
     public static QueryContext newQueryContext(Input input) {
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
-        return newQueryContext(input, tagDecoders, selectStatementStrategy);
+        return newQueryContext(input, tagStrategies, selectStatementStrategy);
     }
 
-    public static QueryContext newQueryContext(Input input, List<TagDecoder> tagDecoders,
+    public static QueryContext newQueryContext(Input input, List<TagStrategy> tagStrategies,
                                                SelectStatementStrategy selectStatementStrategy) {
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
-        return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+        return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagStrategies, selectStatementStrategy);
     }
 
     public static Value asObjectValue(MajorType majorType, ValueType valueType, String value) {
@@ -148,12 +148,12 @@ public abstract class AbstractTestCase {
         short head = Decoder.readUInt8(input, 0);
         MajorType majorType = MajorType.findMajorType(head);
 
-        List<TagDecoder> tagDecoders = Collections.singletonList(CommonTagCodec.INSTANCE);
+        List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
         SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
         QueryContext queryContext = queryContextFactory
-                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagDecoders, selectStatementStrategy);
+                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagStrategies, selectStatementStrategy);
 
         ValueType valueType = queryContext.valueType(0);
         return new StreamValue(majorType, valueType, 0, queryContext);

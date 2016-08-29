@@ -60,7 +60,7 @@ public class BinarySelectStatementStrategy
 
         QueryContextFactory queryContextFactory = queryContext.queryContextFactory();
         QueryContext newQueryContext = queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, //
-                queryContext.tagDecoders(), queryContext.selectStatementStrategy());
+                queryContext.tagStrategies(), queryContext.selectStatementStrategy());
 
         ValueType valueType = newQueryContext.valueType(0);
         Value value = new StreamValue(majorType, valueType, 0, newQueryContext);

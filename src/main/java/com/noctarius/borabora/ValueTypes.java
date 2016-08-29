@@ -17,16 +17,10 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.ValueValidators;
 import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.StringEncoders;
-import com.noctarius.borabora.spi.codec.TagEncoder;
-import com.noctarius.borabora.spi.codec.TagReader;
-import com.noctarius.borabora.spi.codec.TagReaders;
 import com.noctarius.borabora.spi.codec.TagStrategies;
-import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.codec.TagWriter;
-import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -43,7 +37,7 @@ import java.util.function.Function;
  * @see MajorType
  */
 public enum ValueTypes
-        implements ValueType, TagReader, TagWriter {
+        implements ValueType {
 
     /**
      * <tt>Number</tt> defines a group of number related types, like UInt, NInt, Float, ...
@@ -132,47 +126,47 @@ public enum ValueTypes
      * <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a> and refined by
      * <a href="https://tools.ietf.org/html/rfc4287#section-3.3">RFC 4287</a>.
      */
-    DateTime(TagReaders.DateTime, TagStrategies.DateTime, Value::tag),
+    DateTime(Value::tag),
 
     /**
      * <tt>Timestamp</tt> defines a value type representing a timestamp value of seconds
      * since 1970-01-01 00:00:00 UTC. The value is of 64 bit and will not exceed at
      * 2038-01-19 03:14:08 UTC.
      */
-    Timestamp(TagReaders.Timestamp, TagStrategies.Timestamp, Value::tag),
+    Timestamp(Value::tag),
 
     /**
      * <tt>UBigNum</tt> represents a value type of an unsigned integer bigger than
      * {@link Long#MAX_VALUE} which cannot be represented without a
      * {@link java.math.BigInteger} anymore.
      */
-    UBigNum(TagReaders.UBigNum, TagStrategies.UBigNum, Value::tag, UInt, ValueValidators::isPositive),
+    UBigNum(Value::tag, UInt, ValueValidators::isPositive),
 
     /**
      * <tt>NBigNum</tt> represents a value type of a negative integer smaller than
      * {@link Long#MIN_VALUE} which cannot be represented without a
      * {@link java.math.BigInteger} anymore.
      */
-    NBigNum(TagReaders.NBigNum, TagStrategies.NBigNum, Value::tag, NInt, ValueValidators::isNegative),
+    NBigNum(Value::tag, NInt, ValueValidators::isNegative),
 
     /**
      * <tt>Fraction</tt> represents a value type of a floating point number outside
      * the representable range of {@link #Float}. The value will be represented as
      * a {@link java.math.BigDecimal}.
      */
-    Fraction(TagReaders.Fraction, TagStrategies.Fraction, Value::tag, Float),
+    Fraction(Value::tag, Float),
 
     /**
      * <tt>EncCBOR</tt> represents a value type of still encoded CBOR. The value
      * is represented to the user as a {@link Value}.
      */
-    EncCBOR(TagReaders.EncCBOR, TagStrategies.EncCBOR, Value::tag),
+    EncCBOR(Value::tag),
 
     /**
      * <tt>URI</tt> represents a value type of an URI encoded value. the URI type
      * is represented in Java as a {@link java.net.URI} value.
      */
-    URI(TagReaders.URI, TagStrategies.URI, Value::tag),
+    URI(Value::tag),
 
     /**
      * <tt>Unknown</tt> represents a value of an unknown type. The value can still be
@@ -180,44 +174,24 @@ public enum ValueTypes
      * for semantic tags which are not known to the parser, however this is valid to
      * the CBOR specifications as long as the parser is able to ignore the type itself.
      */
-    Unknown(null, null, Value::raw);
+    Unknown(Value::raw);
 
     private static final ValueTypes[] VALUE_TYPES_VALUES = values();
 
     private final Function<Value, Object> byValueType;
-    private final TagReader<Object> tagReader;
-    private final TagStrategy<Object, Object> tagStrategy;
     private final BiConsumer<Value, Object> validator;
     private final ValueType identity;
 
-    ValueTypes(Function<Value, Object> byValueType) {
-        this(null, null, byValueType, null, null);
+    ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
+        this(byValueType, identity, null);
     }
 
-    ValueTypes(Function<Value, Object> byValueType, ValueType identity) {
-        this(null, null, byValueType, identity, null);
+    ValueTypes(Function<Value, Object> byValueType) {
+        this(byValueType, null, null);
     }
 
     ValueTypes(Function<Value, Object> byValueType, ValueType identity, BiConsumer<Value, Object> validator) {
-        this(null, null, byValueType, identity, validator);
-    }
-
-    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType) {
-        this(tagReader, tagStrategy, byValueType, null, null);
-    }
-
-    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType,
-               ValueType identity) {
-
-        this(tagReader, tagStrategy, byValueType, identity, null);
-    }
-
-    ValueTypes(TagReader<Object> tagReader, TagStrategy<Object, Object> tagStrategy, Function<Value, Object> byValueType,
-               ValueType identity, BiConsumer<Value, Object> validator) {
-
-        this.tagStrategy = tagStrategy;
         this.byValueType = byValueType;
-        this.tagReader = tagReader;
         this.validator = validator;
         this.identity = identity;
     }
@@ -239,28 +213,6 @@ public enum ValueTypes
             validator.accept(value, extracted);
         }
         return (T) extracted;
-    }
-
-    @Override
-    public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
-        return tagReader.process(valueType, offset, length, queryContext);
-    }
-
-    @Override
-    public long process(Object value, long offset, EncoderContext encoderContext) {
-        TagEncoder<Object> tagEncoder = tagStrategy.tagEncoder();
-        if (tagEncoder == null) {
-            throw new NonImplicitEncodableException("Value of type " + value.getClass() + " is not implicitly encodeable");
-        }
-        return tagEncoder.process(value, offset, encoderContext);
-    }
-
-    private boolean typeEncodeable(Object value) {
-        if (tagStrategy == null) {
-            return false;
-        }
-        TagEncoder<Object> tagEncoder = tagStrategy.tagEncoder();
-        return tagEncoder != null && tagEncoder.handles(value);
     }
 
     public static ValueTypes valueType(Input input, long offset) {
@@ -290,7 +242,7 @@ public enum ValueTypes
         }
     }
 
-    public static ValueTypes valueType(Object value) {
+    public static ValueType valueType(Object value) {
         if (value == null) {
             return Null;
         }
@@ -317,12 +269,7 @@ public enum ValueTypes
         } else if (value instanceof Boolean) {
             return Bool;
         }
-        for (ValueTypes valueType : VALUE_TYPES_VALUES) {
-            if (valueType.typeEncodeable(value)) {
-                return valueType;
-            }
-        }
-        return Unknown;
+        return TagStrategies.valueyType(value);
     }
 
     private static ValueTypes floatNullOrBool(short head) {

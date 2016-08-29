@@ -16,23 +16,25 @@
  */
 package com.noctarius.borabora.impl;
 
+import com.noctarius.borabora.Input;
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
+import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class WriterBuilderTestCase {
@@ -42,95 +44,61 @@ public class WriterBuilderTestCase {
     private static final TagEncoder TE_3 = new TagEncoderTestImpl();
     private static final TagEncoder TE_4 = new TagEncoderTestImpl();
 
-    private static final TagStrategy STBF_1 = new SemanticTagStrategy1TestImpl();
-    private static final TagStrategy STBF_2 = new SemanticTagStrategy2TestImpl();
-    private static final TagStrategy STBF_3 = new SemanticTagStrategy3TestImpl();
-    private static final TagStrategy STBF_4 = new SemanticTagStrategy4TestImpl();
+    static final TagStrategy TBF_1 = new TagStrategy1TestImpl();
+    static final TagStrategy TBF_2 = new TagStrategy2TestImpl();
+    static final TagStrategy TBF_3 = new TagStrategy3TestImpl();
+    static final TagStrategy TBF_4 = new TagStrategy4TestImpl();
 
     @Test
-    public void test_addsemantictagbuilderfactory_single() {
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(STBF_1).build();
-        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
-        assertEquals(1, semanticTagBuilderFactories.size());
-        assertSame(STBF_1, semanticTagBuilderFactories.iterator().next());
-
-        List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(2, tagEncoders.size());
-        Iterator<TagEncoder> iterator = tagEncoders.iterator();
-        assertSame(CommonTagCodec.INSTANCE, iterator.next());
-        assertSame(TE_1, iterator.next());
+    public void test_addtagstrategy_single() {
+        Writer writer = Writer.newBuilder().addTagStrategy(TBF_1).build();
+        List<TagStrategy> tagStrategies = extractTagStrategies(writer);
+        assertEquals(8, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
     }
 
     @Test
-    public void test_addsemantictagbuilderfactory_double() {
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2).build();
-        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
-        assertEquals(2, semanticTagBuilderFactories.size());
-        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
-
-        List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(3, tagEncoders.size());
-        Iterator<TagEncoder> iterator = tagEncoders.iterator();
-        assertSame(CommonTagCodec.INSTANCE, iterator.next());
-        assertSame(TE_1, iterator.next());
-        assertSame(TE_2, iterator.next());
+    public void test_addtagstrategy_prevent_double_registration() {
+        Writer writer = Writer.newBuilder().addTagStrategy(TBF_1).addTagStrategy(TBF_1).build();
+        List<TagStrategy> tagStrategies = extractTagStrategies(writer);
+        assertEquals(8, tagStrategies.size());
     }
 
     @Test
-    public void test_addsemantictagbuilderfactory_array() {
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(STBF_1, STBF_2, STBF_3, STBF_4).build();
-        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
-        assertEquals(4, semanticTagBuilderFactories.size());
-        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_3));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_4));
-
-        List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(5, tagEncoders.size());
-        Iterator<TagEncoder> iterator = tagEncoders.iterator();
-        assertSame(CommonTagCodec.INSTANCE, iterator.next());
-        assertSame(TE_1, iterator.next());
-        assertSame(TE_2, iterator.next());
-        assertSame(TE_3, iterator.next());
-        assertSame(TE_4, iterator.next());
+    public void test_addtagstrategies_double() {
+        Writer writer = Writer.newBuilder().addTagStrategies(TBF_1, TBF_2).build();
+        List<TagStrategy> tagStrategies = extractTagStrategies(writer);
+        assertEquals(9, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
     }
 
     @Test
-    public void test_addsemantictagbuilderfactory_iterable() {
-        List<TagStrategy> factories = Stream.of(STBF_1, STBF_2, STBF_3, STBF_4).collect(Collectors.toList());
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactories(factories).build();
-        List<TagStrategy> semanticTagBuilderFactories = extractSemanticTagBuilderFactories(writer);
-        assertEquals(4, semanticTagBuilderFactories.size());
-        assertTrue(semanticTagBuilderFactories.contains(STBF_1));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_2));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_3));
-        assertTrue(semanticTagBuilderFactories.contains(STBF_4));
-
-        List<TagEncoder> tagEncoders = extractTagEncoders(writer);
-        assertEquals(5, tagEncoders.size());
-        Iterator<TagEncoder> iterator = tagEncoders.iterator();
-        assertSame(CommonTagCodec.INSTANCE, iterator.next());
-        assertSame(TE_1, iterator.next());
-        assertSame(TE_2, iterator.next());
-        assertSame(TE_3, iterator.next());
-        assertSame(TE_4, iterator.next());
+    public void test_addtagstrategies_array() {
+        Writer writer = Writer.newBuilder().addTagStrategies(TBF_1, TBF_2, TBF_3, TBF_4).build();
+        List<TagStrategy> tagStrategies = extractTagStrategies(writer);
+        assertEquals(11, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
+        assertTrue(tagStrategies.contains(TBF_3));
+        assertTrue(tagStrategies.contains(TBF_4));
     }
 
-    private List<TagEncoder> extractTagEncoders(Writer writer) {
+    @Test
+    public void test_addtagstrategies_iterable() {
+        List<TagStrategy> strategies = Stream.of(TBF_1, TBF_2, TBF_3, TBF_4).collect(Collectors.toList());
+        Writer writer = Writer.newBuilder().addTagStrategies(strategies).build();
+        List<TagStrategy> tagStrategies = extractTagStrategies(writer);
+        assertEquals(11, tagStrategies.size());
+        assertTrue(tagStrategies.contains(TBF_1));
+        assertTrue(tagStrategies.contains(TBF_2));
+        assertTrue(tagStrategies.contains(TBF_3));
+        assertTrue(tagStrategies.contains(TBF_4));
+    }
+
+    private List<TagStrategy> extractTagStrategies(Writer writer) {
         try {
-            Field field = WriterImpl.class.getDeclaredField("tagEncoders");
-            field.setAccessible(true);
-            return (List<TagEncoder>) field.get(writer);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private List<TagStrategy> extractSemanticTagBuilderFactories(Writer writer) {
-        try {
-            Field field = WriterImpl.class.getDeclaredField("factories");
+            Field field = WriterImpl.class.getDeclaredField("tagStrategies");
             field.setAccessible(true);
             return (List<TagStrategy>) new ArrayList<>(((Map) field.get(writer)).values());
         } catch (Exception e) {
@@ -152,7 +120,7 @@ public class WriterBuilderTestCase {
         }
     }
 
-    private static class SemanticTagStrategy1TestImpl
+    private static class TagStrategy1TestImpl
             implements TagStrategy {
 
         @Override
@@ -163,6 +131,11 @@ public class WriterBuilderTestCase {
         @Override
         public int tagId() {
             return 0;
+        }
+
+        @Override
+        public ValueType valueType() {
+            return null;
         }
 
         @Override
@@ -174,9 +147,44 @@ public class WriterBuilderTestCase {
         public TagEncoder tagEncoder() {
             return TE_1;
         }
+
+        @Override
+        public TagDecoder tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
+            return null;
+        }
     }
 
-    private static class SemanticTagStrategy2TestImpl
+    private static class TagStrategy2TestImpl
             implements TagStrategy {
 
         @Override
@@ -187,6 +195,11 @@ public class WriterBuilderTestCase {
         @Override
         public int tagId() {
             return 0;
+        }
+
+        @Override
+        public ValueType valueType() {
+            return null;
         }
 
         @Override
@@ -198,9 +211,44 @@ public class WriterBuilderTestCase {
         public TagEncoder tagEncoder() {
             return TE_2;
         }
+
+        @Override
+        public TagDecoder tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
+            return null;
+        }
     }
 
-    private static class SemanticTagStrategy3TestImpl
+    private static class TagStrategy3TestImpl
             implements TagStrategy {
 
         @Override
@@ -211,6 +259,11 @@ public class WriterBuilderTestCase {
         @Override
         public int tagId() {
             return 0;
+        }
+
+        @Override
+        public ValueType valueType() {
+            return null;
         }
 
         @Override
@@ -222,9 +275,44 @@ public class WriterBuilderTestCase {
         public TagEncoder tagEncoder() {
             return TE_3;
         }
+
+        @Override
+        public TagDecoder tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
+            return null;
+        }
     }
 
-    private static class SemanticTagStrategy4TestImpl
+    private static class TagStrategy4TestImpl
             implements TagStrategy {
 
         @Override
@@ -238,6 +326,11 @@ public class WriterBuilderTestCase {
         }
 
         @Override
+        public ValueType valueType() {
+            return null;
+        }
+
+        @Override
         public Class tagBuilderType() {
             return Long.class;
         }
@@ -245,6 +338,41 @@ public class WriterBuilderTestCase {
         @Override
         public TagEncoder tagEncoder() {
             return TE_4;
+        }
+
+        @Override
+        public TagDecoder tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Object process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            return null;
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return false;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
+            return null;
         }
     }
 

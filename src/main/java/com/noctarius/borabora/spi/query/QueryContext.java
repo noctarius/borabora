@@ -20,7 +20,7 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public interface QueryContext {
 
     ValueType valueType(long offset);
 
-    List<TagDecoder> tagDecoders();
+    List<TagStrategy> tagStrategies();
 
     SelectStatementStrategy selectStatementStrategy();
 

@@ -20,7 +20,7 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Collection;
@@ -117,9 +117,9 @@ public enum TypeSpecs
         return false;
     }
 
-    public static TypeSpec typeSpec(String spec, Collection<TagDecoder> processors) {
+    public static TypeSpec typeSpec(String spec, Collection<TagStrategy> tagStrategies) {
         if (spec.contains("$")) {
-            return specializedTag(spec, processors);
+            return specializedTag(spec, tagStrategies);
         }
 
         for (TypeSpec typeSpec : TYPE_SPECS_VALUES) {
@@ -130,11 +130,11 @@ public enum TypeSpecs
         throw new WrongTypeException("Not type specification found for spec " + spec);
     }
 
-    private static TypeSpec specializedTag(String spec, Collection<TagDecoder> processors) {
+    private static TypeSpec specializedTag(String spec, Collection<TagStrategy> tagStrategies) {
         int tagId = Integer.parseInt(spec.substring(spec.indexOf("$") + 1));
 
-        for (TagDecoder processor : processors) {
-            TypeSpec typeSpec = processor.handles(tagId);
+        for (TagStrategy tagStrategy : tagStrategies) {
+            TypeSpec typeSpec = tagStrategy.handles(tagId);
             if (typeSpec != null) {
                 return typeSpec;
             }

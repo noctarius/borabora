@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.builder;
+package com.noctarius.borabora.builder.semantictag;
 
-import com.noctarius.borabora.spi.BuilderStackPop;
 import com.noctarius.borabora.spi.BuilderStackPush;
+import com.noctarius.borabora.spi.codec.TagBuilder;
 
-public interface SequenceQueryBuilder<T> {
+import java.math.BigInteger;
+
+public interface NBigNumberBuilder {
 
     @BuilderStackPush
-    StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry();
+    TagBuilder putNumber(BigInteger value);
 
-    @BuilderStackPop
-    T endSequence();
+    @BuilderStackPush
+    TagBuilder putBigInteger(BigInteger value);
 
 }

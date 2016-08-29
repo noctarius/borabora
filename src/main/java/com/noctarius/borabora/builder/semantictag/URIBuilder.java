@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.builder.semantictag;
 
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 
 import java.net.URI;
@@ -24,8 +25,10 @@ import java.net.URL;
 
 public interface URIBuilder {
 
+    @BuilderStackPush
     TagBuilder putURI(URI value);
 
+    @BuilderStackPush
     TagBuilder putURL(URL value)
             throws URISyntaxException;
 

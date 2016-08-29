@@ -19,8 +19,8 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.impl.query.BTreeFactories;
-import com.noctarius.borabora.spi.codec.CommonTagCodec;
-import com.noctarius.borabora.spi.codec.TagDecoder;
+import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
@@ -31,6 +31,7 @@ import com.noctarius.borabora.spi.query.QueryContextFactory;
 import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,7 @@ import java.util.Objects;
 public final class ParserBuilderImpl
         implements ParserBuilder {
 
-    private final List<TagDecoder> tagDecoders = new ArrayList<>();
+    private final List<TagStrategy> tagStrategies = new ArrayList<>(Arrays.asList(TagStrategies.values()));
     private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
 
     private QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
@@ -47,40 +48,36 @@ public final class ParserBuilderImpl
     private QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
     private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
 
-    public ParserBuilderImpl() {
-        addTagDecoder(CommonTagCodec.INSTANCE);
-    }
-
     @Override
-    public <V> ParserBuilder addTagDecoder(TagDecoder<V> tagDecoder) {
-        Objects.requireNonNull(tagDecoder, "tagDecoder must not be null");
-        if (!tagDecoders.contains(tagDecoder)) {
-            tagDecoders.add(tagDecoder);
+    public <S, V> ParserBuilder addTagStrategy(TagStrategy<S, V> tagStrategy) {
+        Objects.requireNonNull(tagStrategy, "tagStrategy must not be null");
+        if (!tagStrategies.contains(tagStrategy)) {
+            tagStrategies.add(tagStrategy);
         }
         return this;
     }
 
     @Override
-    public ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2) {
-        addTagDecoder(tagDecoder1);
-        addTagDecoder(tagDecoder2);
+    public ParserBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2) {
+        addTagStrategy(tagStrategy1);
+        addTagStrategy(tagStrategy2);
         return this;
     }
 
     @Override
-    public ParserBuilder addTagDecoders(TagDecoder tagDecoder1, TagDecoder tagDecoder2, TagDecoder... tagDecoders) {
-        addTagDecoder(tagDecoder1);
-        addTagDecoder(tagDecoder2);
-        for (TagDecoder tagDecoder : tagDecoders) {
-            addTagDecoder(tagDecoder);
+    public ParserBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies) {
+        addTagStrategy(tagStrategy1);
+        addTagStrategy(tagStrategy2);
+        for (TagStrategy tagStrategy : tagStrategies) {
+            addTagStrategy(tagStrategy);
         }
         return this;
     }
 
     @Override
-    public ParserBuilder addTagDecoders(Iterable<TagDecoder> tagDecoders) {
-        for (TagDecoder tagDecoder : tagDecoders) {
-            addTagDecoder(tagDecoder);
+    public ParserBuilder addTagStrategies(Iterable<TagStrategy> tagStrategies) {
+        for (TagStrategy tagStrategy : tagStrategies) {
+            addTagStrategy(tagStrategy);
         }
         return this;
     }
@@ -170,7 +167,7 @@ public final class ParserBuilderImpl
 
     @Override
     public Parser build() {
-        return new ParserImpl(tagDecoders, selectStatementStrategy, queryContextFactory, queryPipelineFactory,
+        return new ParserImpl(tagStrategies, selectStatementStrategy, queryContextFactory, queryPipelineFactory,
                 pipelineStageFactory, queryOptimizerStrategyFactory, Collections.unmodifiableList(queryOptimizers));
     }
 

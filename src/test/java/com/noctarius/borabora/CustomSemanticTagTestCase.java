@@ -18,8 +18,8 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.ValueBuilder;
-import com.noctarius.borabora.spi.BuilderEnter;
-import com.noctarius.borabora.spi.BuilderReturn;
+import com.noctarius.borabora.spi.BuilderStackPop;
+import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.AbstractStreamValueBuilder;
 import com.noctarius.borabora.spi.codec.ByteSizes;
@@ -28,9 +28,9 @@ import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
-import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagEncoder;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
@@ -56,7 +56,7 @@ public class CustomSemanticTagTestCase
 
     private void execute(Function<Value, Sequence> function) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().addSemanticTagBuilderFactory(new CustomTableSemanticTagStrategy()).build();
+        Writer writer = Writer.newBuilder().addTagStrategy(new CustomTableTagStrategy()).build();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -74,7 +74,7 @@ public class CustomSemanticTagTestCase
                         .endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().addTagDecoder(CustomTableTagDecoder.INSTANCE).build();
+        Parser parser = Parser.newBuilder().addTagStrategy(new CustomTableTagStrategy()).build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value = parser.read(input, Query.newBuilder().build());
@@ -108,7 +108,7 @@ public class CustomSemanticTagTestCase
 
     public interface CustomTableBuilder {
 
-        @BuilderEnter
+        @BuilderStackPush
         CustomTableRowBuilder putHeaders(String... headers);
 
     }
@@ -116,7 +116,7 @@ public class CustomSemanticTagTestCase
     public interface CustomTableRowBuilder
             extends TagBuilder {
 
-        @BuilderEnter
+        @BuilderStackPush
         CustomTableColumnBuilder<CustomTableRowBuilder> putRow();
 
     }
@@ -124,12 +124,12 @@ public class CustomSemanticTagTestCase
     public interface CustomTableColumnBuilder<B>
             extends ValueBuilder<CustomTableColumnBuilder<B>> {
 
-        @BuilderReturn
+        @BuilderStackPop
         B endRow();
 
     }
 
-    public static class CustomTableSemanticTagStrategy
+    public static class CustomTableTagStrategy
             implements TagStrategy<CustomTableBuilder, Object> {
 
         @Override
@@ -143,6 +143,11 @@ public class CustomSemanticTagTestCase
         }
 
         @Override
+        public ValueType valueType() {
+            return null;
+        }
+
+        @Override
         public Class<CustomTableBuilder> tagBuilderType() {
             return CustomTableBuilder.class;
         }
@@ -150,6 +155,44 @@ public class CustomSemanticTagTestCase
         @Override
         public TagEncoder<Object> tagEncoder() {
             return null;
+        }
+
+        @Override
+        public TagDecoder<Object> tagDecoder() {
+            return null;
+        }
+
+        @Override
+        public long process(Object value, long offset, EncoderContext encoderContext) {
+            return 0;
+        }
+
+        @Override
+        public boolean handles(Object value) {
+            return false;
+        }
+
+        @Override
+        public Sequence process(ValueType valueType, long offset, long length, QueryContext queryContext) {
+            Input input = queryContext.input();
+            offset += ByteSizes.headByteSize(input, offset);
+            return Decoder.readSequence(offset, queryContext);
+        }
+
+        @Override
+        public boolean handles(Input input, long offset) {
+            return valueType(input, offset) != ValueTypes.Unknown;
+        }
+
+        @Override
+        public TypeSpec handles(long tagId) {
+            return null;
+        }
+
+        @Override
+        public ValueType valueType(Input input, long offset) {
+            Number tagType = Decoder.readUint(input, offset);
+            return tagType.longValue() == (Integer.MAX_VALUE) ? CustomTableValueType.CustomTable : ValueTypes.Unknown;
         }
 
         private static class CustomTableBuilderImpl
@@ -235,35 +278,6 @@ public class CustomSemanticTagTestCase
             implements ValueType {
 
         CustomTable
-    }
-
-    public static class CustomTableTagDecoder
-            implements TagDecoder<Sequence> {
-
-        private static final TagDecoder<Sequence> INSTANCE = new CustomTableTagDecoder();
-
-        @Override
-        public Sequence process(ValueType valueType, long offset, long length, QueryContext queryContext) {
-            Input input = queryContext.input();
-            offset += ByteSizes.headByteSize(input, offset);
-            return Decoder.readSequence(offset, queryContext);
-        }
-
-        @Override
-        public boolean handles(Input input, long offset) {
-            return valueType(input, offset) != ValueTypes.Unknown;
-        }
-
-        @Override
-        public TypeSpec handles(long tagId) {
-            return null;
-        }
-
-        @Override
-        public ValueType valueType(Input input, long offset) {
-            Number tagType = Decoder.readUint(input, offset);
-            return tagType.longValue() == (Integer.MAX_VALUE) ? CustomTableValueType.CustomTable : ValueTypes.Unknown;
-        }
     }
 
 }

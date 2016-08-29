@@ -16,12 +16,14 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.builder.semantictag.BigNumberBuilder;
 import com.noctarius.borabora.builder.semantictag.CBORBuilder;
 import com.noctarius.borabora.builder.semantictag.DateTimeBuilder;
 import com.noctarius.borabora.builder.semantictag.FractionBuilder;
+import com.noctarius.borabora.builder.semantictag.NBigNumberBuilder;
 import com.noctarius.borabora.builder.semantictag.TimestampBuilder;
+import com.noctarius.borabora.builder.semantictag.UBigNumberBuilder;
 import com.noctarius.borabora.builder.semantictag.URIBuilder;
+import com.noctarius.borabora.spi.ValueValidators;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -97,24 +99,51 @@ class TagBuilders {
         }
     }
 
-    static final class BigNumberBuilderImpl
-            implements BigNumberBuilder {
+    static final class UBigNumberBuilderImpl
+            implements UBigNumberBuilder {
 
         private final EncoderContext encoderContext;
 
-        BigNumberBuilderImpl(EncoderContext encoderContext) {
+        UBigNumberBuilderImpl(EncoderContext encoderContext) {
             this.encoderContext = encoderContext;
 
         }
 
         @Override
         public TagBuilder putNumber(BigInteger value) {
+            ValueValidators.isPositive(null, value);
             encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
             return EmptyTagBuilder.INSTANCE;
         }
 
         @Override
         public TagBuilder putBigInteger(BigInteger value) {
+            ValueValidators.isPositive(null, value);
+            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            return EmptyTagBuilder.INSTANCE;
+        }
+    }
+
+    static final class NBigNumberBuilderImpl
+            implements NBigNumberBuilder {
+
+        private final EncoderContext encoderContext;
+
+        NBigNumberBuilderImpl(EncoderContext encoderContext) {
+            this.encoderContext = encoderContext;
+
+        }
+
+        @Override
+        public TagBuilder putNumber(BigInteger value) {
+            ValueValidators.isNegative(null, value);
+            encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
+            return EmptyTagBuilder.INSTANCE;
+        }
+
+        @Override
+        public TagBuilder putBigInteger(BigInteger value) {
+            ValueValidators.isNegative(null, value);
             encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
             return EmptyTagBuilder.INSTANCE;
         }
