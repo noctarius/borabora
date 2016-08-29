@@ -20,8 +20,10 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.spi.Constants;
 
-public enum ByteSizes {
-    ;
+public final class ByteSizes {
+
+    private ByteSizes() {
+    }
 
     public static long byteSizeByMajorType(MajorType majorType, Input input, long offset) {
         switch (majorType) {

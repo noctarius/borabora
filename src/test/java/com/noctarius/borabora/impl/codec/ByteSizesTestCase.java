@@ -16,13 +16,81 @@
  */
 package com.noctarius.borabora.impl.codec;
 
+import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Output;
 import com.noctarius.borabora.spi.codec.ByteSizes;
+import com.noctarius.borabora.spi.codec.Encoder;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
 
 import static org.junit.Assert.assertEquals;
 
-public class ByteSizesTestCase {
+public class ByteSizesTestCase
+        extends AbstractTestCase {
+
+    @Test
+    public void call_constructor() {
+        callConstructor(ByteSizes.class);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_unsignedinteger() {
+        Input input = input(MajorType.UnsignedInteger);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.UnsignedInteger, input, 0);
+        assertEquals(1, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_negativeinteger() {
+        Input input = input(MajorType.NegativeInteger);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.NegativeInteger, input, 0);
+        assertEquals(1, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_bytestring() {
+        Input input = input(MajorType.ByteString);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.ByteString, input, 0);
+        assertEquals(2, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_textstring() {
+        Input input = input(MajorType.TextString);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.TextString, input, 0);
+        assertEquals(2, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_sequence() {
+        Input input = input(MajorType.Sequence);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.Sequence, input, 0);
+        assertEquals(2, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_dictionary() {
+        Input input = input(MajorType.Dictionary);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.Dictionary, input, 0);
+        assertEquals(3, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_floatorsimple() {
+        Input input = input(MajorType.FloatingPointOrSimple);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.FloatingPointOrSimple, input, 0);
+        assertEquals(1, size);
+    }
+
+    @Test
+    public void test_bytesizebymajortype_semantictag() {
+        Input input = input(MajorType.SemanticTag);
+        long size = ByteSizes.byteSizeByMajorType(MajorType.SemanticTag, input, 0);
+        assertEquals(2, size);
+    }
 
     @Test
     public void test_stringsize_in_addinfo() {
@@ -232,4 +300,18 @@ public class ByteSizesTestCase {
         ByteSizes.floatOrSimpleByteSize(input, 0);
     }
 
+    private Input input(MajorType majorType) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        long offset = Encoder.encodeLengthAndValue(majorType, 1, 0, output);
+        if (majorType == MajorType.Sequence) {
+            Encoder.encodeLengthAndValue(MajorType.UnsignedInteger, 1, offset, output);
+        } else if (majorType == MajorType.Dictionary) {
+            offset = Encoder.encodeLengthAndValue(MajorType.UnsignedInteger, 1, offset, output);
+            Encoder.encodeLengthAndValue(MajorType.UnsignedInteger, 1, offset, output);
+        } else if (majorType == MajorType.SemanticTag) {
+            Encoder.encodeLengthAndValue(MajorType.UnsignedInteger, 1, offset, output);
+        }
+        return Input.fromByteArray(baos.toByteArray());
+    }
 }

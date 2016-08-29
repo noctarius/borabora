@@ -80,10 +80,6 @@ public abstract class AbstractValue
         }
     }
 
-    protected <T> T extract(Supplier<T> supplier) {
-        return extract(null, supplier);
-    }
-
     protected abstract <T> T extract(Validator validator, Supplier<T> supplier);
 
     protected interface Validator {
