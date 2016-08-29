@@ -103,6 +103,17 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
+    public B putFraction(BigDecimal value) {
+        validate();
+        if (value == null) {
+            encoderContext.encodeNull();
+        } else {
+            encoderContext.encode(offset -> Encoder.putFraction(value, offset, output));
+        }
+        return builder;
+    }
+
+    @Override
     public B putNumber(long value) {
         validate();
         encoderContext.encode(offset -> Encoder.putNumber(value, offset, output));

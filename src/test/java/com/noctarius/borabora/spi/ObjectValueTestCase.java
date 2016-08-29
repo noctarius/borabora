@@ -38,6 +38,12 @@ public class ObjectValueTestCase
         extends AbstractTestCase {
 
     @Test
+    public void test_majortype() {
+        Value value = new ObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, BigInteger.ONE);
+        assertEquals(MajorType.SemanticTag, value.majorType());
+    }
+
+    @Test
     public void test_tag() {
         Value value = new ObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, BigInteger.ONE);
         assertEquals(BigInteger.ONE, value.tag());

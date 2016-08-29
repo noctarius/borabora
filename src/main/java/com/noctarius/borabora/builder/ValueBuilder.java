@@ -19,6 +19,7 @@ package com.noctarius.borabora.builder;
 import com.noctarius.borabora.spi.BuilderStackPush;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.Instant;
@@ -73,6 +74,8 @@ public interface ValueBuilder<B> {
     B putTimestamp(long timestamp);
 
     B putTimestamp(Instant instant);
+
+    B putFraction(BigDecimal value);
 
     @BuilderStackPush
     IndefiniteStringBuilder<B> putIndefiniteByteString();

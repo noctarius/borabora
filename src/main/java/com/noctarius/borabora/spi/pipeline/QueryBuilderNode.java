@@ -73,7 +73,6 @@ public final class QueryBuilderNode {
     }
 
     public static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {
-
         PipelineStage left = NIL;
         PipelineStage right = NIL;
 

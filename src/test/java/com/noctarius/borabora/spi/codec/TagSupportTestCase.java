@@ -109,16 +109,6 @@ public class TagSupportTestCase
         }
 
         @Override
-        public TagEncoder<Object> tagEncoder() {
-            return null;
-        }
-
-        @Override
-        public TagDecoder<Object> tagDecoder() {
-            return null;
-        }
-
-        @Override
         public long process(Object value, long offset, EncoderContext encoderContext) {
             return 0;
         }
@@ -178,16 +168,6 @@ public class TagSupportTestCase
         @Override
         public Class<InvocationTargetException1> tagBuilderType() {
             return InvocationTargetException1.class;
-        }
-
-        @Override
-        public TagEncoder<Object> tagEncoder() {
-            return null;
-        }
-
-        @Override
-        public TagDecoder<Object> tagDecoder() {
-            return null;
         }
 
         @Override
@@ -265,16 +245,6 @@ public class TagSupportTestCase
         @Override
         public Class<InvocationTargetException2> tagBuilderType() {
             return InvocationTargetException2.class;
-        }
-
-        @Override
-        public TagEncoder<Object> tagEncoder() {
-            return null;
-        }
-
-        @Override
-        public TagDecoder<Object> tagDecoder() {
-            return null;
         }
 
         @Override

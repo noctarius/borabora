@@ -28,8 +28,6 @@ import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagBuilder;
 import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
-import com.noctarius.borabora.spi.codec.TagDecoder;
-import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
@@ -150,16 +148,6 @@ public class CustomSemanticTagTestCase
         @Override
         public Class<CustomTableBuilder> tagBuilderType() {
             return CustomTableBuilder.class;
-        }
-
-        @Override
-        public TagEncoder<Object> tagEncoder() {
-            return null;
-        }
-
-        @Override
-        public TagDecoder<Object> tagDecoder() {
-            return null;
         }
 
         @Override

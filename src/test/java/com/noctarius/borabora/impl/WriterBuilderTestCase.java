@@ -21,7 +21,6 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
@@ -144,16 +143,6 @@ public class WriterBuilderTestCase {
         }
 
         @Override
-        public TagEncoder tagEncoder() {
-            return TE_1;
-        }
-
-        @Override
-        public TagDecoder tagDecoder() {
-            return null;
-        }
-
-        @Override
         public long process(Object value, long offset, EncoderContext encoderContext) {
             return 0;
         }
@@ -205,16 +194,6 @@ public class WriterBuilderTestCase {
         @Override
         public Class tagBuilderType() {
             return Short.class;
-        }
-
-        @Override
-        public TagEncoder tagEncoder() {
-            return TE_2;
-        }
-
-        @Override
-        public TagDecoder tagDecoder() {
-            return null;
         }
 
         @Override
@@ -272,16 +251,6 @@ public class WriterBuilderTestCase {
         }
 
         @Override
-        public TagEncoder tagEncoder() {
-            return TE_3;
-        }
-
-        @Override
-        public TagDecoder tagDecoder() {
-            return null;
-        }
-
-        @Override
         public long process(Object value, long offset, EncoderContext encoderContext) {
             return 0;
         }
@@ -333,16 +302,6 @@ public class WriterBuilderTestCase {
         @Override
         public Class tagBuilderType() {
             return Long.class;
-        }
-
-        @Override
-        public TagEncoder tagEncoder() {
-            return TE_4;
-        }
-
-        @Override
-        public TagDecoder tagDecoder() {
-            return null;
         }
 
         @Override

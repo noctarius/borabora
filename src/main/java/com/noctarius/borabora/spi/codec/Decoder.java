@@ -228,7 +228,7 @@ public final class Decoder
         return Double.longBitsToDouble(Bytes.readUInt64Long(input, offset));
     }
 
-    public static BigDecimal readDecimalFraction(Input input, long offset) {
+    public static BigDecimal readFraction(Input input, long offset) {
         // Skip semantic tag header
         offset += ByteSizes.headByteSize(input, offset);
         // Verify sequence header
@@ -238,8 +238,11 @@ public final class Decoder
         }
         // If ok skip sequence head
         offset++;
-        // Read scale (always int)
+
+        // Read scale (always int) and skip the scale element
         int scale = readInt(input, offset).intValue();
+        offset = skip(input, offset);
+
         // Read unscaled part, normally int, can be BigInteger
         Number unscaledValue = readInt(input, offset);
 

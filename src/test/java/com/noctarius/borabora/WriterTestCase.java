@@ -572,6 +572,25 @@ public class WriterTestCase
     }
 
     @Test
+    public void test_write_fraction()
+            throws Exception {
+
+        BigDecimal expected = BigDecimal.valueOf(12.d);
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putFraction(expected) //
+               .putFraction(null);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(Query.newBuilder().stream(1).build());
+
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
+    }
+
+
+    @Test
     public void test_write_uri()
             throws Exception {
 
@@ -766,6 +785,21 @@ public class WriterTestCase
             throws Exception {
 
         BigInteger expected = Constants.BI_VAL_MAX_VALUE.add(BigInteger.ONE);
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putValue(expected);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertEquals(expected, value1.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_fraction()
+            throws Exception {
+
+        BigDecimal expected = BigDecimal.valueOf(12.d);
 
         SimplifiedTestParser parser = buildParser((sgb) -> {
             sgb.putValue(expected);

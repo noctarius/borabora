@@ -29,21 +29,4 @@ public interface TagStrategy<S, V>
 
     Class<S> tagBuilderType();
 
-    /**
-     * Returns a {@link TagEncoder} instance in case the automatic encoding
-     * is possible, which in turn is possible in case of simple values or
-     * special runtime support classes (for example {@link java.math.BigInteger}).
-     * In this case {@link com.noctarius.borabora.builder.ValueBuilder#putValue(Object)} or
-     * {@link com.noctarius.borabora.builder.ValueBuilder#putTag(Object)} are
-     * able to support implicit encoding using the returned tag encoder.
-     * <p>For complex types, if implicit encoding is not desired or possible because
-     * of type collisions, <tt>null</tt> can be returned to make only explicit
-     * encoding using {@link TagSupport#semanticTag(Class)} possible.</p>
-     *
-     * @return a <tt>TagEncoder</tt> instance or <tt>null</tt> to deactivate implicit encoding
-     */
-    TagEncoder<V> tagEncoder();
-
-    TagDecoder<V> tagDecoder();
-
 }

@@ -119,16 +119,6 @@ public enum TagStrategies
     }
 
     @Override
-    public TagEncoder tagEncoder() {
-        return tagWriter == null ? null : this;
-    }
-
-    @Override
-    public TagDecoder tagDecoder() {
-        return tagReader == null ? null : this;
-    }
-
-    @Override
     public long process(Object value, long offset, EncoderContext encoderContext) {
         return tagWriter.process(value, offset, encoderContext);
     }
