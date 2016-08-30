@@ -54,21 +54,21 @@ public abstract class AbstractValue
     protected void matchMajorType(MajorType actual, MajorType expected) {
         if (expected != actual) {
             String msg = String.format(MAJOR_TYPE_DOES_NOT_MATCH, expected, actual);
-            throw new WrongTypeException(msg);
+            throw new WrongTypeException(offset(), msg);
         }
     }
 
     protected void matchValueType(ValueType actual, ValueType expected) {
         if (!actual.matches(expected)) {
             String msg = String.format(VALUE_TYPE_DOES_NOT_MATCH, expected, actual);
-            throw new WrongTypeException(msg);
+            throw new WrongTypeException(offset(), msg);
         }
     }
 
     protected void matchValueType(ValueType actual, ValueType expected1, ValueType expected2) {
         if (!actual.matches(expected1) && !actual.matches(expected2)) {
             String msg = String.format(VALUE_TYPE_NOT_A_DOUBLE, expected1, expected2, actual);
-            throw new WrongTypeException(msg);
+            throw new WrongTypeException(offset(), msg);
         }
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractValue
         ValueType identity = actual.identity();
         if (ValueTypes.String != identity) {
             String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, ValueTypes.String, ByteString, TextString, identity);
-            throw new WrongTypeException(msg);
+            throw new WrongTypeException(offset(), msg);
         }
     }
 

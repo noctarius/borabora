@@ -54,7 +54,7 @@ public class SequenceMatcherQueryStage
 
         if (majorType != MajorType.Sequence) {
             // If not a sequence we're done here
-            throw new WrongTypeException("Encountered " + majorType + " when a sequence was expected");
+            throw new WrongTypeException(offset, "Encountered " + majorType + " when a sequence was expected");
         }
 
         long elementCount = ElementCounts.sequenceElementCount(input, offset);

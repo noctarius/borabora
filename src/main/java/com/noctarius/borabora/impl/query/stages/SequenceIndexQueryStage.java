@@ -50,7 +50,7 @@ public class SequenceIndexQueryStage
         MajorType majorType = MajorType.findMajorType(head);
 
         if (majorType != MajorType.Sequence) {
-            throw new WrongTypeException("Encountered " + majorType + " when a sequence was expected");
+            throw new WrongTypeException(offset, "Encountered " + majorType + " when a sequence was expected");
         }
 
         // Sequences need head skipped

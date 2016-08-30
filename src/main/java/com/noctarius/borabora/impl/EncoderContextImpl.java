@@ -58,7 +58,7 @@ public class EncoderContextImpl
                 return tagStrategy.process(value, offset, this);
             }
         }
-        throw new WrongTypeException("Found non-encodeable type: " + value.getClass().getName());
+        throw new WrongTypeException(offset, "Found non-encodeable type: " + value.getClass().getName());
     }
 
     @Override

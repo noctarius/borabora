@@ -37,7 +37,7 @@ public class DictionaryLookupQueryStage
 
     protected final Predicate<Value> predicate;
 
-    private DictionaryLookupQueryStage(Predicate<Value> predicate) {
+    protected DictionaryLookupQueryStage(Predicate<Value> predicate) {
         Objects.requireNonNull(predicate, "predicate must be set");
         this.predicate = predicate;
     }
@@ -52,13 +52,13 @@ public class DictionaryLookupQueryStage
         short head = Decoder.readUInt8(input, offset);
         MajorType majorType = MajorType.findMajorType(head);
         if (majorType != MajorType.Dictionary) {
-            throw new WrongTypeException("Not a dictionary");
+            throw new WrongTypeException(offset, "Encountered " + majorType + " when a dictionary was expected");
         }
 
         // Execute the key lookup
         offset = Decoder.findByDictionaryKey(predicate, offset, queryContext);
         if (offset == Constants.OFFSET_CODE_NULL) {
-            queryContext.offset(Constants.OFFSET_CODE_NULL);
+            queryContext.offset(offset);
             return VisitResult.Break;
         }
 
@@ -78,12 +78,12 @@ public class DictionaryLookupQueryStage
 
         DictionaryLookupQueryStage that = (DictionaryLookupQueryStage) o;
 
-        return predicate != null ? EqualsSupport.equals(predicate, that.predicate) : that.predicate == null;
+        return EqualsSupport.equals(predicate, that.predicate);
     }
 
     @Override
     public int hashCode() {
-        return predicate != null ? predicate.hashCode() : 0;
+        return predicate.hashCode();
     }
 
     @Override

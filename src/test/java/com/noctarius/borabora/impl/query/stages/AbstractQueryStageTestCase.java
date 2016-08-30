@@ -73,7 +73,14 @@ public abstract class AbstractQueryStageTestCase
                                         QueryStage leftQueryStage, QueryStage rightQueryStage,
                                         Consumer<QueryContext> queryContextInitializer) {
 
-        ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
+        return evaluate(input, currentQueryStage, previousQueryState, leftQueryStage, rightQueryStage, //
+                queryContextInitializer, BinaryProjectionStrategy.INSTANCE);
+    }
+
+    protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState,
+                                        QueryStage leftQueryStage, QueryStage rightQueryStage,
+                                        Consumer<QueryContext> queryContextInitializer, ProjectionStrategy projectionStrategy) {
+
         List<TagStrategy> tagStrategies = new ArrayList<>(Arrays.asList(TagStrategies.values()));
 
         List<Value> collectedResults = new ArrayList<>();

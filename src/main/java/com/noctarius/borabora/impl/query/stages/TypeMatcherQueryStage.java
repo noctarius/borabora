@@ -53,8 +53,8 @@ public class TypeMatcherQueryStage
         ValueType valueType = queryContext.valueType(offset);
         if (!typeSpec.valid(majorType, queryContext, offset)) {
             if (required) {
-                String msg = String.format("Element at offset %s is not of type %s but %s", offset, this.typeSpec, valueType);
-                throw new WrongTypeException(msg);
+                String msg = String.format("Element not of type %s but %s", this.typeSpec, valueType);
+                throw new WrongTypeException(offset, msg);
             }
 
             queryContext.offset(OFFSET_CODE_NULL);

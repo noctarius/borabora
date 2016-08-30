@@ -86,7 +86,7 @@ public class ObjectValue
 
     @Override
     public byte[] raw() {
-        throw new WrongTypeException("Current valueType is not a legal raw value");
+        throw new WrongTypeException(offset(), "Current valueType is not a legal raw value");
     }
 
     @Override

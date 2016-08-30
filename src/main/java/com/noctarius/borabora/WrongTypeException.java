@@ -35,6 +35,8 @@ package com.noctarius.borabora;
 public class WrongTypeException
         extends RuntimeException {
 
+    private final long offset;
+
     /**
      * Creates a new instance of the <tt>WrongTypeException</tt> class,
      * containing the given message.
@@ -43,6 +45,27 @@ public class WrongTypeException
      */
     public WrongTypeException(String message) {
         super(message);
+        this.offset = -1;
     }
 
+    /**
+     * Creates a new instance of the <tt>WrongTypeException</tt> class,
+     * containing the given message and offset.
+     *
+     * @param offset  the offset where the exception happened
+     * @param message the message to present to the user
+     */
+    public WrongTypeException(long offset, String message) {
+        super(message);
+        this.offset = offset;
+    }
+
+    public long getOffset() {
+        return offset;
+    }
+
+    @Override
+    public String getMessage() {
+        return super.getMessage() + (offset == -1 ? "" : "[offset=" + offset + "]");
+    }
 }
