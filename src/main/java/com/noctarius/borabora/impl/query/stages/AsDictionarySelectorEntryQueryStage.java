@@ -21,6 +21,7 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
@@ -73,6 +74,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
         private final String key;
 
         private StringKey(String key) {
+            Objects.requireNonNull(key, "key must not be null");
             this.key = key;
         }
 
@@ -94,12 +96,12 @@ public abstract class AsDictionarySelectorEntryQueryStage
 
             StringKey stringKey = (StringKey) o;
 
-            return key != null ? key.equals(stringKey.key) : stringKey.key == null;
+            return key.equals(stringKey.key);
         }
 
         @Override
         public int hashCode() {
-            return key != null ? key.hashCode() : 0;
+            return key.hashCode();
         }
 
         @Override

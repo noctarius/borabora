@@ -43,7 +43,7 @@ public class AsDictionarySelectorQueryStage
         }
 
         projectionStrategy.endDictionary(queryContext);
-        return visitResult;
+        return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
     }
 
     @Override

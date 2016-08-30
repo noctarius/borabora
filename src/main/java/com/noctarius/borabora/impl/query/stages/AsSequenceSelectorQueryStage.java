@@ -19,8 +19,8 @@ package com.noctarius.borabora.impl.query.stages;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.QueryContext;
 
 public class AsSequenceSelectorQueryStage
         implements QueryStage {
@@ -43,7 +43,7 @@ public class AsSequenceSelectorQueryStage
         }
 
         projectionStrategy.endSequence(queryContext);
-        return visitResult;
+        return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
     }
 
     @Override

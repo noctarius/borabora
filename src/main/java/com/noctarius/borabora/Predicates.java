@@ -24,6 +24,7 @@ import com.noctarius.borabora.spi.query.QueryContextAware;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
@@ -40,6 +41,7 @@ public final class Predicates {
     }
 
     public static Predicate<Value> matchStringIgnoreCase(String value) {
+        Objects.requireNonNull(value, "value must not be null");
         return (v) -> {
             if (!v.valueType().matches(ValueTypes.String)) {
                 return false;
@@ -50,6 +52,7 @@ public final class Predicates {
     }
 
     public static Predicate<Value> matchString(String value) {
+        Objects.requireNonNull(value, "value must not be null");
         Predicate<Value> slowPathPredicate = matchString0(value);
 
         // For more than 1024 chars we use the slow path for now
