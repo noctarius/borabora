@@ -146,7 +146,11 @@ public class BinarySelectStatementStrategy
     private long putValue(QueryContext queryContext) {
         long offset = queryContext.offset();
         BinaryQueryContext bqc = queryContext.queryStackPeek();
-        if (offset >= 0) {
+        if (offset == OFFSET_CODE_NULL) {
+            bqc.output.write(bqc.offset, SIMPLE_VALUE_NULL_BYTE);
+            bqc.offset++;
+
+        } else {
             Input input = queryContext.input();
             short head = Decoder.readUInt8(input, offset);
 
@@ -155,9 +159,6 @@ public class BinarySelectStatementStrategy
             bqc.offset = bqc.output.write(data, bqc.offset, data.length);
 
             return offset + data.length;
-        } else if (offset == OFFSET_CODE_NULL) {
-            bqc.output.write(bqc.offset, SIMPLE_VALUE_NULL_BYTE);
-            bqc.offset++;
         }
         return offset;
     }

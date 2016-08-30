@@ -34,6 +34,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 
+import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.spi.Constants.UTC;
 
 class TagBuilders {
@@ -94,6 +96,7 @@ class TagBuilders {
 
         @Override
         public TagBuilder putTimestamp(long timestamp) {
+            encoderContext.encode(offset -> Encoder.putSemanticTag(TAG_TIMESTAMP, offset, encoderContext.output()));
             encoderContext.encode(offset -> Encoder.putNumber(timestamp, offset, encoderContext.output()));
             return EmptyTagBuilder.INSTANCE;
         }
@@ -112,7 +115,7 @@ class TagBuilders {
         @Override
         public TagBuilder putNumber(BigInteger value) {
             ValueValidators.isPositive(null, value);
-            encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
+            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
             return EmptyTagBuilder.INSTANCE;
         }
 
@@ -194,6 +197,7 @@ class TagBuilders {
 
         CBORBuilderImpl(EncoderContext encoderContext) {
             super(encoderContext);
+            encoderContext.encode(offset -> Encoder.putSemanticTag(TAG_ENCCBOR, offset, encoderContext.output()));
         }
 
         @Override

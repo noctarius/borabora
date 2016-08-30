@@ -49,7 +49,7 @@ public enum TagReaders
 
     Fraction((valueType, offset, length, queryContext) -> {
         Input input = queryContext.input();
-        return Decoder.readFraction(input, offset);
+        return Decoder.readFraction(offset, queryContext);
     }),
 
     URI((valueType, offset, length, queryContext) -> {

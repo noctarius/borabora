@@ -91,7 +91,7 @@ public class CompositeBuffer
     @Override
     public long read(byte[] array, long offset, long length) {
         if (length > Integer.MAX_VALUE) {
-            throw new IllegalStateException("length cannot be larger than Integer.MAX_VALUE");
+            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
 
         Buffer buffer = bufferByOffset(offset);

@@ -26,6 +26,24 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class CompositeBufferTestCase {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void test_read_bytearray_length_larger_integer_maxvalue() {
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(1);
+        compositeBuffer.read(new byte[0], 0, Integer.MAX_VALUE + 1L);
+    }
+
+    @Test
+    public void test_read_bytearray_multiple_chunks() {
+        CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);
+        byte[] expected = randomByteArray(32);
+        for (int i = 0; i < expected.length; i++) {
+            compositeBuffer.write(i, expected[i]);
+        }
+        byte[] actual = new byte[32];
+        compositeBuffer.read(actual, 0, 32);
+        assertArrayEquals(expected, actual);
+    }
+
     @Test
     public void test_write_byte() {
         CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer(16);

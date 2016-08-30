@@ -23,7 +23,6 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.Decoder;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_EXIT;
 import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 
 public interface QueryConsumer {
@@ -34,8 +33,6 @@ public interface QueryConsumer {
         Value value;
         if (offset == OFFSET_CODE_NULL) {
             value = Value.NULL_VALUE;
-        } else if (offset == OFFSET_CODE_EXIT) {
-            return false;
         } else {
             short head = Decoder.readUInt8(input, offset);
             MajorType majorType = MajorType.findMajorType(head);

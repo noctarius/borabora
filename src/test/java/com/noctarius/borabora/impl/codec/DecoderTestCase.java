@@ -20,9 +20,15 @@ import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.NoSuchByteException;
+import com.noctarius.borabora.Output;
+import com.noctarius.borabora.spi.Constants;
 import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.codec.Encoder;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -36,6 +42,26 @@ public class DecoderTestCase
     @Test
     public void call_constructor() {
         callConstructor(Decoder.class);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_readsemantictagid_ubignum() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        Encoder.encodeLengthAndValue(MajorType.SemanticTag, Constants.BI_VAL_MAX_VALUE.subtract(BigInteger.ONE), 0, output);
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Decoder.readSemanticTagId(input, 0);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_readsemantictagid_larger_integer_maxvalue() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        Encoder.encodeLengthAndValue(MajorType.SemanticTag, Integer.MAX_VALUE + 1L, 0, output);
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Decoder.readSemanticTagId(input, 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -54,6 +80,33 @@ public class DecoderTestCase
     public void fail_illegal_floatingpoint_type() {
         Input input = Input.fromByteArray(hexToBytes("0xf6"));
         Decoder.readFloat(input, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fail_readfraction_non_fraction_encountered() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+
+        long offset = Encoder.encodeLengthAndValue(MajorType.SemanticTag, Constants.TAG_FRACTION, 0, output);
+        Encoder.encodeLengthAndValue(MajorType.Sequence, 1, offset, output);
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        Decoder.readFraction(0, newQueryContext(input));
+    }
+
+    @Test
+    public void test_readfraction_biginteger_unscaled() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+
+        long offset = Encoder.encodeLengthAndValue(MajorType.SemanticTag, Constants.TAG_FRACTION, 0, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.Sequence, 2, offset, output);
+        offset = Encoder.encodeLengthAndValue(MajorType.UnsignedInteger, 1, offset, output);
+        Encoder.putBigInteger(BigInteger.valueOf(120), offset, output);
+
+        Input input = Input.fromByteArray(baos.toByteArray());
+        BigDecimal fraction = Decoder.readFraction(0, newQueryContext(input));
+        assertEquals(BigDecimal.valueOf(12.0d), fraction);
     }
 
     @Test(expected = IllegalStateException.class)

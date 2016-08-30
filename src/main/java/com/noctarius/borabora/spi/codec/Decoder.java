@@ -47,11 +47,8 @@ public final class Decoder
 
     public static int readSemanticTagId(Input input, long offset) {
         Number tagType = Decoder.readUint(input, offset);
-        if (tagType instanceof BigInteger) {
-            throw new UnsupportedOperationException("No tag id larger Integer.MAX_VALUE implemented");
-        }
-        if (tagType.longValue() > Integer.MAX_VALUE) {
-            throw new UnsupportedOperationException("No tag id larger Integer.MAX_VALUE implemented");
+        if (tagType instanceof BigInteger || tagType.longValue() > Integer.MAX_VALUE) {
+            throw new IllegalStateException("No tag id larger Integer.MAX_VALUE implemented");
         }
         return tagType.intValue();
     }
@@ -228,7 +225,9 @@ public final class Decoder
         return Double.longBitsToDouble(Bytes.readUInt64Long(input, offset));
     }
 
-    public static BigDecimal readFraction(Input input, long offset) {
+    public static BigDecimal readFraction(long offset, QueryContext queryContext) {
+        Input input = queryContext.input();
+
         // Skip semantic tag header
         offset += ByteSizes.headByteSize(input, offset);
         // Verify sequence header
@@ -244,7 +243,17 @@ public final class Decoder
         offset = skip(input, offset);
 
         // Read unscaled part, normally int, can be BigInteger
-        Number unscaledValue = readInt(input, offset);
+        Number unscaledValue;
+
+        // If this is a UBigNum or NBigNum, unwrap it
+        short itemHead = readUInt8(input, offset);
+        if (MajorType.findMajorType(itemHead) == MajorType.SemanticTag) {
+            ValueType valueType = queryContext.valueType(offset);
+            unscaledValue = queryContext.applyDecoder(offset, MajorType.SemanticTag, valueType);
+
+        } else {
+            unscaledValue = readInt(input, offset);
+        }
 
         BigInteger unscaled;
         if (unscaledValue instanceof BigInteger) {

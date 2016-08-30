@@ -31,7 +31,6 @@ public interface Constants {
     int OPCODE_BREAK_MASK = 0b111_11111;
 
     short OFFSET_CODE_NULL = -1;
-    short OFFSET_CODE_EXIT = -2;
 
     short MT_UNSINGED_INT = 0;
     short MT_NEGATIVE_INT = 1;
