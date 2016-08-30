@@ -18,10 +18,12 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.Value;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
+import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.spi.pipeline.VisitResult;
 import org.junit.Test;
 
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,11 +37,16 @@ public class ConsumerQueryStageTestCase
 
     @Test
     public void test_evaluate() {
+        Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
+        EvaluationResult evaluationResult = evaluate(input, ConsumerQueryStage.INSTANCE);
 
-    }
+        assertEquals(VisitResult.Continue, evaluationResult.visitResult);
 
-    private void evaluate(Input input, long offset, QueryStage queryStage, Consumer<Value> consumer) {
-
+        List<Value> values = evaluationResult.values;
+        assertEquals(1, values.size());
+        Value value = values.get(0);
+        assertEquals(ValueTypes.UInt, value.valueType());
+        assertEqualsNumber(1, value.number());
     }
 
 }

@@ -78,12 +78,12 @@ public class TypeMatcherQueryStage
         if (required != that.required) {
             return false;
         }
-        return typeSpec != null ? typeSpec.equals(that.typeSpec) : that.typeSpec == null;
+        return typeSpec.equals(that.typeSpec);
     }
 
     @Override
     public int hashCode() {
-        int result = typeSpec != null ? typeSpec.hashCode() : 0;
+        int result = typeSpec.hashCode();
         result = 31 * result + (required ? 1 : 0);
         return result;
     }

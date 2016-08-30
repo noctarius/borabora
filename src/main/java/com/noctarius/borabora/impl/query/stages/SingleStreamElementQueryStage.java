@@ -17,6 +17,7 @@
 package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
@@ -29,6 +30,9 @@ public class SingleStreamElementQueryStage
     private final long streamElementIndex;
 
     public SingleStreamElementQueryStage(long streamElementIndex) {
+        if (streamElementIndex < 0) {
+            throw new IllegalArgumentException("streamElementIndex must be equal or larger than 0");
+        }
         this.streamElementIndex = streamElementIndex;
     }
 
@@ -42,6 +46,11 @@ public class SingleStreamElementQueryStage
             for (int i = 0; i < streamElementIndex; i++) {
                 offset = Decoder.skip(input, offset);
             }
+        }
+
+        // Outside of valid range?
+        if (!input.offsetValid(offset)) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
 
         // Set up new offset
