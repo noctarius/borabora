@@ -44,19 +44,33 @@ public abstract class AbstractQueryStageTestCase
         extends AbstractTestCase {
 
     protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage) {
-        return evaluate(input, currentQueryStage, null, null);
+        return evaluate(input, currentQueryStage, null, null, null, null);
+    }
+
+    protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage leftQueryStage,
+                                        QueryStage rightQueryStage) {
+
+        return evaluate(input, currentQueryStage, null, leftQueryStage, rightQueryStage, null);
     }
 
     protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState) {
-        return evaluate(input, currentQueryStage, previousQueryState, null);
+        return evaluate(input, currentQueryStage, previousQueryState, null, null, null);
+    }
+
+    protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState,
+                                        QueryStage leftQueryStage, QueryStage rightQueryStage) {
+
+        return evaluate(input, currentQueryStage, previousQueryState, leftQueryStage, rightQueryStage, null);
     }
 
     protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage,
                                         Consumer<QueryContext> queryContextInitializer) {
-        return evaluate(input, currentQueryStage, null, queryContextInitializer);
+
+        return evaluate(input, currentQueryStage, null, null, null, queryContextInitializer);
     }
 
     protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState,
+                                        QueryStage leftQueryStage, QueryStage rightQueryStage,
                                         Consumer<QueryContext> queryContextInitializer) {
 
         ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
@@ -73,7 +87,10 @@ public abstract class AbstractQueryStageTestCase
         }
 
         PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
-        PipelineStage currentPipelineStage = pipelineStageFactory.newPipelineStage(NIL, NIL, currentQueryStage);
+        PipelineStage left = leftQueryStage == null ? NIL : pipelineStageFactory.newPipelineStage(NIL, NIL, leftQueryStage);
+        PipelineStage right = rightQueryStage == null ? NIL : pipelineStageFactory.newPipelineStage(NIL, NIL, rightQueryStage);
+
+        PipelineStage currentPipelineStage = pipelineStageFactory.newPipelineStage(left, right, currentQueryStage);
         PipelineStage previousPipelineStage = NIL;
         if (previousQueryState != null) {
             previousPipelineStage = pipelineStageFactory.newPipelineStage(currentPipelineStage, NIL, previousQueryState);

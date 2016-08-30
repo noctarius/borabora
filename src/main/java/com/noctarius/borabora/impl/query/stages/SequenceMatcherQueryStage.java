@@ -20,6 +20,7 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.WrongTypeException;
 import com.noctarius.borabora.spi.EqualsSupport;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.codec.ByteSizes;
@@ -30,6 +31,7 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class SequenceMatcherQueryStage
@@ -38,6 +40,7 @@ public class SequenceMatcherQueryStage
     private final Predicate<Value> predicate;
 
     public SequenceMatcherQueryStage(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must not be null");
         this.predicate = predicate;
     }
 
@@ -50,8 +53,8 @@ public class SequenceMatcherQueryStage
         MajorType majorType = MajorType.findMajorType(head);
 
         if (majorType != MajorType.Sequence) {
-            // If not a sequence break out of the current subtree
-            return VisitResult.Break;
+            // If not a sequence we're done here
+            throw new WrongTypeException("Encountered " + majorType + " when a sequence was expected");
         }
 
         long elementCount = ElementCounts.sequenceElementCount(input, offset);
@@ -92,12 +95,12 @@ public class SequenceMatcherQueryStage
 
         SequenceMatcherQueryStage that = (SequenceMatcherQueryStage) o;
 
-        return predicate != null ? EqualsSupport.equals(predicate, that.predicate) : that.predicate == null;
+        return EqualsSupport.equals(predicate, that.predicate);
     }
 
     @Override
     public int hashCode() {
-        return predicate != null ? predicate.hashCode() : 0;
+        return predicate.hashCode();
     }
 
     @Override
