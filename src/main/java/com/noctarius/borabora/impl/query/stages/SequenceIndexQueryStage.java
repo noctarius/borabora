@@ -27,12 +27,17 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+
 public class SequenceIndexQueryStage
         implements QueryStage {
 
     private final long sequenceIndex;
 
     public SequenceIndexQueryStage(long sequenceIndex) {
+        if (sequenceIndex < 0) {
+            throw new IllegalArgumentException("sequenceIndex must be equal or larger than 0");
+        }
         this.sequenceIndex = sequenceIndex;
     }
 
@@ -45,13 +50,13 @@ public class SequenceIndexQueryStage
         MajorType majorType = MajorType.findMajorType(head);
 
         if (majorType != MajorType.Sequence) {
-            throw new WrongTypeException("Not a sequence");
+            throw new WrongTypeException("Encountered " + majorType + " when a sequence was expected");
         }
 
         // Sequences need head skipped
         long elementCount = ElementCounts.elementCountByMajorType(majorType, input, offset);
-        if (elementCount < sequenceIndex) {
-            queryContext.offset(-1);
+        if (elementCount <= sequenceIndex) {
+            queryContext.offset(OFFSET_CODE_NULL);
             return VisitResult.Break;
         }
 
