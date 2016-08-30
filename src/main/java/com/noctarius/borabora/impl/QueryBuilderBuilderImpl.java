@@ -24,8 +24,8 @@ import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +36,15 @@ public class QueryBuilderBuilderImpl
 
     private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
 
-    private SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+    private ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
     private PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
     private QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
     private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
 
     @Override
-    public QueryBuilderBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy) {
-        Objects.requireNonNull(selectStatementStrategy, "selectStatementStrategy must not be null");
-        this.selectStatementStrategy = selectStatementStrategy;
+    public QueryBuilderBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy) {
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
+        this.projectionStrategy = projectionStrategy;
         return this;
     }
 
@@ -108,7 +108,7 @@ public class QueryBuilderBuilderImpl
     @Override
     public StreamQueryBuilder newBuilder() {
         QueryOptimizerStrategy queryOptimizerStrategy = queryOptimizerStrategyFactory.newQueryOptimizerStrategy(queryOptimizers);
-        return new QueryBuilderImpl(selectStatementStrategy, queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
+        return new QueryBuilderImpl(projectionStrategy, queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
     }
 
 }

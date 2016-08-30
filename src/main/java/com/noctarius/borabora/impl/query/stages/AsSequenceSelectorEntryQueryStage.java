@@ -40,7 +40,7 @@ public class AsSequenceSelectorEntryQueryStage
         VisitResult visitResult = pipelineStage.visitChildren(queryContext);
         if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
             if (queryContext.offset() == OFFSET_CODE_NULL) {
-                queryContext.selectStatementStrategy().putSequenceNullValue(queryContext);
+                queryContext.projectionStrategy().putSequenceNullValue(queryContext);
             }
             // If break, move on with the next sibling, for exit: stop here
             return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;

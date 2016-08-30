@@ -26,10 +26,10 @@ import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
@@ -119,15 +119,15 @@ public abstract class AbstractTestCase {
 
     public static QueryContext newQueryContext(Input input) {
         List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
-        return newQueryContext(input, tagStrategies, selectStatementStrategy);
+        ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
+        return newQueryContext(input, tagStrategies, projectionStrategy);
     }
 
     public static QueryContext newQueryContext(Input input, List<TagStrategy> tagStrategies,
-                                               SelectStatementStrategy selectStatementStrategy) {
+                                               ProjectionStrategy projectionStrategy) {
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
-        return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagStrategies, selectStatementStrategy);
+        return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagStrategies, projectionStrategy);
     }
 
     public static Value asObjectValue(MajorType majorType, ValueType valueType, String value) {
@@ -149,11 +149,11 @@ public abstract class AbstractTestCase {
         MajorType majorType = MajorType.findMajorType(head);
 
         List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+        ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
         QueryContext queryContext = queryContextFactory
-                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagStrategies, selectStatementStrategy);
+                .newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, tagStrategies, projectionStrategy);
 
         ValueType valueType = queryContext.valueType(0);
         return new StreamValue(majorType, valueType, 0, queryContext);

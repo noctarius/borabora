@@ -43,7 +43,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
         VisitResult visitResult = pipelineStage.visitChildren(queryContext);
         if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
             if (queryContext.offset() == OFFSET_CODE_NULL) {
-                queryContext.selectStatementStrategy().putDictionaryNullValue(queryContext);
+                queryContext.projectionStrategy().putDictionaryNullValue(queryContext);
             }
             // If break, move on with the next sibling, for exit: stop here
             return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
@@ -79,7 +79,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
         @Override
         protected Consumer<QueryContext> keyWriter() {
             return (queryContext -> {
-                queryContext.selectStatementStrategy().putDictionaryKey(key, queryContext);
+                queryContext.projectionStrategy().putDictionaryKey(key, queryContext);
             });
         }
 
@@ -120,7 +120,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
         @Override
         protected Consumer<QueryContext> keyWriter() {
             return (queryContext -> {
-                queryContext.selectStatementStrategy().putDictionaryKey(key, queryContext);
+                queryContext.projectionStrategy().putDictionaryKey(key, queryContext);
             });
         }
 
@@ -161,7 +161,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
         @Override
         protected Consumer<QueryContext> keyWriter() {
             return (queryContext -> {
-                queryContext.selectStatementStrategy().putDictionaryKey(key, queryContext);
+                queryContext.projectionStrategy().putDictionaryKey(key, queryContext);
             });
         }
 

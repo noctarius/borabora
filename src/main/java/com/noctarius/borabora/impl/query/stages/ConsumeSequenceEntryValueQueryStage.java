@@ -32,7 +32,7 @@ public class ConsumeSequenceEntryValueQueryStage
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
         // Consume that offset to transform it into an Value
-        queryContext.selectStatementStrategy().putSequenceValue(previousPipelineStage, queryContext);
+        queryContext.projectionStrategy().putSequenceValue(previousPipelineStage, queryContext);
 
         // Continue querying
         return VisitResult.Continue;

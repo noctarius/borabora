@@ -32,7 +32,7 @@ public class ConsumeDictionaryEntryValueQueryStage
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
         // Consume that offset to transform it into an Value
-        queryContext.selectStatementStrategy().putDictionaryValue(previousPipelineStage, queryContext);
+        queryContext.projectionStrategy().putDictionaryValue(previousPipelineStage, queryContext);
 
         // Continue querying
         return VisitResult.Continue;

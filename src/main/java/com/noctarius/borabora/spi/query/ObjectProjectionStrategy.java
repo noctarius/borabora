@@ -33,12 +33,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class ObjectSelectStatementStrategy
-        implements SelectStatementStrategy {
+public class ObjectProjectionStrategy
+        implements ProjectionStrategy {
 
-    public static final SelectStatementStrategy INSTANCE = new ObjectSelectStatementStrategy();
+    public static final ProjectionStrategy INSTANCE = new ObjectProjectionStrategy();
 
-    private ObjectSelectStatementStrategy() {
+    private ObjectProjectionStrategy() {
     }
 
     @Override

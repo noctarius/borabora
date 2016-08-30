@@ -31,7 +31,7 @@ public class PrepareSelectionQueryStage
 
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
-        queryContext.selectStatementStrategy().beginSelect(queryContext);
+        queryContext.projectionStrategy().beginSelect(queryContext);
         return pipelineStage.visitChildren(queryContext);
     }
 

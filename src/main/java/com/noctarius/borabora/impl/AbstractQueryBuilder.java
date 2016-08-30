@@ -23,7 +23,7 @@ import com.noctarius.borabora.impl.query.stages.SequenceMatcherQueryStage;
 import com.noctarius.borabora.impl.query.stages.TypeMatcherQueryStage;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -31,15 +31,14 @@ import java.util.function.Predicate;
 abstract class AbstractQueryBuilder {
 
     protected final QueryBuilderNode parentTreeNode;
-    protected final SelectStatementStrategy selectStatementStrategy;
+    protected final ProjectionStrategy projectionStrategy;
 
     protected QueryBuilderNode currentTreeNode;
 
-    protected AbstractQueryBuilder(QueryBuilderNode parentTreeNode, SelectStatementStrategy selectStatementStrategy) {
+    protected AbstractQueryBuilder(QueryBuilderNode parentTreeNode, ProjectionStrategy projectionStrategy) {
         this.parentTreeNode = parentTreeNode;
         this.currentTreeNode = parentTreeNode;
-
-        this.selectStatementStrategy = selectStatementStrategy;
+        this.projectionStrategy = projectionStrategy;
     }
 
     public void sequenceMatch0(Predicate<Value> predicate) {

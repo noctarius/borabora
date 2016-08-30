@@ -25,10 +25,10 @@ import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public final class ParserBuilderImpl
     private final List<QueryOptimizer> queryOptimizers = new ArrayList<>();
 
     private QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
-    private SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+    private ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
     private PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
     private QueryPipelineFactory queryPipelineFactory = BTreeFactories.newQueryPipelineFactory();
     private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
@@ -83,9 +83,9 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy) {
-        Objects.requireNonNull(selectStatementStrategy, "selectStatementStrategy must not be null");
-        this.selectStatementStrategy = selectStatementStrategy;
+    public ParserBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy) {
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
+        this.projectionStrategy = projectionStrategy;
         return this;
     }
 
@@ -154,20 +154,20 @@ public final class ParserBuilderImpl
     }
 
     @Override
-    public ParserBuilder asBinarySelectStatementStrategy() {
-        selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+    public ParserBuilder asBinaryProjectionStrategy() {
+        projectionStrategy = BinaryProjectionStrategy.INSTANCE;
         return this;
     }
 
     @Override
-    public ParserBuilder asObjectSelectStatementStrategy() {
-        selectStatementStrategy = ObjectSelectStatementStrategy.INSTANCE;
+    public ParserBuilder asObjectProjectionStrategy() {
+        projectionStrategy = ObjectProjectionStrategy.INSTANCE;
         return this;
     }
 
     @Override
     public Parser build() {
-        return new ParserImpl(tagStrategies, selectStatementStrategy, queryContextFactory, queryPipelineFactory,
+        return new ParserImpl(tagStrategies, projectionStrategy, queryContextFactory, queryPipelineFactory,
                 pipelineStageFactory, queryOptimizerStrategyFactory, Collections.unmodifiableList(queryOptimizers));
     }
 

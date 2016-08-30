@@ -18,18 +18,18 @@ package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.spi.query.SelectStatementStrategyAware;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
 
 public final class QueryImpl
-        implements Query, SelectStatementStrategyAware {
+        implements Query, ProjectionStrategyAware {
 
     private final QueryPipeline queryPipeline;
-    private SelectStatementStrategy selectStatementStrategy;
+    private ProjectionStrategy projectionStrategy;
 
-    public QueryImpl(QueryPipeline queryPipeline, SelectStatementStrategy selectStatementStrategy) {
+    public QueryImpl(QueryPipeline queryPipeline, ProjectionStrategy projectionStrategy) {
         this.queryPipeline = queryPipeline;
-        this.selectStatementStrategy = selectStatementStrategy;
+        this.projectionStrategy = projectionStrategy;
     }
 
     @Override
@@ -46,15 +46,15 @@ public final class QueryImpl
         if (queryPipeline != null ? !queryPipeline.equals(query.queryPipeline) : query.queryPipeline != null) {
             return false;
         }
-        return selectStatementStrategy != null ? selectStatementStrategy.equals(query.selectStatementStrategy) :
-                query.selectStatementStrategy == null;
+        return projectionStrategy != null ? projectionStrategy.equals(query.projectionStrategy) :
+                query.projectionStrategy == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = queryPipeline != null ? queryPipeline.hashCode() : 0;
-        result = 31 * result + (selectStatementStrategy != null ? selectStatementStrategy.hashCode() : 0);
+        result = 31 * result + (projectionStrategy != null ? projectionStrategy.hashCode() : 0);
         return result;
     }
 
@@ -69,8 +69,8 @@ public final class QueryImpl
     }
 
     @Override
-    public SelectStatementStrategy selectStatementStrategy() {
-        return selectStatementStrategy;
+    public ProjectionStrategy projectionStrategy() {
+        return projectionStrategy;
     }
 
     @Override

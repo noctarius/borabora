@@ -18,7 +18,7 @@ package com.noctarius.borabora.spi.query;
 
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
-public interface SelectStatementStrategy {
+public interface ProjectionStrategy {
 
     void beginSelect(QueryContext queryContext);
 

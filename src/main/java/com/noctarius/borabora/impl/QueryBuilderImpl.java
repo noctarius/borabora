@@ -36,7 +36,7 @@ import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,10 +51,10 @@ public final class QueryBuilderImpl
     private final QueryPipelineFactory queryPipelineFactory;
     private final QueryOptimizerStrategy queryOptimizerStrategy;
 
-    public QueryBuilderImpl(SelectStatementStrategy selectStatementStrategy, QueryOptimizerStrategy queryOptimizerStrategy,
+    public QueryBuilderImpl(ProjectionStrategy projectionStrategy, QueryOptimizerStrategy queryOptimizerStrategy,
                             PipelineStageFactory pipelineStageFactory, QueryPipelineFactory queryPipelineFactory) {
 
-        super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE), selectStatementStrategy);
+        super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE), projectionStrategy);
         this.queryOptimizerStrategy = queryOptimizerStrategy;
         this.pipelineStageFactory = pipelineStageFactory;
         this.queryPipelineFactory = queryPipelineFactory;
@@ -83,7 +83,7 @@ public final class QueryBuilderImpl
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
-        return new DictionaryQueryBuilderImpl<>(this, newNode, selectStatementStrategy);
+        return new DictionaryQueryBuilderImpl<>(this, newNode, projectionStrategy);
     }
 
     @Override
@@ -92,7 +92,7 @@ public final class QueryBuilderImpl
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
-        return new SequenceQueryBuilderImpl<>(this, newNode, selectStatementStrategy);
+        return new SequenceQueryBuilderImpl<>(this, newNode, projectionStrategy);
     }
 
     @Override
@@ -110,7 +110,7 @@ public final class QueryBuilderImpl
         QueryPipeline queryPipeline = queryPipelineFactory
                 .newQueryPipeline(parentTreeNode, pipelineStageFactory, queryOptimizerStrategy);
 
-        return new QueryImpl(queryPipeline, selectStatementStrategy);
+        return new QueryImpl(queryPipeline, projectionStrategy);
     }
 
     @Override

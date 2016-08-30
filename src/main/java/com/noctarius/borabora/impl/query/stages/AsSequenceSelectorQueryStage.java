@@ -20,7 +20,7 @@ import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 public class AsSequenceSelectorQueryStage
         implements QueryStage {
@@ -32,8 +32,8 @@ public class AsSequenceSelectorQueryStage
 
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
-        SelectStatementStrategy selectStatementStrategy = queryContext.selectStatementStrategy();
-        selectStatementStrategy.beginSequence(queryContext);
+        ProjectionStrategy projectionStrategy = queryContext.projectionStrategy();
+        projectionStrategy.beginSequence(queryContext);
 
         VisitResult visitResult = pipelineStage.visitChildren(queryContext);
 
@@ -42,7 +42,7 @@ public class AsSequenceSelectorQueryStage
             return visitResult;
         }
 
-        selectStatementStrategy.endSequence(queryContext);
+        projectionStrategy.endSequence(queryContext);
         return visitResult;
     }
 

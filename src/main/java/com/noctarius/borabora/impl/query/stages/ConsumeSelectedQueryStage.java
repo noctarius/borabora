@@ -31,7 +31,7 @@ public class ConsumeSelectedQueryStage
 
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
-        queryContext.selectStatementStrategy().finalizeSelect(queryContext);
+        queryContext.projectionStrategy().finalizeSelect(queryContext);
         return VisitResult.Continue;
     }
 

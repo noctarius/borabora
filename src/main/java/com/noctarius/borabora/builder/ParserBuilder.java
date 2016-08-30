@@ -22,8 +22,8 @@ import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 public interface ParserBuilder {
 
@@ -44,11 +44,11 @@ public interface ParserBuilder {
 
     ParserBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers);
 
-    ParserBuilder asBinarySelectStatementStrategy();
+    ParserBuilder asBinaryProjectionStrategy();
 
-    ParserBuilder asObjectSelectStatementStrategy();
+    ParserBuilder asObjectProjectionStrategy();
 
-    ParserBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy);
+    ParserBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy);
 
     ParserBuilder withQueryContextFactory(QueryContextFactory queryContextFactory);
 

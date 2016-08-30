@@ -14,16 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query;
+package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
-import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.spi.pipeline.QueryStage;
+import org.junit.Test;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public interface QueryContextFactory {
+import static org.junit.Assert.assertEquals;
 
-    QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
-                                 ProjectionStrategy projectionStrategy);
+public class ConsumerQueryStageTestCase
+        extends AbstractQueryStageTestCase {
+
+    @Test
+    public void test_toString() {
+        assertEquals("CONSUME", ConsumerQueryStage.INSTANCE.toString());
+    }
+
+    @Test
+    public void test_evaluate() {
+
+    }
+
+    private void evaluate(Input input, long offset, QueryStage queryStage, Consumer<Value> consumer) {
+
+    }
 
 }

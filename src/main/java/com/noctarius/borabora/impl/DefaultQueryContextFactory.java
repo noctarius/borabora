@@ -18,10 +18,10 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.List;
 
@@ -35,9 +35,9 @@ public class DefaultQueryContextFactory
 
     @Override
     public QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
-                                        SelectStatementStrategy selectStatementStrategy) {
+                                        ProjectionStrategy projectionStrategy) {
 
-        return new QueryContextImpl(input, queryConsumer, tagStrategies, selectStatementStrategy, this);
+        return new QueryContextImpl(input, queryConsumer, tagStrategies, projectionStrategy, this);
     }
 
 }

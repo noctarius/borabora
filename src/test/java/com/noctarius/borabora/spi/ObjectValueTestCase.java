@@ -159,7 +159,7 @@ public class ObjectValueTestCase
     private Value asObjectSequence(List<Value> values)
             throws Exception {
 
-        Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy$ListBackedSequence");
+        Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectProjectionStrategy$ListBackedSequence");
         Constructor<Sequence> constructor = (Constructor) type.getDeclaredConstructor(List.class);
         constructor.setAccessible(true);
 
@@ -171,7 +171,7 @@ public class ObjectValueTestCase
     private Value asObjectDictionary(Map<Value, Value> values)
             throws Exception {
 
-        Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy$MapBackedDictionary");
+        Class<?> type = Class.forName("com.noctarius.borabora.spi.query.ObjectProjectionStrategy$MapBackedDictionary");
         Constructor<Dictionary> constructor = (Constructor) type.getDeclaredConstructor(Map.class);
         constructor.setAccessible(true);
 

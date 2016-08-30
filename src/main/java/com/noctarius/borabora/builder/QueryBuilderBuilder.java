@@ -20,11 +20,11 @@ import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 public interface QueryBuilderBuilder {
 
-    QueryBuilderBuilder withSelectStatementStrategy(SelectStatementStrategy selectStatementStrategy);
+    QueryBuilderBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy);
 
     QueryBuilderBuilder withQueryPipelineFactory(QueryPipelineFactory queryPipelineFactory);
 

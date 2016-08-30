@@ -29,12 +29,12 @@ import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -216,25 +216,25 @@ public class ParserBuilderTestCase {
     @Test
     public void test_asobjectselector() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.asObjectSelectStatementStrategy();
+        parserBuilder.asObjectProjectionStrategy();
         Parser parser = parserBuilder.build();
-        assertEquals(ObjectSelectStatementStrategy.INSTANCE, extractSelectStatementStrategy(parser));
+        assertEquals(ObjectProjectionStrategy.INSTANCE, extractProjectionStrategy(parser));
     }
 
     @Test
     public void test_asbinaryselector() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.asObjectSelectStatementStrategy().asBinarySelectStatementStrategy();
+        parserBuilder.asObjectProjectionStrategy().asBinaryProjectionStrategy();
         Parser parser = parserBuilder.build();
-        assertEquals(BinarySelectStatementStrategy.INSTANCE, extractSelectStatementStrategy(parser));
+        assertEquals(BinaryProjectionStrategy.INSTANCE, extractProjectionStrategy(parser));
     }
 
     @Test
     public void test_with_selectstrategy() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
-        parserBuilder.withSelectStatementStrategy(ObjectSelectStatementStrategy.INSTANCE);
+        parserBuilder.withProjectionStrategy(ObjectProjectionStrategy.INSTANCE);
         Parser parser = parserBuilder.build();
-        assertEquals(ObjectSelectStatementStrategy.INSTANCE, extractSelectStatementStrategy(parser));
+        assertEquals(ObjectProjectionStrategy.INSTANCE, extractProjectionStrategy(parser));
     }
 
     private PipelineStageFactory extractPipelineStageFactory(Parser parser) {
@@ -277,11 +277,11 @@ public class ParserBuilderTestCase {
         }
     }
 
-    private SelectStatementStrategy extractSelectStatementStrategy(Parser parser) {
+    private ProjectionStrategy extractProjectionStrategy(Parser parser) {
         try {
-            Field field = ParserImpl.class.getDeclaredField("selectStatementStrategy");
+            Field field = ParserImpl.class.getDeclaredField("projectionStrategy");
             field.setAccessible(true);
-            return (SelectStatementStrategy) field.get(parser);
+            return (ProjectionStrategy) field.get(parser);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -335,7 +335,7 @@ public class ParserBuilderTestCase {
 
         @Override
         public QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
-                                            SelectStatementStrategy selectStatementStrategy) {
+                                            ProjectionStrategy projectionStrategy) {
             return null;
         }
     }

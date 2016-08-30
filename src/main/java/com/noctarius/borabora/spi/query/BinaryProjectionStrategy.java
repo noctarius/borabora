@@ -35,12 +35,12 @@ import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.Constants.SIMPLE_VALUE_NULL_BYTE;
 
-public class BinarySelectStatementStrategy
-        implements SelectStatementStrategy {
+public class BinaryProjectionStrategy
+        implements ProjectionStrategy {
 
-    public static final SelectStatementStrategy INSTANCE = new BinarySelectStatementStrategy();
+    public static final ProjectionStrategy INSTANCE = new BinaryProjectionStrategy();
 
-    private BinarySelectStatementStrategy() {
+    private BinaryProjectionStrategy() {
     }
 
     @Override
@@ -60,7 +60,7 @@ public class BinarySelectStatementStrategy
 
         QueryContextFactory queryContextFactory = queryContext.queryContextFactory();
         QueryContext newQueryContext = queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, //
-                queryContext.tagStrategies(), queryContext.selectStatementStrategy());
+                queryContext.tagStrategies(), queryContext.projectionStrategy());
 
         ValueType valueType = newQueryContext.valueType(0);
         Value value = new StreamValue(majorType, valueType, 0, newQueryContext);

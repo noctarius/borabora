@@ -30,11 +30,11 @@ import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
 import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
-import com.noctarius.borabora.spi.query.SelectStatementStrategyAware;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -44,20 +44,19 @@ final class ParserImpl
 
     private final List<TagStrategy> tagStrategies;
     private final QueryContextFactory queryContextFactory;
-    private final SelectStatementStrategy selectStatementStrategy;
+    private final ProjectionStrategy projectionStrategy;
     private final QueryPipelineFactory queryPipelineFactory;
     private final PipelineStageFactory pipelineStageFactory;
     private final QueryOptimizerStrategyFactory queryOptimizerStrategyFactory;
     private final List<QueryOptimizer> queryOptimizers;
 
-    ParserImpl(List<TagStrategy> tagStrategies, SelectStatementStrategy selectStatementStrategy,
-               QueryContextFactory queryContextFactory, QueryPipelineFactory queryPipelineFactory,
-               PipelineStageFactory pipelineStageFactory, QueryOptimizerStrategyFactory queryOptimizerStrategyFactory,
-               List<QueryOptimizer> queryOptimizers) {
+    ParserImpl(List<TagStrategy> tagStrategies, ProjectionStrategy projectionStrategy, QueryContextFactory queryContextFactory,
+               QueryPipelineFactory queryPipelineFactory, PipelineStageFactory pipelineStageFactory,
+               QueryOptimizerStrategyFactory queryOptimizerStrategyFactory, List<QueryOptimizer> queryOptimizers) {
 
         this.tagStrategies = tagStrategies;
         this.queryContextFactory = queryContextFactory;
-        this.selectStatementStrategy = selectStatementStrategy;
+        this.projectionStrategy = projectionStrategy;
         this.queryPipelineFactory = queryPipelineFactory;
         this.pipelineStageFactory = pipelineStageFactory;
         this.queryOptimizerStrategyFactory = queryOptimizerStrategyFactory;
@@ -66,14 +65,14 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, Query query) {
-        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
-        if (query instanceof SelectStatementStrategyAware) {
-            selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
+        ProjectionStrategy projectionStrategy = this.projectionStrategy;
+        if (query instanceof ProjectionStrategyAware) {
+            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
         }
 
         SingleConsumer consumer = new SingleConsumer();
         QueryConsumer queryConsumer = bridgeConsumer(consumer, false);
-        evaluate(query, input, queryConsumer, selectStatementStrategy);
+        evaluate(query, input, queryConsumer, projectionStrategy);
         return consumer.value == null ? Value.NULL_VALUE : consumer.value;
     }
 
@@ -90,19 +89,19 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, long offset) {
-        QueryContext queryContext = newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, projectionStrategy);
         return Decoder.readValue(offset, queryContext);
     }
 
     @Override
     public void read(Input input, Query query, Consumer<Value> consumer) {
-        SelectStatementStrategy selectStatementStrategy = this.selectStatementStrategy;
-        if (query instanceof SelectStatementStrategyAware) {
-            selectStatementStrategy = ((SelectStatementStrategyAware) query).selectStatementStrategy();
+        ProjectionStrategy projectionStrategy = this.projectionStrategy;
+        if (query instanceof ProjectionStrategyAware) {
+            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
         }
 
         QueryConsumer queryConsumer = bridgeConsumer(consumer, true);
-        evaluate(query, input, queryConsumer, selectStatementStrategy);
+        evaluate(query, input, queryConsumer, projectionStrategy);
     }
 
     @Override
@@ -129,8 +128,7 @@ final class ParserImpl
     @Override
     public Query prepareQuery(String query) {
         try {
-
-            QueryBuilder queryBuilder = Query.configureBuilder().withSelectStatementStrategy(selectStatementStrategy)
+            QueryBuilder queryBuilder = Query.configureBuilder().withProjectionStrategy(projectionStrategy)
                                              .withPipelineStageFactory(pipelineStageFactory)
                                              .withQueryPipelineFactory(queryPipelineFactory)
                                              .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
@@ -143,17 +141,13 @@ final class ParserImpl
         }
     }
 
-    private QueryContext newQueryContext(Input input, QueryConsumer queryConsumer,
-                                         SelectStatementStrategy selectStatementStrategy) {
-
-        return queryContextFactory.newQueryContext(input, queryConsumer, tagStrategies, selectStatementStrategy);
+    private QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, ProjectionStrategy projectionStrategy) {
+        return queryContextFactory.newQueryContext(input, queryConsumer, tagStrategies, projectionStrategy);
     }
 
-    private void evaluate(Query query, Input input, QueryConsumer queryConsumer,
-                          SelectStatementStrategy selectStatementStrategy) {
-
+    private void evaluate(Query query, Input input, QueryConsumer queryConsumer, ProjectionStrategy projectionStrategy) {
         QueryPipeline queryPipeline = query.newQueryPipeline();
-        QueryContext queryContext = newQueryContext(input, queryConsumer, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, queryConsumer, projectionStrategy);
 
         queryPipeline.evaluate(queryContext);
     }

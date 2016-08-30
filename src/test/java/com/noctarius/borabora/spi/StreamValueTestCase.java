@@ -24,9 +24,9 @@ import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -59,9 +59,9 @@ public class StreamValueTestCase
         RelocatableStreamValue value = new RelocatableStreamValue();
 
         List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+        ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
         Input input = Input.fromByteArray(baos.toByteArray());
-        QueryContext queryContext = newQueryContext(input, tagStrategies, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, tagStrategies, projectionStrategy);
 
         value.relocate(queryContext, MajorType.SemanticTag, ValueTypes.UBigNum, 0);
         assertEquals("RelocatableStreamValue{valueType=UBigNum, offset=0, value=1}", value.toString());
@@ -75,9 +75,9 @@ public class StreamValueTestCase
         RelocatableStreamValue value = new RelocatableStreamValue();
 
         List<TagStrategy> tagStrategies = Arrays.asList(TagStrategies.values());
-        SelectStatementStrategy selectStatementStrategy = BinarySelectStatementStrategy.INSTANCE;
+        ProjectionStrategy projectionStrategy = BinaryProjectionStrategy.INSTANCE;
         Input input = Input.fromByteArray(baos.toByteArray());
-        QueryContext queryContext = newQueryContext(input, tagStrategies, selectStatementStrategy);
+        QueryContext queryContext = newQueryContext(input, tagStrategies, projectionStrategy);
 
         value.relocate(queryContext, MajorType.SemanticTag, ValueTypes.UBigNum, 0);
         assertEquals(BigInteger.ONE, value.tag());

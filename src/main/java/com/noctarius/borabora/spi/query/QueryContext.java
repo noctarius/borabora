@@ -48,7 +48,7 @@ public interface QueryContext {
 
     List<TagStrategy> tagStrategies();
 
-    SelectStatementStrategy selectStatementStrategy();
+    ProjectionStrategy projectionStrategy();
 
     QueryContextFactory queryContextFactory();
 

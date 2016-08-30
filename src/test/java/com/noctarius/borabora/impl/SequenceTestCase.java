@@ -28,7 +28,7 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -252,7 +252,7 @@ public class SequenceTestCase
 
         Sequence sequence = new SequenceImpl(Long.MAX_VALUE, new long[0][0], //
                 newQueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList(),
-                        ObjectSelectStatementStrategy.INSTANCE));
+                        ObjectProjectionStrategy.INSTANCE));
 
         sequence.toArray();
     }

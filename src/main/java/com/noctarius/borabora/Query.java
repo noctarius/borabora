@@ -20,8 +20,8 @@ import com.noctarius.borabora.builder.QueryBuilderBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 public interface Query {
 
@@ -34,11 +34,11 @@ public interface Query {
     }
 
     static StreamQueryBuilder newBuilder() {
-        return newBuilder(BinarySelectStatementStrategy.INSTANCE);
+        return newBuilder(BinaryProjectionStrategy.INSTANCE);
     }
 
-    static StreamQueryBuilder newBuilder(SelectStatementStrategy selectStatementStrategy) {
-        return configureBuilder().withSelectStatementStrategy(selectStatementStrategy).newBuilder();
+    static StreamQueryBuilder newBuilder(ProjectionStrategy projectionStrategy) {
+        return configureBuilder().withProjectionStrategy(projectionStrategy).newBuilder();
     }
 
 }

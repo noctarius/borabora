@@ -16,14 +16,8 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.Input;
-import com.noctarius.borabora.spi.codec.TagStrategy;
+public interface ProjectionStrategyAware {
 
-import java.util.List;
-
-public interface QueryContextFactory {
-
-    QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
-                                 ProjectionStrategy projectionStrategy);
+    ProjectionStrategy projectionStrategy();
 
 }

@@ -34,13 +34,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static com.noctarius.borabora.Predicates.matchString;
-import static com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy.ListBackedSequence;
-import static com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy.MapBackedDictionary;
+import static com.noctarius.borabora.spi.query.ObjectProjectionStrategy.ListBackedSequence;
+import static com.noctarius.borabora.spi.query.ObjectProjectionStrategy.MapBackedDictionary;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class ObjectSelectStatementStrategyTestCase
+public class ObjectProjectionStrategyTestCase
         extends AbstractTestCase {
 
     @Test

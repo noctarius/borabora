@@ -27,7 +27,7 @@ import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.TypeSpec;
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
 import java.util.function.Predicate;
 
@@ -39,9 +39,9 @@ class StreamEntryQueryBuilderImpl<T>
     private final QueryStage endQueryStage;
 
     StreamEntryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, QueryStage endQueryStage,
-                                SelectStatementStrategy selectStatementStrategy) {
+                                ProjectionStrategy projectionStrategy) {
 
-        super(parentTreeNode, selectStatementStrategy);
+        super(parentTreeNode, projectionStrategy);
         this.queryBuilder = queryBuilder;
         this.endQueryStage = endQueryStage;
     }
@@ -57,14 +57,14 @@ class StreamEntryQueryBuilderImpl<T>
     public DictionaryQueryBuilder<EntryQueryBuilder<T>> asDictionary() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asDictionary", this);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
-        return new DictionaryQueryBuilderImpl<>(this, newNode, selectStatementStrategy);
+        return new DictionaryQueryBuilderImpl<>(this, newNode, projectionStrategy);
     }
 
     @Override
     public SequenceQueryBuilder<EntryQueryBuilder<T>> asSequence() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asSequence", this);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
-        return new SequenceQueryBuilderImpl<>(this, newNode, selectStatementStrategy);
+        return new SequenceQueryBuilderImpl<>(this, newNode, projectionStrategy);
     }
 
     @Override

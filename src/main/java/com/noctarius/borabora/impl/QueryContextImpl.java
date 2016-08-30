@@ -24,10 +24,10 @@ import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -39,7 +39,7 @@ final class QueryContextImpl
     private final List<TagStrategy> tagStrategies;
     private final QueryConsumer queryConsumer;
     private final QueryContextFactory queryContextFactory;
-    private final SelectStatementStrategy selectStatementStrategy;
+    private final ProjectionStrategy projectionStrategy;
     private final Input input;
 
     // Queries are inherently thread-safe!
@@ -47,12 +47,12 @@ final class QueryContextImpl
     private long offset;
 
     QueryContextImpl(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
-                     SelectStatementStrategy selectStatementStrategy, QueryContextFactory queryContextFactory) {
+                     ProjectionStrategy projectionStrategy, QueryContextFactory queryContextFactory) {
 
         this.input = input;
         this.queryConsumer = queryConsumer;
         this.tagStrategies = tagStrategies;
-        this.selectStatementStrategy = selectStatementStrategy;
+        this.projectionStrategy = projectionStrategy;
         this.queryContextFactory = queryContextFactory;
     }
 
@@ -92,8 +92,8 @@ final class QueryContextImpl
     }
 
     @Override
-    public SelectStatementStrategy selectStatementStrategy() {
-        return selectStatementStrategy;
+    public ProjectionStrategy projectionStrategy() {
+        return projectionStrategy;
     }
 
     @Override

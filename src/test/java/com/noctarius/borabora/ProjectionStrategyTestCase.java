@@ -19,9 +19,9 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.StreamQueryBuilder;
 import com.noctarius.borabora.spi.TypeSpecs;
-import com.noctarius.borabora.spi.query.BinarySelectStatementStrategy;
-import com.noctarius.borabora.spi.query.ObjectSelectStatementStrategy;
-import com.noctarius.borabora.spi.query.SelectStatementStrategy;
+import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,22 +36,22 @@ import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class SelectStatementTestCase
+public class ProjectionStrategyTestCase
         extends AbstractTestCase {
 
     @Parameterized.Parameters(name = "{1}")
     public static Iterable<Object[]> parameters() {
         return Arrays.asList( //
                 new Object[][]{ //
-                                {BinarySelectStatementStrategy.INSTANCE, "BinarySelectStatementStrategy"}, //
-                                {ObjectSelectStatementStrategy.INSTANCE, "ObjectSelectStatementStrategy"} //
+                                {BinaryProjectionStrategy.INSTANCE, "BinaryProjectionStrategy"}, //
+                                {ObjectProjectionStrategy.INSTANCE, "ObjectProjectionStrategy"} //
                 });
     }
 
-    private final SelectStatementStrategy selectStatementStrategy;
+    private final ProjectionStrategy projectionStrategy;
 
-    public SelectStatementTestCase(SelectStatementStrategy selectStatementStrategy, String typename) {
-        this.selectStatementStrategy = selectStatementStrategy;
+    public ProjectionStrategyTestCase(ProjectionStrategy projectionStrategy, String typename) {
+        this.projectionStrategy = projectionStrategy;
     }
 
     @Test
@@ -379,9 +379,9 @@ public class SelectStatementTestCase
         byte[] data = createDataSource(streamProducer);
 
         Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder().withSelectStatementStrategy(selectStatementStrategy).build();
+        Parser parser = Parser.newBuilder().withProjectionStrategy(projectionStrategy).build();
 
-        StreamQueryBuilder graphQueryBuilder = Query.newBuilder(selectStatementStrategy);
+        StreamQueryBuilder graphQueryBuilder = Query.newBuilder(projectionStrategy);
         graphQueryConfigurator.accept(graphQueryBuilder);
 
         Query textQuery = parser.prepareQuery(textQueryProducer.get());
