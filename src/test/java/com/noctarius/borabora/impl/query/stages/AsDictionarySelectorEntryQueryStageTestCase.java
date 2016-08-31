@@ -25,7 +25,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 public class AsDictionarySelectorEntryQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -107,6 +110,75 @@ public class AsDictionarySelectorEntryQueryStageTestCase
         Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
         Mockito.verify(spy, Mockito.times(1)).putDictionaryNullValue(Mockito.any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
+    }
+
+    @Test
+    public void test_equals_string_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withStringKey("bar");
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+
+        assertTrue(qs1.equals(qs1));
+        assertFalse(qs1.equals(new Object()));
+        assertFalse(qs1.equals(qs2));
+        assertTrue(qs1.equals(qs3));
+    }
+
+    @Test
+    public void test_hashcode_string_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withStringKey("bar");
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+
+        assertEquals(qs1.hashCode(), qs1.hashCode());
+        assertNotEquals(qs1.hashCode(), qs2.hashCode());
+        assertEquals(qs1.hashCode(), qs3.hashCode());
+    }
+
+    @Test
+    public void test_equals_int_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+
+        assertTrue(qs1.equals(qs1));
+        assertFalse(qs1.equals(new Object()));
+        assertFalse(qs1.equals(qs2));
+        assertTrue(qs1.equals(qs3));
+    }
+
+    @Test
+    public void test_hashcode_int_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+
+        assertEquals(qs1.hashCode(), qs1.hashCode());
+        assertNotEquals(qs1.hashCode(), qs2.hashCode());
+        assertEquals(qs1.hashCode(), qs3.hashCode());
+    }
+
+    @Test
+    public void test_equals_float_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+
+        assertTrue(qs1.equals(qs1));
+        assertFalse(qs1.equals(new Object()));
+        assertFalse(qs1.equals(qs2));
+        assertTrue(qs1.equals(qs3));
+    }
+
+    @Test
+    public void test_hashcode_float_key() {
+        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
+        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+
+        assertEquals(qs1.hashCode(), qs1.hashCode());
+        assertNotEquals(qs1.hashCode(), qs2.hashCode());
+        assertEquals(qs1.hashCode(), qs3.hashCode());
     }
 
 }
