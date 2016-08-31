@@ -32,6 +32,7 @@ public final class StreamValue
     public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
         super(queryContext);
 
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         Objects.requireNonNull(majorType, "majorType must not be null");
         Objects.requireNonNull(valueType, "valueType must not be null");
         if (offset <= -1) {

@@ -36,7 +36,6 @@ public abstract class AbstractStreamValue
     private final QueryContext queryContext;
 
     protected AbstractStreamValue(QueryContext queryContext) {
-        Objects.requireNonNull(queryContext, "queryContext must not be null");
         this.queryContext = queryContext;
     }
 
