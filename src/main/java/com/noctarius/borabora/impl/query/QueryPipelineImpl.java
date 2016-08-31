@@ -54,12 +54,13 @@ class QueryPipelineImpl
         }
 
         QueryPipelineImpl that = (QueryPipelineImpl) o;
-        return BTreePipelineStage.treeEquals(rootPipelineStage, that.rootPipelineStage);
+
+        return rootPipelineStage.equals(that.rootPipelineStage);
     }
 
     @Override
     public int hashCode() {
-        return rootPipelineStage != null ? rootPipelineStage.hashCode() : 0;
+        return rootPipelineStage.hashCode();
     }
 
     @Override

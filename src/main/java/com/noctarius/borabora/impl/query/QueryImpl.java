@@ -47,18 +47,16 @@ public final class QueryImpl
 
         QueryImpl query = (QueryImpl) o;
 
-        if (queryPipeline != null ? !queryPipeline.equals(query.queryPipeline) : query.queryPipeline != null) {
+        if (!queryPipeline.equals(query.queryPipeline)) {
             return false;
         }
-        return projectionStrategy != null ? projectionStrategy.equals(query.projectionStrategy) :
-                query.projectionStrategy == null;
-
+        return projectionStrategy.equals(query.projectionStrategy);
     }
 
     @Override
     public int hashCode() {
-        int result = queryPipeline != null ? queryPipeline.hashCode() : 0;
-        result = 31 * result + (projectionStrategy != null ? projectionStrategy.hashCode() : 0);
+        int result = queryPipeline.hashCode();
+        result = 31 * result + projectionStrategy.hashCode();
         return result;
     }
 
