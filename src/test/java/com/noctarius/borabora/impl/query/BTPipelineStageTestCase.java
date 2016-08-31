@@ -85,8 +85,8 @@ public class BTPipelineStageTestCase
         actual = new BTreePipelineStage(NIL, NIL, ConsumerQueryStage.INSTANCE);
         assertFalse(BTreePipelineStage.treeEquals(expected, actual));
 
-        expected = new BTreePipelineStage(NIL, NIL, null);
-        actual = new BTreePipelineStage(NIL, NIL, ConsumerQueryStage.INSTANCE);
+        expected = new BTreePipelineStage(NIL, NIL, ConsumerQueryStage.INSTANCE);
+        actual = new BTreePipelineStage(NIL, NIL, null);
         assertFalse(BTreePipelineStage.treeEquals(expected, actual));
 
         PipelineStage pipelineStage = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
