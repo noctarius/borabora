@@ -31,10 +31,10 @@ import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

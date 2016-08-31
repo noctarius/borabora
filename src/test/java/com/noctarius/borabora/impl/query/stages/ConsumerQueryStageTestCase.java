@@ -22,7 +22,6 @@ import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

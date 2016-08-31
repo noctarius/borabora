@@ -35,7 +35,9 @@ public class ConsumerQueryStage
         long offset = queryContext.offset();
 
         // Consume that offset to transform it into an Value
-        queryContext.consume(offset);
+        if (!queryContext.consume(offset)) {
+            return VisitResult.Break;
+        }
 
         // Continue querying
         return VisitResult.Continue;

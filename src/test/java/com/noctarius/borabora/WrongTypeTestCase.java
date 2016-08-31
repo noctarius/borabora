@@ -18,8 +18,26 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 public class WrongTypeTestCase
         extends AbstractTestCase {
+
+    @Test
+    public void test_wrong_major_type_offset_and_message() {
+        String expected = "Requested major type does not match the read value: SemanticTag != FloatingPointOrSimple[offset=0]";
+        SimplifiedTestParser parser = buildParser("0xf7");
+        Value value = parser.read(Query.newBuilder().build());
+        try {
+            value.tag();
+        } catch (WrongTypeException e) {
+            assertEquals(0, e.getOffset());
+            assertEquals(expected, e.getMessage());
+            return;
+        }
+        fail();
+    }
 
     @Test(expected = WrongTypeException.class)
     public void test_wrong_major_type_on_semantic_tag()

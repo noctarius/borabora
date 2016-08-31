@@ -22,10 +22,14 @@ import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class AsSequenceSelectorEntryQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -40,11 +44,11 @@ public class AsSequenceSelectorEntryQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = AsSequenceSelectorEntryQueryStage.INSTANCE;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(0)).putSequenceValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putSequenceNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putSequenceNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 
@@ -54,11 +58,11 @@ public class AsSequenceSelectorEntryQueryStageTestCase
         QueryStage queryStage = AsSequenceSelectorEntryQueryStage.INSTANCE;
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, exitStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(0)).putSequenceValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putSequenceNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putSequenceNullValue(any(QueryContext.class));
     }
 
     @Test
@@ -70,11 +74,11 @@ public class AsSequenceSelectorEntryQueryStageTestCase
             return VisitResult.Break;
         };
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(0)).putSequenceValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(1)).putSequenceNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(1)).putSequenceNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 

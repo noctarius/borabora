@@ -108,8 +108,8 @@ final class QueryContextImpl
     }
 
     @Override
-    public void consume(long offset) {
-        queryConsumer.accept(offset, this);
+    public boolean consume(long offset) {
+        return queryConsumer.accept(offset, this);
     }
 
     @Override

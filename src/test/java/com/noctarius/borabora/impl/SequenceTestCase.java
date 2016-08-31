@@ -251,8 +251,7 @@ public class SequenceTestCase
             throws Exception {
 
         Sequence sequence = new SequenceImpl(Long.MAX_VALUE, new long[0][0], //
-                newQueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList(),
-                        ObjectProjectionStrategy.INSTANCE));
+                newQueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList(), ObjectProjectionStrategy.INSTANCE));
 
         sequence.toArray();
     }

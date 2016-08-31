@@ -23,6 +23,8 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+
 public class MultiStreamElementQueryStage
         implements QueryStage {
 
@@ -45,7 +47,13 @@ public class MultiStreamElementQueryStage
 
             if (visitResult == VisitResult.Break) {
                 long itemOffset = queryContext.offset();
-                queryContext.consume(itemOffset);
+                if (itemOffset == OFFSET_CODE_NULL) {
+                    if (!queryContext.consume(itemOffset)) {
+                        return VisitResult.Break;
+                    }
+                } else {
+                    return visitResult;
+                }
             }
 
             // Skip the whole item

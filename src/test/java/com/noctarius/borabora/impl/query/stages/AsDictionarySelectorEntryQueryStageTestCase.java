@@ -22,13 +22,17 @@ import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class AsDictionarySelectorEntryQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -45,12 +49,12 @@ public class AsDictionarySelectorEntryQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).putDictionaryKey(Mockito.eq("foo"), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).putDictionaryKey(eq("foo"), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 
@@ -59,12 +63,12 @@ public class AsDictionarySelectorEntryQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).putDictionaryKey(Mockito.eq(-1000L), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).putDictionaryKey(eq(-1000L), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 
@@ -73,12 +77,12 @@ public class AsDictionarySelectorEntryQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).putDictionaryKey(Mockito.eq(-12.d), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).putDictionaryKey(eq(-12.d), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 
@@ -88,11 +92,11 @@ public class AsDictionarySelectorEntryQueryStageTestCase
         QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, exitStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
     }
 
     @Test
@@ -104,11 +108,11 @@ public class AsDictionarySelectorEntryQueryStageTestCase
             return VisitResult.Break;
         };
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(0)).putDictionaryValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(1)).putDictionaryNullValue(Mockito.any(QueryContext.class));
+        verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(1)).putDictionaryNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 

@@ -26,7 +26,6 @@ import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class AbstractStreamValue

@@ -26,7 +26,7 @@ import java.util.List;
 
 public interface QueryContext {
 
-    void consume(long offset);
+    boolean consume(long offset);
 
     void consume(Value value);
 

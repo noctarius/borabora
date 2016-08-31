@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.Query;
 import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;

@@ -21,9 +21,12 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PrepareSelectionQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -38,10 +41,10 @@ public class PrepareSelectionQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = PrepareSelectionQueryStage.INSTANCE;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).beginSelect(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).beginSelect(any(QueryContext.class));
     }
 
 }

@@ -74,7 +74,7 @@ final class ParserImpl
     @Override
     public Value read(Input input, Query query) {
         SingleConsumer consumer = new SingleConsumer();
-        read(input, query, consumer);
+        read(input, query, consumer, false);
         return consumer.value == null ? Value.NULL_VALUE : consumer.value;
     }
 
@@ -100,16 +100,7 @@ final class ParserImpl
 
     @Override
     public void read(Input input, Query query, Consumer<Value> consumer) {
-        Objects.requireNonNull(input, "input must not be null");
-        Objects.requireNonNull(query, "query must not be null");
-        Objects.requireNonNull(consumer, "consumer must not be null");
-        ProjectionStrategy projectionStrategy = this.projectionStrategy;
-        if (query instanceof ProjectionStrategyAware) {
-            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
-        }
-
-        QueryConsumer queryConsumer = bridgeConsumer(consumer, true);
-        evaluate(query, input, queryConsumer, projectionStrategy);
+        read(input, query, consumer, true);
     }
 
     @Override
@@ -117,7 +108,7 @@ final class ParserImpl
         Objects.requireNonNull(input, "input must not be null");
         Objects.requireNonNull(query, "query must not be null");
         Objects.requireNonNull(consumer, "consumer must not be null");
-        read(input, prepareQuery(query), consumer);
+        read(input, prepareQuery(query), consumer, true);
     }
 
     @Override
@@ -156,6 +147,19 @@ final class ParserImpl
         } catch (Exception | TokenMgrError e) {
             throw new QueryParserException(e);
         }
+    }
+
+    private void read(Input input, Query query, Consumer<Value> consumer, boolean multiConsumer) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
+        Objects.requireNonNull(consumer, "consumer must not be null");
+        ProjectionStrategy projectionStrategy = this.projectionStrategy;
+        if (query instanceof ProjectionStrategyAware) {
+            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
+        }
+
+        QueryConsumer queryConsumer = bridgeConsumer(consumer, multiConsumer);
+        evaluate(query, input, queryConsumer, projectionStrategy);
     }
 
     private QueryContext newQueryContext(Input input, QueryConsumer queryConsumer, ProjectionStrategy projectionStrategy) {

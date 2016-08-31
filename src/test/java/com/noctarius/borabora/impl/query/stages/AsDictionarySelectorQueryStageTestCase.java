@@ -22,9 +22,12 @@ import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class AsDictionarySelectorQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -39,11 +42,11 @@ public class AsDictionarySelectorQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).beginDictionary(Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(1)).endDictionary(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).beginDictionary(any(QueryContext.class));
+        verify(spy, times(1)).endDictionary(any(QueryContext.class));
     }
 
     @Test
@@ -52,11 +55,11 @@ public class AsDictionarySelectorQueryStageTestCase
         QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, exitStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).beginDictionary(Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(0)).endDictionary(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).beginDictionary(any(QueryContext.class));
+        verify(spy, times(0)).endDictionary(any(QueryContext.class));
     }
 
     @Test
@@ -65,11 +68,11 @@ public class AsDictionarySelectorQueryStageTestCase
         QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
         QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Break;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).beginDictionary(Mockito.any(QueryContext.class));
-        Mockito.verify(spy, Mockito.times(1)).endDictionary(Mockito.any(QueryContext.class));
+        verify(spy, times(1)).beginDictionary(any(QueryContext.class));
+        verify(spy, times(1)).endDictionary(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 

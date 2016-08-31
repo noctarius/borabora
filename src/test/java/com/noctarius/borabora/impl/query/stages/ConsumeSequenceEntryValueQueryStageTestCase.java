@@ -21,10 +21,14 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ConsumeSequenceEntryValueQueryStageTestCase
         extends AbstractQueryStageTestCase {
@@ -39,10 +43,10 @@ public class ConsumeSequenceEntryValueQueryStageTestCase
         Input input = Input.fromByteArray(new byte[0]);
         QueryStage queryStage = ConsumeSequenceEntryValueQueryStage.INSTANCE;
 
-        ProjectionStrategy spy = Mockito.spy(ProjectionStrategy.class);
+        ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, null, null, null, spy);
-        Mockito.verify(spy, Mockito.times(1)).putSequenceValue(Mockito.eq(NIL), Mockito.any(QueryContext.class));
+        verify(spy, times(1)).putSequenceValue(eq(NIL), any(QueryContext.class));
     }
 
 }

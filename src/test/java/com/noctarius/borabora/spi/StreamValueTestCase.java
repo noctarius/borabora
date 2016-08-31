@@ -25,8 +25,8 @@ import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
-import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
