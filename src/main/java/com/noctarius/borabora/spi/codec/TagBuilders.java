@@ -128,17 +128,6 @@ class TagBuilders {
         }
 
         @Override
-        public TagBuilder putNumber(BigInteger value) {
-            if (value == null) {
-                encoderContext.encodeNull();
-            } else {
-                ValueValidators.isPositive(null, value);
-                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
-            }
-            return EmptyTagBuilder.INSTANCE;
-        }
-
-        @Override
         public TagBuilder putBigInteger(BigInteger value) {
             if (value == null) {
                 encoderContext.encodeNull();
@@ -158,17 +147,6 @@ class TagBuilders {
         NBigNumberBuilderImpl(EncoderContext encoderContext) {
             Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
-        }
-
-        @Override
-        public TagBuilder putNumber(BigInteger value) {
-            if (value == null) {
-                encoderContext.encodeNull();
-            } else {
-                ValueValidators.isNegative(null, value);
-                encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
-            }
-            return EmptyTagBuilder.INSTANCE;
         }
 
         @Override

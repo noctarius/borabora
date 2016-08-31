@@ -24,9 +24,6 @@ import java.math.BigInteger;
 public interface UBigNumberBuilder {
 
     @BuilderStackPush
-    TagBuilder putNumber(BigInteger value);
-
-    @BuilderStackPush
     TagBuilder putBigInteger(BigInteger value);
 
 }

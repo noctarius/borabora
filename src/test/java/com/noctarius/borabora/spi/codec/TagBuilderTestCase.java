@@ -46,6 +46,7 @@ import java.util.Date;
 
 import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TagBuilderTestCase
         extends AbstractTestCase {
@@ -69,6 +70,10 @@ public class TagBuilderTestCase
                 semanticTag(DateTimeBuilder.class).putDateTime(expected1).endSemanticTag() //
         ).putTag( //
                 semanticTag(DateTimeBuilder.class).putDateTime(expected2).endSemanticTag() //
+        ).putTag( //
+                semanticTag(DateTimeBuilder.class).putDateTime((Instant) null).endSemanticTag() //
+        ).putTag( //
+                semanticTag(DateTimeBuilder.class).putDateTime((Date) null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
@@ -76,8 +81,12 @@ public class TagBuilderTestCase
 
         Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
         Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
         assertEquals(expected1, value1.tag());
         assertEquals(expected1, value2.tag());
+        assertNull(value3.tag());
+        assertNull(value4.tag());
     }
 
     @Test
@@ -97,6 +106,10 @@ public class TagBuilderTestCase
                 semanticTag(TimestampBuilder.class).putTimestamp(expected2).endSemanticTag() //
         ).putTag( //
                 semanticTag(TimestampBuilder.class).putTimestamp(expected3).endSemanticTag() //
+        ).putTag( //
+                semanticTag(TimestampBuilder.class).putTimestamp((Instant) null).endSemanticTag() //
+        ).putTag( //
+                semanticTag(TimestampBuilder.class).putTimestamp((Timestamp) null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
@@ -105,10 +118,14 @@ public class TagBuilderTestCase
         Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
         Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
         Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
+        Value value5 = parser.read(input, Query.newBuilder().stream(4).build());
 
         assertEquals(expected2, ((Long) value1.tag()).longValue());
         assertEquals(expected2, ((Long) value2.tag()).longValue());
         assertEquals(expected2, ((Long) value3.tag()).longValue());
+        assertNull(value4.tag());
+        assertNull(value5.tag());
     }
 
     @Test
@@ -123,14 +140,16 @@ public class TagBuilderTestCase
         graphBuilder.putTag( //
                 semanticTag(UBigNumberBuilder.class).putBigInteger(expected).endSemanticTag() //
         ).putTag( //
-                semanticTag(UBigNumberBuilder.class).putNumber(expected).endSemanticTag() //
+                semanticTag(UBigNumberBuilder.class).putBigInteger(null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value = parser.read(input, Query.newBuilder().build());
-        assertEquals(expected, value.tag());
+        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
     }
 
     @Test
@@ -145,14 +164,16 @@ public class TagBuilderTestCase
         graphBuilder.putTag( //
                 semanticTag(NBigNumberBuilder.class).putBigInteger(expected).endSemanticTag() //
         ).putTag( //
-                semanticTag(NBigNumberBuilder.class).putNumber(expected).endSemanticTag() //
+                semanticTag(NBigNumberBuilder.class).putBigInteger(null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value = parser.read(input, Query.newBuilder().build());
-        assertEquals(expected, value.tag());
+        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
     }
 
     @Test
@@ -166,13 +187,17 @@ public class TagBuilderTestCase
 
         graphBuilder.putTag( //
                 semanticTag(FractionBuilder.class).putFraction(expected).endSemanticTag() //
+        ).putTag( //
+                semanticTag(FractionBuilder.class).putFraction(null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value = parser.read(input, Query.newBuilder().build());
-        assertEquals(expected, value.tag());
+        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
+        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        assertEquals(expected, value1.tag());
+        assertNull(value2.tag());
     }
 
     @Test
@@ -191,6 +216,10 @@ public class TagBuilderTestCase
                 semanticTag(URIBuilder.class).putURL(expected1).endSemanticTag() //
         ).putTag( //
                 semanticTag(URIBuilder.class).putURI(expected2).endSemanticTag() //
+        ).putTag( //
+                semanticTag(URIBuilder.class).putURL(null).endSemanticTag() //
+        ).putTag( //
+                semanticTag(URIBuilder.class).putURI(null).endSemanticTag() //
         ).finishStream();
 
         Parser parser = Parser.newBuilder().build();
@@ -198,8 +227,12 @@ public class TagBuilderTestCase
 
         Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
         Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
+        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
         assertEquals(expected2, value1.tag());
         assertEquals(expected2, value2.tag());
+        assertNull(value3.tag());
+        assertNull(value4.tag());
     }
 
     @Test

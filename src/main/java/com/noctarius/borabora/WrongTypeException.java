@@ -66,6 +66,6 @@ public class WrongTypeException
 
     @Override
     public String getMessage() {
-        return super.getMessage() + (offset == -1 ? "" : "[offset=" + offset + "]");
+        return super.getMessage() + (offset == -1 ? "" : "[offset=" + getOffset() + "]");
     }
 }

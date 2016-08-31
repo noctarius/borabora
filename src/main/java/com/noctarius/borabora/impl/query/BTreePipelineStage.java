@@ -100,8 +100,8 @@ class BTreePipelineStage
 
     @Override
     public int hashCode() {
-        int result = left != null ? left.hashCode() : 0;
-        result = 31 * result + (right != null ? right.hashCode() : 0);
+        int result = left.hashCode();
+        result = 31 * result + right.hashCode();
         result = 31 * result + (stage != null ? stage.hashCode() : 0);
         return result;
     }
