@@ -57,6 +57,9 @@ public abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putTag(TagBuilderConsumer<B> consumer) {
+        if (consumer == null) {
+            return putTag((Object) null);
+        }
         validate();
         consumer.execute(encoderContext, builder);
         return builder;
@@ -485,6 +488,13 @@ public abstract class AbstractStreamValueBuilder<B>
         }
 
         @Override
+        public SequenceBuilder<B> putTag(TagBuilderConsumer<SequenceBuilder<B>> consumer) {
+            validate();
+            consumer.execute(encoderContext, this);
+            return this;
+        }
+
+        @Override
         public B endSequence() {
             if (maxElements != -1 && maxElements != elements) {
                 String msg = String.format("Expected %s element but only %s elements written", maxElements, elements);
@@ -503,12 +513,6 @@ public abstract class AbstractStreamValueBuilder<B>
                 throw new IllegalStateException("Cannot add another element, maximum element count reached");
             }
             elements++;
-        }
-
-        @Override
-        public SequenceBuilder<B> putTag(TagBuilderConsumer<SequenceBuilder<B>> consumer) {
-            consumer.execute(encoderContext, this);
-            return this;
         }
     }
 
@@ -571,6 +575,14 @@ public abstract class AbstractStreamValueBuilder<B>
         }
 
         @Override
+        public DictionaryEntryBuilder<B> putTag(TagBuilderConsumer<DictionaryEntryBuilder<B>> consumer) {
+            validate();
+            Objects.requireNonNull(consumer, "consumer must not be null");
+            consumer.execute(encoderContext, this);
+            return this;
+        }
+
+        @Override
         public DictionaryBuilder<B> endEntry() {
             if (!key) {
                 throw new IllegalStateException("Entry key not set");
@@ -591,13 +603,6 @@ public abstract class AbstractStreamValueBuilder<B>
             } else {
                 key = true;
             }
-        }
-
-        @Override
-        public DictionaryEntryBuilder<B> putTag(TagBuilderConsumer<DictionaryEntryBuilder<B>> consumer) {
-            Objects.requireNonNull(consumer, "consumer must not be null");
-            consumer.execute(encoderContext, this);
-            return this;
         }
     }
 

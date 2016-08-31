@@ -17,7 +17,9 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.AbstractTestCase;
+import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.Input;
+import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.Query;
@@ -44,6 +46,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 
+import static com.noctarius.borabora.Predicates.matchString;
 import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -260,6 +263,42 @@ public class TagBuilderTestCase
         assertEquals(2, sequence.size());
         assertEquals("foo", sequence.get(0).string());
         assertEquals("bar", sequence.get(1).string());
+    }
+
+    @Test
+    public void test_write_putvalue_on_dictionary()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser(sgb -> {
+            sgb.putDictionary(1).putEntry().putString("key")
+
+               .putTag(semanticTag(UBigNumberBuilder.class).putBigInteger(BigInteger.ONE).endSemanticTag())
+
+               .endEntry().endDictionary();
+        });
+
+        Value value = parser.read(Query.newBuilder().build());
+        assertEquals(MajorType.Dictionary, value.majorType());
+        Dictionary dictionary = value.dictionary();
+        assertEquals(BigInteger.ONE, dictionary.get(matchString("key")).tag());
+    }
+
+    @Test
+    public void test_write_putvalue_on_sequence()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser(sgb -> {
+            sgb.putSequence(1)
+
+               .putTag(semanticTag(UBigNumberBuilder.class).putBigInteger(BigInteger.ONE).endSemanticTag())
+
+               .endSequence();
+        });
+
+        Value value = parser.read(Query.newBuilder().build());
+        assertEquals(MajorType.Sequence, value.majorType());
+        Sequence sequence = value.sequence();
+        assertEquals(BigInteger.ONE, sequence.get(0).tag());
     }
 
 }

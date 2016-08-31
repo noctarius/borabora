@@ -525,7 +525,7 @@ public class WriterTestCase
     }
 
     @Test(expected = IllegalStateException.class)
-    public void test_write_dictionary_fail_too_many_elements()
+    public void fail_write_dictionary_fail_too_many_elements()
             throws Exception {
 
         buildParser((sgb) -> {
@@ -535,7 +535,7 @@ public class WriterTestCase
     }
 
     @Test(expected = IllegalStateException.class)
-    public void test_write_dictionary_fail_key_value_already_set()
+    public void fail_write_dictionary_fail_key_value_already_set()
             throws Exception {
 
         buildParser((sgb) -> {
@@ -545,6 +545,16 @@ public class WriterTestCase
                .putBoolean(true) //
                .putBoolean(true);
         });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_dictionary_entry_no_key() {
+        buildParser(sgb -> sgb.putDictionary(1).putEntry().endEntry().endDictionary());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void fail_write_dictionary_entry_no_value() {
+        buildParser(sgb -> sgb.putDictionary(1).putEntry().putString("key").endEntry().endDictionary());
     }
 
     @Test
@@ -692,6 +702,19 @@ public class WriterTestCase
         Value value1 = parser.read(Query.newBuilder().stream(0).build());
 
         assertEquals("foo", value1.string());
+    }
+
+    @Test
+    public void test_write_puttag_null()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putTag(null);
+        });
+
+        Value value1 = parser.read(Query.newBuilder().stream(0).build());
+
+        assertNull(value1.tag());
     }
 
     @Test
