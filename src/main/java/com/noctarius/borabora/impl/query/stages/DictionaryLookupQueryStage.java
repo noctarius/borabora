@@ -38,7 +38,7 @@ public class DictionaryLookupQueryStage
     protected final Predicate<Value> predicate;
 
     protected DictionaryLookupQueryStage(Predicate<Value> predicate) {
-        Objects.requireNonNull(predicate, "predicate must be set");
+        Objects.requireNonNull(predicate, "predicate must not be null");
         this.predicate = predicate;
     }
 
@@ -92,6 +92,7 @@ public class DictionaryLookupQueryStage
     }
 
     public static DictionaryLookupQueryStage stringMatcher(String key) {
+        Objects.requireNonNull(key, "key must not be null");
         return new DictionaryLookupQueryStage(Predicates.matchString(key));
     }
 

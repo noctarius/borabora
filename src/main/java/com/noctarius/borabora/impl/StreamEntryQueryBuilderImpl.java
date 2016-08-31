@@ -29,6 +29,7 @@ import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 class StreamEntryQueryBuilderImpl<T>
@@ -42,6 +43,8 @@ class StreamEntryQueryBuilderImpl<T>
                                 ProjectionStrategy projectionStrategy) {
 
         super(parentTreeNode, projectionStrategy);
+        Objects.requireNonNull(queryBuilder, "queryBuilder must not be null");
+        Objects.requireNonNull(endQueryStage, "endQueryStage must not be null");
         this.queryBuilder = queryBuilder;
         this.endQueryStage = endQueryStage;
     }
@@ -77,6 +80,7 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public EntryQueryBuilder<T> sequenceMatch(Predicate<Value> predicate) {
         Tracer.traceInfo("StreamEntryQueryBuilderImpl#sequenceMatch", this);
+        Objects.requireNonNull(predicate, "predicate must not be null");
         sequenceMatch0(predicate);
         return this;
     }
@@ -91,6 +95,7 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public EntryQueryBuilder<T> dictionary(Predicate<Value> predicate) {
         Tracer.traceInfo("StreamEntryQueryBuilderImpl#dictionary", this);
+        Objects.requireNonNull(predicate, "predicate must not be null");
         dictionary0(predicate);
         return this;
     }
@@ -98,6 +103,7 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public EntryQueryBuilder<T> dictionary(String key) {
         Tracer.traceInfo("StreamEntryQueryBuilderImpl#dictionary", this);
+        Objects.requireNonNull(key, "key must not be null");
         dictionary0(key);
         return this;
     }
@@ -119,6 +125,7 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public EntryQueryBuilder<T> nullOrType(TypeSpec typeSpec) {
         Tracer.traceInfo("StreamEntryQueryBuilderImpl#nullOrType", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         nullOrType0(typeSpec);
         return this;
     }
@@ -126,6 +133,7 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public EntryQueryBuilder<T> requireType(TypeSpec typeSpec) {
         Tracer.traceInfo("StreamEntryQueryBuilderImpl#requireType", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         requireType0(typeSpec);
         return this;
     }

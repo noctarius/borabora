@@ -29,6 +29,7 @@ import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.codec.Bytes.readUInt8;
@@ -42,6 +43,8 @@ public final class SequenceImpl
     private final QueryContext queryContext;
 
     SequenceImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+        Objects.requireNonNull(elementIndexes, "elementIndexes must not be null");
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -60,6 +63,7 @@ public final class SequenceImpl
 
     @Override
     public boolean contains(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must not be null");
         RelocatableStreamValue streamValue = new RelocatableStreamValue();
         for (long i = 0; i < size; i++) {
             long offset = calculateArrayIndex(i);
@@ -151,6 +155,7 @@ public final class SequenceImpl
     }
 
     public static Sequence readSequence(long offset, QueryContext queryContext) {
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.sequenceElementCount(input, offset);

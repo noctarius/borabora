@@ -23,6 +23,7 @@ import com.noctarius.borabora.Output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public class CompositeBuffer
         implements Output, Input {
@@ -49,7 +50,8 @@ public class CompositeBuffer
     }
 
     @Override
-    public long write(byte[] array, long offset, long length) {
+    public long write(byte[] bytes, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         long remaining = length;
         int sourceOffset = 0;
         long targetOffset = offset;
@@ -60,7 +62,7 @@ public class CompositeBuffer
             int chunkAvail = chunksize - chunkOffset;
 
             int chunkLength = (int) Math.min(chunkAvail, remaining);
-            System.arraycopy(array, sourceOffset, buffer.buffer, chunkOffset, chunkLength);
+            System.arraycopy(bytes, sourceOffset, buffer.buffer, chunkOffset, chunkLength);
 
             remaining -= chunkLength;
             sourceOffset += chunkLength;
@@ -89,7 +91,8 @@ public class CompositeBuffer
     }
 
     @Override
-    public long read(byte[] array, long offset, long length) {
+    public long read(byte[] bytes, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         if (length > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
@@ -97,7 +100,7 @@ public class CompositeBuffer
         Buffer buffer = bufferByOffset(offset);
         if (length <= chunksize) {
             int chunkOffset = chunkOffset(offset);
-            System.arraycopy(buffer.buffer, chunkOffset, array, 0, (int) length);
+            System.arraycopy(buffer.buffer, chunkOffset, bytes, 0, (int) length);
 
         } else {
             int remaining = (int) length;
@@ -105,7 +108,7 @@ public class CompositeBuffer
             int targetOffset = 0;
             do {
                 int chunkLength = Math.min(remaining, chunksize);
-                System.arraycopy(buffer.buffer, 0, array, targetOffset, chunkLength);
+                System.arraycopy(buffer.buffer, 0, bytes, targetOffset, chunkLength);
 
                 targetOffset += chunkLength;
                 remaining -= chunkLength;
@@ -145,6 +148,7 @@ public class CompositeBuffer
     public long writeToOutputStream(OutputStream outputStream)
             throws IOException {
 
+        Objects.requireNonNull(outputStream, "outputStream must not be null");
         Buffer buffer = head;
         long remaining = highestOffset + 1;
         for (int i = 0; i < nbOfChunks; i++) {

@@ -51,6 +51,7 @@ public final class WriterBuilderImpl
 
     @Override
     public WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies) {
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         addTagStrategy(tagStrategy1);
         addTagStrategy(tagStrategy2);
         for (TagStrategy tagStrategy : tagStrategies) {
@@ -61,6 +62,7 @@ public final class WriterBuilderImpl
 
     @Override
     public WriterBuilder addTagStrategies(Iterable<TagStrategy> semanticTagBuilderFactories) {
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         for (TagStrategy semanticTagStrategy : semanticTagBuilderFactories) {
             addTagStrategy(semanticTagStrategy);
         }

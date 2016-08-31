@@ -89,6 +89,7 @@ public class QueryBuilderBuilderImpl
     public QueryBuilderBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
                                                   QueryOptimizer... queryOptimizers) {
 
+        Objects.requireNonNull(queryOptimizers, "queryOptimizers must not be null");
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
@@ -99,6 +100,7 @@ public class QueryBuilderBuilderImpl
 
     @Override
     public QueryBuilderBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers) {
+        Objects.requireNonNull(queryOptimizers, "queryOptimizers must not be null");
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
             addQueryOptimizer(queryOptimizer);
         }

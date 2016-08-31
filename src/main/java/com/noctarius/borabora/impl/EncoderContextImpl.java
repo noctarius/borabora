@@ -22,6 +22,7 @@ import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class EncoderContextImpl
         implements EncoderContext {
@@ -32,6 +33,8 @@ public class EncoderContextImpl
     private long offset;
 
     public EncoderContextImpl(Output output, Map<Class<?>, TagStrategy> tagStrategies) {
+        Objects.requireNonNull(output, "output must not be null");
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         this.output = output;
         this.tagStrategies = tagStrategies;
     }
@@ -53,6 +56,7 @@ public class EncoderContextImpl
 
     @Override
     public long applyEncoder(Object value, long offset) {
+        Objects.requireNonNull(value, "value must not be null");
         for (TagStrategy tagStrategy : tagStrategies.values()) {
             if (tagStrategy.handles(value)) {
                 return tagStrategy.process(value, offset, this);
@@ -63,6 +67,7 @@ public class EncoderContextImpl
 
     @Override
     public <S> TagStrategy findTagStrategy(Class<S> type) {
+        Objects.requireNonNull(type, "type must not be null");
         return tagStrategies.get(type);
     }
 

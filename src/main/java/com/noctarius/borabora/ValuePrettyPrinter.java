@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 public final class ValuePrettyPrinter {
@@ -25,12 +26,14 @@ public final class ValuePrettyPrinter {
     }
 
     public static String toStringPrettyPrint(Value value) {
+        Objects.requireNonNull(value, "value must not be null");
         StringBuilder sb = new StringBuilder();
         prettyPrint(value, 0, sb, Value::toString);
         return sb.toString();
     }
 
     public static String asStringPrettyPrint(Value value) {
+        Objects.requireNonNull(value, "value must not be null");
         StringBuilder sb = new StringBuilder();
         prettyPrint(value, 0, sb, Value::asString);
         return sb.toString();

@@ -33,6 +33,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
 import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
@@ -60,17 +61,22 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         DateTimeBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
         }
 
         @Override
         public TagBuilder putDateTime(Date date) {
-            return putDateTime(date.toInstant());
+            return putDateTime(date == null ? null : date.toInstant());
         }
 
         @Override
         public TagBuilder putDateTime(Instant instant) {
-            encoderContext.encode(offset -> Encoder.putDateTime(instant.atZone(UTC), offset, encoderContext.output()));
+            if (instant == null) {
+                encoderContext.encodeNull();
+            } else {
+                encoderContext.encode(offset -> Encoder.putDateTime(instant.atZone(UTC), offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -81,16 +87,25 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         TimestampBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
         }
 
         @Override
         public TagBuilder putTimestamp(Timestamp timestamp) {
+            if (timestamp == null) {
+                encoderContext.encodeNull();
+                return EmptyTagBuilder.INSTANCE;
+            }
             return putTimestamp(timestamp.toInstant());
         }
 
         @Override
         public TagBuilder putTimestamp(Instant timestamp) {
+            if (timestamp == null) {
+                encoderContext.encodeNull();
+                return EmptyTagBuilder.INSTANCE;
+            }
             return putTimestamp(timestamp.getEpochSecond());
         }
 
@@ -108,21 +123,29 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         UBigNumberBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
-
         }
 
         @Override
         public TagBuilder putNumber(BigInteger value) {
-            ValueValidators.isPositive(null, value);
-            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                ValueValidators.isPositive(null, value);
+                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
 
         @Override
         public TagBuilder putBigInteger(BigInteger value) {
-            ValueValidators.isPositive(null, value);
-            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                ValueValidators.isPositive(null, value);
+                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -133,21 +156,29 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         NBigNumberBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
-
         }
 
         @Override
         public TagBuilder putNumber(BigInteger value) {
-            ValueValidators.isNegative(null, value);
-            encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                ValueValidators.isNegative(null, value);
+                encoderContext.encode(offset -> Encoder.putNumber(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
 
         @Override
         public TagBuilder putBigInteger(BigInteger value) {
-            ValueValidators.isNegative(null, value);
-            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                ValueValidators.isNegative(null, value);
+                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -158,12 +189,17 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         FractionBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
         }
 
         @Override
         public TagBuilder putFraction(BigDecimal value) {
-            encoderContext.encode(offset -> Encoder.putFraction(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                encoderContext.encode(offset -> Encoder.putFraction(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -174,12 +210,17 @@ class TagBuilders {
         private final EncoderContext encoderContext;
 
         URIBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             this.encoderContext = encoderContext;
         }
 
         @Override
         public TagBuilder putURI(URI value) {
-            encoderContext.encode(offset -> Encoder.putUri(value, offset, encoderContext.output()));
+            if (value == null) {
+                encoderContext.encodeNull();
+            } else {
+                encoderContext.encode(offset -> Encoder.putUri(value, offset, encoderContext.output()));
+            }
             return EmptyTagBuilder.INSTANCE;
         }
 
@@ -187,7 +228,7 @@ class TagBuilders {
         public TagBuilder putURL(URL value)
                 throws URISyntaxException {
 
-            return putURI(value.toURI());
+            return putURI(value == null ? null : value.toURI());
         }
     }
 

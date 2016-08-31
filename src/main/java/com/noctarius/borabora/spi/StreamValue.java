@@ -20,6 +20,8 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
+
 public final class StreamValue
         extends AbstractStreamValue {
 
@@ -30,6 +32,8 @@ public final class StreamValue
     public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
         super(queryContext);
 
+        Objects.requireNonNull(majorType, "majorType must not be null");
+        Objects.requireNonNull(valueType, "valueType must not be null");
         if (offset <= -1) {
             throw new IllegalArgumentException("No offset available for CBOR type, offset=" + offset);
         }

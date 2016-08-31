@@ -32,6 +32,7 @@ import com.noctarius.borabora.spi.query.QueryContextFactory;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 final class QueryContextImpl
         implements QueryContext {
@@ -49,6 +50,11 @@ final class QueryContextImpl
     QueryContextImpl(Input input, QueryConsumer queryConsumer, List<TagStrategy> tagStrategies,
                      ProjectionStrategy projectionStrategy, QueryContextFactory queryContextFactory) {
 
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(queryConsumer, "queryConsumer must not be null");
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
+        Objects.requireNonNull(queryContextFactory, "queryContextFactory must not be null");
         this.input = input;
         this.queryConsumer = queryConsumer;
         this.tagStrategies = tagStrategies;
@@ -108,11 +114,14 @@ final class QueryContextImpl
 
     @Override
     public void consume(Value value) {
+        Objects.requireNonNull(value, "value must not be null");
         queryConsumer.consume(value);
     }
 
     @Override
     public <T> T applyDecoder(long offset, MajorType majorType, ValueType valueType) {
+        Objects.requireNonNull(majorType, "majorType must not be null");
+        Objects.requireNonNull(valueType, "valueType must not be null");
         TagDecoder<T> processor = findProcessor(offset);
         if (processor == null) {
             return null;
@@ -123,6 +132,7 @@ final class QueryContextImpl
 
     @Override
     public <T> void queryStackPush(T element) {
+        Objects.requireNonNull(element, "element must not be null");
         getStack().addFirst(element);
     }
 

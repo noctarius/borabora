@@ -23,6 +23,8 @@ import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQuerySt
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
+import java.util.Objects;
+
 class SequenceQueryBuilderImpl<T>
         implements SequenceQueryBuilder<T> {
 
@@ -31,7 +33,9 @@ class SequenceQueryBuilderImpl<T>
     private ProjectionStrategy projectionStrategy;
 
     SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, ProjectionStrategy projectionStrategy) {
-
+        Objects.requireNonNull(queryBuilder, "queryBuilder must not be null");
+        Objects.requireNonNull(parentTreeNode, "parentTreeNode must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.queryBuilder = queryBuilder;
         this.parentTreeNode = parentTreeNode;
         this.projectionStrategy = projectionStrategy;

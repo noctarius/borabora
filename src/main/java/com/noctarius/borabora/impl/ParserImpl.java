@@ -37,6 +37,7 @@ import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 final class ParserImpl
@@ -54,6 +55,13 @@ final class ParserImpl
                QueryPipelineFactory queryPipelineFactory, PipelineStageFactory pipelineStageFactory,
                QueryOptimizerStrategyFactory queryOptimizerStrategyFactory, List<QueryOptimizer> queryOptimizers) {
 
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
+        Objects.requireNonNull(queryContextFactory, "queryContextFactory must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
+        Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");
+        Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
+        Objects.requireNonNull(queryOptimizerStrategyFactory, "queryOptimizerStrategyFactory must not be null");
+        Objects.requireNonNull(queryOptimizers, "queryOptimizers must not be null");
         this.tagStrategies = tagStrategies;
         this.queryContextFactory = queryContextFactory;
         this.projectionStrategy = projectionStrategy;
@@ -65,19 +73,15 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, Query query) {
-        ProjectionStrategy projectionStrategy = this.projectionStrategy;
-        if (query instanceof ProjectionStrategyAware) {
-            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
-        }
-
         SingleConsumer consumer = new SingleConsumer();
-        QueryConsumer queryConsumer = bridgeConsumer(consumer, false);
-        evaluate(query, input, queryConsumer, projectionStrategy);
+        read(input, query, consumer);
         return consumer.value == null ? Value.NULL_VALUE : consumer.value;
     }
 
     @Override
     public Value read(Input input, String query) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
         // #{'b'}(1)->?number
         // \#([0-9]+)? <- stream identifier and optional index, if no index defined then index=-1
         // \{(\'[^\}]+\')\} <- dictionary identifier and key spec
@@ -89,12 +93,16 @@ final class ParserImpl
 
     @Override
     public Value read(Input input, long offset) {
+        Objects.requireNonNull(input, "input must not be null");
         QueryContext queryContext = newQueryContext(input, Constants.EMPTY_QUERY_CONSUMER, projectionStrategy);
         return Decoder.readValue(offset, queryContext);
     }
 
     @Override
     public void read(Input input, Query query, Consumer<Value> consumer) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
+        Objects.requireNonNull(consumer, "consumer must not be null");
         ProjectionStrategy projectionStrategy = this.projectionStrategy;
         if (query instanceof ProjectionStrategyAware) {
             projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
@@ -106,27 +114,36 @@ final class ParserImpl
 
     @Override
     public void read(Input input, String query, Consumer<Value> consumer) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
+        Objects.requireNonNull(consumer, "consumer must not be null");
         read(input, prepareQuery(query), consumer);
     }
 
     @Override
     public byte[] extract(Input input, Query query) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
         Value value = read(input, query);
         return value == null ? Constants.EMPTY_BYTE_ARRAY : value.raw();
     }
 
     @Override
     public byte[] extract(Input input, String query) {
+        Objects.requireNonNull(input, "input must not be null");
+        Objects.requireNonNull(query, "query must not be null");
         return extract(input, prepareQuery(query));
     }
 
     @Override
     public byte[] extract(Input input, long offset) {
+        Objects.requireNonNull(input, "input must not be null");
         return read(input, offset).raw();
     }
 
     @Override
     public Query prepareQuery(String query) {
+        Objects.requireNonNull(query, "query must not be null");
         try {
             QueryBuilder queryBuilder = Query.configureBuilder().withProjectionStrategy(projectionStrategy)
                                              .withPipelineStageFactory(pipelineStageFactory)

@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.impl;
 
+import java.util.Objects;
+
 abstract class Tracer {
 
     private static boolean TRACE_ENABLED = false;
@@ -29,6 +31,7 @@ abstract class Tracer {
 
     public static void traceInfo(String s, Object instance) {
         if (TRACE_ENABLED) {
+            Objects.requireNonNull(instance, "instance must not be null");
             Tracer tracer = TRACER_THREAD_LOCAL.get();
             tracer.traceInfo0("@" + instance.hashCode() + " " + s);
         }
@@ -36,6 +39,7 @@ abstract class Tracer {
 
     public static void traceCall(String s, Object instance) {
         if (TRACE_ENABLED) {
+            Objects.requireNonNull(instance, "instance must not be null");
             Tracer tracer = TRACER_THREAD_LOCAL.get();
             tracer.traceCall0("@" + instance.hashCode() + " " + s);
         }
@@ -43,6 +47,7 @@ abstract class Tracer {
 
     public static void traceReturn(String s, Object instance) {
         if (TRACE_ENABLED) {
+            Objects.requireNonNull(instance, "instance must not be null");
             Tracer tracer = TRACER_THREAD_LOCAL.get();
             tracer.traceReturn0("@" + instance.hashCode() + " " + s);
         }

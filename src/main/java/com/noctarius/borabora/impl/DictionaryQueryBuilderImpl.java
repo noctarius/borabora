@@ -23,6 +23,8 @@ import com.noctarius.borabora.impl.query.stages.ConsumeDictionaryEntryValueQuery
 import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 
+import java.util.Objects;
+
 class DictionaryQueryBuilderImpl<T>
         implements DictionaryQueryBuilder<T> {
 
@@ -31,7 +33,9 @@ class DictionaryQueryBuilderImpl<T>
     private ProjectionStrategy projectionStrategy;
 
     DictionaryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, ProjectionStrategy projectionStrategy) {
-
+        Objects.requireNonNull(queryBuilder, "queryBuilder must not be null");
+        Objects.requireNonNull(parentTreeNode, "parentTreeNode must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.queryBuilder = queryBuilder;
         this.parentTreeNode = parentTreeNode;
         this.projectionStrategy = projectionStrategy;
@@ -40,25 +44,23 @@ class DictionaryQueryBuilderImpl<T>
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-string", this);
+        Objects.requireNonNull(key, "key must not be null");
         QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withStringKey(key));
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
-                projectionStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, projectionStrategy);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-double", this);
         QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
-                projectionStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, projectionStrategy);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key) {
         Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-long", this);
         QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withIntKey(key));
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE,
-                projectionStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE, projectionStrategy);
     }
 
     @Override

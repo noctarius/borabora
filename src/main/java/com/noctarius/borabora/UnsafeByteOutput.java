@@ -18,6 +18,8 @@ package com.noctarius.borabora;
 
 import sun.misc.Unsafe;
 
+import java.util.Objects;
+
 final class UnsafeByteOutput
         implements Output {
 
@@ -41,13 +43,14 @@ final class UnsafeByteOutput
     }
 
     @Override
-    public long write(byte[] array, long offset, long length) {
+    public long write(byte[] bytes, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of writable data");
         }
 
         long l = Math.min(length, size - offset);
-        UNSAFE.copyMemory(array, Unsafe.ARRAY_BYTE_BASE_OFFSET, null, address + offset, l);
+        UNSAFE.copyMemory(bytes, Unsafe.ARRAY_BYTE_BASE_OFFSET, null, address + offset, l);
         return l;
     }
 

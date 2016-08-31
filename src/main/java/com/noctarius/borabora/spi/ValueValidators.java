@@ -22,6 +22,7 @@ import com.noctarius.borabora.ValueTypes;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 public final class ValueValidators {
 
@@ -29,6 +30,7 @@ public final class ValueValidators {
     }
 
     public static void isString(Value value, Object extracted) {
+        Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.ByteString.matches(value.valueType()) //
                 && !ValueTypes.TextString.matches(value.valueType())) {
 
@@ -37,12 +39,14 @@ public final class ValueValidators {
     }
 
     public static void isByteString(Value value, Object extracted) {
+        Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.ByteString.matches(value.valueType())) {
             throw new IllegalArgumentException("value is not a bytestring");
         }
     }
 
     public static void isTextString(Value value, Object extracted) {
+        Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.TextString.matches(value.valueType())) {
             throw new IllegalArgumentException("value is not a textstring");
         }
@@ -63,6 +67,7 @@ public final class ValueValidators {
     }
 
     private static boolean isNegative(Number number) {
+        Objects.requireNonNull(number, "number must not be null");
         if (number instanceof BigInteger) {
             return ((BigInteger) number).signum() < 0;
         }

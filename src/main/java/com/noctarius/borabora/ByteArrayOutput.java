@@ -16,13 +16,16 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Objects;
+
 final class ByteArrayOutput
         implements Output {
 
-    private final byte[] array;
+    private final byte[] bytes;
 
-    ByteArrayOutput(byte[] array) {
-        this.array = array;
+    ByteArrayOutput(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
+        this.bytes = bytes;
     }
 
     @Override
@@ -30,24 +33,25 @@ final class ByteArrayOutput
         if (offset > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
         }
-        if (offset < 0 || offset >= array.length) {
+        if (offset < 0 || offset >= bytes.length) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
-        array[(int) offset] = value;
+        bytes[(int) offset] = value;
         return offset;
     }
 
     @Override
     public long write(byte[] array, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         if (offset > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
         }
-        if (offset < 0 || length < 0 || offset >= this.array.length || offset + length > this.array.length) {
+        if (offset < 0 || length < 0 || offset >= this.bytes.length || offset + length > this.bytes.length) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of writable data");
         }
 
-        long l = Math.min(length, this.array.length - offset);
-        System.arraycopy(array, (int) offset, this.array, 0, (int) l);
+        long l = Math.min(length, this.bytes.length - offset);
+        System.arraycopy(array, (int) offset, this.bytes, 0, (int) l);
         return l;
     }
 

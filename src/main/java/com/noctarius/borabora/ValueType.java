@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora;
 
+import java.util.Objects;
+
 /**
  * Implementations of this interface represent value types to further
  * specify over a {@link MajorType} definition. The parser can be
@@ -71,6 +73,7 @@ public interface ValueType {
      *                                  with this ValueType
      */
     default <T> T value(Value value, boolean validate) {
+        Objects.requireNonNull(value, "value must not be null");
         if (!value.valueType().matches(this)) {
             String msg = java.lang.String.format("ValueType does not match: %s, %s", this, value.valueType());
             throw new IllegalArgumentException(msg);
@@ -87,6 +90,7 @@ public interface ValueType {
      * level matches
      */
     default boolean matches(ValueType other) {
+        Objects.requireNonNull(other, "other must not be null");
         if (matchesExact(other)) {
             return true;
         }

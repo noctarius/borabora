@@ -41,6 +41,7 @@ import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public final class QueryBuilderImpl
@@ -55,6 +56,9 @@ public final class QueryBuilderImpl
                             PipelineStageFactory pipelineStageFactory, QueryPipelineFactory queryPipelineFactory) {
 
         super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE), projectionStrategy);
+        Objects.requireNonNull(queryOptimizerStrategy, "queryOptimizerStrategy must not be null");
+        Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
+        Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");
         this.queryOptimizerStrategy = queryOptimizerStrategy;
         this.pipelineStageFactory = pipelineStageFactory;
         this.queryPipelineFactory = queryPipelineFactory;
@@ -123,6 +127,7 @@ public final class QueryBuilderImpl
     @Override
     public QueryBuilder sequenceMatch(Predicate<Value> predicate) {
         Tracer.traceInfo("QueryBuilderImpl#sequenceMatch", this);
+        Objects.requireNonNull(predicate, "predicate must not be null");
         sequenceMatch0(predicate);
         return this;
     }
@@ -130,6 +135,7 @@ public final class QueryBuilderImpl
     @Override
     public QueryBuilder dictionary(Predicate<Value> predicate) {
         Tracer.traceInfo("QueryBuilderImpl#dictionary", this);
+        Objects.requireNonNull(predicate, "predicate must not be null");
         dictionary0(predicate);
         return this;
     }
@@ -137,6 +143,7 @@ public final class QueryBuilderImpl
     @Override
     public QueryBuilder dictionary(String key) {
         Tracer.traceInfo("QueryBuilderImpl#dictionary", this);
+        Objects.requireNonNull(key, "key must not be null");
         dictionary0(key);
         return this;
     }
@@ -158,6 +165,7 @@ public final class QueryBuilderImpl
     @Override
     public QueryBuilder nullOrType(TypeSpec typeSpec) {
         Tracer.traceInfo("QueryBuilderImpl#nullOrType", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         nullOrType0(typeSpec);
         return this;
     }
@@ -165,6 +173,7 @@ public final class QueryBuilderImpl
     @Override
     public QueryBuilder requireType(TypeSpec typeSpec) {
         Tracer.traceInfo("QueryBuilderImpl#requireType", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         requireType0(typeSpec);
         return this;
     }

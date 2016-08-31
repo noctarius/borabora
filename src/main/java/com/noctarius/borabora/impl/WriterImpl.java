@@ -23,6 +23,7 @@ import com.noctarius.borabora.spi.codec.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.util.Map;
+import java.util.Objects;
 
 final class WriterImpl
         implements Writer {
@@ -30,6 +31,7 @@ final class WriterImpl
     private final Map<Class<?>, TagStrategy> tagStrategies;
 
     WriterImpl(Map<Class<?>, TagStrategy> tagStrategies) {
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         this.tagStrategies = tagStrategies;
     }
 

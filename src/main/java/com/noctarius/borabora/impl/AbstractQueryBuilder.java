@@ -36,18 +36,20 @@ abstract class AbstractQueryBuilder {
     protected QueryBuilderNode currentTreeNode;
 
     protected AbstractQueryBuilder(QueryBuilderNode parentTreeNode, ProjectionStrategy projectionStrategy) {
+        Objects.requireNonNull(parentTreeNode, "parentTreeNode must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.parentTreeNode = parentTreeNode;
         this.currentTreeNode = parentTreeNode;
         this.projectionStrategy = projectionStrategy;
     }
 
-    public void sequenceMatch0(Predicate<Value> predicate) {
+    protected void sequenceMatch0(Predicate<Value> predicate) {
         Tracer.traceInfo("AbstractQueryBuilder#sequenceMatch0", this);
         Objects.requireNonNull(predicate, "predicate must not be null");
         currentTreeNode = currentTreeNode.pushChild(new SequenceMatcherQueryStage(predicate));
     }
 
-    public void sequence0(long index) {
+    protected void sequence0(long index) {
         Tracer.traceInfo("AbstractQueryBuilder#sequence0", this);
         if (index < 0) {
             throw new IllegalArgumentException("index must not be negative");
@@ -55,35 +57,37 @@ abstract class AbstractQueryBuilder {
         currentTreeNode = currentTreeNode.pushChild(new SequenceIndexQueryStage(index));
     }
 
-    public void dictionary0(Predicate<Value> predicate) {
+    protected void dictionary0(Predicate<Value> predicate) {
         Tracer.traceInfo("AbstractQueryBuilder#dictionary0-predicate", this);
         Objects.requireNonNull(predicate, "predicate must not be null");
         currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.predicateMatcher(predicate));
     }
 
-    public void dictionary0(String key) {
+    protected void dictionary0(String key) {
         Tracer.traceInfo("AbstractQueryBuilder#dictionary0-string", this);
         Objects.requireNonNull(key, "key must not be null");
         currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.stringMatcher(key));
     }
 
-    public void dictionary0(double key) {
+    protected void dictionary0(double key) {
         Tracer.traceInfo("AbstractQueryBuilder#dictionary0-double", this);
         currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.floatMatcher(key));
     }
 
-    public void dictionary0(long key) {
+    protected void dictionary0(long key) {
         Tracer.traceInfo("AbstractQueryBuilder#dictionary0-long", this);
         currentTreeNode = currentTreeNode.pushChild(DictionaryLookupQueryStage.intMatcher(key));
     }
 
-    public void nullOrType0(TypeSpec typeSpec) {
+    protected void nullOrType0(TypeSpec typeSpec) {
         Tracer.traceInfo("AbstractQueryBuilder#nullOrType0", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         currentTreeNode = currentTreeNode.pushChild(new TypeMatcherQueryStage(typeSpec, false));
     }
 
-    public void requireType0(TypeSpec typeSpec) {
+    protected void requireType0(TypeSpec typeSpec) {
         Tracer.traceInfo("AbstractQueryBuilder#requireType0", this);
+        Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         currentTreeNode = currentTreeNode.pushChild(new TypeMatcherQueryStage(typeSpec, true));
     }
 

@@ -18,12 +18,15 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.codec.CompositeBuffer;
 
+import java.util.Objects;
+
 final class CompositeBufferInput
         implements Input {
 
     private final CompositeBuffer compositeBuffer;
 
     CompositeBufferInput(CompositeBuffer compositeBuffer) {
+        Objects.requireNonNull(compositeBuffer, "compositeBuffer must not be null");
         this.compositeBuffer = compositeBuffer;
     }
 
@@ -39,21 +42,22 @@ final class CompositeBufferInput
     }
 
     @Override
-    public long read(byte[] array, long offset, long length)
+    public long read(byte[] bytes, long offset, long length)
             throws NoSuchByteException {
 
+        Objects.requireNonNull(bytes, "bytes must not be null");
         if (length > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
         if (offset < 0 || length < 0 || offset >= compositeBuffer.size() || offset + length > compositeBuffer.size()) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
-        if (length > array.length) {
+        if (length > bytes.length) {
             throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
         }
 
         long l = Math.min(length, compositeBuffer.size() - offset);
-        compositeBuffer.read(array, offset, l);
+        compositeBuffer.read(bytes, offset, l);
         return l;
     }
 

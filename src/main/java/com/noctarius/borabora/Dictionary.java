@@ -151,7 +151,7 @@ public interface Dictionary
      * @throws NullPointerException if the specified action is null
      */
     default void forEach(BiConsumer<Value, Value> action) {
-        Objects.requireNonNull(action);
+        Objects.requireNonNull(action, "action must not be null");
         for (Map.Entry<Value, Value> entry : entries()) {
             Value k = entry.getKey();
             Value v = entry.getValue();

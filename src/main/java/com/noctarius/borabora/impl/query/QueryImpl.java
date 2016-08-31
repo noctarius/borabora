@@ -21,6 +21,8 @@ import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
 
+import java.util.Objects;
+
 public final class QueryImpl
         implements Query, ProjectionStrategyAware {
 
@@ -28,6 +30,8 @@ public final class QueryImpl
     private ProjectionStrategy projectionStrategy;
 
     public QueryImpl(QueryPipeline queryPipeline, ProjectionStrategy projectionStrategy) {
+        Objects.requireNonNull(queryPipeline, "queryPipeline must not be null");
+        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.queryPipeline = queryPipeline;
         this.projectionStrategy = projectionStrategy;
     }

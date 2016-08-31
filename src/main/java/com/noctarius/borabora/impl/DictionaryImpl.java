@@ -31,6 +31,7 @@ import com.noctarius.borabora.spi.query.QueryContext;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.codec.Bytes.readUInt8;
@@ -44,6 +45,8 @@ public final class DictionaryImpl
     private final QueryContext queryContext;
 
     private DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+        Objects.requireNonNull(elementIndexes, "elementIndexes must not be null");
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -62,16 +65,19 @@ public final class DictionaryImpl
 
     @Override
     public boolean containsKey(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must not be null");
         return findValueByPredicate(predicate, false) != -1;
     }
 
     @Override
     public boolean containsValue(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must not be null");
         return findValueByPredicate(predicate, true) != -1;
     }
 
     @Override
     public Value get(Predicate<Value> predicate) {
+        Objects.requireNonNull(predicate, "predicate must not be null");
         long keyOffset = findValueByPredicate(predicate, false);
         return get(keyOffset);
     }
@@ -149,6 +155,7 @@ public final class DictionaryImpl
     }
 
     public static Dictionary readDictionary(long offset, QueryContext queryContext) {
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         Input input = queryContext.input();
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.dictionaryElementCount(input, offset);

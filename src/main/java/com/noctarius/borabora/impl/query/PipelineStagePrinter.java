@@ -18,6 +18,8 @@ package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
+import java.util.Objects;
+
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
 final class PipelineStagePrinter {
@@ -26,6 +28,7 @@ final class PipelineStagePrinter {
     }
 
     static String printTree(PipelineStage node) {
+        Objects.requireNonNull(node, "node must not be null");
         StringBuilder sb = new StringBuilder();
         printTree(node, sb);
         return sb.toString();

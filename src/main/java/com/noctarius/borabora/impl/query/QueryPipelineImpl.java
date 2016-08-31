@@ -20,6 +20,8 @@ import com.noctarius.borabora.spi.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
+
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
 class QueryPipelineImpl
@@ -28,6 +30,7 @@ class QueryPipelineImpl
     private final PipelineStage rootPipelineStage;
 
     QueryPipelineImpl(PipelineStage rootPipelineStage) {
+        Objects.requireNonNull(rootPipelineStage, "rootPipelineStage must not be null");
         this.rootPipelineStage = rootPipelineStage;
     }
 

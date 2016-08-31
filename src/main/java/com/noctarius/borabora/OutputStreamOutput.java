@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 final class OutputStreamOutput
         implements Output {
@@ -25,6 +26,7 @@ final class OutputStreamOutput
     private final OutputStream out;
 
     OutputStreamOutput(OutputStream out) {
+        Objects.requireNonNull(out, "out must not be null");
         this.out = out;
     }
 
@@ -39,9 +41,10 @@ final class OutputStreamOutput
     }
 
     @Override
-    public long write(byte[] array, long offset, long length) {
+    public long write(byte[] bytes, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         try {
-            out.write(array, 0, (int) length);
+            out.write(bytes, 0, (int) length);
             return length;
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -33,6 +33,7 @@ import java.nio.charset.CharsetEncoder;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.Constants.UTC;
@@ -48,6 +49,7 @@ public abstract class AbstractStreamValueBuilder<B>
     private final B builder;
 
     protected AbstractStreamValueBuilder(EncoderContext encoderContext) {
+        Objects.requireNonNull(encoderContext, "encoderContext must not be null");
         this.builder = (B) this;
         this.encoderContext = encoderContext;
         this.output = encoderContext.output();
@@ -436,6 +438,8 @@ public abstract class AbstractStreamValueBuilder<B>
         private final B builder;
 
         IndefiniteStringBuilderImpl(EncoderContext encoderContext, boolean asciiOnly, B builder) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
+            Objects.requireNonNull(builder, "builder must not be null");
             this.output = encoderContext.output();
             this.encoderContext = encoderContext;
             this.asciiOnly = asciiOnly;
@@ -444,9 +448,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public IndefiniteStringBuilder<B> putString(String value) {
-            if (value == null) {
-                throw new NullPointerException("null is not a legal value of an indefinite string");
-            }
+            Objects.requireNonNull(value, "null is not a legal value of an indefinite string");
             if (asciiOnly) {
                 if (!ASCII_ENCODER.canEncode(value)) {
                     throw new IllegalArgumentException("UTF8 string cannot be added to a CBOR ByteString");
@@ -477,6 +479,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         SequenceBuilderImpl(EncoderContext encoderContext, long maxElements, B builder) {
             super(encoderContext);
+            Objects.requireNonNull(builder, "builder must not be null");
             this.maxElements = maxElements;
             this.builder = builder;
         }
@@ -519,6 +522,8 @@ public abstract class AbstractStreamValueBuilder<B>
         private long elements;
 
         DictionaryBuilderImpl(EncoderContext encoderContext, long maxElements, B builder) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
+            Objects.requireNonNull(builder, "builder must not be null");
             this.builder = builder;
             this.maxElements = maxElements;
             this.encoderContext = encoderContext;
@@ -561,6 +566,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         DictionaryEntryBuilderImpl(EncoderContext encoderContext, DictionaryBuilder<B> builder) {
             super(encoderContext);
+            Objects.requireNonNull(builder, "builder must not be null");
             this.builder = builder;
         }
 
@@ -589,6 +595,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         @Override
         public DictionaryEntryBuilder<B> putTag(TagBuilderConsumer<DictionaryEntryBuilder<B>> consumer) {
+            Objects.requireNonNull(consumer, "consumer must not be null");
             consumer.execute(encoderContext, this);
             return this;
         }

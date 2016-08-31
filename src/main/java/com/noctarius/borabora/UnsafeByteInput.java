@@ -18,6 +18,8 @@ package com.noctarius.borabora;
 
 import sun.misc.Unsafe;
 
+import java.util.Objects;
+
 final class UnsafeByteInput
         implements Input {
 
@@ -45,7 +47,8 @@ final class UnsafeByteInput
     }
 
     @Override
-    public long read(byte[] array, long offset, long length) {
+    public long read(byte[] bytes, long offset, long length) {
+        Objects.requireNonNull(bytes, "bytes must not be null");
         if (length > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
@@ -55,12 +58,12 @@ final class UnsafeByteInput
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
-        if (length > array.length) {
+        if (length > bytes.length) {
             throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
         }
 
         long l = Math.min(length, size - offset);
-        UNSAFE.copyMemory(null, address + offset, array, Unsafe.ARRAY_BOOLEAN_BASE_OFFSET, l);
+        UNSAFE.copyMemory(null, address + offset, bytes, Unsafe.ARRAY_BOOLEAN_BASE_OFFSET, l);
         return l;
     }
 

@@ -26,6 +26,7 @@ import com.noctarius.borabora.spi.codec.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class AbstractStreamValue
@@ -35,6 +36,7 @@ public abstract class AbstractStreamValue
     private final QueryContext queryContext;
 
     protected AbstractStreamValue(QueryContext queryContext) {
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
         this.queryContext = queryContext;
     }
 

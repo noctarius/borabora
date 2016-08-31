@@ -18,6 +18,8 @@ package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Output;
 
+import java.util.Objects;
+
 public interface EncoderContext {
 
     Output output();
@@ -35,6 +37,7 @@ public interface EncoderContext {
     }
 
     default void encode(EncoderFunction encoderFunction) {
+        Objects.requireNonNull(encoderFunction, "encoderFunction must not be null");
         long offset = offset();
         offset = encoderFunction.encode(offset);
         offset(offset);

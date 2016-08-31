@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
@@ -52,6 +53,7 @@ public final class QueryBuilderNode {
     }
 
     public void forEachChild(Consumer<? super QueryBuilderNode> consumer) {
+        Objects.requireNonNull(consumer, "consumer must not be null");
         children.forEach(consumer);
     }
 
@@ -73,6 +75,8 @@ public final class QueryBuilderNode {
     }
 
     public static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {
+        Objects.requireNonNull(tree, "tree must not be null");
+        Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
         PipelineStage left = NIL;
         PipelineStage right = NIL;
 

@@ -23,6 +23,7 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.WrongTypeException;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ObjectValue
@@ -33,6 +34,8 @@ public class ObjectValue
     private final Supplier<?> supplier;
 
     public ObjectValue(MajorType majorType, ValueType valueType, Object value) {
+        Objects.requireNonNull(majorType, "majorType must not be null");
+        Objects.requireNonNull(valueType, "valueType must not be null");
         this.majorType = majorType;
         this.valueType = valueType;
         this.supplier = () -> value;

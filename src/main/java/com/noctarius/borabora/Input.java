@@ -25,10 +25,10 @@ public interface Input {
 
     boolean offsetValid(long offset);
 
-    long read(byte[] array, long offset, long length);
+    long read(byte[] bytes, long offset, long length);
 
-    static Input fromByteArray(byte[] array) {
-        return new ByteArrayInput(array);
+    static Input fromByteArray(byte[] bytes) {
+        return new ByteArrayInput(bytes);
     }
 
     static Input fromNative(long address, long size) {

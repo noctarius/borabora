@@ -27,8 +27,8 @@ import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
-import com.noctarius.borabora.spi.query.QueryContextFactory;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.QueryContextFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +66,7 @@ public final class ParserBuilderImpl
 
     @Override
     public ParserBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies) {
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         addTagStrategy(tagStrategy1);
         addTagStrategy(tagStrategy2);
         for (TagStrategy tagStrategy : tagStrategies) {
@@ -76,6 +77,7 @@ public final class ParserBuilderImpl
 
     @Override
     public ParserBuilder addTagStrategies(Iterable<TagStrategy> tagStrategies) {
+        Objects.requireNonNull(tagStrategies, "tagStrategies must not be null");
         for (TagStrategy tagStrategy : tagStrategies) {
             addTagStrategy(tagStrategy);
         }
@@ -137,6 +139,7 @@ public final class ParserBuilderImpl
     public ParserBuilder addQueryOptimizers(QueryOptimizer queryOptimizer1, QueryOptimizer queryOptimizer2,
                                             QueryOptimizer... queryOptimizers) {
 
+        Objects.requireNonNull(queryOptimizers, "queryOptimizers must not be null");
         addQueryOptimizer(queryOptimizer1);
         addQueryOptimizer(queryOptimizer2);
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
@@ -147,6 +150,7 @@ public final class ParserBuilderImpl
 
     @Override
     public ParserBuilder addQueryOptimizers(Iterable<QueryOptimizer> queryOptimizers) {
+        Objects.requireNonNull(queryOptimizers, "queryOptimizers must not be null");
         for (QueryOptimizer queryOptimizer : queryOptimizers) {
             addQueryOptimizer(queryOptimizer);
         }
@@ -167,8 +171,8 @@ public final class ParserBuilderImpl
 
     @Override
     public Parser build() {
-        return new ParserImpl(tagStrategies, projectionStrategy, queryContextFactory, queryPipelineFactory,
-                pipelineStageFactory, queryOptimizerStrategyFactory, Collections.unmodifiableList(queryOptimizers));
+        return new ParserImpl(tagStrategies, projectionStrategy, queryContextFactory, queryPipelineFactory, pipelineStageFactory,
+                queryOptimizerStrategyFactory, Collections.unmodifiableList(queryOptimizers));
     }
 
 }
