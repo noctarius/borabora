@@ -119,18 +119,14 @@ public class BTPipelineStageTestCase
         assertEquals(expected.hashCode(), actual.hashCode());
     }
 
-    @Test
-    public void test_btree_hashcode_left_null() {
-        BTreePipelineStage expected = new BTreePipelineStage(null, NIL, QueryBuilderNode.QUERY_BASE);
-        BTreePipelineStage actual = new BTreePipelineStage(null, NIL, QueryBuilderNode.QUERY_BASE);
-        assertEquals(expected.hashCode(), actual.hashCode());
+    @Test(expected = NullPointerException.class)
+    public void test_btree_left_null() {
+        new BTreePipelineStage(null, NIL, QueryBuilderNode.QUERY_BASE);
     }
 
-    @Test
-    public void test_btree_hashcode_right_null() {
-        BTreePipelineStage expected = new BTreePipelineStage(NIL, null, QueryBuilderNode.QUERY_BASE);
-        BTreePipelineStage actual = new BTreePipelineStage(NIL, null, QueryBuilderNode.QUERY_BASE);
-        assertEquals(expected.hashCode(), actual.hashCode());
+    @Test(expected = NullPointerException.class)
+    public void test_btree_right_null() {
+        new BTreePipelineStage(NIL, null, QueryBuilderNode.QUERY_BASE);
     }
 
     @Test
