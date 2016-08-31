@@ -17,8 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.spi.TypeSpecs;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.ElementCounts;
 import com.noctarius.borabora.spi.codec.StringEncoders;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import org.junit.Test;
@@ -31,14 +29,11 @@ public class UtilsClassEnumMethodsTestCase {
     @Test
     public void call_all_shitty_utils_class_enum_methods() {
         call(ValueTypes.class.getName());
-        call(ValuePrettyPrinter.class.getName());
         call(MajorType.class.getName());
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());
-        call(ElementCounts.class.getName());
         call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());
-        call("com.noctarius.borabora.impl.query.PipelineStagePrinter");
     }
 
     private void call(String className) {

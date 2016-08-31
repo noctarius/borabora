@@ -21,7 +21,8 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 
-public class ValuePrettyPrinterTestCase {
+public class ValuePrettyPrinterTestCase
+        extends AbstractTestCase {
 
     private static final byte[] bytes = buildBytes();
 
@@ -41,6 +42,11 @@ public class ValuePrettyPrinterTestCase {
                     .endSequence().finishStream();
 
         return baos.toByteArray();
+    }
+
+    @Test
+    public void call_constructor() {
+        callConstructor(ValuePrettyPrinter.class);
     }
 
     @Test

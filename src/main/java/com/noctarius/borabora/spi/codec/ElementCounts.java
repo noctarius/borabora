@@ -22,8 +22,10 @@ import com.noctarius.borabora.spi.Constants;
 
 import java.math.BigInteger;
 
-public enum ElementCounts {
-    ;
+public final class ElementCounts {
+
+    private ElementCounts() {
+    }
 
     public static long elementCountByMajorType(MajorType majorType, Input input, long offset) {
         switch (majorType) {

@@ -35,6 +35,11 @@ public class ElementCountsTestCase
         extends AbstractTestCase {
 
     @Test
+    public void call_constructor() {
+        callConstructor(ElementCounts.class);
+    }
+
+    @Test
     public void test_sequence_elementcount_head_byte() {
         Input input = Input.fromByteArray(hexToBytes("0x81"));
         assertEquals(1, ElementCounts.sequenceElementCount(input, 0));

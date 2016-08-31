@@ -20,8 +20,10 @@ import com.noctarius.borabora.spi.pipeline.PipelineStage;
 
 import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
 
-enum PipelineStagePrinter {
-    ;
+final class PipelineStagePrinter {
+
+    private PipelineStagePrinter() {
+    }
 
     static String printTree(PipelineStage node) {
         StringBuilder sb = new StringBuilder();
@@ -30,13 +32,13 @@ enum PipelineStagePrinter {
     }
 
     private static void printTree(PipelineStage node, StringBuilder sb) {
-        if (node.right() != null && node.right() != NIL) {
+        if (node.right() != NIL) {
             printTree(node.right(), sb, true, "");
         }
 
         printNodeValue(node, sb);
 
-        if (node.left() != null && node.left() != NIL) {
+        if (node.left() != NIL) {
             printTree(node.left(), sb, false, "");
         }
     }
@@ -51,7 +53,7 @@ enum PipelineStagePrinter {
     }
 
     private static void printTree(PipelineStage node, StringBuilder sb, boolean isRight, String indent) {
-        if (node.right() != null && node.right() != NIL) {
+        if (node.right() != NIL) {
             printTree(node.right(), sb, true, indent + (isRight ? "        " : " |      "));
         }
 
@@ -65,7 +67,7 @@ enum PipelineStagePrinter {
 
         printNodeValue(node, sb);
 
-        if (node.left() != null && node.left() != NIL) {
+        if (node.left() != NIL) {
             printTree(node.left(), sb, false, indent + (isRight ? " |      " : "        "));
         }
     }

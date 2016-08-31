@@ -19,8 +19,10 @@ package com.noctarius.borabora;
 import java.util.Map;
 import java.util.function.Function;
 
-public enum ValuePrettyPrinter {
-    ;
+public final class ValuePrettyPrinter {
+
+    private ValuePrettyPrinter() {
+    }
 
     public static String toStringPrettyPrint(Value value) {
         StringBuilder sb = new StringBuilder();

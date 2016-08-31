@@ -22,6 +22,8 @@ import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
+
 class BTreePipelineStage
         implements PipelineStage {
 
@@ -30,6 +32,8 @@ class BTreePipelineStage
     final QueryStage stage;
 
     BTreePipelineStage(PipelineStage left, PipelineStage right, QueryStage stage) {
+        Objects.requireNonNull(left, "left must be non null, did you mean PipelineStage.NIL");
+        Objects.requireNonNull(right, "right must be non null, did you mean PipelineStage.NIL");
         this.left = left;
         this.right = right;
         this.stage = stage;
