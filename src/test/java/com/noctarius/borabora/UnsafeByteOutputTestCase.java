@@ -38,6 +38,14 @@ public class UnsafeByteOutputTestCase {
     }
 
     @Test
+    public void test_write_verify_returned_offset() {
+        long address = allocate(16);
+        UnsafeByteOutput output = new UnsafeByteOutput(address, 16);
+        long offset = output.write(5, (byte) 0x1);
+        assertEquals(6, offset);
+    }
+
+    @Test
     public void test_write_offset() {
         long address = allocate(1);
         UnsafeByteOutput output = new UnsafeByteOutput(address, 1);

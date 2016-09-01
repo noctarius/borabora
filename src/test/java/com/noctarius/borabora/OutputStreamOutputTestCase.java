@@ -17,8 +17,11 @@ package com.noctarius.borabora;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import static org.junit.Assert.assertEquals;
 
 public class OutputStreamOutputTestCase {
 
@@ -26,6 +29,14 @@ public class OutputStreamOutputTestCase {
     public void fail_write() {
         Output output = Output.toOutputStream(new ExceptionalOutputStream());
         output.write(0, (byte) 0);
+    }
+
+    @Test
+    public void test_write_verify_returned_offset() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Output output = Output.toOutputStream(baos);
+        long offset = output.write(5, (byte) 0x1);
+        assertEquals(6, offset);
     }
 
     @Test(expected = IllegalStateException.class)

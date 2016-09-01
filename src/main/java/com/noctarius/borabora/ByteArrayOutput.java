@@ -37,7 +37,7 @@ final class ByteArrayOutput
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         bytes[(int) offset] = value;
-        return offset;
+        return ++offset;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class CompositeBuffer
         int chunkOffset = chunkOffset(offset);
         buffer.buffer[chunkOffset] = value;
         updateHighestOffset(offset);
-        return offset;
+        return ++offset;
     }
 
     @Override
@@ -97,25 +97,30 @@ public class CompositeBuffer
             throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
         }
 
+        long remaining = length;
+        long sourceOffset = offset;
+        int targetOffset = 0;
+
         Buffer buffer = bufferByOffset(offset);
-        if (length <= chunksize) {
-            int chunkOffset = chunkOffset(offset);
-            System.arraycopy(buffer.buffer, chunkOffset, bytes, 0, (int) length);
+        do {
+            int chunkOffset = chunkOffset(sourceOffset);
+            int chunkAvail = chunksize - chunkOffset;
 
-        } else {
-            int remaining = (int) length;
+            int chunkLength = (int) Math.min(chunkAvail, remaining);
+            System.arraycopy(buffer.buffer, chunkOffset, bytes, targetOffset, chunkLength);
 
-            int targetOffset = 0;
-            do {
-                int chunkLength = Math.min(remaining, chunksize);
-                System.arraycopy(buffer.buffer, 0, bytes, targetOffset, chunkLength);
+            remaining -= chunkLength;
+            sourceOffset += chunkLength;
+            targetOffset += chunkLength;
 
-                targetOffset += chunkLength;
-                remaining -= chunkLength;
+            if (remaining > 0) {
                 buffer = buffer.next;
-            } while (remaining > 0);
-        }
-        return 0;
+                if (buffer == null) {
+                    throw new NoSuchByteException(offset, "Offset " + sourceOffset + " outside of available data");
+                }
+            }
+        } while (remaining > 0);
+        return length;
     }
 
     public long size() {

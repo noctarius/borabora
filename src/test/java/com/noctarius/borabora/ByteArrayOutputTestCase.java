@@ -41,6 +41,14 @@ public class ByteArrayOutputTestCase {
     }
 
     @Test
+    public void test_write_verify_returned_offset() {
+        byte[] bytes = new byte[16];
+        Output output = Output.toByteArray(bytes);
+        long offset = output.write(5, (byte) 0x1);
+        assertEquals(6, offset);
+    }
+
+    @Test
     public void test_write_offset() {
         byte[] data = new byte[1];
         ByteArrayOutput output = new ByteArrayOutput(data);

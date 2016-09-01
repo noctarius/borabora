@@ -37,7 +37,7 @@ final class OutputStreamOutput
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        return offset;
+        return ++offset;
     }
 
     @Override

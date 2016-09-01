@@ -39,7 +39,7 @@ final class UnsafeByteOutput
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
         UNSAFE.putByte(address + offset, value);
-        return offset;
+        return ++offset;
     }
 
     @Override
