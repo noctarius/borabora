@@ -35,8 +35,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.function.Predicate;
 
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 public final class Decoder
@@ -325,7 +327,7 @@ public final class Decoder
         if (!fraction && offset) {
             return LocalDateTime.parse(date, ISO_OFFSET_DATE_TIME).atZone(UTC).toInstant();
         } else if (!fraction && !offset) {
-            return Instant.parse(date);
+            return ZonedDateTime.parse(date).toInstant();
         }
         return LocalDateTime.parse(date, DATE_TIME_FRACTION_OFFSET_FORMAT).atZone(UTC).toInstant();
     }
