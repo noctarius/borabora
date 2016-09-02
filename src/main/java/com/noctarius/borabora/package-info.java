@@ -51,7 +51,7 @@
  * concurrently. This is true as long as the {@link com.noctarius.borabora.Input}
  * implementation is thread-safe as well and employs the provided offset as a read
  * position. There might be implementations where this assumption does not hold true,
- * for example if backed by a {@link java.net.SocketInputStream}, whereas those kind
+ * for example if backed by a <tt>java.net.SocketInputStream</tt>, whereas those kind
  * of implementations are not provided out of the box.</p>
  */
 package com.noctarius.borabora;
