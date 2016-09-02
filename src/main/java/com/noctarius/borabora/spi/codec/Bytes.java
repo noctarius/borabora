@@ -21,8 +21,10 @@ import com.noctarius.borabora.Output;
 
 import java.math.BigInteger;
 
-public enum Bytes {
-    ;
+public final class Bytes {
+
+    private Bytes() {
+    }
 
     public static short readUInt8(Input input, long offset) {
         return (short) (input.read(offset) & 0xFF);

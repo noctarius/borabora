@@ -16,6 +16,14 @@
  */
 package com.noctarius.borabora;
 
+/**
+ * A HalfPrecisionFloat instance represents a 16 bit floating point type as defined in the
+ * <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">IEEE 754
+ * specification</a>, also known as binary16.
+ * <p>This class extends the Java {@link Number} type and is completely interoperable
+ * with any code that expects any of those types. Anyhow it is to remember that converting
+ * a half precision float to any integer based type results in loss of precision.</p>
+ */
 public final class HalfPrecisionFloat
         extends Number {
 
@@ -69,6 +77,14 @@ public final class HalfPrecisionFloat
         return "HalfPrecisionFloat{" + "value=" + value + '}';
     }
 
+    /**
+     * Creates a new half precision data type instance based on the given 32 bit float
+     * <tt>value</tt>. It is to be considered that using a half precision float might
+     * result in loss of precision compared to be passed original float value.
+     *
+     * @param value the value to interpret as a half precision
+     * @return the new HalfPrecisionFloat instance based on the given value
+     */
     public static HalfPrecisionFloat valueOf(float value) {
         return new HalfPrecisionFloat(value);
     }

@@ -39,7 +39,7 @@ public class InputTestCase
         return Arrays.asList( //
                 new Object[][]{ //
                                 {input(Input::fromByteArray), "ByteArrayInput", false}, //
-                                {input(InputTestCase::unsafeInput), "UnsafeByteInput", false}, //
+                                {input(InputTestCase::unsafeInput), "UnsafeByteInput", true}, //
                                 {input(InputTestCase::compositeBufferInput), "CompositeBufferInput", true}});
     }
 
@@ -106,13 +106,6 @@ public class InputTestCase
         byte[] data = new byte[0];
         Input input = function.apply(data);
         input.read(new byte[0], Integer.MAX_VALUE + 1L, 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_read_bytearray_length_outside_legal_bytearray_range() {
-        byte[] data = new byte[0];
-        Input input = function.apply(data);
-        input.read(new byte[0], 0, Integer.MAX_VALUE + 1L);
     }
 
     @Test

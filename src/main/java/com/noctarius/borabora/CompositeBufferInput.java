@@ -42,13 +42,10 @@ final class CompositeBufferInput
     }
 
     @Override
-    public long read(byte[] bytes, long offset, long length)
+    public long read(byte[] bytes, long offset, int length)
             throws NoSuchByteException {
 
         Objects.requireNonNull(bytes, "bytes must not be null");
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
-        }
         if (offset < 0 || length < 0 || offset >= compositeBuffer.size() || offset + length > compositeBuffer.size()) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
@@ -56,7 +53,7 @@ final class CompositeBufferInput
             throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
         }
 
-        long l = Math.min(length, compositeBuffer.size() - offset);
+        int l = (int) Math.min(length, compositeBuffer.size() - offset);
         compositeBuffer.read(bytes, offset, l);
         return l;
     }

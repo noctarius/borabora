@@ -50,7 +50,7 @@ public class CompositeBuffer
     }
 
     @Override
-    public long write(byte[] bytes, long offset, long length) {
+    public long write(byte[] bytes, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
         long remaining = length;
         int sourceOffset = 0;
@@ -91,10 +91,14 @@ public class CompositeBuffer
     }
 
     @Override
-    public long read(byte[] bytes, long offset, long length) {
+    public long read(byte[] bytes, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
+
+        if (offset < 0 || length < 0 || offset >= size() || offset + length > size()) {
+            throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
+        }
+        if (length > bytes.length) {
+            throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
         }
 
         long remaining = length;

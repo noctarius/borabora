@@ -41,10 +41,13 @@ final class OutputStreamOutput
     }
 
     @Override
-    public long write(byte[] bytes, long offset, long length) {
+    public long write(byte[] bytes, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
+        if (length > bytes.length) {
+            throw new NoSuchByteException(offset, "Length " + length + " larger than writable data");
+        }
         try {
-            out.write(bytes, 0, (int) length);
+            out.write(bytes, 0, length);
             return length;
         } catch (IOException e) {
             throw new IllegalStateException(e);

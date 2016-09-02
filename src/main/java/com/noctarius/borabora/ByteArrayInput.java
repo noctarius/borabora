@@ -43,13 +43,10 @@ final class ByteArrayInput
     }
 
     @Override
-    public long read(byte[] bytes, long offset, long length)
+    public long read(byte[] bytes, long offset, int length)
             throws NoSuchByteException {
 
         Objects.requireNonNull(bytes, "bytes must not be null");
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
-        }
         if (offset > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
         }

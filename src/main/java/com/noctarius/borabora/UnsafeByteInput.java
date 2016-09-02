@@ -37,9 +37,6 @@ final class UnsafeByteInput
     public byte read(long offset)
             throws NoSuchByteException {
 
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
         if (offset < 0 || offset >= size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }
@@ -47,14 +44,8 @@ final class UnsafeByteInput
     }
 
     @Override
-    public long read(byte[] bytes, long offset, long length) {
+    public long read(byte[] bytes, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
-        if (length > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("length cannot be larger than Integer.MAX_VALUE");
-        }
-        if (offset > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("ByteArrayInput can only handle offsets up to Integer.MAX_VALUE");
-        }
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of available data");
         }

@@ -16,16 +16,32 @@
  */
 package com.noctarius.borabora;
 
+/**
+ * The <tt>NoSuchByteException</tt> signals the state of reaching an unexpected
+ * end of the stream or the read destination (in case of a byte-array).
+ */
 public class NoSuchByteException
         extends RuntimeException {
 
     private final long offset;
 
+    /**
+     * Returns a new exception instance representing the current <tt>offset</tt>
+     * inside the stream, as well as the a more detailed exception message.
+     *
+     * @param offset  the offset of the stream where the exception occurred
+     * @param message the detailed exception message
+     */
     public NoSuchByteException(long offset, String message) {
         super(message);
         this.offset = offset;
     }
 
+    /**
+     * Returns the offset inside the stream when the exception happened.
+     *
+     * @return the offset inside the stream
+     */
     public long getOffset() {
         return offset;
     }

@@ -38,7 +38,6 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.function.Predicate;
 
-import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 public final class Decoder
@@ -299,7 +298,7 @@ public final class Decoder
         long length = length(input, majorType, offset);
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
         byte[] data = new byte[(int) length];
-        input.read(data, offset, length);
+        input.read(data, offset, (int) length);
         return data;
     }
 

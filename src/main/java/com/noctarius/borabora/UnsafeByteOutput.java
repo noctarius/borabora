@@ -43,7 +43,7 @@ final class UnsafeByteOutput
     }
 
     @Override
-    public long write(byte[] bytes, long offset, long length) {
+    public long write(byte[] bytes, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
         if (offset < 0 || length < 0 || offset >= size || offset + length > size) {
             throw new NoSuchByteException(offset, "Offset " + offset + " outside of writable data");

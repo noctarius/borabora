@@ -41,7 +41,7 @@ final class ByteArrayOutput
     }
 
     @Override
-    public long write(byte[] array, long offset, long length) {
+    public long write(byte[] array, long offset, int length) {
         Objects.requireNonNull(bytes, "bytes must not be null");
         if (offset > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("ByteArrayOutput can only handle offsets up to Integer.MAX_VALUE");
