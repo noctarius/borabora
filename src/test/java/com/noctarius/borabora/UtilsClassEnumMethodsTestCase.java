@@ -32,7 +32,6 @@ public class UtilsClassEnumMethodsTestCase {
         call(MajorType.class.getName());
         call(TypeSpecs.class.getName());
         call(StringEncoders.class.getName());
-        call("com.noctarius.borabora.spi.codec.Bytes");
         call(VisitResult.class.getName());
     }
 
