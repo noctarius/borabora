@@ -687,6 +687,7 @@ public class QueryLanguageAcceptanceTestCase
         evaluate(query, "{?{'foo'>-1.0}>>'foo'}");
         evaluate(query, "{?{'foo'<=-1.0}>>'foo'}");
         evaluate(query, "{?{'foo'<-1.0}>>'foo'}");
+        // TODO Maybe that way? String test = ":{name=='foo'}-->{'bar'}:";
     }
 
     @Test
