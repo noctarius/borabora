@@ -16,7 +16,7 @@
 */
 
 /**
- * borabora is a (<a href="http://www.cbor.io">CBOR</a>, the Concise Binary Object
+ * borabora is a <a href="http://www.cbor.io">CBOR</a>, the Concise Binary Object
  * Representation, skip-scan processor which consists of a generator as well as a
  * parser. While parsing all operations are implemented as lazily as possible,
  * whereas writing is immediate.
