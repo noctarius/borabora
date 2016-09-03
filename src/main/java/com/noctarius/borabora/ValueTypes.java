@@ -176,8 +176,6 @@ public enum ValueTypes
      */
     Unknown(Value::raw);
 
-    private static final ValueTypes[] VALUE_TYPES_VALUES = values();
-
     private final Function<Value, Object> byValueType;
     private final BiConsumer<Value, Object> validator;
     private final ValueType identity;

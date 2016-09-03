@@ -60,6 +60,11 @@ public class WrongTypeException
         this.offset = offset;
     }
 
+    /**
+     * Returns the offset where the exception happened.
+     *
+     * @return the offset where the exception happened
+     */
     public long getOffset() {
         return offset;
     }

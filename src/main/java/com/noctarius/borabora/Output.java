@@ -65,6 +65,7 @@ public interface Output {
      *
      * @param compositeBuffer the CompositeBuffer to write to
      * @return the new output instance backed by the given compositeBuffer
+     * @see CompositeBuffer
      */
     static Output toCompositeBuffer(CompositeBuffer compositeBuffer) {
         return compositeBuffer;

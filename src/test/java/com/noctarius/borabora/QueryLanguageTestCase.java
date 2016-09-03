@@ -102,10 +102,10 @@ public class QueryLanguageTestCase
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Query query3 = Query.newBuilder(ObjectProjectionStrategy.INSTANCE) //
+        Query query3 = Query.configureBuilder().withProjectionStrategy(ObjectProjectionStrategy.INSTANCE).newBuilder() //
                             .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
 
-        Query query4 = Query.newBuilder(ObjectProjectionStrategy.INSTANCE) //
+        Query query4 = Query.configureBuilder().withProjectionStrategy(ObjectProjectionStrategy.INSTANCE).newBuilder() //
                             .asSequence().putEntry().stream(0).endEntry().endSequence().build();
 
         Value value3 = parser.read(input, query3);

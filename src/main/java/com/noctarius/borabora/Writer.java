@@ -20,10 +20,35 @@ import com.noctarius.borabora.builder.GraphBuilder;
 import com.noctarius.borabora.builder.WriterBuilder;
 import com.noctarius.borabora.impl.WriterBuilderImpl;
 
+/**
+ * The <tt>Writer</tt> interface is used to create new writers to generate the
+ * CBOR data streams from Java data structures and values. A Writer instance is
+ * created using a {@link WriterBuilder} retrieved using the {@link #newBuilder()}
+ * method and configured to the users needs.
+ * <p>The same Writer instance can be used to generate multiple new streams in
+ * parallel, however {@link Output} implementations and {@link GraphBuilder}
+ * instances are <b>not</b> considered to be thread-safe and should only be used
+ * by a single thread. The Writer instance can be configured once and used
+ * concurrently though.</p>
+ */
 public interface Writer {
 
+    /**
+     * Returns a new {@link GraphBuilder} instance bound to the given <tt>output</tt>.
+     * GraphBuilders are not thread-safe by design and so are {@link Output} instances.
+     * Any returns instance should only be used by a single thread!
+     *
+     * @param output the Output instance to bind the new builder to
+     * @return a new GraphBuilder instance bound to the given output instance @
+     */
     GraphBuilder newGraphBuilder(Output output);
 
+    /**
+     * Returns a new {@link WriterBuilder} instance to configure and create the final
+     * Writer.
+     *
+     * @return a new WriterBuilder instance
+     */
     static WriterBuilder newBuilder() {
         return new WriterBuilderImpl();
     }

@@ -20,11 +20,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * This class provides a pretty printer implementation for borabora CBOR {@link Value}s.
+ */
 public final class ValuePrettyPrinter {
 
     private ValuePrettyPrinter() {
     }
 
+    /**
+     * Returns a pretty printed version of {@link Value#toString()}, traversed over any
+     * depths of data.
+     *
+     * @param value the value to return as a pretty printed string
+     * @return a string of the pretty printed representation of toString
+     */
     public static String toStringPrettyPrint(Value value) {
         Objects.requireNonNull(value, "value must not be null");
         StringBuilder sb = new StringBuilder();
@@ -32,6 +42,13 @@ public final class ValuePrettyPrinter {
         return sb.toString();
     }
 
+    /**
+     * Returns a pretty printed version of {@link Value#asString()}, traversed over any
+     * depths of data.
+     *
+     * @param value the value to return as a pretty printed string
+     * @return a string of the pretty printed representation of asString
+     */
     public static String asStringPrettyPrint(Value value) {
         Objects.requireNonNull(value, "value must not be null");
         StringBuilder sb = new StringBuilder();

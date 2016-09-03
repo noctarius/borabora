@@ -99,6 +99,7 @@ public interface Input {
      *
      * @param compositeBuffer the CompositeBuffer to read from
      * @return the new input instance backed by the given compositeBuffer
+     * @see CompositeBuffer
      */
     static Input fromCompositeBuffer(CompositeBuffer compositeBuffer) {
         return new CompositeBufferInput(compositeBuffer);
