@@ -21,12 +21,23 @@ import com.noctarius.borabora.spi.codec.CompositeBuffer;
 import java.io.OutputStream;
 
 /**
- * An output instance represents a target sink for writeable data. Output implementations
+ * An <tt>Ouput</tt> instance represents a target sink for writeable data. Output implementations
  * are considered to <b>neither be stateless not thread-safe</b> as data is stored which is
  * a non side-effect free situation. Whereas most implementations don't necessarily need to
  * use the provided <tt>offset</tt> which is passed to <tt>write</tt> methods, it can be used
  * to prevent storing internal offsets. As all writes coming from the generators are in order
  * and immediate, the offset is constantly increasing only and does not need random pokes.
+ * <p>A common basic example for the usage of <tt>Output</tt> looks like:</p>
+ * <pre>
+ *     Output output = Output.toCompositeBuffer( ... );
+ *     Writer writer = Writer.newBuilder().build();
+ *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
+ *     // generate the actual data stream
+ * </pre>
+ *
+ * @see com.noctarius.borabora.builder.GraphBuilder
+ * @see Writer
+ * @see CompositeBuffer
  */
 public interface Output {
 

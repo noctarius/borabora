@@ -35,6 +35,11 @@ import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
  * <p>The resulting Query instances of any of the above ways are fully stateless and
  * thread-safe and can be used concurrently by multiple threads and stored into static
  * final fields without any further issues.</p>
+ *
+ * @see Parser
+ * @see QueryBuilder
+ * @see QueryBuilderBuilder
+ * @see Input
  */
 public interface Query {
 

@@ -40,6 +40,11 @@ import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHO
  * <li>{@link com.noctarius.borabora.builder.QueryTokenBuilder#dictionary(Predicate)}</li>
  * <li>{@link com.noctarius.borabora.builder.QueryTokenBuilder#sequenceMatch(Predicate)}</li>
  * </ul>
+ *
+ * @see Dictionary
+ * @see Sequence
+ * @see com.noctarius.borabora.builder.QueryTokenBuilder
+ * @see Predicate
  */
 public final class Predicates {
 

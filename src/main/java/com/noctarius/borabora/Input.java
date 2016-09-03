@@ -19,8 +19,19 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.spi.codec.CompositeBuffer;
 
 /**
- * An input instance represents a source for readable data. Input implementations are stateless
- * and thread-safe by design. They also have to support random access based on offsets.
+ * An <tt>Input</tt> instance represents a source for readable data. Input implementations are
+ * stateless and thread-safe by design. They also have to support random access based on offsets.
+ * <p>A common basic example for the usage of <tt>Input</tt> looks like:</p>
+ * <pre>
+ * Input input = Input.fromByteArray( ... );
+ * Parser parser = Parser.newBuilder().build();
+ * Query query = Query.newBuilder().build();
+ * Value value = parser.read( input, query );
+ * </pre>
+ *
+ * @see Value
+ * @see Query
+ * @see Parser
  */
 public interface Input {
 

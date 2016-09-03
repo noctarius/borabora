@@ -49,4 +49,9 @@ public interface Value {
      */
     String asString();
 
+    /**
+     * {@inheritDoc}
+     */
+    String toString();
+
 }

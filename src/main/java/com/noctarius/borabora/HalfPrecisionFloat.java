@@ -23,6 +23,9 @@ package com.noctarius.borabora;
  * <p>This class extends the Java {@link Number} type and is completely interoperable
  * with any code that expects any of those types. Anyhow it is to remember that converting
  * a half precision float to any integer based type results in loss of precision.</p>
+ *
+ * @see Number
+ * @see Value
  */
 public final class HalfPrecisionFloat
         extends Number {

@@ -33,6 +33,8 @@ import java.util.function.Predicate;
  * <p>In contrast to a Java Map keys are matched using {@link Predicate} classes
  * since objects are not eagerly deserialized / read. Additionally the dictionary
  * supports 64bit indexes sizes.</p>
+ *
+ * @see Value
  */
 public interface Dictionary
         extends Iterable<Map.Entry<Value, Value>> {
