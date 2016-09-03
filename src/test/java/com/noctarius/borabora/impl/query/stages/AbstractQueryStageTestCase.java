@@ -74,17 +74,24 @@ public abstract class AbstractQueryStageTestCase
                                         Consumer<QueryContext> queryContextInitializer) {
 
         return evaluate(input, currentQueryStage, previousQueryState, leftQueryStage, rightQueryStage, //
-                queryContextInitializer, BinaryProjectionStrategy.INSTANCE);
+                true, queryContextInitializer, BinaryProjectionStrategy.INSTANCE);
     }
 
     protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState,
-                                        QueryStage leftQueryStage, QueryStage rightQueryStage,
+                                        QueryStage leftQueryStage, QueryStage rightQueryStage, boolean multiConsumer) {
+
+        return evaluate(input, currentQueryStage, previousQueryState, leftQueryStage, rightQueryStage, //
+                multiConsumer, null, BinaryProjectionStrategy.INSTANCE);
+    }
+
+    protected EvaluationResult evaluate(Input input, QueryStage currentQueryStage, QueryStage previousQueryState,
+                                        QueryStage leftQueryStage, QueryStage rightQueryStage, boolean multiConsumer,
                                         Consumer<QueryContext> queryContextInitializer, ProjectionStrategy projectionStrategy) {
 
         List<TagStrategy> tagStrategies = new ArrayList<>(Arrays.asList(TagStrategies.values()));
 
         List<Value> collectedResults = new ArrayList<>();
-        QueryConsumer queryConsumer = bridgeConsumer(collectedResults::add, true);
+        QueryConsumer queryConsumer = bridgeConsumer(collectedResults::add, multiConsumer);
 
         QueryContextFactory queryContextFactory = DefaultQueryContextFactory.INSTANCE;
         QueryContext queryContext = queryContextFactory.newQueryContext(input, queryConsumer, tagStrategies, projectionStrategy);

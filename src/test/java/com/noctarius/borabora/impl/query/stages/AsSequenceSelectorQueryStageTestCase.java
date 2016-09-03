@@ -44,7 +44,7 @@ public class AsSequenceSelectorQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        evaluate(input, queryStage, null, null, null, null, spy);
+        evaluate(input, queryStage, null, null, null, true, null, spy);
         verify(spy, times(1)).beginSequence(any(QueryContext.class));
         verify(spy, times(1)).endSequence(any(QueryContext.class));
     }
@@ -57,7 +57,7 @@ public class AsSequenceSelectorQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        evaluate(input, queryStage, null, exitStage, null, null, spy);
+        evaluate(input, queryStage, null, exitStage, null, true, null, spy);
         verify(spy, times(1)).beginSequence(any(QueryContext.class));
         verify(spy, times(0)).endSequence(any(QueryContext.class));
     }
@@ -70,7 +70,7 @@ public class AsSequenceSelectorQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, null, spy);
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, true, null, spy);
         verify(spy, times(1)).beginSequence(any(QueryContext.class));
         verify(spy, times(1)).endSequence(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);

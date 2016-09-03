@@ -61,6 +61,22 @@ public class MultiStreamElementQueryStageTestCase
     }
 
     @Test
+    public void test_evaluate_consumer_break() {
+        Input input = Input.fromByteArray(new byte[]{(byte) 01});
+
+        QueryStage queryStage = MultiStreamElementQueryStage.INSTANCE;
+        QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> {
+            queryContext.offset(-1);
+            return VisitResult.Break;
+        };
+
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, false);
+        assertEquals(VisitResult.Break, evaluationResult.visitResult);
+        assertEquals(1, evaluationResult.values.size());
+        assertSame(Value.NULL_VALUE, evaluationResult.values.get(0));
+    }
+
+    @Test
     public void test_evaluate_multi_elements() {
         Input input = Input.fromByteArray(hexToBytes("0x0102"));
 

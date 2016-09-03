@@ -51,7 +51,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, true, null, spy);
         verify(spy, times(1)).putDictionaryKey(eq("foo"), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
@@ -65,7 +65,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, true, null, spy);
         verify(spy, times(1)).putDictionaryKey(eq(-1000L), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
@@ -79,7 +79,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, null, spy);
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, true, null, spy);
         verify(spy, times(1)).putDictionaryKey(eq(-12.d), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
@@ -94,7 +94,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        evaluate(input, queryStage, null, exitStage, null, null, spy);
+        evaluate(input, queryStage, null, exitStage, null, true, null, spy);
         verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
         verify(spy, times(0)).putDictionaryNullValue(any(QueryContext.class));
     }
@@ -110,7 +110,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, null, spy);
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, true, null, spy);
         verify(spy, times(0)).putDictionaryValue(eq(NIL), any(QueryContext.class));
         verify(spy, times(1)).putDictionaryNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);

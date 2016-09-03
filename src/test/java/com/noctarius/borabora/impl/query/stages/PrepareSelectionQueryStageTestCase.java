@@ -43,7 +43,7 @@ public class PrepareSelectionQueryStageTestCase
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        evaluate(input, queryStage, null, null, null, null, spy);
+        evaluate(input, queryStage, null, null, null, true, null, spy);
         verify(spy, times(1)).beginSelect(any(QueryContext.class));
     }
 
