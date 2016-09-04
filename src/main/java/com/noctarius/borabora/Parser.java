@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * <p>A common example how to query an element from the CBOR stream is shown in the following snippet:</p>
  * <pre>
  *     Parser parser = Parser.newBuilder().build();
- *     Input input = Input.fromByteArray(getByteArray());
+ *     Input input = Input.fromByteArray( getByteArray() );
  *     Query query = parser.newQueryBuilder().stream( 0 ).sequence( 10 ).build();
  *     Value value = parser.read( input, query );
  * </pre>

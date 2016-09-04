@@ -30,6 +30,13 @@ import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
  * <p>The resulting Query instances of any of the above ways are fully stateless and
  * thread-safe and can be used concurrently by multiple threads and stored into static
  * final fields without any further issues.</p>
+ * <p>A common example how to query an element from the CBOR stream is shown in the following snippet:</p>
+ * <pre>
+ *     Parser parser = Parser.newBuilder().build();
+ *     Input input = Input.fromByteArray( getByteArray() );
+ *     Query query = parser.newQueryBuilder().stream( 0 ).sequence( 10 ).build();
+ *     Value value = parser.read( input, query );
+ * </pre>
  *
  * @see Parser
  * @see QueryBuilder
