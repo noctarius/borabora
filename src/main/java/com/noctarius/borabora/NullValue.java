@@ -60,8 +60,8 @@ final class NullValue
     }
 
     @Override
-    public Boolean bool() {
-        return null;
+    public boolean bool() {
+        return false;
     }
 
     @Override

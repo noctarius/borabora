@@ -83,7 +83,7 @@ public class ObjectValue
     }
 
     @Override
-    public Boolean bool() {
+    public boolean bool() {
         return extract(() -> matchValueType(valueType, ValueTypes.Bool), (Supplier<Boolean>) supplier);
     }
 

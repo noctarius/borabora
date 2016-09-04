@@ -28,7 +28,7 @@
  * interest.</p>
  * <p>Using borabora, you're not directly working with native types directly but all
  * queries result in a generalized type, called {@link com.noctarius.borabora.Value},
- * which will be lazily (on user request) de-serialized into the actual data type and
+ * which will be lazily (on user request) deserialized into the actual data type and
  * value. Up to this point nothing is actually read.</p>
  * <p>The API is kept simple but powerful. Reading CBOR data with borabora consists
  * mainly of creating a {@link com.noctarius.borabora.Parser} instance, wrapping any
