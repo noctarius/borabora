@@ -138,7 +138,7 @@ public interface Value {
      * following three types:</p>
      * <ul>
      * <li><b>Sequences:</b> [item1, item2, item3, ...]</li>
-     * <li><b>Dictionary:</b [key1=value1, key2=value2, key3=value3, ...]></li>
+     * <li><b>Dictionary:</b> [key1=value1, key2=value2, key3=value3, ...]</li>
      * <li><b>Data Item:</b> ValueTypeName{ actualValue }</li>
      * </ul>
      * <p>To clarify in an example, a dictionary has a single key-value pair, where the key is a String
