@@ -16,7 +16,8 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.codec.CompositeBuffer;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.spi.io.CompositeBuffer;
 
 import java.io.OutputStream;
 
@@ -35,7 +36,7 @@ import java.io.OutputStream;
  *     // generate the actual data stream
  * </pre>
  *
- * @see com.noctarius.borabora.builder.GraphBuilder
+ * @see GraphBuilder
  * @see Writer
  * @see CompositeBuffer
  */

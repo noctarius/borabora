@@ -16,14 +16,14 @@
  */
 package com.noctarius.borabora;
 
-import static com.noctarius.borabora.spi.Constants.MT_BYTESTRING;
-import static com.noctarius.borabora.spi.Constants.MT_DICTIONARY;
-import static com.noctarius.borabora.spi.Constants.MT_FLOAT_SIMPLE;
-import static com.noctarius.borabora.spi.Constants.MT_NEGATIVE_INT;
-import static com.noctarius.borabora.spi.Constants.MT_SEMANTIC_TAG;
-import static com.noctarius.borabora.spi.Constants.MT_SEQUENCE;
-import static com.noctarius.borabora.spi.Constants.MT_TEXTSTRING;
-import static com.noctarius.borabora.spi.Constants.MT_UNSINGED_INT;
+import static com.noctarius.borabora.spi.io.Constants.MT_BYTESTRING;
+import static com.noctarius.borabora.spi.io.Constants.MT_DICTIONARY;
+import static com.noctarius.borabora.spi.io.Constants.MT_FLOAT_SIMPLE;
+import static com.noctarius.borabora.spi.io.Constants.MT_NEGATIVE_INT;
+import static com.noctarius.borabora.spi.io.Constants.MT_SEMANTIC_TAG;
+import static com.noctarius.borabora.spi.io.Constants.MT_SEQUENCE;
+import static com.noctarius.borabora.spi.io.Constants.MT_TEXTSTRING;
+import static com.noctarius.borabora.spi.io.Constants.MT_UNSINGED_INT;
 
 /**
  * The <tt>MajorType</tt> enum defines the basic types as specified by the CBOR

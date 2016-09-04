@@ -16,11 +16,11 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.DictionaryBuilder;
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.SequenceBuilder;
-import com.noctarius.borabora.builder.ValueBuilder;
-import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.SequenceBuilder;
+import com.noctarius.borabora.builder.encoder.ValueBuilder;
+import com.noctarius.borabora.spi.io.Constants;
 import org.junit.Test;
 
 import java.math.BigDecimal;

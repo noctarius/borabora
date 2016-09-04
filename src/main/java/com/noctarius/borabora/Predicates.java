@@ -16,8 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.builder.query.QueryTokenBuilder;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
 
@@ -28,7 +29,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
+import static com.noctarius.borabora.spi.io.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
 
 /**
  * This class contains parsing optimized utility methods to provide {@link Predicate}
@@ -37,13 +38,13 @@ import static com.noctarius.borabora.spi.Constants.MATCH_STRING_FAST_PATH_TRESHO
  * <ul>
  * <li>{@link Dictionary#containsKey(Predicate)}</li>
  * <li>{@link Dictionary#containsValue(Predicate)}</li>
- * <li>{@link com.noctarius.borabora.builder.QueryTokenBuilder#dictionary(Predicate)}</li>
- * <li>{@link com.noctarius.borabora.builder.QueryTokenBuilder#sequenceMatch(Predicate)}</li>
+ * <li>{@link QueryTokenBuilder#dictionary(Predicate)}</li>
+ * <li>{@link QueryTokenBuilder#sequenceMatch(Predicate)}</li>
  * </ul>
  *
  * @see Dictionary
  * @see Sequence
- * @see com.noctarius.borabora.builder.QueryTokenBuilder
+ * @see QueryTokenBuilder
  * @see Predicate
  */
 public final class Predicates {

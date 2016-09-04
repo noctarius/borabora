@@ -20,13 +20,15 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.StreamValue;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public enum TagReaders
+enum TagReaders
         implements TagReader<Object> {
 
     DateTime((valueType, offset, length, queryContext) -> {

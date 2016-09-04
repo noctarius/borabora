@@ -21,8 +21,8 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextAware;
 

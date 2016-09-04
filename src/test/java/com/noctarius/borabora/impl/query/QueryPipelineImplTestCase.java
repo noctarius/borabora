@@ -16,13 +16,13 @@
  */
 package com.noctarius.borabora.impl.query;
 
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import org.junit.Test;
 
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
-import static com.noctarius.borabora.spi.pipeline.QueryBuilderNode.QUERY_BASE;
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode.QUERY_BASE;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

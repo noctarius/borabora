@@ -17,7 +17,7 @@
 package com.noctarius.borabora.impl.codec;
 
 import com.noctarius.borabora.AbstractTestCase;
-import com.noctarius.borabora.spi.codec.Bytes;
+import com.noctarius.borabora.spi.io.Bytes;
 import org.junit.Test;
 
 public class BytesTestCase

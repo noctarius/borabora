@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_BYTE_ARRAY;
 
 final class NullValue
         implements Value {

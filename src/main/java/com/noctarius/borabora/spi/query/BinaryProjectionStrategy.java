@@ -24,16 +24,16 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
 import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.Encoder;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 
 import java.io.ByteArrayOutputStream;
 
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
-import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.spi.Constants.SIMPLE_VALUE_NULL_BYTE;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_QUERY_CONSUMER;
+import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
+import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.io.Constants.SIMPLE_VALUE_NULL_BYTE;
 
 public class BinaryProjectionStrategy
         implements ProjectionStrategy {

@@ -21,9 +21,9 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.io.Constants;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.Encoder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

@@ -16,15 +16,15 @@
  */
 package com.noctarius.borabora.impl.query.stages;
 
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
 
 public abstract class AsDictionarySelectorEntryQueryStage
         implements QueryStage {

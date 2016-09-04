@@ -16,14 +16,19 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.builder.semantictag.CBORBuilder;
-import com.noctarius.borabora.builder.semantictag.DateTimeBuilder;
-import com.noctarius.borabora.builder.semantictag.FractionBuilder;
-import com.noctarius.borabora.builder.semantictag.NBigNumberBuilder;
-import com.noctarius.borabora.builder.semantictag.TimestampBuilder;
-import com.noctarius.borabora.builder.semantictag.UBigNumberBuilder;
-import com.noctarius.borabora.builder.semantictag.URIBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.CBORBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.DateTimeBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.FractionBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.NBigNumberBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.TimestampBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.UBigNumberBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.URIBuilder;
 import com.noctarius.borabora.spi.ValueValidators;
+import com.noctarius.borabora.spi.builder.AbstractStreamValueBuilder;
+import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.builder.TagBuilder;
+import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
+import com.noctarius.borabora.spi.io.Encoder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,9 +40,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
-import static com.noctarius.borabora.spi.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.spi.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.spi.Constants.UTC;
+import static com.noctarius.borabora.spi.io.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.spi.io.Constants.TAG_TIMESTAMP;
+import static com.noctarius.borabora.spi.io.Constants.UTC;
 
 class TagBuilders {
 

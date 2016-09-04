@@ -17,10 +17,10 @@
 package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

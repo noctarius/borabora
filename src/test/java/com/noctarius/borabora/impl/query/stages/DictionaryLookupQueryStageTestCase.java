@@ -21,10 +21,10 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.codec.CompositeBuffer;
-import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.io.CompositeBuffer;
+import com.noctarius.borabora.spi.io.Encoder;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
 import java.util.function.Predicate;

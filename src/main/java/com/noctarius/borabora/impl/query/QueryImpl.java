@@ -17,9 +17,9 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 
 import java.util.Objects;
 

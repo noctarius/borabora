@@ -18,12 +18,12 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.TypeSpecs;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.TypeSpecs;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

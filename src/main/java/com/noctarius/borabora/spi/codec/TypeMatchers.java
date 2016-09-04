@@ -24,7 +24,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.function.Predicate;
 
-public enum TypeMatchers
+enum TypeMatchers
         implements Predicate<Object> {
 
     DateTime((v) -> !Timestamp.class.isAssignableFrom(v.getClass()) //

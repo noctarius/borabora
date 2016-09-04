@@ -16,12 +16,12 @@
  */
 package com.noctarius.borabora.impl;
 
-import com.noctarius.borabora.builder.SequenceQueryBuilder;
-import com.noctarius.borabora.builder.StreamEntryQueryBuilder;
+import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
+import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 
 import java.util.Objects;
 

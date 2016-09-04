@@ -21,14 +21,14 @@ import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
-import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

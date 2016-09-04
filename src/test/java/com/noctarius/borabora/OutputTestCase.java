@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.codec.CompositeBuffer;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.spi.io.CompositeBuffer;
 import org.junit.Test;
 import sun.misc.Unsafe;
 

@@ -18,16 +18,16 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
-import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

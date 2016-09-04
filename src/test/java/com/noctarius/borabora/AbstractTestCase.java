@@ -16,16 +16,16 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
 import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.QueryImpl;
-import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.Encoder;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
-import static com.noctarius.borabora.spi.Constants.EMPTY_QUERY_CONSUMER;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_QUERY_CONSUMER;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractTestCase {

@@ -18,11 +18,11 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.NoSuchByteException;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
 public class SingleStreamElementQueryStage
         implements QueryStage {

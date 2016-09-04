@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora.impl;
 
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.codec.AbstractStreamValueBuilder;
-import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.spi.builder.AbstractStreamValueBuilder;
+import com.noctarius.borabora.spi.builder.EncoderContext;
 
 final class GraphBuilderImpl
         extends AbstractStreamValueBuilder<GraphBuilder>

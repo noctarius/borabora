@@ -16,27 +16,27 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.ValueBuilder;
-import com.noctarius.borabora.spi.BuilderStackPop;
-import com.noctarius.borabora.spi.BuilderStackPush;
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.spi.codec.AbstractStreamValueBuilder;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.Encoder;
-import com.noctarius.borabora.spi.codec.EncoderContext;
-import com.noctarius.borabora.spi.codec.TagBuilder;
-import com.noctarius.borabora.spi.codec.TagBuilderConsumer;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.ValueBuilder;
+import com.noctarius.borabora.spi.builder.BuilderStackPop;
+import com.noctarius.borabora.spi.builder.BuilderStackPush;
+import com.noctarius.borabora.spi.query.TypeSpec;
+import com.noctarius.borabora.spi.builder.AbstractStreamValueBuilder;
+import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.builder.TagBuilder;
+import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.function.Function;
 
-import static com.noctarius.borabora.spi.Constants.OPCODE_BREAK_MASK;
-import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
+import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.builder.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 
 public class CustomSemanticTagTestCase

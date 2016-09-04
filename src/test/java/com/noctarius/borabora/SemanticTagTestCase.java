@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import static com.noctarius.borabora.spi.Constants.ASCII;
+import static com.noctarius.borabora.spi.io.Constants.ASCII;
 import static org.junit.Assert.assertEquals;
 
 public class SemanticTagTestCase

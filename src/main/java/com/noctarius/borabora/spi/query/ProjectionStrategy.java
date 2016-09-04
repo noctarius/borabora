@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.spi.query;
 
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 
 public interface ProjectionStrategy {
 

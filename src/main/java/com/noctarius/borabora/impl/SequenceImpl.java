@@ -22,9 +22,9 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.ElementCounts;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.ElementCounts;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Iterator;
@@ -32,7 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.spi.codec.Bytes.readUInt8;
+import static com.noctarius.borabora.spi.io.Bytes.readUInt8;
 
 public final class SequenceImpl
         implements Sequence {

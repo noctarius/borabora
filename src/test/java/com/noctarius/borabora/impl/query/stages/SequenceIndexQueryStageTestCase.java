@@ -19,8 +19,8 @@ package com.noctarius.borabora.impl.query.stages;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertTrue;

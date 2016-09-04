@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

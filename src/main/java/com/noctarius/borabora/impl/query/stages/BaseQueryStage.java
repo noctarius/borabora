@@ -18,14 +18,14 @@ package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
-import static com.noctarius.borabora.spi.Constants.TAG_MAGIC_CBOR_HEADER;
+import static com.noctarius.borabora.spi.io.Constants.TAG_MAGIC_CBOR_HEADER;
 
 public class BaseQueryStage
         implements QueryStage {

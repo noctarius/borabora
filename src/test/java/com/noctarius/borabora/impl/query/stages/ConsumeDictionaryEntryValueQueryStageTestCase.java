@@ -17,12 +17,12 @@
 package com.noctarius.borabora.impl.query.stages;
 
 import com.noctarius.borabora.Input;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import org.junit.Test;
 
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;

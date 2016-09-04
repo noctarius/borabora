@@ -27,14 +27,14 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.semantictag.CBORBuilder;
-import com.noctarius.borabora.builder.semantictag.DateTimeBuilder;
-import com.noctarius.borabora.builder.semantictag.FractionBuilder;
-import com.noctarius.borabora.builder.semantictag.NBigNumberBuilder;
-import com.noctarius.borabora.builder.semantictag.TimestampBuilder;
-import com.noctarius.borabora.builder.semantictag.UBigNumberBuilder;
-import com.noctarius.borabora.builder.semantictag.URIBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.CBORBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.DateTimeBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.FractionBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.NBigNumberBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.TimestampBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.UBigNumberBuilder;
+import com.noctarius.borabora.builder.encoder.semantictag.URIBuilder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -47,7 +47,7 @@ import java.time.Instant;
 import java.util.Date;
 
 import static com.noctarius.borabora.Predicates.matchString;
-import static com.noctarius.borabora.spi.codec.TagSupport.semanticTag;
+import static com.noctarius.borabora.spi.builder.TagSupport.semanticTag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 

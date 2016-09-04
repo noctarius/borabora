@@ -21,9 +21,9 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.StreamValue;
-import com.noctarius.borabora.spi.codec.Decoder;
+import com.noctarius.borabora.spi.io.Decoder;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
 
 public interface QueryConsumer {
 

@@ -16,11 +16,11 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.ValueValidators;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.codec.StringEncoders;
 import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.io.StringEncoders;
 
 import java.math.BigDecimal;
 import java.util.List;

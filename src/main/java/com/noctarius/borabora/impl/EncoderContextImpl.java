@@ -18,7 +18,7 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.spi.builder.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.util.Map;

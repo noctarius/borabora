@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
-import com.noctarius.borabora.spi.TypeSpecs;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
+import com.noctarius.borabora.spi.query.TypeSpecs;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;

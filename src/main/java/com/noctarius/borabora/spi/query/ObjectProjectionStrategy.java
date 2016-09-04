@@ -23,8 +23,8 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.StreamableIterable;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.io.Decoder;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

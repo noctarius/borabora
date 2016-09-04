@@ -19,7 +19,7 @@ package com.noctarius.borabora.impl.codec;
 import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.NoSuchByteException;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.io.Encoder;
 import org.junit.Test;
 
 import java.math.BigInteger;

@@ -20,8 +20,8 @@ import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.codec.ByteSizes;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.io.ByteSizes;
+import com.noctarius.borabora.spi.io.Encoder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

@@ -17,17 +17,17 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.AbstractTestCase;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 import static org.junit.Assert.assertSame;
 
 public class BTreeFactoriesTestCase

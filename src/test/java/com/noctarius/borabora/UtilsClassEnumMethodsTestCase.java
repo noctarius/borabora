@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.TypeSpecs;
-import com.noctarius.borabora.spi.codec.StringEncoders;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.TypeSpecs;
+import com.noctarius.borabora.spi.io.StringEncoders;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;

@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.TypeSpecs;
+import com.noctarius.borabora.spi.query.TypeSpecs;
 import org.junit.Test;
 
 import java.util.Collections;

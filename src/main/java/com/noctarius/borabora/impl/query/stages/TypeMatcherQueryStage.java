@@ -20,16 +20,16 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.TypeSpec;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.query.TypeSpec;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
 import java.util.Objects;
 
-import static com.noctarius.borabora.spi.Constants.OFFSET_CODE_NULL;
+import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
 
 public class TypeMatcherQueryStage
         implements QueryStage {

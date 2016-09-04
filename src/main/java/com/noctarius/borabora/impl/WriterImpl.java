@@ -18,8 +18,8 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.spi.codec.EncoderContext;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.spi.builder.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.util.Map;

@@ -17,15 +17,15 @@
 package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.query.BTreeFactories;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategy;
-import com.noctarius.borabora.spi.pipeline.QueryOptimizerStrategyFactory;
-import com.noctarius.borabora.spi.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.ArrayList;
 import java.util.List;

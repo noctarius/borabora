@@ -24,11 +24,11 @@ import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValuePrettyPrinter;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.builder.DictionaryBuilder;
-import com.noctarius.borabora.builder.DictionaryEntryBuilder;
-import com.noctarius.borabora.builder.GraphBuilder;
-import com.noctarius.borabora.builder.SequenceBuilder;
-import com.noctarius.borabora.builder.ValueBuilder;
+import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
+import com.noctarius.borabora.builder.encoder.DictionaryEntryBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.SequenceBuilder;
+import com.noctarius.borabora.builder.encoder.ValueBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 

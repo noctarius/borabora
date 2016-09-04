@@ -17,9 +17,9 @@
 package com.noctarius.borabora.spi.query;
 
 import com.noctarius.borabora.impl.query.BTreeFactories;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

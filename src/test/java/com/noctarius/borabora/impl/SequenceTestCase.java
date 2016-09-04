@@ -27,7 +27,7 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.builder.GraphBuilder;
+import com.noctarius.borabora.builder.encoder.GraphBuilder;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import org.junit.Assert;
 import org.junit.Test;

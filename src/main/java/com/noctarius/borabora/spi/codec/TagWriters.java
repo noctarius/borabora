@@ -17,7 +17,9 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.io.Constants;
+import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.io.Encoder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,7 +29,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-public enum TagWriters
+enum TagWriters
         implements TagWriter<Object> {
 
     DateTime((value, offset, encoderContext) -> {

@@ -21,13 +21,13 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Predicates;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.WrongTypeException;
-import com.noctarius.borabora.spi.Constants;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.EqualsSupport;
-import com.noctarius.borabora.spi.codec.Decoder;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
+import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
 import java.util.Objects;
 import java.util.function.Predicate;

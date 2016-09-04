@@ -16,11 +16,11 @@
  */
 package com.noctarius.borabora.impl.query;
 
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 
 import java.util.Objects;
 
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 
 final class PipelineStagePrinter {
 

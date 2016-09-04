@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.spi.builder.EncoderContext;
+
 public interface TagWriter<V> {
 
     long process(V value, long offset, EncoderContext encoderContext);

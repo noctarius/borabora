@@ -17,6 +17,7 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.Query;
+import com.noctarius.borabora.builder.query.QueryTokenBuilder;
 
 public interface QueryBuilder
         extends QueryTokenBuilder<QueryBuilder> {

@@ -30,6 +30,7 @@ PARSER_BEGIN(QueryParser)
     import com.noctarius.borabora.spi.*;
     import com.noctarius.borabora.spi.codec.*;
     import com.noctarius.borabora.builder.*;
+    import com.noctarius.borabora.builder.query.*;
     import java.text.*;
     import java.util.*;
 

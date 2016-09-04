@@ -23,22 +23,22 @@ import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.pipeline.QueryStage;
-import com.noctarius.borabora.spi.pipeline.VisitResult;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
+import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.noctarius.borabora.spi.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 
 public abstract class AbstractQueryStageTestCase
         extends AbstractTestCase {

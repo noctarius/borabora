@@ -22,8 +22,8 @@ import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.QueryParserException;
 import com.noctarius.borabora.Value;
-import com.noctarius.borabora.spi.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -15,8 +15,8 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.Constants;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.io.Constants;
+import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.QueryContext;
 import org.junit.Ignore;
 import org.junit.Test;

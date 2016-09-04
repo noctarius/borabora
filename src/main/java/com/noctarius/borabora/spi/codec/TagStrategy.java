@@ -17,6 +17,7 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.spi.builder.EncoderContext;
 
 public interface TagStrategy<S, V>
         extends TagDecoder<V>, TagEncoder<V> {

@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.codec.CompositeBuffer;
+import com.noctarius.borabora.spi.io.CompositeBuffer;
 
 /**
  * An <tt>Input</tt> instance represents a source for readable data. Input implementations are

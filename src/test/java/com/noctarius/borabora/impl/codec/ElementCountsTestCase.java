@@ -20,15 +20,15 @@ import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.codec.ElementCounts;
-import com.noctarius.borabora.spi.codec.Encoder;
+import com.noctarius.borabora.spi.io.ElementCounts;
+import com.noctarius.borabora.spi.io.Encoder;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
-import static com.noctarius.borabora.spi.Constants.BI_VAL_MAX_VALUE;
-import static com.noctarius.borabora.spi.Constants.EMPTY_BYTE_ARRAY;
+import static com.noctarius.borabora.spi.io.Constants.BI_VAL_MAX_VALUE;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_BYTE_ARRAY;
 import static org.junit.Assert.assertEquals;
 
 public class ElementCountsTestCase

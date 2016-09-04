@@ -18,10 +18,10 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
-import com.noctarius.borabora.builder.StreamQueryBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
-import com.noctarius.borabora.spi.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 
 /**
  * The <tt>Query</tt> interface represents any kind of prepared statement like query to be

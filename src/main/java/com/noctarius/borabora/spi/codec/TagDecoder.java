@@ -18,7 +18,7 @@ package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.ValueType;
-import com.noctarius.borabora.spi.TypeSpec;
+import com.noctarius.borabora.spi.query.TypeSpec;
 
 public interface TagDecoder<V>
         extends TagReader<V> {
