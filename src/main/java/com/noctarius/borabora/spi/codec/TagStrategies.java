@@ -27,23 +27,16 @@ import com.noctarius.borabora.builder.encoder.semantictag.NBigNumberBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.TimestampBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.UBigNumberBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.URIBuilder;
-import com.noctarius.borabora.spi.io.Constants;
-import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.query.TypeSpecs;
 import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.TypeSpec;
+import com.noctarius.borabora.spi.query.TypeSpecs;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.noctarius.borabora.spi.io.Constants.TAG_DATE_TIME;
-import static com.noctarius.borabora.spi.io.Constants.TAG_ENCCBOR;
-import static com.noctarius.borabora.spi.io.Constants.TAG_FRACTION;
-import static com.noctarius.borabora.spi.io.Constants.TAG_NEGATIVE_BIGNUM;
-import static com.noctarius.borabora.spi.io.Constants.TAG_TIMESTAMP;
-import static com.noctarius.borabora.spi.io.Constants.TAG_UNSIGNED_BIGNUM;
-import static com.noctarius.borabora.spi.io.Constants.TAG_URI;
 import static com.noctarius.borabora.spi.codec.TagBuilders.CBORBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.DateTimeBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.FractionBuilderImpl;
@@ -51,6 +44,13 @@ import static com.noctarius.borabora.spi.codec.TagBuilders.NBigNumberBuilderImpl
 import static com.noctarius.borabora.spi.codec.TagBuilders.TimestampBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.UBigNumberBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.URIBuilderImpl;
+import static com.noctarius.borabora.spi.io.Constants.TAG_DATE_TIME;
+import static com.noctarius.borabora.spi.io.Constants.TAG_ENCCBOR;
+import static com.noctarius.borabora.spi.io.Constants.TAG_FRACTION;
+import static com.noctarius.borabora.spi.io.Constants.TAG_NEGATIVE_BIGNUM;
+import static com.noctarius.borabora.spi.io.Constants.TAG_TIMESTAMP;
+import static com.noctarius.borabora.spi.io.Constants.TAG_UNSIGNED_BIGNUM;
+import static com.noctarius.borabora.spi.io.Constants.TAG_URI;
 
 public enum TagStrategies
         implements TagStrategy {

@@ -31,7 +31,7 @@ public class SemanticTagTestCase
     @Test
     public void test_magic_header_skip() {
         SimplifiedTestParser parser = buildParser("0xd9d9f700");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         assertEquals(MajorType.UnsignedInteger, value.majorType());
         assertEquals(0, value.number().intValue());
     }
@@ -41,7 +41,7 @@ public class SemanticTagTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xd82076687474703a2f2f7777772e6578616d706c652e636f6d");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.URI, value.valueType());
         assertEquals(new URI("http://www.example.com"), value.tag());
@@ -62,7 +62,7 @@ public class SemanticTagTestCase
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         SimplifiedTestParser parser = buildParser("0xc074323031332d30332d32315432303a30343a30305a");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.DateTime, value.valueType());
         assertEquals(calendar.toInstant(), value.tag());
@@ -73,7 +73,7 @@ public class SemanticTagTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xc11a514b67b0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Timestamp, value.valueType());
         assertEquals((Long) 1363896240L, value.tag());
@@ -84,7 +84,7 @@ public class SemanticTagTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xc1fb41d452d9ec200000");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Timestamp, value.valueType());
         assertEquals((Double) 1363896240.5D, value.tag());
@@ -96,7 +96,7 @@ public class SemanticTagTestCase
 
         String expected = new String(hexToBytes("0x6449455446"), ASCII);
         SimplifiedTestParser parser = buildParser("0xd818456449455446");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Value enc = value.tag();
         String actual = enc.string();
         assertEquals(expected, actual);

@@ -18,10 +18,8 @@
 /**
  * This package contains the basic builder classes for {@link com.noctarius.borabora.Parser}
  * ({@link com.noctarius.borabora.builder.ParserBuilder}), {@link com.noctarius.borabora.Query}
- * ({@link com.noctarius.borabora.builder.query.QueryBuilder}), {@link com.noctarius.borabora.Writer}
- * ({@link com.noctarius.borabora.builder.WriterBuilder}), as well as the
- * {@link com.noctarius.borabora.builder.query.QueryBuilder} configurator class
- * {@link com.noctarius.borabora.builder.QueryBuilderBuilder}.
+ * ({@link com.noctarius.borabora.builder.query.QueryBuilder}) and {@link com.noctarius.borabora.Writer}
+ * ({@link com.noctarius.borabora.builder.WriterBuilder}).
  * <p>Subpackages contain encoding builders (for writing) and query builders (for querying).</p>
  */
 package com.noctarius.borabora.builder;

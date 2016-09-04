@@ -19,11 +19,11 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.query.TypeSpec;
 import com.noctarius.borabora.spi.builder.EncoderContext;
 import com.noctarius.borabora.spi.codec.TagEncoder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.TypeSpec;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

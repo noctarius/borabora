@@ -18,6 +18,7 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.builder.query.QueryBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.ParserBuilderImpl;
 
 import java.util.function.Consumer;
@@ -34,8 +35,8 @@ import java.util.function.Consumer;
  * <pre>
  *     Parser parser = Parser.newBuilder().build();
  *     Input input = Input.fromByteArray(getByteArray());
- *     Query query = Query.newBuilder().stream(0).sequence(10).build();
- *     Value value = parser.read(input, query);
+ *     Query query = parser.newQueryBuilder().stream( 0 ).sequence( 10 ).build();
+ *     Value value = parser.read( input, query );
  * </pre>
  *
  * @see Input
@@ -203,7 +204,14 @@ public interface Parser {
      */
     Query prepareQuery(String query);
 
-    QueryBuilder newQueryBuilder();
+    /**
+     * Returns a new {@link QueryBuilder} instance to configure a {@link Query} instance. The eventually
+     * build query instance is fully thread-safe and stateless and can be stored and shared by multiple
+     * threads.
+     *
+     * @return the new QueryBuilder instance
+     */
+    StreamQueryBuilder newQueryBuilder();
 
     /**
      * Creates a new {@link ParserBuilder} instance to fluently configure and create a {@link Parser}

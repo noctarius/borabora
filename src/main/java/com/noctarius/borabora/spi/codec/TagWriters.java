@@ -17,8 +17,8 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Output;
-import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Encoder;
 
 import java.math.BigDecimal;

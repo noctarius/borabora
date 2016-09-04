@@ -17,11 +17,11 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.AbstractTestCase;
-import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizer;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import org.junit.Test;
 
 import java.util.ArrayList;

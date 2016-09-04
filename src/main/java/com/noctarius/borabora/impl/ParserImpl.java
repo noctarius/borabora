@@ -22,6 +22,7 @@ import com.noctarius.borabora.Query;
 import com.noctarius.borabora.QueryParserException;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.query.QueryBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
@@ -136,10 +137,7 @@ final class ParserImpl
     public Query prepareQuery(String query) {
         Objects.requireNonNull(query, "query must not be null");
         try {
-            QueryBuilder queryBuilder = Query.configureBuilder().withPipelineStageFactory(pipelineStageFactory)
-                                             .withQueryPipelineFactory(queryPipelineFactory)
-                                             .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
-                                             .addQueryOptimizers(queryOptimizers).newBuilder();
+            QueryBuilder queryBuilder = newQueryBuilder();
             QueryParser.parse(query, queryBuilder, tagStrategies);
             return queryBuilder.build();
 
@@ -149,7 +147,7 @@ final class ParserImpl
     }
 
     @Override
-    public QueryBuilder newQueryBuilder() {
+    public StreamQueryBuilder newQueryBuilder() {
         QueryOptimizerStrategy queryOptimizerStrategy = queryOptimizerStrategyFactory.newQueryOptimizerStrategy(queryOptimizers);
         return new QueryBuilderImpl(queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
     }

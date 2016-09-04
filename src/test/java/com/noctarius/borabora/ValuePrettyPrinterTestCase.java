@@ -56,7 +56,7 @@ public class ValuePrettyPrinterTestCase
         Input input = Input.fromByteArray(bytes);
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         ValuePrettyPrinter.toStringPrettyPrint(value);
     }
 
@@ -67,7 +67,7 @@ public class ValuePrettyPrinterTestCase
         Input input = Input.fromByteArray(bytes);
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         ValuePrettyPrinter.asStringPrettyPrint(value);
     }
 

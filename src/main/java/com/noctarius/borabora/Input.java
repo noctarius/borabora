@@ -25,7 +25,7 @@ import com.noctarius.borabora.spi.io.CompositeBuffer;
  * <pre>
  * Input input = Input.fromByteArray( ... );
  * Parser parser = Parser.newBuilder().build();
- * Query query = Query.newBuilder().build();
+ * Query query = parser.newQueryBuilder().build();
  * Value value = parser.read( input, query );
  * </pre>
  *

@@ -55,7 +55,7 @@ public class WriteNullTestCase
     }
 
     private static final Parser PARSER = Parser.newBuilder().build();
-    private static final Query QUERY = Query.newBuilder().build();
+    private static final Query QUERY = PARSER.newQueryBuilder().build();
 
     private final Consumer<GraphBuilder> consumer;
 

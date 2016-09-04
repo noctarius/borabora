@@ -99,7 +99,7 @@ public class NumberTestCase
         Input input = Input.fromByteArray(this.value2);
         Parser parser = Parser.newBuilder().build();
 
-        Query query = Query.newBuilder().build();
+        Query query = parser.newQueryBuilder().build();
         Value value = parser.read(input, query);
 
         Number result = value.number();

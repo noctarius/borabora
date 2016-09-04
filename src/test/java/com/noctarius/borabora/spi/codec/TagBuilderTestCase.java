@@ -22,7 +22,6 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Parser;
-import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueTypes;
@@ -82,10 +81,10 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
-        Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
-        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
+        Value value3 = parser.read(input, parser.newQueryBuilder().stream(2).build());
+        Value value4 = parser.read(input, parser.newQueryBuilder().stream(3).build());
         assertEquals(expected1, value1.tag());
         assertEquals(expected1, value2.tag());
         assertNull(value3.tag());
@@ -118,11 +117,11 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
-        Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
-        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
-        Value value5 = parser.read(input, Query.newBuilder().stream(4).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
+        Value value3 = parser.read(input, parser.newQueryBuilder().stream(2).build());
+        Value value4 = parser.read(input, parser.newQueryBuilder().stream(3).build());
+        Value value5 = parser.read(input, parser.newQueryBuilder().stream(4).build());
 
         assertEquals(expected2, ((Long) value1.tag()).longValue());
         assertEquals(expected2, ((Long) value2.tag()).longValue());
@@ -149,8 +148,8 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
         assertEquals(expected, value1.tag());
         assertNull(value2.tag());
     }
@@ -173,8 +172,8 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
         assertEquals(expected, value1.tag());
         assertNull(value2.tag());
     }
@@ -197,8 +196,8 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
         assertEquals(expected, value1.tag());
         assertNull(value2.tag());
     }
@@ -228,10 +227,10 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value1 = parser.read(input, Query.newBuilder().stream(0).build());
-        Value value2 = parser.read(input, Query.newBuilder().stream(1).build());
-        Value value3 = parser.read(input, Query.newBuilder().stream(2).build());
-        Value value4 = parser.read(input, Query.newBuilder().stream(3).build());
+        Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
+        Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
+        Value value3 = parser.read(input, parser.newQueryBuilder().stream(2).build());
+        Value value4 = parser.read(input, parser.newQueryBuilder().stream(3).build());
         assertEquals(expected2, value1.tag());
         assertEquals(expected2, value2.tag());
         assertNull(value3.tag());
@@ -256,7 +255,7 @@ public class TagBuilderTestCase
         Parser parser = Parser.newBuilder().build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         Value encodedValue = value.tag();
         assertEquals(ValueTypes.Sequence, encodedValue.valueType());
         Sequence sequence = encodedValue.sequence();
@@ -277,7 +276,7 @@ public class TagBuilderTestCase
                .endEntry().endDictionary();
         });
 
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         assertEquals(MajorType.Dictionary, value.majorType());
         Dictionary dictionary = value.dictionary();
         assertEquals(BigInteger.ONE, dictionary.get(matchString("key")).tag());
@@ -295,7 +294,7 @@ public class TagBuilderTestCase
                .endSequence();
         });
 
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         assertEquals(MajorType.Sequence, value.majorType());
         Sequence sequence = value.sequence();
         assertEquals(BigInteger.ONE, sequence.get(0).tag());

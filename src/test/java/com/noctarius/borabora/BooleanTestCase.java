@@ -29,7 +29,7 @@ public class BooleanTestCase
 
         SimplifiedTestParser parser = buildParser("0xf4");
 
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Bool, value.valueType());
         assertEquals(Boolean.FALSE, value.bool());
@@ -41,7 +41,7 @@ public class BooleanTestCase
 
         SimplifiedTestParser parser = buildParser("0xf5");
 
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Bool, value.valueType());
         assertEquals(Boolean.TRUE, value.bool());

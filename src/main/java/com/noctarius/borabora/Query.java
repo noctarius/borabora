@@ -16,11 +16,7 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.QueryBuilderBuilder;
 import com.noctarius.borabora.builder.query.QueryBuilder;
-import com.noctarius.borabora.builder.query.StreamQueryBuilder;
-import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
-import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 
 /**
@@ -29,8 +25,7 @@ import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
  * instances can be created by either of the following ways:
  * <ul>
  * <li>{@link Parser#prepareQuery(String)}</li>
- * <li>{@link Query#newBuilder()} and {@link QueryBuilder#build()}</li>
- * <li>{@link Query#configureBuilder()} and {@link QueryBuilder#build()}</li>
+ * <li>{@link Parser#newQueryBuilder()} and {@link QueryBuilder#build()}</li>
  * </ul>
  * <p>The resulting Query instances of any of the above ways are fully stateless and
  * thread-safe and can be used concurrently by multiple threads and stored into static
@@ -38,7 +33,6 @@ import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
  *
  * @see Parser
  * @see QueryBuilder
- * @see QueryBuilderBuilder
  * @see Input
  */
 public interface Query {
@@ -58,29 +52,5 @@ public interface Query {
      * Prints the query graph (execution plan) of this query instance.
      */
     void printQueryGraph();
-
-    /**
-     * Returns a new {@link QueryBuilderBuilder} instance to pre-configure the actual
-     * {@link QueryBuilder} with certain special abilities or configurations.
-     *
-     * @return a new configuration builder
-     */
-    static QueryBuilderBuilder configureBuilder() {
-        return new QueryBuilderBuilderImpl();
-    }
-
-    /**
-     * Returns a new {@link QueryBuilder} instance pre-configured with the
-     * {@link BinaryProjectionStrategy} in case of projections being used. Using this method
-     * is equivalent to:
-     * <pre>
-     *     Query.configureBuilder().withProjectionStrategy(BinaryProjectionStrategy.INSTANCE).newBuilder();
-     * </pre>
-     *
-     * @return a binary projection strategy pre-configured QueryBuilder instance
-     */
-    static StreamQueryBuilder newBuilder() {
-        return configureBuilder().newBuilder();
-    }
 
 }

@@ -16,10 +16,6 @@
  */
 package com.noctarius.borabora.spi.builder;
 
-import com.noctarius.borabora.spi.builder.BuilderStackPop;
-import com.noctarius.borabora.spi.builder.BuilderStackPush;
-import com.noctarius.borabora.spi.builder.EncoderContext;
-import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.lang.reflect.InvocationHandler;

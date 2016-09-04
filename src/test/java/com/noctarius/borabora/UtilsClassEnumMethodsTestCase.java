@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.query.TypeSpecs;
 import com.noctarius.borabora.spi.io.StringEncoders;
+import com.noctarius.borabora.spi.query.TypeSpecs;
 import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 

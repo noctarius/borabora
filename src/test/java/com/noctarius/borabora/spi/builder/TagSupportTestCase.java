@@ -21,19 +21,15 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.Writer;
-import com.noctarius.borabora.spi.builder.TagSupport0;
 import com.noctarius.borabora.spi.codec.TagStrategy;
-import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.builder.EncoderContext;
-import com.noctarius.borabora.spi.builder.TagBuilder;
-import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.TypeSpec;
 import org.junit.Test;
 
 import javax.xml.soap.SOAPException;
 
-import static com.noctarius.borabora.spi.io.Constants.EMPTY_BYTE_ARRAY;
 import static com.noctarius.borabora.spi.builder.TagSupport.semanticTag;
+import static com.noctarius.borabora.spi.io.Constants.EMPTY_BYTE_ARRAY;
 
 public class TagSupportTestCase
         extends AbstractTestCase {

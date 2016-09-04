@@ -35,7 +35,7 @@ public class QueryTestCase
                   .putDictionary(1).putEntry().putString("foo").putString("foo").endEntry().endDictionary());
 
         List<Value> values = new ArrayList<>();
-        Query query = Query.newBuilder().multiStream().dictionary("foo").build();
+        Query query = parser.newQueryBuilder().multiStream().dictionary("foo").build();
         parser.read(query, values::add);
 
         assertEquals(2, values.size());
@@ -48,7 +48,7 @@ public class QueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        parser.read(Query.newBuilder().dictionary((v) -> "b".equals(v.string())).build());
+        parser.read(parser.newQueryBuilder().dictionary((v) -> "b".equals(v.string())).build());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class QueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(Query.newBuilder().sequence(4).build());
+        Value value = parser.read(parser.newQueryBuilder().sequence(4).build());
         assertSame(NULL_VALUE, value);
     }
 
@@ -65,7 +65,7 @@ public class QueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf61610161629f0203ffff");
-        Value value = parser.read(Query.newBuilder().dictionary((v) -> "c".equals(v.string())).sequence(0).build());
+        Value value = parser.read(parser.newQueryBuilder().dictionary((v) -> "c".equals(v.string())).sequence(0).build());
         assertSame(NULL_VALUE, value);
     }
 
@@ -74,14 +74,15 @@ public class QueryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf61610161629f0203ffff");
-        parser.read(Query.newBuilder().sequence(0).build());
+        parser.read(parser.newQueryBuilder().sequence(0).build());
     }
 
     @Test
     public void code_coverage_for_unused_but_generated_methods()
             throws Exception {
 
-        Query query = Query.newBuilder().stream(1).dictionary("b").sequence(1).build();
+        Parser parser = Parser.newBuilder().build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary("b").sequence(1).build();
         query.toString();
     }
 

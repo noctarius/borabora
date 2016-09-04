@@ -18,10 +18,9 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.encoder.GraphBuilder;
 import com.noctarius.borabora.builder.encoder.ValueBuilder;
+import com.noctarius.borabora.spi.builder.AbstractStreamValueBuilder;
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 import com.noctarius.borabora.spi.builder.BuilderStackPush;
-import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.builder.AbstractStreamValueBuilder;
 import com.noctarius.borabora.spi.builder.EncoderContext;
 import com.noctarius.borabora.spi.builder.TagBuilder;
 import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
@@ -30,13 +29,14 @@ import com.noctarius.borabora.spi.io.ByteSizes;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.QueryContext;
+import com.noctarius.borabora.spi.query.TypeSpec;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.function.Function;
 
-import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.builder.TagSupport.semanticTag;
+import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
 import static org.junit.Assert.assertEquals;
 
 public class CustomSemanticTagTestCase
@@ -75,7 +75,7 @@ public class CustomSemanticTagTestCase
         Parser parser = Parser.newBuilder().addTagStrategy(new CustomTableTagStrategy()).build();
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
 
         Sequence table = function.apply(value);
 

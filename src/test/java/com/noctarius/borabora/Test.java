@@ -38,7 +38,7 @@ public class Test {
 
         for (int i = 0; i < 500; i++) {
             long start = System.nanoTime();
-            Value value = parser.read(input, Query.newBuilder().build());
+            Value value = parser.read(input, parser.newQueryBuilder().build());
             ValuePrettyPrinter.asStringPrettyPrint(value);
             System.out.println(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) + "ms");
         }

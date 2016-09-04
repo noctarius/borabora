@@ -381,7 +381,7 @@ public class ProjectionStrategyTestCase
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder().withProjectionStrategy(projectionStrategy).build();
 
-        StreamQueryBuilder graphQueryBuilder = Query.configureBuilder().newBuilder();
+        StreamQueryBuilder graphQueryBuilder = parser.newQueryBuilder();
         graphQueryConfigurator.accept(graphQueryBuilder);
 
         Query textQuery = parser.prepareQuery(textQueryProducer.get());

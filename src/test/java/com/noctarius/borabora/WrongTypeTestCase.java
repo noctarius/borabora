@@ -28,7 +28,7 @@ public class WrongTypeTestCase
     public void test_wrong_major_type_offset_and_message() {
         String expected = "Requested major type does not match the read value: SemanticTag != FloatingPointOrSimple[offset=0]";
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         try {
             value.tag();
         } catch (WrongTypeException e) {
@@ -44,7 +44,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.tag();
     }
 
@@ -53,7 +53,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.number();
     }
 
@@ -62,7 +62,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.sequence();
     }
 
@@ -71,7 +71,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.dictionary();
     }
 
@@ -80,7 +80,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xf7");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.string();
     }
 
@@ -89,7 +89,7 @@ public class WrongTypeTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x40");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         value.bool();
     }
 

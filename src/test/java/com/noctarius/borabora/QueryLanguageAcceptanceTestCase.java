@@ -41,7 +41,7 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_query_stream_nint() {
-        Query.newBuilder().stream(-1).build();
+        parser.newQueryBuilder().stream(-1).build();
     }
 
     @Test(expected = QueryParserException.class)
@@ -66,25 +66,25 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_stream_uint() {
-        Query query = Query.newBuilder().stream(0).build();
+        Query query = parser.newQueryBuilder().stream(0).build();
         evaluate(query, "#0");
 
-        query = Query.newBuilder().build();
+        query = parser.newQueryBuilder().build();
         evaluate(query, "#0");
 
-        query = Query.newBuilder().stream(123).build();
+        query = parser.newQueryBuilder().stream(123).build();
         evaluate(query, "#123");
     }
 
     @Test
     public void test_stream_base() {
-        Query query = Query.newBuilder().build();
+        Query query = parser.newQueryBuilder().build();
         evaluate(query, "#");
     }
 
     @Test
     public void test_stream_sequence_int() {
-        Query query = Query.newBuilder().stream(1).sequence(1).build();
+        Query query = parser.newQueryBuilder().stream(1).sequence(1).build();
         evaluate(query, "#1(1)");
     }
 
@@ -95,18 +95,18 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_query_stream_sequence_nint() {
-        Query.newBuilder().stream(1).sequence(-1).build();
+        parser.newQueryBuilder().stream(1).sequence(-1).build();
     }
 
     @Test
     public void test_stream_dictionary_int() {
-        Query query = Query.newBuilder().stream(1).dictionary(1).build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary(1).build();
         evaluate(query, "#1{1}");
     }
 
     @Test
     public void test_stream_dictionary_nint() {
-        Query query = Query.newBuilder().stream(1).dictionary(-1).build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary(-1).build();
         evaluate(query, "#1{-1}");
     }
 
@@ -122,7 +122,7 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test(expected = NullPointerException.class)
     public void fail_type_match_null() {
-        Query.newBuilder().requireType(null).build();
+        parser.newQueryBuilder().requireType(null).build();
     }
 
     @Test(expected = QueryParserException.class)
@@ -132,58 +132,58 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_type_match() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Number).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Number).build();
         evaluate(query, "#->number");
 
-        query = Query.newBuilder().nullOrType(TypeSpecs.Number).build();
+        query = parser.newQueryBuilder().nullOrType(TypeSpecs.Number).build();
         evaluate(query, "#->?number");
     }
 
     @Test
     public void test_dictionary_access_string() {
-        Query query = Query.newBuilder().dictionary(matchString("test")).build();
+        Query query = parser.newQueryBuilder().dictionary(matchString("test")).build();
         evaluate(query, "#{'test'}");
     }
 
     @Test
     public void test_stream_dictionary_access_string() {
-        Query query = Query.newBuilder().stream(1).dictionary(matchString("test")).build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary(matchString("test")).build();
         evaluate(query, "#1{'test'}");
     }
 
     @Test
     public void test_dictionary_access_uint() {
-        Query query = Query.newBuilder().dictionary(Predicates.matchInt(123)).build();
+        Query query = parser.newQueryBuilder().dictionary(Predicates.matchInt(123)).build();
         evaluate(query, "#{123}");
     }
 
     @Test
     public void test_dictionary_access_nint() {
-        Query query = Query.newBuilder().dictionary(Predicates.matchInt(-123)).build();
+        Query query = parser.newQueryBuilder().dictionary(Predicates.matchInt(-123)).build();
         evaluate(query, "#{-123}");
     }
 
     @Test
     public void test_dictionary_access_ufloat() {
-        Query query = Query.newBuilder().dictionary(Predicates.matchFloat(123.0)).build();
+        Query query = parser.newQueryBuilder().dictionary(Predicates.matchFloat(123.0)).build();
         evaluate(query, "#{123.0}");
     }
 
     @Test
     public void test_stream_dictionary_access_ufloat() {
-        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchFloat(123.0)).build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary(Predicates.matchFloat(123.0)).build();
         evaluate(query, "#1{123.0}");
     }
 
     @Test
     public void test_dictionary_access_nfloar() {
-        Query query = Query.newBuilder().dictionary(Predicates.matchFloat(-123.0)).build();
+        Query query = parser.newQueryBuilder().dictionary(Predicates.matchFloat(-123.0)).build();
         evaluate(query, "#{-123.0}");
     }
 
     @Test
     public void test_stream_dictionary_access_nfloar() {
-        Query query = Query.newBuilder().stream(1).dictionary(Predicates.matchFloat(-123.0)).build();
+        Query query = parser.newQueryBuilder().stream(1).dictionary(Predicates.matchFloat(-123.0)).build();
         evaluate(query, "#1{-123.0}");
     }
 
@@ -194,7 +194,7 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_sequence_access_uint() {
-        Query query = Query.newBuilder().sequence(123).build();
+        Query query = parser.newQueryBuilder().sequence(123).build();
         evaluate(query, "#(123)");
     }
 
@@ -205,55 +205,55 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_sequence_select() {
-        Query query = Query.newBuilder().asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().stream(0).endEntry().endSequence().build();
+        Query query = parser.newQueryBuilder().asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().stream(0).endEntry().endSequence().build();
         evaluate(query, "(#, #)");
     }
 
     @Test
     public void test_sequence_select_subsequence() {
-        Query query = Query.newBuilder().asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().asSequence().putEntry().stream(0).endEntry() //
-                           .putEntry().stream(0).endEntry().endSequence().endEntry() //
-                           .endSequence().build();
+        Query query = parser.newQueryBuilder().asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().asSequence().putEntry().stream(0).endEntry() //
+                            .putEntry().stream(0).endEntry().endSequence().endEntry() //
+                            .endSequence().build();
         evaluate(query, "(#, (#, #))");
     }
 
     @Test
     public void test_sequence_select_subdictionary_string() {
-        Query query = Query.newBuilder().asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().asDictionary() //
-                           .putEntry("a").stream(0).endEntry() //
-                           .putEntry("b").stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endSequence().build();
+        Query query = parser.newQueryBuilder().asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().asDictionary() //
+                            .putEntry("a").stream(0).endEntry() //
+                            .putEntry("b").stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endSequence().build();
         evaluate(query, "(#, (a: #, b: #))");
     }
 
     @Test
     public void test_sequence_select_subdictionary_float() {
-        Query query = Query.newBuilder().asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().asDictionary() //
-                           .putEntry(1.0).stream(0).endEntry() //
-                           .putEntry(2.0).stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endSequence().build();
+        Query query = parser.newQueryBuilder().asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().asDictionary() //
+                            .putEntry(1.0).stream(0).endEntry() //
+                            .putEntry(2.0).stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endSequence().build();
         evaluate(query, "(#, (1.0: #, 2.0: #))");
     }
 
     @Test
     public void test_sequence_select_subdictionary_int() {
-        Query query = Query.newBuilder().asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().asDictionary() //
-                           .putEntry(1).stream(0).endEntry() //
-                           .putEntry(2).stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endSequence().build();
+        Query query = parser.newQueryBuilder().asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().asDictionary() //
+                            .putEntry(1).stream(0).endEntry() //
+                            .putEntry(2).stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endSequence().build();
         evaluate(query, "(#, (1: #, 2: #))");
     }
 
@@ -274,49 +274,49 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_type_check_uint() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.UInt).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.UInt).build();
         assertQueryEquals(query, parser.prepareQuery("#->uint"));
     }
 
     @Test
     public void test_type_check_nint() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.NInt).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.NInt).build();
         assertQueryEquals(query, parser.prepareQuery("#->nint"));
     }
 
     @Test
     public void test_type_check_int() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Int).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Int).build();
         assertQueryEquals(query, parser.prepareQuery("#->int"));
     }
 
     @Test
     public void test_type_check_float() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Float).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Float).build();
         assertQueryEquals(query, parser.prepareQuery("#->float"));
     }
 
     @Test
     public void test_type_check_string() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.String).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.String).build();
         assertQueryEquals(query, parser.prepareQuery("#->string"));
     }
 
     @Test
     public void test_type_check_dictionary() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Dictionary).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Dictionary).build();
         assertQueryEquals(query, parser.prepareQuery("#->dictionary"));
     }
 
     @Test
     public void test_type_check_sequence() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Sequence).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Sequence).build();
         assertQueryEquals(query, parser.prepareQuery("#->sequence"));
     }
 
     @Test
     public void test_type_check_tag() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.SemanticTag).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.SemanticTag).build();
         assertQueryEquals(query, parser.prepareQuery("#->tag"));
     }
 
@@ -327,177 +327,177 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_type_check_date_time() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.DateTime).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.DateTime).build();
         assertQueryEquals(query, parser.prepareQuery("#->tag$0"));
         assertQueryEquals(query, parser.prepareQuery("#->datetime"));
     }
 
     @Test
     public void test_type_check_timestamp() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Timstamp).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Timstamp).build();
         assertQueryEquals(query, parser.prepareQuery("#->tag$1"));
         assertQueryEquals(query, parser.prepareQuery("#->timestamp"));
     }
 
     @Test
     public void test_type_check_enccbor() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.EncCBOR).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.EncCBOR).build();
         assertQueryEquals(query, parser.prepareQuery("#->tag$24"));
         assertQueryEquals(query, parser.prepareQuery("#->enccbor"));
     }
 
     @Test
     public void test_type_check_optional_enccbor() {
-        Query query = Query.newBuilder().nullOrType(TypeSpecs.EncCBOR).build();
+        Query query = parser.newQueryBuilder().nullOrType(TypeSpecs.EncCBOR).build();
         assertQueryEquals(query, parser.prepareQuery("#->?tag$24"));
         assertQueryEquals(query, parser.prepareQuery("#->?enccbor"));
     }
 
     @Test
     public void test_type_check_uri() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.URI).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.URI).build();
         assertQueryEquals(query, parser.prepareQuery("#->tag$32"));
         assertQueryEquals(query, parser.prepareQuery("#->uri"));
     }
 
     @Test
     public void test_type_check_bool() {
-        Query query = Query.newBuilder().requireType(TypeSpecs.Bool).build();
+        Query query = parser.newQueryBuilder().requireType(TypeSpecs.Bool).build();
         assertQueryEquals(query, parser.prepareQuery("#->bool"));
     }
 
     @Test
     public void test_dictionary_select_typecheck() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(0).requireType(TypeSpecs.Number).endEntry() //
-                           .putEntry("b").stream(0).nullOrType(TypeSpecs.Number).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(0).requireType(TypeSpecs.Number).endEntry() //
+                            .putEntry("b").stream(0).nullOrType(TypeSpecs.Number).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #->number, b: #->?number)");
     }
 
     @Test
     public void test_dictionary_select_stream_number_typecheck() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(1).requireType(TypeSpecs.Number).endEntry() //
-                           .putEntry("b").stream(1).nullOrType(TypeSpecs.Number).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(1).requireType(TypeSpecs.Number).endEntry() //
+                            .putEntry("b").stream(1).nullOrType(TypeSpecs.Number).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #1->number, b: #1->?number)");
     }
 
     @Test
     public void test_dictionary_select_dictionary_lookup() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(0).dictionary(matchString("foo")).endEntry() //
-                           .putEntry("b").stream(1).dictionary(matchString("foo")).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(0).dictionary(matchString("foo")).endEntry() //
+                            .putEntry("b").stream(1).dictionary(matchString("foo")).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #{'foo'}, b: #1{'foo'})");
     }
 
     @Test
     public void test_dictionary_select_sequence_lookup() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(0).sequence(1).endEntry() //
-                           .putEntry("b").stream(1).sequence(1).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(0).sequence(1).endEntry() //
+                            .putEntry("b").stream(1).sequence(1).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #(1), b: #1(1))");
     }
 
     @Test
     public void test_dictionary_select_string() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(0).endEntry() //
-                           .putEntry("b").stream(0).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(0).endEntry() //
+                            .putEntry("b").stream(0).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #, b: #)");
     }
 
     @Test
     public void test_dictionary_select_float() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(1.0).stream(0).endEntry() //
-                           .putEntry(2.0).stream(0).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(1.0).stream(0).endEntry() //
+                            .putEntry(2.0).stream(0).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(1.0: #, 2.0: #)");
     }
 
     @Test
     public void test_dictionary_select_int() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(1).stream(0).endEntry() //
-                           .putEntry(2).stream(0).endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(1).stream(0).endEntry() //
+                            .putEntry(2).stream(0).endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(1: #, 2: #)");
     }
 
     @Test
     public void test_dictionary_select_string_subsequence() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("a").stream(0).endEntry() //
-                           .putEntry("b").asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().stream(0).endEntry() //
-                           .endSequence().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("a").stream(0).endEntry() //
+                            .putEntry("b").asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().stream(0).endEntry() //
+                            .endSequence().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(a: #, b: (#, #))");
     }
 
     @Test
     public void test_dictionary_select_float_subsequence() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(1.0).stream(0).endEntry() //
-                           .putEntry(2.0).asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().stream(0).endEntry() //
-                           .endSequence().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(1.0).stream(0).endEntry() //
+                            .putEntry(2.0).asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().stream(0).endEntry() //
+                            .endSequence().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(1.0: #, 2.0: (#, #))");
     }
 
     @Test
     public void test_dictionary_select_int_subsequence() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(1).stream(0).endEntry() //
-                           .putEntry(2).asSequence() //
-                           .putEntry().stream(0).endEntry() //
-                           .putEntry().stream(0).endEntry() //
-                           .endSequence().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(1).stream(0).endEntry() //
+                            .putEntry(2).asSequence() //
+                            .putEntry().stream(0).endEntry() //
+                            .putEntry().stream(0).endEntry() //
+                            .endSequence().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(1: #, 2: (#, #))");
     }
 
     @Test
     public void test_dictionary_select_string_subdictionary() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry("c").stream(0).endEntry() //
-                           .putEntry("d").asDictionary() //
-                           .putEntry("a").stream(0).endEntry() //
-                           .putEntry("b").stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry("c").stream(0).endEntry() //
+                            .putEntry("d").asDictionary() //
+                            .putEntry("a").stream(0).endEntry() //
+                            .putEntry("b").stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(c: #, d: (a: #, b: #))");
     }
 
     @Test
     public void test_dictionary_select_float_subdictionary() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(3.0).stream(0).endEntry() //
-                           .putEntry(4.0).asDictionary() //
-                           .putEntry(1.0).stream(0).endEntry() //
-                           .putEntry(2.0).stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(3.0).stream(0).endEntry() //
+                            .putEntry(4.0).asDictionary() //
+                            .putEntry(1.0).stream(0).endEntry() //
+                            .putEntry(2.0).stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(3.0: #, 4.0: (1.0: #, 2.0: #))");
     }
 
     @Test
     public void test_dictionary_select_int_subdictionary() {
-        Query query = Query.newBuilder().asDictionary() //
-                           .putEntry(3).stream(0).endEntry() //
-                           .putEntry(4).asDictionary() //
-                           .putEntry(1).stream(0).endEntry() //
-                           .putEntry(2).stream(0).endEntry() //
-                           .endDictionary().endEntry() //
-                           .endDictionary().build();
+        Query query = parser.newQueryBuilder().asDictionary() //
+                            .putEntry(3).stream(0).endEntry() //
+                            .putEntry(4).asDictionary() //
+                            .putEntry(1).stream(0).endEntry() //
+                            .putEntry(2).stream(0).endEntry() //
+                            .endDictionary().endEntry() //
+                            .endDictionary().build();
         evaluate(query, "(3: #, 4: (1: #, 2: #))");
     }
 
@@ -692,16 +692,16 @@ public class QueryLanguageAcceptanceTestCase
 
     @Test
     public void test_any_sequence_index() {
-        Query query = Query.newBuilder().sequenceMatch(Predicates.any()).build();
+        Query query = parser.newQueryBuilder().sequenceMatch(Predicates.any()).build();
         evaluate(query, "#(?)");
 
-        query = Query.newBuilder().multiStream().sequenceMatch(Predicates.any()).build();
+        query = parser.newQueryBuilder().multiStream().sequenceMatch(Predicates.any()).build();
         evaluate(query, "$(?)");
     }
 
     @Test
     public void test_match_any_stream_element() {
-        Query query = Query.newBuilder().multiStream().build();
+        Query query = parser.newQueryBuilder().multiStream().build();
         evaluate(query, "$");
     }
 

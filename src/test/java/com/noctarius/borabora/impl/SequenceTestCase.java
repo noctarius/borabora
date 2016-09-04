@@ -56,7 +56,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertEquals(0, sequence.size());
     }
@@ -66,7 +66,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertNull(sequence.get(1));
     }
@@ -76,7 +76,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertNull(sequence.get(-1));
     }
@@ -86,7 +86,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x80");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
     }
@@ -96,7 +96,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9fff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertTrue(sequence.isEmpty());
     }
@@ -106,7 +106,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
     }
@@ -116,7 +116,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f010203ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         assertFalse(sequence.isEmpty());
     }
@@ -137,7 +137,7 @@ public class SequenceTestCase
 
     private void long_sequence(String hex) {
         SimplifiedTestParser parser = buildParser(hex);
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         for (int i = 1; i < 26; i++) {
@@ -145,7 +145,7 @@ public class SequenceTestCase
             Assert.assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
 
-            Query query = Query.newBuilder().sequence(i - 1).build();
+            Query query = parser.newQueryBuilder().sequence(i - 1).build();
             element = parser.read(query);
             assertEquals(ValueTypes.UInt, element.valueType());
             assertEqualsNumber(i, element.number());
@@ -157,7 +157,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         List<Number> numbers = sequence.stream().map(v -> v.number()).collect(toList());
@@ -176,7 +176,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         List<Long> numbers = sequence.parallelStream().map(v -> v.number().longValue())
@@ -197,7 +197,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         Iterator<Value> iterator = sequence.iterator();
@@ -214,7 +214,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         Iterator<Value> iterator = sequence.iterator();
@@ -236,7 +236,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         Value[] values = sequence.toArray();
@@ -261,7 +261,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -273,7 +273,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -285,7 +285,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -297,7 +297,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9f0102030405060708090a0b0c0d0e0f101112131415161718181819ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
 
@@ -309,7 +309,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x826161a161626163");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
         assertEquals(2, sequence.size());
@@ -327,7 +327,7 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x9fff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(0, value.sequence().size());
     }
@@ -372,10 +372,10 @@ public class SequenceTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         for (int i = 0; i < 3; i++) {
-            assertEqualsNumber(i + 1, parser.read(Query.newBuilder().sequence(i).build()).number());
+            assertEqualsNumber(i + 1, parser.read(parser.newQueryBuilder().sequence(i).build()).number());
             assertEqualsNumber(i + 1, sequence.get(i).number());
         }
     }
@@ -384,7 +384,7 @@ public class SequenceTestCase
     public void test_sequence_asstring() {
         String expected = "[UInt{ 1 }, UInt{ 2 }, UInt{ 3 }]";
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         String actual = sequence.asString();
         assertEquals(expected, actual);
@@ -396,7 +396,7 @@ public class SequenceTestCase
                 + "StreamValue{valueType=UInt, offset=2, value=2}, " //
                 + "StreamValue{valueType=UInt, offset=3, value=3}]";
         SimplifiedTestParser parser = buildParser("0x83010203");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Sequence sequence = value.sequence();
         String actual = sequence.toString();
         assertEquals(expected, actual);
@@ -428,7 +428,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
 
         Sequence sequence = value.sequence();
@@ -467,7 +467,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
 
         Sequence sequence = value.sequence();
@@ -496,7 +496,7 @@ public class SequenceTestCase
         Input input = Input.fromByteArray(baos.toByteArray());
         Parser parser = Parser.newBuilder().build();
 
-        Query query = Query.newBuilder().sequenceMatch(Predicates.any()).build();
+        Query query = parser.newQueryBuilder().sequenceMatch(Predicates.any()).build();
 
         List<Value> result = new ArrayList<>();
         parser.read(input, query, result::add);
@@ -516,11 +516,11 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_graph(SimplifiedTestParser parser) {
-        Query i0e0 = Query.newBuilder().sequence(0).build();
-        Query i1e0 = Query.newBuilder().sequence(1).sequence(0).build();
-        Query i1e1 = Query.newBuilder().sequence(1).sequence(1).build();
-        Query i2e0 = Query.newBuilder().sequence(2).sequence(0).build();
-        Query i2e1 = Query.newBuilder().sequence(2).sequence(1).build();
+        Query i0e0 = parser.newQueryBuilder().sequence(0).build();
+        Query i1e0 = parser.newQueryBuilder().sequence(1).sequence(0).build();
+        Query i1e1 = parser.newQueryBuilder().sequence(1).sequence(1).build();
+        Query i2e0 = parser.newQueryBuilder().sequence(2).sequence(0).build();
+        Query i2e1 = parser.newQueryBuilder().sequence(2).sequence(1).build();
 
         Value v1 = parser.read(i0e0);
         Value v2 = parser.read(i1e0);
@@ -536,7 +536,7 @@ public class SequenceTestCase
     }
 
     private void test_using_sequence_traversal(SimplifiedTestParser parser) {
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Sequence sequence = value.sequence();
 

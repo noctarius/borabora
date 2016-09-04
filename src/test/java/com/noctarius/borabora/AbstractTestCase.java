@@ -17,13 +17,14 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.encoder.GraphBuilder;
+import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.DefaultQueryContextFactory;
 import com.noctarius.borabora.impl.query.QueryImpl;
-import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.ObjectValue;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.codec.TagStrategies;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
@@ -195,8 +196,8 @@ public abstract class AbstractTestCase {
             parser.read(input, query, callback);
         }
 
-        public Query prepareQuery(String query) {
-            return parser.prepareQuery(query);
+        public StreamQueryBuilder newQueryBuilder() {
+            return parser.newQueryBuilder();
         }
     }
 

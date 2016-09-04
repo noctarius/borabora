@@ -38,7 +38,7 @@
  * <pre>
  *     Parser parser = Parser.newBuilder().build();
  *     Input input = Input.fromByteArray( getByteArray() );
- *     Query query = Query.newBuilder().build();
+ *     Query query = parser.newQueryBuilder().build();
  *     Value value = parser.read(input, query);
  * </pre>
  * <p>The previous example wraps the byte-array returned from the method

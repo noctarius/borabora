@@ -75,7 +75,7 @@ public class Benchmark {
         int samples = 10;
 
         Parser parser = Parser.newBuilder().build();
-        Query query = Query.newBuilder().multiStream().build();
+        Query query = parser.newQueryBuilder().multiStream().build();
 
         Input input;
         File cborFile = new File("target/benchmark.cbor");

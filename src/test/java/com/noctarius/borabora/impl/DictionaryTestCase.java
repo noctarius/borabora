@@ -47,7 +47,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertEquals(0, dictionary.size());
@@ -58,7 +58,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertEquals("A", dictionary.get((v) -> "a".equals(v.string())).string());
@@ -73,7 +73,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertEquals("A", dictionary.get(Predicates.matchString("a")).string());
@@ -88,7 +88,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
 
@@ -107,7 +107,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> keys = dictionary.keys();
@@ -125,7 +125,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> keys = dictionary.keys();
@@ -154,7 +154,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> keys = dictionary.keys();
@@ -167,7 +167,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> values = dictionary.values();
@@ -185,7 +185,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> values = dictionary.values();
@@ -214,7 +214,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterable<Value> values = dictionary.values();
@@ -227,7 +227,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
@@ -258,7 +258,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
@@ -296,7 +296,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
@@ -308,7 +308,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         Iterator<Map.Entry<Value, Value>> iterator = dictionary.iterator();
@@ -321,7 +321,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertFalse(dictionary.isEmpty());
@@ -332,7 +332,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf6161614161626142616361436164614461656145ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertFalse(dictionary.isEmpty());
@@ -343,7 +343,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertTrue(dictionary.isEmpty());
@@ -354,7 +354,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbfff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
         assertTrue(dictionary.isEmpty());
@@ -365,7 +365,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Dictionary dictionary = value.dictionary();
         assertNull(dictionary.get((v) -> false));
     }
@@ -375,7 +375,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa0");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         Dictionary dictionary = value.dictionary();
         assertNull(dictionary.get((v) -> false));
     }
@@ -385,7 +385,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
 
@@ -398,7 +398,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
 
@@ -411,7 +411,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
 
@@ -424,7 +424,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa56161614161626142616361436164614461656145");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Dictionary dictionary = value.dictionary();
 
@@ -437,7 +437,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa201020304");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         Assert.assertEquals(MajorType.Dictionary, value.majorType());
         Assert.assertEquals(ValueTypes.Dictionary, value.valueType());
@@ -453,7 +453,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xa201020304");
-        Query query = Query.newBuilder().dictionary(this::matchNumber).build();
+        Query query = parser.newQueryBuilder().dictionary(this::matchNumber).build();
         Value value = parser.read(query);
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
@@ -466,7 +466,7 @@ public class DictionaryTestCase
     public void test_dictionary_asstring() {
         String expected = "[UInt{ 1 }=UInt{ 2 }, UInt{ 3 }=UInt{ 4 }]";
         SimplifiedTestParser parser = buildParser("0xa201020304");
-        Query query = Query.newBuilder().build();
+        Query query = parser.newQueryBuilder().build();
         Value value = parser.read(query);
         Dictionary dictionary = value.dictionary();
         String actual = dictionary.asString();
@@ -478,7 +478,7 @@ public class DictionaryTestCase
         String expected = "[StreamValue{valueType=UInt, offset=1, value=1}=StreamValue{valueType=UInt, offset=2, value=2}, "
                 + "StreamValue{valueType=UInt, offset=3, value=3}=StreamValue{valueType=UInt, offset=4, value=4}]";
         SimplifiedTestParser parser = buildParser("0xa201020304");
-        Query query = Query.newBuilder().build();
+        Query query = parser.newQueryBuilder().build();
         Value value = parser.read(query);
         Dictionary dictionary = value.dictionary();
         String actual = dictionary.toString();
@@ -490,7 +490,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf6346756ef563416d7421ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Dictionary, value.valueType());
 
@@ -507,7 +507,7 @@ public class DictionaryTestCase
             throws Exception {
 
         SimplifiedTestParser parser = buildParser("0xbf6346756ef563416d7421ff");
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
 
         assertEquals(ValueTypes.Dictionary, value.valueType());
 
@@ -535,7 +535,7 @@ public class DictionaryTestCase
 
     private void dictionary_uint_sequence(String hex) {
         SimplifiedTestParser parser = buildParser(hex);
-        Value value = parser.read(Query.newBuilder().build());
+        Value value = parser.read(parser.newQueryBuilder().build());
         assertEquals(ValueTypes.Dictionary, value.valueType());
 
         Dictionary dictionary = value.dictionary();

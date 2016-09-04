@@ -16,9 +16,6 @@
  */
 package com.noctarius.borabora.builder.encoder;
 
-import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
-import com.noctarius.borabora.builder.encoder.IndefiniteStringBuilder;
-import com.noctarius.borabora.builder.encoder.SequenceBuilder;
 import com.noctarius.borabora.spi.builder.BuilderStackPush;
 import com.noctarius.borabora.spi.builder.TagBuilderConsumer;
 

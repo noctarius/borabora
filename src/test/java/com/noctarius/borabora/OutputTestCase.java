@@ -40,7 +40,7 @@ public class OutputTestCase
         Parser parser = Parser.newBuilder().build();
 
         List<Value> values = new ArrayList<>();
-        parser.read(input, Query.newBuilder().multiStream().build(), values::add);
+        parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
 
         assertEqualsNumber(1, values.get(0).number());
         assertEqualsNumber(2, values.get(1).number());
@@ -61,7 +61,7 @@ public class OutputTestCase
         Parser parser = Parser.newBuilder().build();
 
         List<Value> values = new ArrayList<>();
-        parser.read(input, Query.newBuilder().multiStream().build(), values::add);
+        parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
 
         assertEqualsNumber(1, values.get(0).number());
         assertEqualsNumber(2, values.get(1).number());
@@ -80,7 +80,7 @@ public class OutputTestCase
         Parser parser = Parser.newBuilder().build();
 
         List<Value> values = new ArrayList<>();
-        parser.read(input, Query.newBuilder().multiStream().build(), values::add);
+        parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
 
         assertEqualsNumber(1, values.get(0).number());
         assertEqualsNumber(2, values.get(1).number());
@@ -99,7 +99,7 @@ public class OutputTestCase
         Parser parser = Parser.newBuilder().build();
 
         List<Value> values = new ArrayList<>();
-        parser.read(input, Query.newBuilder().multiStream().build(), values::add);
+        parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
 
         assertEqualsNumber(1, values.get(0).number());
         assertEqualsNumber(2, values.get(1).number());

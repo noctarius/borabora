@@ -42,7 +42,7 @@ public class ParserImplTestCase
     public void test_prepare_query() {
         Parser parser = Parser.newBuilder().build();
         Query query = parser.prepareQuery("#");
-        assertEquals(Query.newBuilder().build(), query);
+        assertEquals(parser.newQueryBuilder().build(), query);
     }
 
     @Test(expected = QueryParserException.class)
@@ -64,7 +64,7 @@ public class ParserImplTestCase
     public void test_read_single_value_consumer_multiple_results() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1, (byte) 0x2});
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, Query.newBuilder().multiStream().build());
+        Value value = parser.read(input, parser.newQueryBuilder().multiStream().build());
         assertEqualsNumber(1, value.number());
     }
 
@@ -72,7 +72,7 @@ public class ParserImplTestCase
     public void test_read_input_query() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
         Parser parser = Parser.newBuilder().build();
-        Value value = parser.read(input, Query.newBuilder().build());
+        Value value = parser.read(input, parser.newQueryBuilder().build());
         assertEqualsNumber(1, value.number());
     }
 
@@ -97,7 +97,7 @@ public class ParserImplTestCase
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
         Parser parser = Parser.newBuilder().build();
         List<Value> values = new ArrayList<>();
-        parser.read(input, Query.newBuilder().build(), values::add);
+        parser.read(input, parser.newQueryBuilder().build(), values::add);
         assertEquals(1, values.size());
         assertEqualsNumber(1, values.get(0).number());
     }
@@ -119,8 +119,8 @@ public class ParserImplTestCase
         byte[] expected2 = new byte[]{(byte) 0x2};
         Input input = Input.fromByteArray(bytes);
         Parser parser = Parser.newBuilder().build();
-        byte[] actual1 = parser.extract(input, Query.newBuilder().stream(0).build());
-        byte[] actual2 = parser.extract(input, Query.newBuilder().stream(1).build());
+        byte[] actual1 = parser.extract(input, parser.newQueryBuilder().stream(0).build());
+        byte[] actual2 = parser.extract(input, parser.newQueryBuilder().stream(1).build());
         assertArrayEquals(expected1, actual1);
         assertArrayEquals(expected2, actual2);
     }
