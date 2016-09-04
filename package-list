@@ -1,7 +1,11 @@
 com.noctarius.borabora
 com.noctarius.borabora.builder
-com.noctarius.borabora.builder.semantictag
+com.noctarius.borabora.builder.encoder
+com.noctarius.borabora.builder.encoder.semantictag
+com.noctarius.borabora.builder.query
 com.noctarius.borabora.spi
+com.noctarius.borabora.spi.builder
 com.noctarius.borabora.spi.codec
-com.noctarius.borabora.spi.pipeline
+com.noctarius.borabora.spi.io
 com.noctarius.borabora.spi.query
+com.noctarius.borabora.spi.query.pipeline
