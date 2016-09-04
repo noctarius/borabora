@@ -21,14 +21,53 @@ import com.noctarius.borabora.spi.codec.TagStrategy;
 
 public interface WriterBuilder {
 
-    <S, V> WriterBuilder addTagStrategy(TagStrategy<S, V> tagStrategy);
+    /**
+     * Adds the given {@link TagStrategy} instance to the new {@link Writer} configuration.
+     *
+     * @param tagStrategy the TagStrategy to add to the configuration
+     * @return this builder instance
+     * @throws NullPointerException if tagStrategy is null
+     */
+    WriterBuilder addTagStrategy(TagStrategy tagStrategy);
 
+    /**
+     * Adds the given {@link TagStrategy} instances to the new {@link Writer} configuration.
+     *
+     * @param tagStrategy1 the first TagStrategy to add to the configuration
+     * @param tagStrategy2 the second TagStrategy to add to the configuration
+     * @return this builder instance
+     * @throws NullPointerException if either tagStrategy instance is null
+     */
     WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2);
 
+    /**
+     * Adds the given {@link TagStrategy} instances to the new {@link Writer} configuration.
+     *
+     * @param tagStrategy1  the first TagStrategy to add to the configuration
+     * @param tagStrategy2  the second TagStrategy to add to the configuration
+     * @param tagStrategies the TagStrategy array to add to the configuration
+     * @return this builder instance
+     * @throws NullPointerException if any tagStrategies instance is null
+     */
     WriterBuilder addTagStrategies(TagStrategy tagStrategy1, TagStrategy tagStrategy2, TagStrategy... tagStrategies);
 
+    /**
+     * Adds the given {@link TagStrategy} instances to the new {@link Writer} configuration.
+     *
+     * @param tagStrategies the TagStrategy array to add to the configuration
+     * @return this builder instance
+     * @throws NullPointerException if any tagStrategies instance is null
+     */
     WriterBuilder addTagStrategies(Iterable<TagStrategy> tagStrategies);
 
+    /**
+     * Returns a new {@link Writer} instance based on the internal configuration. The returned writer
+     * is fully thread-safe and stateless and can be stored and shared by multiple threads, however
+     * {@link com.noctarius.borabora.builder.encoder.GraphBuilder}s created using this {@link Writer}
+     * are not.
+     *
+     * @return the new Writer instance
+     */
     Writer build();
 
 }

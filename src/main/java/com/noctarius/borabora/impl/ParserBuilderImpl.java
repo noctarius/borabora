@@ -49,7 +49,7 @@ public final class ParserBuilderImpl
     private QueryOptimizerStrategyFactory queryOptimizerStrategyFactory = BTreeFactories.newQueryOptimizerStrategyFactory();
 
     @Override
-    public <S, V> ParserBuilder addTagStrategy(TagStrategy<S, V> tagStrategy) {
+    public ParserBuilder addTagStrategy(TagStrategy tagStrategy) {
         Objects.requireNonNull(tagStrategy, "tagStrategy must not be null");
         if (!tagStrategies.contains(tagStrategy)) {
             tagStrategies.add(tagStrategy);
