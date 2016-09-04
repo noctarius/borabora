@@ -17,7 +17,6 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
@@ -92,7 +91,7 @@ public class QueryImplTestCase {
         PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
         PipelineStage pipelineStage = pipelineStageFactory.newPipelineStage(left, right, stage);
         QueryPipeline queryPipeline = new QueryPipelineImpl(pipelineStage);
-        return new QueryImpl(queryPipeline, BinaryProjectionStrategy.INSTANCE);
+        return new QueryImpl(queryPipeline);
     }
 
 }

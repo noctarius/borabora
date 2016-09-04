@@ -16,8 +16,8 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.builder.QueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
+import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.QueryBuilderBuilderImpl;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
@@ -80,7 +80,7 @@ public interface Query {
      * @return a binary projection strategy pre-configured QueryBuilder instance
      */
     static StreamQueryBuilder newBuilder() {
-        return configureBuilder().withProjectionStrategy(BinaryProjectionStrategy.INSTANCE).newBuilder();
+        return configureBuilder().newBuilder();
     }
 
 }

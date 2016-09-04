@@ -17,6 +17,7 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.ParserBuilder;
+import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.impl.ParserBuilderImpl;
 
 import java.util.function.Consumer;
@@ -201,6 +202,8 @@ public interface Parser {
      *                              query string into a {@link Query} instance
      */
     Query prepareQuery(String query);
+
+    QueryBuilder newQueryBuilder();
 
     /**
      * Creates a new {@link ParserBuilder} instance to fluently configure and create a {@link Parser}

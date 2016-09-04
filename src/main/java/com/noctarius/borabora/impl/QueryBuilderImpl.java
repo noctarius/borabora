@@ -19,7 +19,7 @@ package com.noctarius.borabora.impl;
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.query.DictionaryQueryBuilder;
-import com.noctarius.borabora.builder.QueryBuilder;
+import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.query.QueryImpl;
@@ -31,10 +31,9 @@ import com.noctarius.borabora.impl.query.stages.MultiStreamElementQueryStage;
 import com.noctarius.borabora.impl.query.stages.PrepareSelectionQueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
@@ -44,7 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public final class QueryBuilderImpl
+final class QueryBuilderImpl
         extends AbstractQueryBuilder
         implements StreamQueryBuilder {
 
@@ -52,10 +51,10 @@ public final class QueryBuilderImpl
     private final QueryPipelineFactory queryPipelineFactory;
     private final QueryOptimizerStrategy queryOptimizerStrategy;
 
-    public QueryBuilderImpl(ProjectionStrategy projectionStrategy, QueryOptimizerStrategy queryOptimizerStrategy,
-                            PipelineStageFactory pipelineStageFactory, QueryPipelineFactory queryPipelineFactory) {
+    QueryBuilderImpl(QueryOptimizerStrategy queryOptimizerStrategy, PipelineStageFactory pipelineStageFactory,
+                     QueryPipelineFactory queryPipelineFactory) {
 
-        super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE), projectionStrategy);
+        super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE));
         Objects.requireNonNull(queryOptimizerStrategy, "queryOptimizerStrategy must not be null");
         Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
         Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");
@@ -87,7 +86,7 @@ public final class QueryBuilderImpl
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
-        return new DictionaryQueryBuilderImpl<>(this, newNode, projectionStrategy);
+        return new DictionaryQueryBuilderImpl<>(this, newNode);
     }
 
     @Override
@@ -96,7 +95,7 @@ public final class QueryBuilderImpl
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
-        return new SequenceQueryBuilderImpl<>(this, newNode, projectionStrategy);
+        return new SequenceQueryBuilderImpl<>(this, newNode);
     }
 
     @Override
@@ -114,7 +113,7 @@ public final class QueryBuilderImpl
         QueryPipeline queryPipeline = queryPipelineFactory
                 .newQueryPipeline(parentTreeNode, pipelineStageFactory, queryOptimizerStrategy);
 
-        return new QueryImpl(queryPipeline, projectionStrategy);
+        return new QueryImpl(queryPipeline);
     }
 
     @Override

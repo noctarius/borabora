@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query;
+package com.noctarius.borabora.builder.query;
 
-public interface ProjectionStrategyAware {
+import com.noctarius.borabora.Query;
 
-    ProjectionStrategy projectionStrategy();
+public interface QueryBuilder
+        extends QueryTokenBuilder<QueryBuilder> {
+
+    Query build();
 
 }

@@ -21,18 +21,18 @@ import com.noctarius.borabora.Parser;
 import com.noctarius.borabora.Query;
 import com.noctarius.borabora.QueryParserException;
 import com.noctarius.borabora.Value;
-import com.noctarius.borabora.builder.QueryBuilder;
-import com.noctarius.borabora.spi.io.Constants;
+import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
-import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
 import com.noctarius.borabora.spi.query.QueryConsumer;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
-import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizer;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
@@ -136,8 +136,7 @@ final class ParserImpl
     public Query prepareQuery(String query) {
         Objects.requireNonNull(query, "query must not be null");
         try {
-            QueryBuilder queryBuilder = Query.configureBuilder().withProjectionStrategy(projectionStrategy)
-                                             .withPipelineStageFactory(pipelineStageFactory)
+            QueryBuilder queryBuilder = Query.configureBuilder().withPipelineStageFactory(pipelineStageFactory)
                                              .withQueryPipelineFactory(queryPipelineFactory)
                                              .withQueryOptimizerStrategyFactory(queryOptimizerStrategyFactory)
                                              .addQueryOptimizers(queryOptimizers).newBuilder();
@@ -149,15 +148,16 @@ final class ParserImpl
         }
     }
 
+    @Override
+    public QueryBuilder newQueryBuilder() {
+        QueryOptimizerStrategy queryOptimizerStrategy = queryOptimizerStrategyFactory.newQueryOptimizerStrategy(queryOptimizers);
+        return new QueryBuilderImpl(queryOptimizerStrategy, pipelineStageFactory, queryPipelineFactory);
+    }
+
     private void read(Input input, Query query, Consumer<Value> consumer, boolean multiConsumer) {
         Objects.requireNonNull(input, "input must not be null");
         Objects.requireNonNull(query, "query must not be null");
         Objects.requireNonNull(consumer, "consumer must not be null");
-        ProjectionStrategy projectionStrategy = this.projectionStrategy;
-        if (query instanceof ProjectionStrategyAware) {
-            projectionStrategy = ((ProjectionStrategyAware) query).projectionStrategy();
-        }
-
         QueryConsumer queryConsumer = bridgeConsumer(consumer, multiConsumer);
         evaluate(query, input, queryConsumer, projectionStrategy);
     }

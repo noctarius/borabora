@@ -17,7 +17,6 @@
 package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.encoder.GraphBuilder;
-import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -95,17 +94,17 @@ public class QueryLanguageTestCase
         String queryString1 = "(a: #0, b: #0, c: (d: #0, e: #0), f: #4, g: (#0, #1, #2))";
         String queryString2 = "(#0, #1, #2, #3)";
 
-        Parser parser = Parser.newBuilder()/*.asObjectProjectionStrategy()*/.build();
+        Parser parser = Parser.newBuilder().asObjectProjectionStrategy().build();
 
         Query query1 = parser.prepareQuery(queryString1);
         Query query2 = parser.prepareQuery(queryString2);
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Query query3 = Query.configureBuilder().withProjectionStrategy(ObjectProjectionStrategy.INSTANCE).newBuilder() //
+        Query query3 = Query.configureBuilder().newBuilder() //
                             .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
 
-        Query query4 = Query.configureBuilder().withProjectionStrategy(ObjectProjectionStrategy.INSTANCE).newBuilder() //
+        Query query4 = Query.configureBuilder().newBuilder() //
                             .asSequence().putEntry().stream(0).endEntry().endSequence().build();
 
         Value value3 = parser.read(input, query3);

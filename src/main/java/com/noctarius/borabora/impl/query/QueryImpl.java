@@ -17,23 +17,18 @@
 package com.noctarius.borabora.impl.query;
 
 import com.noctarius.borabora.Query;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
-import com.noctarius.borabora.spi.query.ProjectionStrategyAware;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 
 import java.util.Objects;
 
 public final class QueryImpl
-        implements Query, ProjectionStrategyAware {
+        implements Query {
 
     private final QueryPipeline queryPipeline;
-    private ProjectionStrategy projectionStrategy;
 
-    public QueryImpl(QueryPipeline queryPipeline, ProjectionStrategy projectionStrategy) {
+    public QueryImpl(QueryPipeline queryPipeline) {
         Objects.requireNonNull(queryPipeline, "queryPipeline must not be null");
-        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.queryPipeline = queryPipeline;
-        this.projectionStrategy = projectionStrategy;
     }
 
     @Override
@@ -47,17 +42,12 @@ public final class QueryImpl
 
         QueryImpl query = (QueryImpl) o;
 
-        if (!queryPipeline.equals(query.queryPipeline)) {
-            return false;
-        }
-        return projectionStrategy.equals(query.projectionStrategy);
+        return queryPipeline.equals(query.queryPipeline);
     }
 
     @Override
     public int hashCode() {
-        int result = queryPipeline.hashCode();
-        result = 31 * result + projectionStrategy.hashCode();
-        return result;
+        return queryPipeline.hashCode();
     }
 
     @Override
@@ -68,11 +58,6 @@ public final class QueryImpl
     @Override
     public QueryPipeline newQueryPipeline() {
         return queryPipeline;
-    }
-
-    @Override
-    public ProjectionStrategy projectionStrategy() {
-        return projectionStrategy;
     }
 
     @Override

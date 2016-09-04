@@ -18,10 +18,10 @@ package com.noctarius.borabora;
 
 import com.noctarius.borabora.builder.encoder.GraphBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
-import com.noctarius.borabora.spi.query.TypeSpecs;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
+import com.noctarius.borabora.spi.query.TypeSpecs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -381,7 +381,7 @@ public class ProjectionStrategyTestCase
         Input input = Input.fromByteArray(data);
         Parser parser = Parser.newBuilder().withProjectionStrategy(projectionStrategy).build();
 
-        StreamQueryBuilder graphQueryBuilder = Query.configureBuilder().withProjectionStrategy(projectionStrategy).newBuilder();
+        StreamQueryBuilder graphQueryBuilder = Query.configureBuilder().newBuilder();
         graphQueryConfigurator.accept(graphQueryBuilder);
 
         Query textQuery = parser.prepareQuery(textQueryProducer.get());

@@ -17,15 +17,12 @@
 package com.noctarius.borabora.builder;
 
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
-import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizer;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 public interface QueryBuilderBuilder {
-
-    QueryBuilderBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy);
 
     QueryBuilderBuilder withQueryPipelineFactory(QueryPipelineFactory queryPipelineFactory);
 

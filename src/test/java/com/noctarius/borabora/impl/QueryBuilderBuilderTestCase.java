@@ -16,7 +16,7 @@
  */
 package com.noctarius.borabora.impl;
 
-import com.noctarius.borabora.builder.QueryBuilder;
+import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.builder.QueryBuilderBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;

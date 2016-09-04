@@ -25,7 +25,6 @@ import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 
@@ -39,10 +38,8 @@ class StreamEntryQueryBuilderImpl<T>
     private final T queryBuilder;
     private final QueryStage endQueryStage;
 
-    StreamEntryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, QueryStage endQueryStage,
-                                ProjectionStrategy projectionStrategy) {
-
-        super(parentTreeNode, projectionStrategy);
+    StreamEntryQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, QueryStage endQueryStage) {
+        super(parentTreeNode);
         Objects.requireNonNull(queryBuilder, "queryBuilder must not be null");
         Objects.requireNonNull(endQueryStage, "endQueryStage must not be null");
         this.queryBuilder = queryBuilder;
@@ -60,14 +57,14 @@ class StreamEntryQueryBuilderImpl<T>
     public DictionaryQueryBuilder<EntryQueryBuilder<T>> asDictionary() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asDictionary", this);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
-        return new DictionaryQueryBuilderImpl<>(this, newNode, projectionStrategy);
+        return new DictionaryQueryBuilderImpl<>(this, newNode);
     }
 
     @Override
     public SequenceQueryBuilder<EntryQueryBuilder<T>> asSequence() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asSequence", this);
         QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
-        return new SequenceQueryBuilderImpl<>(this, newNode, projectionStrategy);
+        return new SequenceQueryBuilderImpl<>(this, newNode);
     }
 
     @Override

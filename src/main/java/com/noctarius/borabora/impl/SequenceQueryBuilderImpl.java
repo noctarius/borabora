@@ -20,7 +20,6 @@ import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
-import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 
 import java.util.Objects;
@@ -30,22 +29,19 @@ class SequenceQueryBuilderImpl<T>
 
     private final T queryBuilder;
     private final QueryBuilderNode parentTreeNode;
-    private ProjectionStrategy projectionStrategy;
 
-    SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode, ProjectionStrategy projectionStrategy) {
+    SequenceQueryBuilderImpl(T queryBuilder, QueryBuilderNode parentTreeNode) {
         Objects.requireNonNull(queryBuilder, "queryBuilder must not be null");
         Objects.requireNonNull(parentTreeNode, "parentTreeNode must not be null");
-        Objects.requireNonNull(projectionStrategy, "projectionStrategy must not be null");
         this.queryBuilder = queryBuilder;
         this.parentTreeNode = parentTreeNode;
-        this.projectionStrategy = projectionStrategy;
     }
 
     @Override
     public StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry() {
         Tracer.traceCall("SequenceQueryBuilderImpl#putEntry", this);
         QueryBuilderNode entry = parentTreeNode.pushChild(AsSequenceSelectorEntryQueryStage.INSTANCE);
-        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE, projectionStrategy);
+        return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE);
     }
 
     @Override
