@@ -22,9 +22,9 @@ import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizer;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.ArrayList;

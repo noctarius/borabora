@@ -19,9 +19,9 @@ package com.noctarius.borabora.impl.query;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizer;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategyFactory;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizer;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.List;

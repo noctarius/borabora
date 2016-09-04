@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query.pipeline;
+package com.noctarius.borabora.spi.query.optimizer;
 
-public interface QueryOptimizer {
+import java.util.List;
 
-    boolean handles(PipelineStage rooPipelineStage);
+public interface QueryOptimizerStrategyFactory {
 
-    PipelineStage optimize(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory);
+    QueryOptimizerStrategy newQueryOptimizerStrategy(List<QueryOptimizer> queryOptimizers);
 
 }

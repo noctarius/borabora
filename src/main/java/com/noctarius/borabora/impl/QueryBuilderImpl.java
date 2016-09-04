@@ -34,7 +34,7 @@ import com.noctarius.borabora.spi.query.TypeSpec;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
-import com.noctarius.borabora.spi.query.pipeline.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
