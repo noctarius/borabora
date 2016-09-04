@@ -107,7 +107,7 @@ public interface Value {
      *
      * @return the extracted value
      */
-    boolean bool();
+    Boolean bool();
 
     /**
      * Extracts the given Value as a CBOR encoded byte-array. This doesn't transform the value in any way

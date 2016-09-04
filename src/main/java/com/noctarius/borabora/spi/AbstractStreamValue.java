@@ -67,7 +67,7 @@ public abstract class AbstractStreamValue
     }
 
     @Override
-    public boolean bool() {
+    public Boolean bool() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Bool), () -> Decoder.getBooleanValue(input(), offset()));
     }
 
