@@ -22,7 +22,7 @@ import com.noctarius.borabora.impl.ParserBuilderImpl;
 import java.util.function.Consumer;
 
 /**
- * <p>The Parser class is the entry point for all parsing related activities. This includes element
+ * <p>The <tt>Parser</tt> class is the entry point for all parsing related activities. This includes element
  * query, as well as any kind of CBOR encoded stream extraction. The parser is implemented as a so-called
  * skip-scan parser, reading the type and length of an element and skipping right over when it is not
  * needed and further necessary. Returned {@link Value} instances are fully lazily read whenever the

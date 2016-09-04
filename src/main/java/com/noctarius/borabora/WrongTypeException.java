@@ -17,8 +17,8 @@
 package com.noctarius.borabora;
 
 /**
- * This exception is commonly thrown on occasions where a wrong type
- * is assumed by a query. Queries have multiple ways to provide type
+ * The <tt>WrongTypeException</tt> is commonly thrown on occasions where a wrong
+ * type is assumed by a query. Queries have multiple ways to provide type
  * information to the query execution pipeline implicitly and explicitly:
  * <ul>
  * <li>explicit: <tt>#-&gt;dictionary{'...'}</tt> or

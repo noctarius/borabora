@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 import static com.noctarius.borabora.spi.io.Constants.MATCH_STRING_FAST_PATH_TRESHOLD;
 
 /**
- * This class contains parsing optimized utility methods to provide {@link Predicate}
+ * The <tt>Predicates</tt> class contains parsing optimized utility methods to provide {@link Predicate}
  * matchers against {@link Dictionary} keys or values or {@link Sequence} values. The methods
  * provided here can be passed to the following dictionary, sequence or query methods:
  * <ul>

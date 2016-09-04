@@ -16,9 +16,9 @@
  */
 package com.noctarius.borabora;
 
-import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.ValueValidators;
 import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.io.StringEncoders;
 
@@ -29,8 +29,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * ValueTypes are a set of prebuilt {@link ValueType} implementations. They define the
- * common basic {@link MajorType}s, as well as some integrated semantic tag types and
+ * The <tt>ValueTypes</tt> class is a set of prebuilt {@link ValueType} implementations. They
+ * define the common basic {@link MajorType}s, as well as some integrated semantic tag types and
  * super types to group different types.
  *
  * @see ValueType

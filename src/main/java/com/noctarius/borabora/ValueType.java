@@ -19,8 +19,8 @@ package com.noctarius.borabora;
 import java.util.Objects;
 
 /**
- * Implementations of this interface represent value types to further
- * specify over a {@link MajorType} definition. The parser can be
+ * A <tt>ValueType</tt> implementation represent value types to further
+ * specification over a {@link MajorType} definition. The parser can be
  * extended by implementing {@link com.noctarius.borabora.spi.codec.TagDecoder}
  * and {@link com.noctarius.borabora.spi.codec.TagEncoder} implementations
  * to support additional value types.

@@ -22,7 +22,7 @@ import com.noctarius.borabora.spi.io.CompositeBuffer;
 import java.io.OutputStream;
 
 /**
- * An <tt>Ouput</tt> instance represents a target sink for writeable data. Output implementations
+ * An <tt>Output</tt> instance represents a target sink for writeable data. Output implementations
  * are considered to <b>neither be stateless not thread-safe</b> as data is stored which is
  * a non side-effect free situation. Whereas most implementations don't necessarily need to
  * use the provided <tt>offset</tt> which is passed to <tt>write</tt> methods, it can be used

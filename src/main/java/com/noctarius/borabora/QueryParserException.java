@@ -17,7 +17,7 @@
 package com.noctarius.borabora;
 
 /**
- * This exception type is thrown for any kind of parsing exception,
+ * The <tt>QueryParseException</tt> type is thrown for any kind of parsing exception,
  * while parsing a query language string.
  */
 public class QueryParserException

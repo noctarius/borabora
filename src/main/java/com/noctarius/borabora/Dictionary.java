@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 /**
- * <p>A dictionary is a map of key-value data items. Dictionaries are also known
+ * <p>A <tt>Dictionary</tt> is a map of key-value data items. Dictionaries are also known
  * as tables, maps, hashes or objects (as in JSON).</p>
  * <p>Dictionary implementations are lazy evaluating and just pre-evaluate the
  * basic information like key-value pair stream positions for direct access

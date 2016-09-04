@@ -17,7 +17,7 @@
 package com.noctarius.borabora;
 
 /**
- * A HalfPrecisionFloat instance represents a 16 bit floating point type as defined in the
+ * A <tt>HalfPrecisionFloat</tt> instance represents a 16 bit floating point type as defined in the
  * <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">IEEE 754
  * specification</a>, also known as binary16.
  * <p>This class extends the Java {@link Number} type and is completely interoperable

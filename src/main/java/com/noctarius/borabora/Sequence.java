@@ -24,7 +24,7 @@ import java.util.Spliterators;
 import java.util.function.Predicate;
 
 /**
- * <p>A sequence is a list of value data items. Sequences are also known
+ * <p>A <tt>Sequence</tt> is a list of value data items. Sequences are also known
  * as arrays, list or tuples.</p>
  * <p>Sequences implementations are lazy evaluating and just pre-evaluate the
  * basic information like element stream positions for direct access to a certain

@@ -21,7 +21,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * This class provides a pretty printer implementation for borabora CBOR {@link Value}s.
+ * The <tt>ValuePrettyPrinter</tt> class provides a pretty printer implementation for
+ * borabora CBOR {@link Value}s.
  */
 public final class ValuePrettyPrinter {
 
