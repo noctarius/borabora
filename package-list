@@ -8,4 +8,5 @@ com.noctarius.borabora.spi.builder
 com.noctarius.borabora.spi.codec
 com.noctarius.borabora.spi.io
 com.noctarius.borabora.spi.query
+com.noctarius.borabora.spi.query.optimizer
 com.noctarius.borabora.spi.query.pipeline
