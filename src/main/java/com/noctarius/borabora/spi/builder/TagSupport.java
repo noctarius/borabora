@@ -54,7 +54,7 @@ import java.util.List;
  *  {@literal @}Override
  *   public TagBuilder putMyTag(MyTag value) {
  *     // Encode the actual value or a null element in case of value is null
- *     encoderContext.encodeNullOrType(value, (offset, output) -> {
+ *     encoderContext.encodeNullOrType(value, (offset, output) -&gt; {
  *         // Write a semantic tag header first
  *         offset = Encoder.putSemanticTag(MyTagStrategy.TAG_ID, offset, output);
  *         // Write the actual element
