@@ -19,6 +19,11 @@ package com.noctarius.borabora.builder;
 import com.noctarius.borabora.Writer;
 import com.noctarius.borabora.spi.codec.TagStrategy;
 
+/**
+ * The <tt>WriterBuilder</tt> class is used to configure a new {@link Writer} instance. The
+ * configuration is meant to include {@link TagStrategy}s for new, non-standard semantic tags
+ * and data types.
+ */
 public interface WriterBuilder {
 
     /**

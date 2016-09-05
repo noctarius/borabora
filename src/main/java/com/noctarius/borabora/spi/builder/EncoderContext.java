@@ -34,18 +34,26 @@ public interface EncoderContext {
 
     <S> TagStrategy findTagStrategy(Class<S> type);
 
+    default void encodeNullOrType(Object value, EncoderFunction encoderFunction) {
+        if (value == null) {
+            encodeNull();
+        } else {
+            encode(encoderFunction);
+        }
+    }
+
     default void encodeNull() {
-        encode(offset -> Encoder.putNull(offset, this.output()));
+        encode(Encoder::putNull);
     }
 
     default void encode(EncoderFunction encoderFunction) {
         Objects.requireNonNull(encoderFunction, "encoderFunction must not be null");
         long offset = offset();
-        offset = encoderFunction.encode(offset);
+        offset = encoderFunction.encode(offset, output());
         offset(offset);
     }
 
     interface EncoderFunction {
-        long encode(long offset);
+        long encode(long offset, Output output);
     }
 }

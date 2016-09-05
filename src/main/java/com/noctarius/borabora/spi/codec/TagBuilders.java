@@ -77,11 +77,8 @@ class TagBuilders {
 
         @Override
         public TagBuilder putDateTime(Instant instant) {
-            if (instant == null) {
-                encoderContext.encodeNull();
-            } else {
-                encoderContext.encode(offset -> Encoder.putDateTime(instant.atZone(UTC), offset, encoderContext.output()));
-            }
+            encoderContext.encodeNullOrType(instant, //
+                    (offset, output) -> Encoder.putDateTime(instant.atZone(UTC), offset, output));
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -116,8 +113,8 @@ class TagBuilders {
 
         @Override
         public TagBuilder putTimestamp(long timestamp) {
-            encoderContext.encode(offset -> Encoder.putSemanticTag(TAG_TIMESTAMP, offset, encoderContext.output()));
-            encoderContext.encode(offset -> Encoder.putNumber(timestamp, offset, encoderContext.output()));
+            encoderContext.encode((offset, output) -> Encoder.putSemanticTag(TAG_TIMESTAMP, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putNumber(timestamp, offset, output));
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -138,7 +135,7 @@ class TagBuilders {
                 encoderContext.encodeNull();
             } else {
                 ValueValidators.isPositive(null, value);
-                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+                encoderContext.encode((offset, output) -> Encoder.putBigInteger(value, offset, output));
             }
             return EmptyTagBuilder.INSTANCE;
         }
@@ -160,7 +157,7 @@ class TagBuilders {
                 encoderContext.encodeNull();
             } else {
                 ValueValidators.isNegative(null, value);
-                encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, encoderContext.output()));
+                encoderContext.encode((offset, output) -> Encoder.putBigInteger(value, offset, output));
             }
             return EmptyTagBuilder.INSTANCE;
         }
@@ -178,11 +175,7 @@ class TagBuilders {
 
         @Override
         public TagBuilder putFraction(BigDecimal value) {
-            if (value == null) {
-                encoderContext.encodeNull();
-            } else {
-                encoderContext.encode(offset -> Encoder.putFraction(value, offset, encoderContext.output()));
-            }
+            encoderContext.encodeNullOrType(value, (offset, output) -> Encoder.putFraction(value, offset, output));
             return EmptyTagBuilder.INSTANCE;
         }
     }
@@ -199,11 +192,7 @@ class TagBuilders {
 
         @Override
         public TagBuilder putURI(URI value) {
-            if (value == null) {
-                encoderContext.encodeNull();
-            } else {
-                encoderContext.encode(offset -> Encoder.putUri(value, offset, encoderContext.output()));
-            }
+            encoderContext.encodeNullOrType(value, (offset, output) -> Encoder.putUri(value, offset, output));
             return EmptyTagBuilder.INSTANCE;
         }
 
@@ -221,7 +210,7 @@ class TagBuilders {
 
         CBORBuilderImpl(EncoderContext encoderContext) {
             super(encoderContext);
-            encoderContext.encode(offset -> Encoder.putSemanticTag(TAG_ENCCBOR, offset, encoderContext.output()));
+            encoderContext.encode((offset, output) -> Encoder.putSemanticTag(TAG_ENCCBOR, offset, output));
         }
 
         @Override

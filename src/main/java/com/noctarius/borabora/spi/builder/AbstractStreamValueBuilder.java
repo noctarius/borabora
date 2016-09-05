@@ -18,7 +18,6 @@ package com.noctarius.borabora.spi.builder;
 
 import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.MajorType;
-import com.noctarius.borabora.Output;
 import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
 import com.noctarius.borabora.builder.encoder.DictionaryEntryBuilder;
 import com.noctarius.borabora.builder.encoder.IndefiniteStringBuilder;
@@ -46,14 +45,12 @@ public abstract class AbstractStreamValueBuilder<B>
     private static final CharsetEncoder ASCII_ENCODER = ASCII.newEncoder();
 
     protected final EncoderContext encoderContext;
-    protected final Output output;
     private final B builder;
 
     protected AbstractStreamValueBuilder(EncoderContext encoderContext) {
         Objects.requireNonNull(encoderContext, "encoderContext must not be null");
         this.builder = (B) this;
         this.encoderContext = encoderContext;
-        this.output = encoderContext.output();
     }
 
     @Override
@@ -69,7 +66,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(byte value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putNumber(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putNumber(value, offset, output));
         return builder;
     }
 
@@ -83,7 +80,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(short value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putNumber(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putNumber(value, offset, output));
         return builder;
     }
 
@@ -97,7 +94,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(int value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putNumber(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putNumber(value, offset, output));
         return builder;
     }
 
@@ -111,18 +108,14 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putFraction(BigDecimal value) {
         validate();
-        if (value == null) {
-            encoderContext.encodeNull();
-        } else {
-            encoderContext.encode(offset -> Encoder.putFraction(value, offset, output));
-        }
+        encoderContext.encodeNullOrType(value, (offset, output) -> Encoder.putFraction(value, offset, output));
         return builder;
     }
 
     @Override
     public B putNumber(long value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putNumber(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putNumber(value, offset, output));
         return builder;
     }
 
@@ -140,7 +133,7 @@ public abstract class AbstractStreamValueBuilder<B>
             encoderContext.encodeNull();
         } else if (value instanceof BigInteger) {
             validate();
-            encoderContext.encode(offset -> Encoder.putNumber((BigInteger) value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putNumber((BigInteger) value, offset, output));
 
         } else if (value instanceof BigDecimal) {
             throw new IllegalArgumentException("BigDecimal is not supported");
@@ -175,7 +168,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(float value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putFloat(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putFloat(value, offset, output));
         return builder;
     }
 
@@ -193,7 +186,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putNumber(double value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putDouble(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putDouble(value, offset, output));
         return builder;
     }
 
@@ -211,7 +204,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putHalfPrecision(float value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putHalfPrecision(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putHalfPrecision(value, offset, output));
         return builder;
     }
 
@@ -232,7 +225,7 @@ public abstract class AbstractStreamValueBuilder<B>
         if (value == null) {
             encoderContext.encodeNull();
         } else {
-            encoderContext.encode(offset -> Encoder.putBigInteger(value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putBigInteger(value, offset, output));
         }
         return builder;
     }
@@ -243,7 +236,7 @@ public abstract class AbstractStreamValueBuilder<B>
         if (value == null) {
             encoderContext.encodeNull();
         } else {
-            encoderContext.encode(offset -> Encoder.putString(value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putString(value, offset, output));
         }
         return builder;
     }
@@ -254,7 +247,7 @@ public abstract class AbstractStreamValueBuilder<B>
         if (value == null) {
             encoderContext.encodeNull();
         } else {
-            encoderContext.encode(offset -> Encoder.putByteString(value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
         }
         return builder;
     }
@@ -265,7 +258,7 @@ public abstract class AbstractStreamValueBuilder<B>
         if (value == null) {
             encoderContext.encodeNull();
         } else {
-            encoderContext.encode(offset -> Encoder.putTextString(value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putTextString(value, offset, output));
         }
         return builder;
     }
@@ -277,7 +270,7 @@ public abstract class AbstractStreamValueBuilder<B>
             encoderContext.encodeNull();
 
         } else {
-            encoderContext.encode(offset -> Encoder.putUri(uri, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putUri(uri, offset, output));
         }
         return builder;
     }
@@ -290,7 +283,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         } else {
             ZonedDateTime atUTC = instant.atZone(UTC);
-            encoderContext.encode(offset -> Encoder.putDateTime(atUTC, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putDateTime(atUTC, offset, output));
         }
         return builder;
     }
@@ -308,7 +301,7 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public B putTimestamp(long timestamp) {
         validate();
-        encoderContext.encode(offset -> Encoder.putTimestamp(timestamp, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putTimestamp(timestamp, offset, output));
         return builder;
     }
 
@@ -325,21 +318,21 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public IndefiniteStringBuilder<B> putIndefiniteByteString() {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.ByteString, -1, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.ByteString, -1, offset, output));
         return new IndefiniteStringBuilderImpl<>(encoderContext, true, builder);
     }
 
     @Override
     public IndefiniteStringBuilder<B> putIndefiniteTextString() {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.TextString, -1, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.TextString, -1, offset, output));
         return new IndefiniteStringBuilderImpl<>(encoderContext, false, builder);
     }
 
     @Override
     public B putBoolean(boolean value) {
         validate();
-        encoderContext.encode(offset -> Encoder.putBoolean(value, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.putBoolean(value, offset, output));
         return builder;
     }
 
@@ -386,7 +379,7 @@ public abstract class AbstractStreamValueBuilder<B>
 
         } else {
             // Try to write as semantic tag
-            encoderContext.encode(offset -> encoderContext.applyEncoder(value, offset));
+            encoderContext.encode((offset, output) -> encoderContext.applyEncoder(value, offset));
         }
         return builder;
     }
@@ -394,28 +387,28 @@ public abstract class AbstractStreamValueBuilder<B>
     @Override
     public SequenceBuilder<B> putSequence() {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
         return new SequenceBuilderImpl<>(encoderContext, -1, builder);
     }
 
     @Override
     public SequenceBuilder<B> putSequence(long elements) {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Sequence, elements, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, elements, offset, output));
         return new SequenceBuilderImpl<>(encoderContext, elements, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary() {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Dictionary, -1, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Dictionary, -1, offset, output));
         return new DictionaryBuilderImpl<>(encoderContext, -1, builder);
     }
 
     @Override
     public DictionaryBuilder<B> putDictionary(long elements) {
         validate();
-        encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Dictionary, elements, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Dictionary, elements, offset, output));
         return new DictionaryBuilderImpl<>(encoderContext, elements, builder);
     }
 
@@ -423,14 +416,7 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     private void encodeInt(Number value) {
-        encoderContext.encode(offset -> {
-            if (value == null) {
-                offset = Encoder.putNull(offset, output);
-            } else {
-                offset = Encoder.putNumber(value.longValue(), offset, output);
-            }
-            return offset;
-        });
+        encoderContext.encodeNullOrType(value, (offset, output) -> Encoder.putNumber(value.longValue(), offset, output));
     }
 
     private static class IndefiniteStringBuilderImpl<B>
@@ -438,13 +424,11 @@ public abstract class AbstractStreamValueBuilder<B>
 
         private final EncoderContext encoderContext;
         private final boolean asciiOnly;
-        private final Output output;
         private final B builder;
 
         IndefiniteStringBuilderImpl(EncoderContext encoderContext, boolean asciiOnly, B builder) {
             Objects.requireNonNull(encoderContext, "encoderContext must not be null");
             Objects.requireNonNull(builder, "builder must not be null");
-            this.output = encoderContext.output();
             this.encoderContext = encoderContext;
             this.asciiOnly = asciiOnly;
             this.builder = builder;
@@ -457,17 +441,17 @@ public abstract class AbstractStreamValueBuilder<B>
                 if (!ASCII_ENCODER.canEncode(value)) {
                     throw new IllegalArgumentException("UTF8 string cannot be added to a CBOR ByteString");
                 }
-                encoderContext.encode(offset -> Encoder.putByteString(value, offset, output));
+                encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
 
             } else {
-                encoderContext.encode(offset -> Encoder.putTextString(value, offset, output));
+                encoderContext.encode((offset, output) -> Encoder.putTextString(value, offset, output));
             }
             return this;
         }
 
         @Override
         public B endIndefiniteString() {
-            encoderContext.encode(offset -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
+            encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
             return builder;
         }
     }
@@ -503,7 +487,7 @@ public abstract class AbstractStreamValueBuilder<B>
             }
 
             if (maxElements == -1) {
-                encoderContext.encode(offset -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
+                encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
             }
             return builder;
         }
@@ -547,7 +531,7 @@ public abstract class AbstractStreamValueBuilder<B>
                 throw new IllegalStateException(msg);
             }
             if (maxElements == -1) {
-                encoderContext.encode(offset -> encoderContext.output().write(offset++, (byte) OPCODE_BREAK_MASK));
+                encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
             }
             return builder;
         }

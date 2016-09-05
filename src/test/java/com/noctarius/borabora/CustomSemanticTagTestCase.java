@@ -194,13 +194,13 @@ public class CustomSemanticTagTestCase
 
             @Override
             public CustomTableRowBuilder putHeaders(String... headers) {
-                Output output = encoderContext.output();
+                encoderContext.encode((offset, output) -> Encoder.putSemanticTag(Integer.MAX_VALUE, offset, output));
+                encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
+                encoderContext.encode( //
+                        (offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, headers.length, offset, output));
 
-                encoderContext.encode(offset -> Encoder.putSemanticTag(Integer.MAX_VALUE, offset, output));
-                encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
-                encoderContext.encode(offset -> Encoder.encodeLengthAndValue(MajorType.Sequence, headers.length, offset, output));
                 for (String header : headers) {
-                    encoderContext.encode(offset -> Encoder.putString(header, offset, output));
+                    encoderContext.encode((offset, output) -> Encoder.putString(header, offset, output));
                 }
                 return new CustomTableRowBuilderImpl(headers.length, encoderContext);
             }
@@ -219,13 +219,13 @@ public class CustomSemanticTagTestCase
 
             @Override
             public CustomTableColumnBuilder<CustomTableRowBuilder> putRow() {
-                encoderContext.encode(o -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, o, encoderContext.output()));
+                encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
                 return new CustomTableColumnBuilderImpl(maxElements, this, encoderContext);
             }
 
             @Override
             public <B> TagBuilderConsumer<B> endSemanticTag() {
-                encoderContext.encode(offset -> encoderContext.output().write(offset++, (byte) OPCODE_BREAK_MASK));
+                encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
                 return null;
             }
         }
@@ -248,7 +248,7 @@ public class CustomSemanticTagTestCase
 
             @Override
             public CustomTableRowBuilder endRow() {
-                encoderContext.encode(offset -> encoderContext.output().write(offset++, (byte) OPCODE_BREAK_MASK));
+                encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
                 return builder;
             }
 
