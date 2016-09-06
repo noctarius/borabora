@@ -26,7 +26,7 @@ import java.util.List;
  * semantic tag using the fluent API. The {@link #semanticTag(Class)} method is used in conjunction
  * with builder pattern interfaces for collecting information and executing them in the right order.
  * <p>Builders can be built from multiple steps, however the last step in each builder chain
- * <b>MUST</b> be an extension-interface of type {@link TagBuilder}, or the type itself, to provide the
+ * <b>MUST</b> be an extension-interface of type {@link TagBuilder}, or the TagBuilder type itself, to provide the
  * {@link TagBuilder#endSemanticTag()} method.</p>
  * <p>The support API uses proxies to collect method calls to execute them in the right order afterwards.
  * For implementation purpose, two annotations are necessary to support the proxy API.</p>
