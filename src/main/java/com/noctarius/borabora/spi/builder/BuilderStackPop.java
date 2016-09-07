@@ -21,6 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The <tt>BuilderStackPop</tt> annotation is used to control the internal proxy stack
+ * creation while capturing the encoding flow when writing a semantic tag. For every
+ * <tt>BuilderStackPop</tt> annotation placed on a method returning an interface the
+ * stack is popped and the previous builder proxy is returned. For further information
+ * see {@link TagSupport}.
+ *
+ * @see TagSupport
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BuilderStackPop {

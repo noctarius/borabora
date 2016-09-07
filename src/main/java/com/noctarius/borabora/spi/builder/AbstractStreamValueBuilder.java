@@ -38,6 +38,14 @@ import java.util.Objects;
 import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
 import static com.noctarius.borabora.spi.io.Constants.UTC;
 
+/**
+ * The <tt>AbstractStreamValueBuilder</tt> class is an abstract convenience implementation of
+ * {@link ValueBuilder} and provides all the common value encodings. When implementing a
+ * <tt>ValueBuilder</tt> based interface, it is highly recommended to build on the base of this
+ * abstract class to have support for future extension of the interface.
+ *
+ * @param <B> the current builder's type
+ */
 public abstract class AbstractStreamValueBuilder<B>
         implements ValueBuilder<B> {
 

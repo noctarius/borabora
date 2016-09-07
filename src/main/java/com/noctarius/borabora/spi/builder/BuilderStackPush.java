@@ -21,6 +21,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The <tt>BuilderStackPush</tt> annotation is used to control the internal proxy stack
+ * creation while capturing the encoding flow when writing a semantic tag. For every
+ * <tt>BuilderStackPush</tt> annotation placed on a method returning an interface a new
+ * proxy is created on the stack. For further information see {@link TagSupport}.
+ *
+ * @see TagSupport
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BuilderStackPush {

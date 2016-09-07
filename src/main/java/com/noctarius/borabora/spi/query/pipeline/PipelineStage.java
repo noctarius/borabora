@@ -83,7 +83,6 @@ public interface PipelineStage {
      * {@link VisitResult#Continue} and the execution will continue with the next available
      * sibling in the pipeline.
      *
-     * @param pipelineContext
      * @param pipelineContext the current query context
      * @return the VisitResult to control the further execution
      */

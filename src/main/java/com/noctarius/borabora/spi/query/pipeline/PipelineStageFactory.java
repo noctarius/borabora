@@ -16,8 +16,27 @@
  */
 package com.noctarius.borabora.spi.query.pipeline;
 
+import com.noctarius.borabora.spi.query.QueryContext;
+
+/**
+ * The <tt>PipelineStageFactory</tt> implementation is responsible for creating and returning
+ * {@link PipelineStage} instances based on the provided <tt>left</tt>, <tt>right</tt> and
+ * <tt>stage</tt> parameters. A PipelineStage is always designed as a binary tree.
+ * <p>The default PipelineStage implementation also assumes a LCRS tree (Left Child, Right
+ * Sibling), however implementations are free to change this behavior as long as the visitor
+ * methods {@link PipelineStage#visit(PipelineStage, QueryContext)}</p> and
+ * {@link PipelineStage#visitChildren(QueryContext)} are correctly used.
+ */
 public interface PipelineStageFactory {
 
+    /**
+     * Returns a new <tt>PipelineStage</tt> instance based on the given parameters.
+     *
+     * @param left  the first child
+     * @param right the first sibling
+     * @param stage the stage
+     * @return the new pipeline stage instance
+     */
     PipelineStage newPipelineStage(PipelineStage left, PipelineStage right, QueryStage stage);
 
 }

@@ -16,8 +16,25 @@
  */
 package com.noctarius.borabora.spi.builder;
 
+/**
+ * The <tt>TagBuilderConsumer</tt> is used to collect and execute semantic tag builder
+ * calls against the actual writer. This is normally not considered to be implemented
+ * by an SPI user, but there may be situations where it is easier to work with the
+ * encoder context directly.
+ *
+ * @param <B> the builder type
+ */
 public interface TagBuilderConsumer<B> {
 
+    /**
+     * Encodes the previously configured semantic tag ({@link TagSupport#semanticTag(Class)})
+     * into the given {@link EncoderContext}.
+     *
+     * @param encoderContext the encoder context
+     * @param builder        the current parent builder
+     * @return the builder
+     * @see TagSupport
+     */
     B execute(EncoderContext encoderContext, B builder);
 
 }

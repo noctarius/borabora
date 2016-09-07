@@ -131,6 +131,7 @@ public interface ParserBuilder {
      * Configures the {@link Parser} configuration to use the given {@link ProjectionStrategy}
      * to use a non-standard strategy.
      *
+     * @param projectionStrategy the projection strategy to use
      * @return this builder instance
      */
     ParserBuilder withProjectionStrategy(ProjectionStrategy projectionStrategy);
