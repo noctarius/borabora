@@ -18,9 +18,23 @@ package com.noctarius.borabora.builder.encoder;
 
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 
+/**
+ * The <tt>DictionaryEntryBuilder</tt> interface is used to create a dictionary entry (a single
+ * key-value pair) in the generated CBOR stream. A DictionaryEntryBuilder instance is retrieved
+ * by calling {@link DictionaryBuilder#putEntry()}.
+ *
+ * @param <B> the parent builder's type
+ */
 public interface DictionaryEntryBuilder<B>
         extends ValueBuilder<DictionaryEntryBuilder<B>> {
 
+    /**
+     * Ends the current dictionary entry. An entry has to have two elements written to
+     * the stream. If the number of elements written with this builder is less than two
+     * an {@link IllegalStateException} is thrown.
+     *
+     * @return the parent builder
+     */
     @BuilderStackPop
     DictionaryBuilder<B> endEntry();
 

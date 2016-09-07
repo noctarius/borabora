@@ -19,11 +19,36 @@ package com.noctarius.borabora.builder.encoder;
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 import com.noctarius.borabora.spi.builder.BuilderStackPush;
 
+/**
+ * The <tt>DictionaryBuilder</tt> interface is used to create dictionary entries (key-value
+ * pairs) in the generated CBOR stream. A DictionaryBuilder instance is retrieved by calling
+ * {@link ValueBuilder#putDictionary()} or {@link ValueBuilder#putDictionary(long)} for
+ * either an indefinite or fixed size dictionary.
+ *
+ * @param <B> the parent builder's type
+ */
 public interface DictionaryBuilder<B> {
 
+    /**
+     * Starts a new key-value pair in the dictionary and returns the corresponding
+     * {@link DictionaryEntryBuilder}. If the dictionary is configured to be of a
+     * fixed size and the new entry exceeds the number of legal entries, an
+     * {@link IllegalStateException} is thrown.
+     *
+     * @return the new DictionaryEntryBuilder
+     * @throws IllegalStateException if the new entry exceeds the number of allowed elements
+     */
     @BuilderStackPush
     DictionaryEntryBuilder<B> putEntry();
 
+    /**
+     * Ends the current dictionary. In case of an indefinite dictionary, it will also write
+     * the closing tag to the generated CBOR stream. In case of a fixed size dictionary, the
+     * number of created entries is tested and if the number is less than the configured
+     * number of elements expected, an {@link IllegalStateException} is thrown.
+     *
+     * @return the parent builder
+     */
     @BuilderStackPop
     B endDictionary();
 
