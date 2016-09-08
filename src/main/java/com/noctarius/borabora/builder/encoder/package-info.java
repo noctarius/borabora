@@ -14,4 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * This package contains the builder classes to encode values into CBOR data items.
+ * Provided classes have builtin support for all common CBOR data types and the
+ * out of the box provided semantic tag types. Anyhow
+ * {@link com.noctarius.borabora.builder.encoder} provides semantic tag builders for
+ * all supported semantic tag types for the
+ * {@link com.noctarius.borabora.builder.encoder.ValueBuilder#putTag(com.noctarius.borabora.spi.builder.TagBuilderConsumer)}
+ * SPI.
+ */
 package com.noctarius.borabora.builder.encoder;

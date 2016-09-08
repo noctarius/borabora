@@ -29,13 +29,21 @@ import java.util.function.Supplier;
 import static com.noctarius.borabora.ValueTypes.ByteString;
 import static com.noctarius.borabora.ValueTypes.TextString;
 
+/**
+ * The <tt>AbstractValue</tt> abstract class is supposed to be the base class for all {@link Value}
+ * implementations. It provides the basics for matching {@link MajorType} and {@link ValueType}
+ * before trying to actually extract the real data item's value.
+ */
 public abstract class AbstractValue
         implements Value {
 
-    public static final String VALUE_TYPE_DOES_NOT_MATCH = "Requested value type does not match the read value: %s != %s";
-    public static final String MAJOR_TYPE_DOES_NOT_MATCH = "Requested major type does not match the read value: %s != %s";
-    public static final String VALUE_TYPE_NOT_A_DOUBLE = "Requested value type does not match the read value: {%s|%s} != %s";
-    public static final String VALUE_TYPE_NOT_A_TRIPPLE = "Requested value type does not match the read value: {%s|%s|%s} != %s";
+    private static final String VALUE_TYPE_DOES_NOT_MATCH = "Requested value type does not match the read value: %s != %s";
+    private static final String MAJOR_TYPE_DOES_NOT_MATCH = "Requested major type does not match the read value: %s != %s";
+    private static final String VALUE_TYPE_NOT_A_DOUBLE = "Requested value type does not match the read value: {%s|%s} != %s";
+    private static final String VALUE_TYPE_NOT_A_TRIPPLE = "Requested value type does not match the read value: {%s|%s|%s} != %s";
+
+    protected AbstractValue() {
+    }
 
     @Override
     public String asString() {

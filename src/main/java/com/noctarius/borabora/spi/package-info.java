@@ -16,7 +16,8 @@
  */
 
 /**
- * This package contains interfaces to extend borabora by additional types
- * or special handling behavior.
+ * This package contains interfaces and classes to build that basic internals of borabora,
+ * including common {@link com.noctarius.borabora.Value} implementations and support classes
+ * like {@link com.noctarius.borabora.spi.EqualsSupport}.
  */
 package com.noctarius.borabora.spi;

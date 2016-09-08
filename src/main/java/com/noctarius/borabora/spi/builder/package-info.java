@@ -14,4 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * This package contains the semantic tag builder SPI, which can be used to
+ * provide support for additional, not builtin, semantic tag data item types.
+ * All builtin semantic tag types provide an implementation of this builder
+ * pattern and fully support the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport#semanticTag(java.lang.Class)}
+ * API. For further detail on that API, see the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport} Javadoc.
+ */
 package com.noctarius.borabora.spi.builder;

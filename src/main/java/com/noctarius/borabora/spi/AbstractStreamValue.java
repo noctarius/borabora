@@ -28,6 +28,11 @@ import com.noctarius.borabora.spi.query.QueryContextAware;
 
 import java.util.function.Supplier;
 
+/**
+ * The <tt>AbstractStreamValue</tt> is an abstract class implementing the basics for all
+ * stream backed {@link com.noctarius.borabora.Value} implementations, working on a
+ * {@link QueryContext}.
+ */
 public abstract class AbstractStreamValue
         extends AbstractValue
         implements QueryContextAware {
@@ -88,6 +93,11 @@ public abstract class AbstractStreamValue
         return valueType().value(this);
     }
 
+    /**
+     * Returns the bound {@link QueryContext}.
+     *
+     * @return the bound QueryContext
+     */
     @Override
     public QueryContext queryContext() {
         return queryContext;
