@@ -26,6 +26,12 @@ import com.noctarius.borabora.WrongTypeException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+/**
+ * The <tt>ObjectValue</tt> class implements a {@link com.noctarius.borabora.Value} type which
+ * is backed by a value object. In contrast to a {@link StreamValue} based implementation,
+ * instances of this type cannot be used for stream based extractions, therefore {@link #raw()}
+ * throws a {@link WrongTypeException}.
+ */
 public class ObjectValue
         extends AbstractValue {
 
@@ -33,6 +39,14 @@ public class ObjectValue
     private final ValueType valueType;
     private final Supplier<?> supplier;
 
+    /**
+     * Creates a new <tt>ObjectValue</tt> instance based on the given <tt>majorType</tt>,
+     * <tt>valueType</tt> and <tt>value</tt>.
+     *
+     * @param majorType the MajorType of the value
+     * @param valueType the ValueType of the value
+     * @param value     the object value
+     */
     public ObjectValue(MajorType majorType, ValueType valueType, Object value) {
         Objects.requireNonNull(majorType, "majorType must not be null");
         Objects.requireNonNull(valueType, "valueType must not be null");

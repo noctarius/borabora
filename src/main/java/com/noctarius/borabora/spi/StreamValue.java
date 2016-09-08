@@ -22,6 +22,11 @@ import com.noctarius.borabora.spi.query.QueryContext;
 
 import java.util.Objects;
 
+/**
+ * The <tt>StreamValue</tt> class is the actual, standard implementation of a stream based
+ * {@link com.noctarius.borabora.Value}. It binds the underlying {@link QueryContext}, the
+ * values <tt>offset</tt>, the {@link MajorType} and {@link ValueType}.
+ */
 public final class StreamValue
         extends AbstractStreamValue {
 
@@ -29,6 +34,17 @@ public final class StreamValue
     private final ValueType valueType;
     private final long offset;
 
+    /**
+     * Creates a new instance of the <tt>StreamValue</tt> based on the passed <tt>majorType</tt>,
+     * <tt>valueType</tt>, <tt>offset</tt> and <tt>queryContext</tt>.
+     *
+     * @param majorType    the MajorType
+     * @param valueType    the ValueType
+     * @param offset       the offset
+     * @param queryContext the QueryContext
+     * @throws NullPointerException     if one of majorType, valueType or queryContext is null
+     * @throws IllegalArgumentException if offset is less than 0
+     */
     public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
         super(queryContext);
 

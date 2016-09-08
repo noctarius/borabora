@@ -20,6 +20,15 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+import java.util.Objects;
+
+/**
+ * The <tt>RelocatableStreamValue</tt> class implements a special version of a stream based
+ * {@link com.noctarius.borabora.Value} type. The actual implementation can be used to prevent
+ * a new <tt>Value</tt> instance per value. The relocated type cannot be returned to a user but
+ * can be used for {@link java.util.function.Predicate} based searches in sequences or
+ * dictionaries.
+ */
 public final class RelocatableStreamValue
         extends AbstractStreamValue {
 
@@ -28,6 +37,9 @@ public final class RelocatableStreamValue
     private ValueType valueType;
     private long offset;
 
+    /**
+     * Creates a new RelocatableStreamValue.
+     */
     public RelocatableStreamValue() {
         super(null);
     }
@@ -57,7 +69,27 @@ public final class RelocatableStreamValue
         return queryContext().applyDecoder(offset(), majorType(), valueType());
     }
 
+    /**
+     * Relocates the current instance based on the given <tt>offset</tt>. The provided <tt>majorType</tt> and
+     * <tt>valueType</tt> as well as the <tt>queryContext</tt> describe the actual data item and source for
+     * the offset. On relocation, every previously known state of this instance is lost and previously accessible
+     * elements are not available anymore.
+     *
+     * @param queryContext the current QueryContext
+     * @param majorType    the current MajorType
+     * @param valueType    the current ValueType
+     * @param offset       the current offset
+     * @throws NullPointerException     if one of majorType, valueType or queryContext is null
+     * @throws IllegalArgumentException if offset is less than 0
+     */
     public void relocate(QueryContext queryContext, MajorType majorType, ValueType valueType, long offset) {
+        Objects.requireNonNull(queryContext, "queryContext must not be null");
+        Objects.requireNonNull(majorType, "majorType must not be null");
+        Objects.requireNonNull(valueType, "valueType must not be null");
+        if (offset <= -1) {
+            throw new IllegalArgumentException("No offset available for CBOR type, offset=" + offset);
+        }
+
         this.queryContext = queryContext;
         this.majorType = majorType;
         this.valueType = valueType;

@@ -16,11 +16,23 @@
  */
 package com.noctarius.borabora.spi;
 
+/**
+ * The <tt>EqualsSupport</tt> class provides a utility method to find out if two elements are
+ * equal to each other. In difference from the normal implementation, this one supports lambda
+ * instances.
+ */
 public final class EqualsSupport {
 
     private EqualsSupport() {
     }
 
+    /**
+     * Returns if <tt>first</tt> and <tt>second</tt> are equal.
+     *
+     * @param first  first object
+     * @param second second object
+     * @return true if both objects are equal, otherwise false
+     */
     public static boolean equals(Object first, Object second) {
         String name = first.getClass().getName();
         String otherName = second.getClass().getName();
