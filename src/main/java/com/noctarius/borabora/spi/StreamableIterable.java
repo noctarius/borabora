@@ -19,13 +19,31 @@ package com.noctarius.borabora.spi;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * The <tt>StreamableIterable</tt> interface extends the common {@link Iterable} with Java 8
+ * stream supporting methods.
+ *
+ * @param <T> the value type
+ */
 public interface StreamableIterable<T>
         extends Iterable<T> {
 
+    /**
+     * Returns a sequential {@code Stream} with this collection as its source.
+     *
+     * @return a sequential  Stream over the elements in this collection
+     */
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
+    /**
+     * Returns a possibly parallel {@code Stream} with this collection as its
+     * source.  It is allowable for this method to return a sequential stream.
+     *
+     * @return a possibly parallel {@code Stream} over the elements in this
+     * collection
+     */
     default Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), true);
     }

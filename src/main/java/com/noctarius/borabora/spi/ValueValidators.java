@@ -24,11 +24,22 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
+/**
+ * The <tt>ValueValidators</tt> class provides a set of helper methods to quickly test values
+ * for a specific criteria.
+ */
 public final class ValueValidators {
 
     private ValueValidators() {
     }
 
+    /**
+     * If the given <tt>value</tt> is either <tt>ByteString</tt> or a <tt>TextString</tt> the
+     * method returns gracefully, otherwise an {@link IllegalArgumentException} is thrown.
+     *
+     * @param value     the value to test
+     * @param extracted the extracted value
+     */
     public static void isString(Value value, Object extracted) {
         Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.ByteString.matches(value.valueType()) //
@@ -38,6 +49,13 @@ public final class ValueValidators {
         }
     }
 
+    /**
+     * If the given <tt>value</tt> is a <tt>ByteString</tt> the method returns gracefully,
+     * otherwise an {@link IllegalArgumentException} is thrown.
+     *
+     * @param value     the value to test
+     * @param extracted the extracted value
+     */
     public static void isByteString(Value value, Object extracted) {
         Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.ByteString.matches(value.valueType())) {
@@ -45,6 +63,13 @@ public final class ValueValidators {
         }
     }
 
+    /**
+     * If the given <tt>value</tt> is a <tt>TextString</tt> the method returns gracefully,
+     * otherwise an {@link IllegalArgumentException} is thrown.
+     *
+     * @param value     the value to test
+     * @param extracted the extracted value
+     */
     public static void isTextString(Value value, Object extracted) {
         Objects.requireNonNull(value, "value must not be null");
         if (!ValueTypes.TextString.matches(value.valueType())) {
@@ -52,6 +77,14 @@ public final class ValueValidators {
         }
     }
 
+    /**
+     * If the given <tt>extracted</tt> value is a <tt>Number</tt> and the number is positive,
+     * the method returns gracefully, otherwise an {@link IllegalArgumentException} is thrown
+     * if the value is negative.
+     *
+     * @param value     the value to test
+     * @param extracted the extracted value
+     */
     public static void isPositive(Value value, Object extracted) {
         Number number = (Number) extracted;
         if (isNegative(number)) {
@@ -59,6 +92,14 @@ public final class ValueValidators {
         }
     }
 
+    /**
+     * If the given <tt>extracted</tt> value is a <tt>Number</tt> and the number is negative,
+     * the method returns gracefully, otherwise an {@link IllegalArgumentException} is thrown
+     * if the value is positive.
+     *
+     * @param value     the value to test
+     * @param extracted the extracted value
+     */
     public static void isNegative(Value value, Object extracted) {
         Number number = (Number) extracted;
         if (!isNegative(number)) {
