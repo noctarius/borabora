@@ -18,8 +18,21 @@ package com.noctarius.borabora.spi.query.optimizer;
 
 import java.util.List;
 
+/**
+ * The <tt>QueryOptimizerStrategyFactory</tt> interface defines the factory to create an
+ * instance of a {@link QueryOptimizerStrategy} to apply rules and priorities specific to
+ * an implementation. The returned <tt>QueryOptimizerStrategy</tt> binds the provided set
+ * of {@link QueryOptimizer}s.
+ */
 public interface QueryOptimizerStrategyFactory {
 
+    /**
+     * Creates a new instance of a {@link QueryOptimizerStrategy} that binds the set of
+     * {@link QueryOptimizer}s.
+     *
+     * @param queryOptimizers the QueryOptimizers to apply with the created strategy
+     * @return a new QueryOptimizerStrategy binding the given set of optimiizers
+     */
     QueryOptimizerStrategy newQueryOptimizerStrategy(List<QueryOptimizer> queryOptimizers);
 
 }

@@ -19,8 +19,24 @@ package com.noctarius.borabora.spi.query.optimizer;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 
+/**
+ * The <tt>QueryOptimizerStrategy</tt> interface describes a strategy on how to apply different
+ * {@link QueryOptimizer}s to optimize the actual query. A <tt>QueryOptimizerStrategy</tt> is
+ * created using a {@link QueryOptimizerStrategyFactory} and the provided set of optimizers given
+ * to the factory instance.
+ */
 public interface QueryOptimizerStrategy {
 
+    /**
+     * This method executes the bound set of {@link QueryOptimizer}s. Depending on the strategy
+     * implementation certain optimizers might get a higher priority than others. All rules and
+     * priorities applied are completely independent specific. The default implementation just
+     * applied optimizers in the order they were registered.
+     *
+     * @param rootPipelineStage    the PipelineStage to optimize
+     * @param pipelineStageFactory the factory to create new PipelineStage instances
+     * @return the optimized PipelineStage
+     */
     PipelineStage optimizeQuery(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory);
 
 }

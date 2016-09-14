@@ -14,18 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query.pipeline;
-
-import com.noctarius.borabora.spi.query.QueryContext;
 
 /**
- * The <tt>QueryPipeline</tt> interface defines the actual query execution plan designed as an binary
- * tree pipeline.
+ * This package contains the query optimizer SPI, which interface definitions are used
+ * to implement a query optimizer or a strategy on how to apply a set of query optimizers to a
+ * given query.
  */
-public interface QueryPipeline {
-
-    void evaluate(QueryContext pipelineContext);
-
-    String printQueryGraph();
-
-}
+package com.noctarius.borabora.spi.query.optimizer;
