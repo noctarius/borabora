@@ -42,7 +42,7 @@ public interface PipelineStage {
      */
     PipelineStage NIL = new PipelineStage() {
         @Override
-        public VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext) {
+        public VisitResult visit(PipelineStage previousPipelineStage, QueryContext queryContext) {
             return VisitResult.Continue;
         }
 
@@ -72,10 +72,10 @@ public interface PipelineStage {
      * down the execution plan onwards children first, siblings secondly.
      *
      * @param previousPipelineStage the previously executed PipelineStage
-     * @param pipelineContext       the current query context
+     * @param queryContext          the current query context
      * @return the VisitResult to control the further execution
      */
-    VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext);
+    VisitResult visit(PipelineStage previousPipelineStage, QueryContext queryContext);
 
     /**
      * Callback from the {@link #visit(PipelineStage, QueryContext)} method to visit available
@@ -83,10 +83,10 @@ public interface PipelineStage {
      * {@link VisitResult#Continue} and the execution will continue with the next available
      * sibling in the pipeline.
      *
-     * @param pipelineContext the current query context
+     * @param queryContext the current query context
      * @return the VisitResult to control the further execution
      */
-    default VisitResult visitChildren(QueryContext pipelineContext) {
+    default VisitResult visitChildren(QueryContext queryContext) {
         return VisitResult.Continue;
     }
 

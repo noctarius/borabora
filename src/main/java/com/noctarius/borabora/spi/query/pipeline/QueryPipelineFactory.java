@@ -18,8 +18,24 @@ package com.noctarius.borabora.spi.query.pipeline;
 
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 
+/**
+ * The <tt>QueryPipelineFactory</tt> implementation is responsible to build a new {@link QueryPipeline} after
+ * the optimization is executed. The implementation is also free to change the pipeline depending on its own
+ * implementation needs, too.
+ */
 public interface QueryPipelineFactory {
 
+    /**
+     * Creates a new {@link QueryPipeline} based on the provided <tt>rootPipelineStage</tt> and is free to
+     * execute the actual query optimization. The factory might decide to skip optimization for debugging
+     * purpose or implementation specific reasons, however it is strongly recommended to execute optimization
+     * for normal operation reasons.
+     *
+     * @param rootPipelineStage      the unoptimized root pipeline stage element
+     * @param pipelineStageFactory   the configured PipelineStageFactory to create new PipelineStage elements
+     * @param queryOptimizerStrategy the configured QueryOptimizerStrategy to optimize the pipeline
+     * @return a new QueryPipeline instance with either optimized or unoptimized pipeline stages
+     */
     QueryPipeline newQueryPipeline(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory,
                                    QueryOptimizerStrategy queryOptimizerStrategy);
 

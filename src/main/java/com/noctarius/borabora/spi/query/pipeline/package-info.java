@@ -14,34 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query.pipeline;
-
-import com.noctarius.borabora.spi.query.QueryContext;
 
 /**
- * The <tt>VisitResult</tt> enum defines the constants for controlling the pipeline flow based
- * on actions given by the pipeline stages.
+ * This package contains all interfaces required to either implement custom
+ * {@link com.noctarius.borabora.spi.query.pipeline.QueryStage}s or
+ * complete {@link com.noctarius.borabora.spi.query.pipeline.QueryPipeline} implementations
+ * together with their according factories and the pipeline flow control
+ * {@link com.noctarius.borabora.spi.query.pipeline.VisitResult}.
  */
-public enum VisitResult {
-
-    /**
-     * Continue pipeline execution with next child or sibling
-     */
-    Continue,
-
-    /**
-     * Loop on current {@link QueryStage#evaluate(PipelineStage, PipelineStage, QueryContext)}
-     */
-    Loop,
-
-    /**
-     * Stop execution on current subtree and skip children but continue
-     * on next sibling
-     */
-    Break,
-
-    /**
-     * Stop execution altogether
-     */
-    Exit
-}
+package com.noctarius.borabora.spi.query.pipeline;

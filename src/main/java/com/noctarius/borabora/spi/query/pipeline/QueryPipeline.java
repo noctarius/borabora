@@ -24,8 +24,22 @@ import com.noctarius.borabora.spi.query.QueryContext;
  */
 public interface QueryPipeline {
 
-    void evaluate(QueryContext pipelineContext);
+    /**
+     * Evaluates the bound {@link PipelineStage}s. Evaluation is controlled by the different
+     * {@link VisitResult} return values coming back from
+     * {@link PipelineStage#visit(PipelineStage, QueryContext)} and
+     * {@link PipelineStage#visitChildren(QueryContext)}.
+     *
+     * @param queryContext the current query context
+     */
+    void evaluate(QueryContext queryContext);
 
+    /**
+     * Returns the current execution plan as a binary tree diagram based on the internally bound
+     * pipeline stages.
+     *
+     * @return the execution plan as a binary graph
+     */
     String printQueryGraph();
 
 }

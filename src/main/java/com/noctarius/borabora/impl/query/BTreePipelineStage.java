@@ -40,12 +40,12 @@ class BTreePipelineStage
     }
 
     @Override
-    public VisitResult visit(PipelineStage previousPipelineStage, QueryContext pipelineContext) {
+    public VisitResult visit(PipelineStage previousPipelineStage, QueryContext queryContext) {
         VisitResult visitResult = VisitResult.Continue;
 
         if (stage != null) {
             do {
-                visitResult = stage.evaluate(previousPipelineStage, this, pipelineContext);
+                visitResult = stage.evaluate(previousPipelineStage, this, queryContext);
             } while (visitResult == VisitResult.Loop);
         }
 
@@ -56,16 +56,16 @@ class BTreePipelineStage
 
         // Evaluate possibly existing siblings
         if (right != NIL) {
-            visitResult = right.visit(this, pipelineContext);
+            visitResult = right.visit(this, queryContext);
         }
 
         return visitResult;
     }
 
     @Override
-    public VisitResult visitChildren(QueryContext pipelineContext) {
+    public VisitResult visitChildren(QueryContext queryContext) {
         if (left != NIL) {
-            return left.visit(this, pipelineContext);
+            return left.visit(this, queryContext);
         }
         return VisitResult.Continue;
     }
