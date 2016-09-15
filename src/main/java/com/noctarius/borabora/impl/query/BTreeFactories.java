@@ -21,7 +21,6 @@ import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.List;
@@ -32,10 +31,7 @@ public final class BTreeFactories {
     }
 
     public static QueryPipelineFactory newQueryPipelineFactory() {
-        return (queryRootNode, pipelineStageFactory, queryOptimizerStrategy) -> {
-            // Build LCRS query plan
-            PipelineStage rootPipelineStage = QueryBuilderNode.build(queryRootNode, pipelineStageFactory);
-
+        return (rootPipelineStage, pipelineStageFactory, queryOptimizerStrategy) -> {
             // Apply query optimizers
             rootPipelineStage = queryOptimizerStrategy.optimizeQuery(rootPipelineStage, pipelineStageFactory);
 

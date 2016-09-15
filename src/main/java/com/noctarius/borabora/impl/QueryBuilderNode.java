@@ -14,54 +14,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query.pipeline;
+package com.noctarius.borabora.impl;
+
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
+import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 
-public final class QueryBuilderNode {
+final class QueryBuilderNode {
 
     private final List<QueryBuilderNode> children = new ArrayList<>();
     private final QueryStage stage;
 
-    public QueryBuilderNode(QueryStage stage) {
+    QueryBuilderNode(QueryStage stage) {
         this.stage = stage;
     }
 
-    public QueryBuilderNode pushChild(QueryStage stage) {
+    QueryBuilderNode pushChild(QueryStage stage) {
         QueryBuilderNode child = new QueryBuilderNode(stage);
         children.add(child);
         return child;
     }
 
-    public void pushChildNodes(Collection<QueryBuilderNode> childNodes) {
+    void pushChildNodes(Collection<QueryBuilderNode> childNodes) {
         children.addAll(childNodes);
     }
 
-    public int childrenCount() {
+    int childrenCount() {
         return children.size();
     }
 
-    public void forEachChild(Consumer<? super QueryBuilderNode> consumer) {
+    void forEachChild(Consumer<? super QueryBuilderNode> consumer) {
         Objects.requireNonNull(consumer, "consumer must not be null");
         children.forEach(consumer);
     }
 
-    public Iterator<QueryBuilderNode> childIterator() {
-        return children.iterator();
-    }
-
-    public void clearChildren() {
+    void clearChildren() {
         children.clear();
     }
 
-    public QueryStage stage() {
+    QueryStage stage() {
         return stage;
     }
 
@@ -70,7 +69,7 @@ public final class QueryBuilderNode {
         return "QueryBuilderNode{stage=" + stage + ", children=" + children + '}';
     }
 
-    public static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {
+    static PipelineStage build(QueryBuilderNode tree, PipelineStageFactory pipelineStageFactory) {
         Objects.requireNonNull(tree, "tree must not be null");
         Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
         PipelineStage left = NIL;

@@ -20,7 +20,7 @@ import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 
 public interface QueryPipelineFactory {
 
-    QueryPipeline newQueryPipeline(QueryBuilderNode queryRootNode, PipelineStageFactory pipelineStageFactory,
+    QueryPipeline newQueryPipeline(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory,
                                    QueryOptimizerStrategy queryOptimizerStrategy);
 
 }

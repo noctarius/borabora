@@ -20,7 +20,6 @@ import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 
 import java.util.Objects;
 

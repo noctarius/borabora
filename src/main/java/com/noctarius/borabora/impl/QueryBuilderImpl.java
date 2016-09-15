@@ -32,13 +32,12 @@ import com.noctarius.borabora.impl.query.stages.PrepareSelectionQueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
+import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -108,12 +107,12 @@ final class QueryBuilderImpl
         // Add consumers at the end of any left edge
         fixConsumers(parentTreeNode);
 
-        // Fix selector multiple consumers
-        fixSelectorConsumers(parentTreeNode);
+        // Build binary query plan
+        PipelineStage rootPipelineStage = QueryBuilderNode.build(parentTreeNode, pipelineStageFactory);
 
         // Build query pipeline with optimized query execution plan
         QueryPipeline queryPipeline = queryPipelineFactory
-                .newQueryPipeline(parentTreeNode, pipelineStageFactory, queryOptimizerStrategy);
+                .newQueryPipeline(rootPipelineStage, pipelineStageFactory, queryOptimizerStrategy);
 
         return new QueryImpl(queryPipeline);
     }
@@ -177,23 +176,6 @@ final class QueryBuilderImpl
         Objects.requireNonNull(typeSpec, "typeSpec must not be null");
         requireType0(typeSpec);
         return this;
-    }
-
-    private void fixSelectorConsumers(QueryBuilderNode node) {
-        if (node.childrenCount() > 0) {
-            node.forEachChild(this::fixSelectorConsumers);
-        }
-
-        List<QueryBuilderNode> newChildren = new ArrayList<>();
-        Iterator<QueryBuilderNode> iterator = node.childIterator();
-        while (iterator.hasNext()) {
-            QueryBuilderNode child = iterator.next();
-            if (child.stage() instanceof ConsumerQueryStage && child.childrenCount() > 0) {
-                iterator.remove();
-                child.forEachChild(newChildren::add);
-            }
-        }
-        node.pushChildNodes(newChildren);
     }
 
     private void fixConsumers(QueryBuilderNode node) {

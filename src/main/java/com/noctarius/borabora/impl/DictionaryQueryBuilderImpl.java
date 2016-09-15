@@ -20,7 +20,6 @@ import com.noctarius.borabora.builder.query.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
 import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeDictionaryEntryValueQueryStage;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 
 import java.util.Objects;
 

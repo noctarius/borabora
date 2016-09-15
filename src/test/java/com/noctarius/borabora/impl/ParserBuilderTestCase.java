@@ -31,7 +31,6 @@ import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategy;
 import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
@@ -353,7 +352,7 @@ public class ParserBuilderTestCase {
             implements QueryPipelineFactory {
 
         @Override
-        public QueryPipeline newQueryPipeline(QueryBuilderNode queryRootNode, PipelineStageFactory pipelineStageFactory,
+        public QueryPipeline newQueryPipeline(PipelineStage rootPipelineStage, PipelineStageFactory pipelineStageFactory,
                                               QueryOptimizerStrategy queryOptimizerStrategy) {
             return null;
         }

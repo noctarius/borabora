@@ -25,7 +25,6 @@ import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 
 import java.util.Objects;

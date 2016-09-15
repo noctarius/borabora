@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.query;
+package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.impl.query.BTreeFactories;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
+import com.noctarius.borabora.impl.QueryBuilderNode;
 import org.junit.Test;
 
 import static com.noctarius.borabora.spi.query.pipeline.QueryStage.QUERY_BASE;

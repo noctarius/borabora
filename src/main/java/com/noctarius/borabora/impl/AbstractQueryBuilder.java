@@ -22,7 +22,6 @@ import com.noctarius.borabora.impl.query.stages.SequenceIndexQueryStage;
 import com.noctarius.borabora.impl.query.stages.SequenceMatcherQueryStage;
 import com.noctarius.borabora.impl.query.stages.TypeMatcherQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 
 import java.util.Objects;
 import java.util.function.Predicate;
