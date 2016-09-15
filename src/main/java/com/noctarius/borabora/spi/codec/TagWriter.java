@@ -16,10 +16,26 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.builder.EncoderContext;
 
+/**
+ * The <tt>TagWriter</tt> interface defines an encoder for a certain {@link ValueType}.
+ *
+ * @param <V> the type of the value
+ */
 public interface TagWriter<V> {
 
+    /**
+     * Reads the current data item using this <tt>TagReader</tt> instance. If the data
+     * item cannot be read because the data type does not match or for any other reason
+     * an implementation specific exception might be thrown.
+     *
+     * @param value          the value to encode
+     * @param offset         the current stream offset
+     * @param encoderContext the current encoder context
+     * @return the new offset after writing the data item
+     */
     long process(V value, long offset, EncoderContext encoderContext);
 
 }

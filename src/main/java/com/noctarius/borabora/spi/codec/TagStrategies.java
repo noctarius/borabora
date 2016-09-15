@@ -52,27 +52,79 @@ import static com.noctarius.borabora.spi.io.Constants.TAG_TIMESTAMP;
 import static com.noctarius.borabora.spi.io.Constants.TAG_UNSIGNED_BIGNUM;
 import static com.noctarius.borabora.spi.io.Constants.TAG_URI;
 
+/**
+ * The <tt>TagStrategies</tt> enum class implements all the builtin semantic tag strategies.
+ */
 public enum TagStrategies
         implements TagStrategy {
 
+    /**
+     * The Date and Time semantic tag implementation, semantic tag id: <tt>0</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.1">Date and Time</a></p>
+     *
+     * @see ValueTypes#DateTime
+     * @see DateTimeBuilder
+     */
     DateTime(TAG_DATE_TIME, ValueTypes.DateTime, DateTimeBuilder.class, TagWriters.DateTime, //
             TagReaders.DateTime, TypeSpecs.DateTime, TypeMatchers.DateTime, DateTimeBuilderImpl::new),
 
+    /**
+     * The Timestamp semantic tag implementation, semantic tag id: <tt>1</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.1">Timestamp</a></p>
+     *
+     * @see ValueTypes#Timestamp
+     * @see TimestampBuilder
+     */
     Timestamp(TAG_TIMESTAMP, ValueTypes.Timestamp, TimestampBuilder.class, TagWriters.Timestamp, //
             TagReaders.Timestamp, TypeSpecs.Timstamp, TypeMatchers.Timestamp, TimestampBuilderImpl::new),
 
+    /**
+     * The Positive BigNum semantic tag implementation, semantic tag id: <tt>2</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.2">Positive BigNum</a></p>
+     *
+     * @see ValueTypes#UBigNum
+     * @see UBigNumberBuilder
+     */
     UBigNum(TAG_UNSIGNED_BIGNUM, ValueTypes.UBigNum, UBigNumberBuilder.class, TagWriters.BigNum,//
             TagReaders.UBigNum, TypeSpecs.UInt, TypeMatchers.UBigNum, UBigNumberBuilderImpl::new),
 
+    /**
+     * The Negative BigNum semantic tag implementation, semantic tag id: <tt>3</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.2">Negative BigNum</a></p>
+     *
+     * @see ValueTypes#NBigNum
+     * @see NBigNumberBuilder
+     */
     NBigNum(TAG_NEGATIVE_BIGNUM, ValueTypes.NBigNum, NBigNumberBuilder.class, TagWriters.BigNum, //
             TagReaders.NBigNum, TypeSpecs.NInt, TypeMatchers.NBigNum, NBigNumberBuilderImpl::new),
 
+    /**
+     * The Fraction semantic tag implementation, semantic tag id: <tt>4</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.3">Fraction</a></p>
+     *
+     * @see ValueTypes#Fraction
+     * @see FractionBuilder
+     */
     Fraction(TAG_FRACTION, ValueTypes.Fraction, FractionBuilder.class, TagWriters.Fraction, //
             TagReaders.Fraction, TypeSpecs.Float, TypeMatchers.Fraction, FractionBuilderImpl::new),
 
+    /**
+     * The URI semantic tag implementation, semantic tag id: <tt>32</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.4.3">URI</a></p>
+     *
+     * @see ValueTypes#URI
+     * @see URIBuilder
+     */
     URI(TAG_URI, ValueTypes.URI, URIBuilder.class, TagWriters.URI, //
             TagReaders.URI, TypeSpecs.URI, TypeMatchers.URI, URIBuilderImpl::new),
 
+    /**
+     * The Encoded CBOR semantic tag implementation, semantic tag id: <tt>24</tt>
+     * <p>Specification: <a href="https://tools.ietf.org/html/rfc7049#section-2.4.4.1">Encoded CBOR</a></p>
+     *
+     * @see ValueTypes#EncCBOR
+     * @see CBORBuilder
+     */
     EncCBOR(TAG_ENCCBOR, ValueTypes.EncCBOR, CBORBuilder.class, null, //
             TagReaders.EncCBOR, TypeSpecs.EncCBOR, null, CBORBuilderImpl::new);
 
@@ -182,6 +234,14 @@ public enum TagStrategies
         return ValueTypes.Unknown;
     }
 
+    /**
+     * Returns the actual {@link ValueType} based on the given <tt>value</tt> if there is
+     * a builtin implementation of a {@link TagStrategy}, otherwise <tt>null</tt>.
+     *
+     * @param value the value to find the ValueType for
+     * @return returns the according ValueType or <tt>null</tt> if no matching builtin
+     * TagStrategy is found
+     */
     public static ValueType valueyType(Object value) {
         for (TagStrategy tagStrategy : TAG_STRATEGIES) {
             if (tagStrategy.handles(value)) {

@@ -14,24 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.noctarius.borabora.spi.codec;
 
 /**
- * The <tt>TagEncoder</tt> is a sub-interface of {@link TagWriter} to add functionality
- * for automatic recognition of data types.
- *
- * @param <V> the type of the value
+ * This package contains the SPI to implement additional, non builtin data types (based
+ * on semantic tags, as defined on the CBOR specification) but also includes a collection
+ * of the builtin data types ({@link com.noctarius.borabora.spi.codec.TagStrategies}.
  */
-public interface TagEncoder<V>
-        extends TagWriter<V> {
-
-    /**
-     * Returns <tt>true</tt> if the given <tt>value</tt> can be handled by this
-     * <tt>TagEncoder</tt>, otherwise <tt>false</tt>.
-     *
-     * @param value the value to encode
-     * @return true if this encoder can handle the given value, otherwise false
-     */
-    boolean handles(V value);
-
-}
+package com.noctarius.borabora.spi.codec;

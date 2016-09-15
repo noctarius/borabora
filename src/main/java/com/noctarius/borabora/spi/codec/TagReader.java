@@ -19,8 +19,24 @@ package com.noctarius.borabora.spi.codec;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.query.QueryContext;
 
+/**
+ * The <tt>TagReader</tt> interface defines an decoder for a certain {@link ValueType}.
+ *
+ * @param <V> the type of the value
+ */
 public interface TagReader<V> {
 
+    /**
+     * Reads the current data item using this <tt>TagReader</tt> instance. If the data
+     * item cannot be read because the data type does not match or for any other reason
+     * an implementation specific exception might be thrown.
+     *
+     * @param valueType    the expected ValueType
+     * @param offset       the current data item's offset
+     * @param length       the current data item's length
+     * @param queryContext the current query context
+     * @return the read data item
+     */
     V process(ValueType valueType, long offset, long length, QueryContext queryContext);
 
 }
