@@ -22,6 +22,7 @@ import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import org.junit.Test;
 
+import static com.noctarius.borabora.spi.query.pipeline.QueryStage.QUERY_BASE;
 import static org.junit.Assert.assertEquals;
 
 public class QueryBuilderNodeTestCase {
@@ -29,15 +30,15 @@ public class QueryBuilderNodeTestCase {
     @Test
     public void test_tostring() {
         String expected = "QueryBuilderNode{stage=QUERY_BASE, children=[QueryBuilderNode{stage=QUERY_BASE, children=[]}]}";
-        QueryBuilderNode parent = new QueryBuilderNode(QueryBuilderNode.QUERY_BASE);
-        parent.pushChild(QueryBuilderNode.QUERY_BASE);
+        QueryBuilderNode parent = new QueryBuilderNode(QUERY_BASE);
+        parent.pushChild(QUERY_BASE);
         assertEquals(expected, parent.toString());
     }
 
     @Test
     public void test_empty_pipeline() {
         String expected = "BTreePipelineStage{stage=QUERY_BASE, left=NIL, right=NIL}";
-        QueryBuilderNode root = new QueryBuilderNode(QueryBuilderNode.QUERY_BASE);
+        QueryBuilderNode root = new QueryBuilderNode(QUERY_BASE);
         PipelineStageFactory pipelineStageFactory = BTreeFactories.newPipelineStageFactory();
         PipelineStage stage = QueryBuilderNode.build(root, pipelineStageFactory);
         assertEquals(expected, stage.toString());

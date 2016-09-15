@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.query.pipeline.QueryStage.QUERY_BASE;
+
 final class QueryBuilderImpl
         extends AbstractQueryBuilder
         implements StreamQueryBuilder {
@@ -54,7 +56,7 @@ final class QueryBuilderImpl
     QueryBuilderImpl(QueryOptimizerStrategy queryOptimizerStrategy, PipelineStageFactory pipelineStageFactory,
                      QueryPipelineFactory queryPipelineFactory) {
 
-        super(new QueryBuilderNode(QueryBuilderNode.QUERY_BASE));
+        super(new QueryBuilderNode(QUERY_BASE));
         Objects.requireNonNull(queryOptimizerStrategy, "queryOptimizerStrategy must not be null");
         Objects.requireNonNull(pipelineStageFactory, "pipelineStageFactory must not be null");
         Objects.requireNonNull(queryPipelineFactory, "queryPipelineFactory must not be null");

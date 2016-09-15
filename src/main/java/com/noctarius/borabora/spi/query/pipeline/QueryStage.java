@@ -16,9 +16,12 @@
  */
 package com.noctarius.borabora.spi.query.pipeline;
 
+import com.noctarius.borabora.impl.query.stages.BaseQueryStage;
 import com.noctarius.borabora.spi.query.QueryContext;
 
 public interface QueryStage {
+
+    QueryStage QUERY_BASE = BaseQueryStage.INSTANCE;
 
     VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext);
 

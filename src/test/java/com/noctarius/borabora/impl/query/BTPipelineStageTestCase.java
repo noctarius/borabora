@@ -19,12 +19,12 @@ import com.noctarius.borabora.AbstractTestCase;
 import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
-import com.noctarius.borabora.spi.query.pipeline.QueryBuilderNode;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
 import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
+import static com.noctarius.borabora.spi.query.pipeline.QueryStage.QUERY_BASE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -70,8 +70,8 @@ public class BTPipelineStageTestCase
 
     @Test
     public void test_btree_equals() {
-        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
-        BTreePipelineStage actual = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
+        BTreePipelineStage actual = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
         assertEquals(expected, actual);
 
         assertFalse(BTreePipelineStage.treeEquals(null, expected));
@@ -89,44 +89,44 @@ public class BTPipelineStageTestCase
         actual = new BTreePipelineStage(NIL, NIL, null);
         assertFalse(BTreePipelineStage.treeEquals(expected, actual));
 
-        PipelineStage pipelineStage = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        PipelineStage pipelineStage = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
 
-        expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
-        actual = new BTreePipelineStage(pipelineStage, NIL, QueryBuilderNode.QUERY_BASE);
+        expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
+        actual = new BTreePipelineStage(pipelineStage, NIL, QUERY_BASE);
         assertFalse(BTreePipelineStage.treeEquals(expected, actual));
 
-        expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
-        actual = new BTreePipelineStage(NIL, pipelineStage, QueryBuilderNode.QUERY_BASE);
+        expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
+        actual = new BTreePipelineStage(NIL, pipelineStage, QUERY_BASE);
         assertFalse(BTreePipelineStage.treeEquals(expected, actual));
     }
 
     @Test
     public void test_btree_equals_false() {
-        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
         assertFalse(expected.equals(new Object()));
     }
 
     @Test
     public void test_btree_equals_same() {
-        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
         assertTrue(expected.equals(expected));
     }
 
     @Test
     public void test_btree_hashcode() {
-        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
-        BTreePipelineStage actual = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        BTreePipelineStage expected = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
+        BTreePipelineStage actual = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
         assertEquals(expected.hashCode(), actual.hashCode());
     }
 
     @Test(expected = NullPointerException.class)
     public void test_btree_left_null() {
-        new BTreePipelineStage(null, NIL, QueryBuilderNode.QUERY_BASE);
+        new BTreePipelineStage(null, NIL, QUERY_BASE);
     }
 
     @Test(expected = NullPointerException.class)
     public void test_btree_right_null() {
-        new BTreePipelineStage(NIL, null, QueryBuilderNode.QUERY_BASE);
+        new BTreePipelineStage(NIL, null, QUERY_BASE);
     }
 
     @Test
@@ -144,8 +144,8 @@ public class BTPipelineStageTestCase
                 + " |       /----- QUERY_BASE\n" //
                 + " \\----- <null>\n";
 
-        BTreePipelineStage five = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
-        BTreePipelineStage four = new BTreePipelineStage(NIL, NIL, QueryBuilderNode.QUERY_BASE);
+        BTreePipelineStage five = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
+        BTreePipelineStage four = new BTreePipelineStage(NIL, NIL, QUERY_BASE);
         BTreePipelineStage three = new BTreePipelineStage(four, NIL, null);
         BTreePipelineStage two = new BTreePipelineStage(NIL, five, null);
         BTreePipelineStage one = new BTreePipelineStage(two, three, null);
