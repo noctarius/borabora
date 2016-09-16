@@ -18,6 +18,6 @@
 /**
  * This package contains the SPI to implement additional, non builtin data types (based
  * on semantic tags, as defined on the CBOR specification) but also includes a collection
- * of the builtin data types ({@link com.noctarius.borabora.spi.codec.TagStrategies}.
+ * of the builtin data types ({@link com.noctarius.borabora.spi.codec.TagStrategies}).
  */
 package com.noctarius.borabora.spi.codec;
