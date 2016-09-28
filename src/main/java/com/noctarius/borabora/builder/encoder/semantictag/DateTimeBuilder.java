@@ -22,11 +22,36 @@ import com.noctarius.borabora.spi.builder.TagBuilder;
 import java.time.Instant;
 import java.util.Date;
 
+/**
+ * The <tt>DateTimeBuilder</tt> interface is designed to be used with the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport} API.
+ * <p>To use the builder, a {@link com.noctarius.borabora.builder.encoder.GraphBuilder} instance
+ * is required. The following example shows how to retrieve and use the builder's instance:</p>
+ * <pre>
+ *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
+ *     graphBuilder.putTag(
+ *         TagSupport.semanticTag( DateTimeBuilder.class ).putDateTime( dateTime )
+ *             .endSemanticTag() ).finishStream();
+ * </pre>
+ */
 public interface DateTimeBuilder {
 
+    /**
+     * Writes the given date, time or date-time value as a semantic tag. The <tt>date</tt> value
+     * is transformed to an {@link Instant} instance first, then written. The returned {@link TagBuilder}
+     * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putDateTime(Date date);
 
+    /**
+     * Writes the given <tt>date</tt>, time or date-time value as a semantic tag. The returned {@link TagBuilder}
+     * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putDateTime(Instant instant);
 

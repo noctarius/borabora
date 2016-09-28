@@ -20,9 +20,27 @@ import com.noctarius.borabora.builder.encoder.ValueBuilder;
 import com.noctarius.borabora.spi.builder.BuilderStackPush;
 import com.noctarius.borabora.spi.builder.TagBuilder;
 
+/**
+ * The <tt>CBORBuilder</tt> interface is designed to be used with the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport} API.
+ * <p>To use the builder, a {@link com.noctarius.borabora.builder.encoder.GraphBuilder} instance
+ * is required. The following example shows how to retrieve and use the builder's instance:</p>
+ * <pre>
+ *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
+ *     graphBuilder.putTag(
+ *         TagSupport.semanticTag( CBORBuilder.class ).putString( "foo" )
+ *             .endCBOR().endSemanticTag() ).finishStream();
+ * </pre>
+ */
 public interface CBORBuilder
         extends ValueBuilder<CBORBuilder> {
 
+    /**
+     * Finishes the CBOR encoding. The returned {@link TagBuilder} instance must be used to
+     * finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder endCBOR();
 

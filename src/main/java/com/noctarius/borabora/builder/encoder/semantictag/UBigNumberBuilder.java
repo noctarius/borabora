@@ -21,8 +21,27 @@ import com.noctarius.borabora.spi.builder.TagBuilder;
 
 import java.math.BigInteger;
 
+/**
+ * The <tt>UBigNumberBuilder</tt> interface is designed to be used with the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport} API.
+ * <p>To use the builder, a {@link com.noctarius.borabora.builder.encoder.GraphBuilder} instance
+ * is required. The following example shows how to retrieve and use the builder's instance:</p>
+ * <pre>
+ *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
+ *     graphBuilder.putTag(
+ *         TagSupport.semanticTag( UBigNumberBuilder.class ).putBigInteger( bigInteger )
+ *             .endSemanticTag() ).finishStream();
+ * </pre>
+ */
 public interface UBigNumberBuilder {
 
+    /**
+     * Writes the given positive {@link BigInteger} value encoded as a unsigned bignum semantic tag.
+     * The returned {@link TagBuilder} instance must be used to finalize the building by calling
+     * {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putBigInteger(BigInteger value);
 

@@ -22,14 +22,46 @@ import com.noctarius.borabora.spi.builder.TagBuilder;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+/**
+ * The <tt>TimestampBuilder</tt> interface is designed to be used with the
+ * {@link com.noctarius.borabora.spi.builder.TagSupport} API.
+ * <p>To use the builder, a {@link com.noctarius.borabora.builder.encoder.GraphBuilder} instance
+ * is required. The following example shows how to retrieve and use the builder's instance:</p>
+ * <pre>
+ *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
+ *     graphBuilder.putTag(
+ *         TagSupport.semanticTag( TimestampBuilder.class ).putTimestamp( timestamp )
+ *             .endSemanticTag() ).finishStream();
+ * </pre>
+ */
 public interface TimestampBuilder {
 
+    /**
+     * Writes the given <tt>timestamp</tt> value as a timestamp semantic tag. The returned {@link TagBuilder}
+     * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putTimestamp(long timestamp);
 
+    /**
+     * Writes the given {@link Instant} value as a timestamp semantic tag. The <tt>timestamp</tt> value
+     * is transformed to an <tt>long</tt> value first, then written. The returned {@link TagBuilder}
+     * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putTimestamp(Instant timestamp);
 
+    /**
+     * Writes the given {@link Instant} value as a timestamp semantic tag. The <tt>timestamp</tt> value
+     * is transformed to an <tt>long</tt> value first, then written. The returned {@link TagBuilder}
+     * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
+     *
+     * @return the semantic tag finalizing TagBuilder
+     */
     @BuilderStackPush
     TagBuilder putTimestamp(Timestamp timestamp);
 
