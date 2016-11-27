@@ -83,7 +83,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1), //
                 () -> "(#0->?dictionary{'foo'})", //
-                gqb -> gqb.asSequence().putEntry() //
+                gqb -> gqb.asSequence().putElement() //
                           .stream(0).nullOrType(TypeSpecs.Dictionary).dictionary(matchString("foo")) //
                           .endEntry().endSequence(), //
                 v -> assertEquals(ValueTypes.Null, v.sequence().get(0).valueType()) //
@@ -95,7 +95,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("test").endEntry().endDictionary(), //
                 () -> "(#{'bar'})", //
-                gqb -> gqb.asSequence().putEntry() //
+                gqb -> gqb.asSequence().putElement() //
                           .stream(0).dictionary(matchString("bar")) //
                           .endEntry().endSequence(), //
                 v -> assertEquals(ValueTypes.Null, v.sequence().get(0).valueType()) //
@@ -117,7 +117,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1), //
                 () -> "(#)", //
-                gqb -> gqb.asSequence().putEntry().stream(0).endEntry().endSequence(), //
+                gqb -> gqb.asSequence().putElement().stream(0).endEntry().endSequence(), //
                 v -> assertEqualsNumber(1, v.sequence().get(0).number()) //
         );
     }
@@ -179,9 +179,9 @@ public class ProjectionStrategyTestCase
                 () -> "(a: (#1, #0))", //
                 gqb -> gqb.asDictionary().putEntry("a").asSequence()
 
-                          .putEntry().stream(1).endEntry()
+                          .putElement().stream(1).endEntry()
 
-                          .putEntry().stream(0).endEntry().endSequence()
+                          .putElement().stream(0).endEntry().endSequence()
 
                           .endEntry().endDictionary(), //
                 v -> {
@@ -197,7 +197,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "(#1)", //
-                gqb -> gqb.asSequence().putEntry().stream(1).endEntry().endSequence(), //
+                gqb -> gqb.asSequence().putElement().stream(1).endEntry().endSequence(), //
                 v -> assertEqualsNumber(2, v.sequence().get(0).number()) //
         );
     }
@@ -209,9 +209,9 @@ public class ProjectionStrategyTestCase
                 () -> "(#1, #0)", //
                 gqb -> gqb.asSequence()
 
-                          .putEntry().stream(1).endEntry()
+                          .putElement().stream(1).endEntry()
 
-                          .putEntry().stream(0).endEntry().endSequence(), //
+                          .putElement().stream(0).endEntry().endSequence(), //
                 v -> {
                     assertEqualsNumber(2, v.sequence().get(0).number());
                     assertEqualsNumber(-1, v.sequence().get(1).number());
@@ -224,7 +224,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "((c: #1, -1: #0))", //
-                gqb -> gqb.asSequence().putEntry().asDictionary()
+                gqb -> gqb.asSequence().putElement().asDictionary()
 
                           .putEntry("c").stream(1).endEntry()
 
@@ -244,11 +244,11 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putNumber(1).putNumber(2), //
                 () -> "((#1, #0))", //
-                gqb -> gqb.asSequence().putEntry().asSequence()
+                gqb -> gqb.asSequence().putElement().asSequence()
 
-                          .putEntry().stream(1).endEntry()
+                          .putElement().stream(1).endEntry()
 
-                          .putEntry().stream(0).endEntry().endSequence()
+                          .putElement().stream(0).endEntry().endSequence()
 
                           .endEntry().endSequence(), //
                 v -> {
@@ -333,7 +333,7 @@ public class ProjectionStrategyTestCase
         executeExercise( //
                 sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
                 () -> "(#{'non-existing'})", //
-                gqb -> gqb.asSequence().putEntry() //
+                gqb -> gqb.asSequence().putElement() //
                           .stream(0).dictionary(matchString("non-existing")).endEntry().endSequence(), //
                 v -> {
                     Value v2 = v.sequence().get(0);
@@ -363,8 +363,8 @@ public class ProjectionStrategyTestCase
                 sgb -> sgb.putDictionary(1).putEntry().putString("foo").putString("bar").endEntry().endDictionary(), //
                 () -> "(#{'non-existing'}, #{'foo'})", //
                 gqb -> gqb.asSequence() //
-                          .putEntry().stream(0).dictionary(matchString("non-existing")).endEntry() //
-                          .putEntry().stream(0).dictionary(matchString("foo")).endEntry() //
+                          .putElement().stream(0).dictionary(matchString("non-existing")).endEntry() //
+                          .putElement().stream(0).dictionary(matchString("foo")).endEntry() //
                           .endSequence(), //
                 v -> {
                     Sequence sequence = v.sequence();

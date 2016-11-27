@@ -17,6 +17,7 @@
 package com.noctarius.borabora.spi;
 
 import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueType;
@@ -114,6 +115,11 @@ public class ObjectValue
     @Override
     public long offset() {
         return -1;
+    }
+
+    @Override
+    public Input input() {
+        return null;
     }
 
     @Override

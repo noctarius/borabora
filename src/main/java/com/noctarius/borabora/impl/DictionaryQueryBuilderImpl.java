@@ -18,7 +18,7 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.builder.query.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
-import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorEntryQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsDictionaryProjectionEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeDictionaryEntryValueQueryStage;
 
 import java.util.Objects;
@@ -38,23 +38,23 @@ class DictionaryQueryBuilderImpl<T>
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(String key) {
-        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-string", this);
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putElement-string", this);
         Objects.requireNonNull(key, "key must not be null");
-        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withStringKey(key));
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionaryProjectionEntryQueryStage.withStringKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(double key) {
-        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-double", this);
-        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withFloatKey(key));
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putElement-double", this);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionaryProjectionEntryQueryStage.withFloatKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE);
     }
 
     @Override
     public StreamEntryQueryBuilder<DictionaryQueryBuilder<T>> putEntry(long key) {
-        Tracer.traceCall("DictionaryQueryBuilderImpl#putEntry-long", this);
-        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionarySelectorEntryQueryStage.withIntKey(key));
+        Tracer.traceCall("DictionaryQueryBuilderImpl#putElement-long", this);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsDictionaryProjectionEntryQueryStage.withIntKey(key));
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeDictionaryEntryValueQueryStage.INSTANCE);
     }
 

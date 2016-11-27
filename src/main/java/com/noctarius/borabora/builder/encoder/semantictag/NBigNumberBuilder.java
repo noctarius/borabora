@@ -40,6 +40,7 @@ public interface NBigNumberBuilder {
      * The returned {@link TagBuilder} instance must be used to finalize the building by calling
      * {@link TagBuilder#endSemanticTag()}.
      *
+     * @param value the {@link BigInteger} value to write as a negative big number
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush

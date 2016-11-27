@@ -21,7 +21,7 @@ import com.noctarius.borabora.spi.query.QueryContext;
 /**
  * The <tt>PipelineStage</tt> interface defines a single point of execution inside a query execution plan.
  * <p>PipelineStages are grouped into a {@link QueryPipeline} and designed as a binary tree. The default
- * implementation utilizes a LCRS (Left Child Right Sibling) tree which is easy to traverse.</p>
+ * implementation utilizes a LCRS (Left Child Right Sibling) tree which is easy to traverse (preOrder traversal).</p>
  * <p>PipelineStage implementations are considered to be immutable and all accessing code is meant to
  * work in the assumption that this holds true. Furthermore {@link #left()} or {@link #right()} are not
  * allowed to return <tt>null</tt> but an end stage has to be signalled by returning {@link #NIL} from

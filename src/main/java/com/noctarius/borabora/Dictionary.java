@@ -143,6 +143,14 @@ public interface Dictionary
     String asString();
 
     /**
+     * Returns <tt>true</tt> if the underlying CBOR stream is lazily evaluated and this dictionary is an indefinite
+     * marked data item, otherwise it will return <tt>false</tt>.
+     *
+     * @return true if the dictionary is indefinite and lazily evaluated, otherwise false
+     */
+    boolean isIndefinite();
+
+    /**
      * Performs the given action for each entry in this map until all entries
      * have been processed or the action throws an exception.   Unless
      * otherwise specified by the implementing class, actions are performed in

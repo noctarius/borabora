@@ -105,7 +105,7 @@ public class QueryLanguageTestCase
                              .asDictionary().putEntry("a").stream(0).endEntry().endDictionary().build();
 
         Query query4 = parser.newQueryBuilder() //
-                             .asSequence().putEntry().stream(0).endEntry().endSequence().build();
+                             .asSequence().putElement().stream(0).endEntry().endSequence().build();
 
         Value value3 = parser.read(input, query3);
         Value value4 = parser.read(input, query4);

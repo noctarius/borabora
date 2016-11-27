@@ -235,6 +235,8 @@ public enum ValueTypes
                 return Dictionary;
             case FloatingPointOrSimple:
                 return floatNullOrBool(head);
+            case SemanticTag:
+
             default: // Always a semantic tag
                 return Unknown;
         }

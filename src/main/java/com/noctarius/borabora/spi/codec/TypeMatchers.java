@@ -16,6 +16,8 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.Value;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -43,7 +45,7 @@ enum TypeMatchers
 
     URI((v) -> URI.class.isAssignableFrom(v.getClass())),
 
-    EncCBOR((v) -> false /* TODO */);
+    EncCBOR((v) -> Value.class.isAssignableFrom(v.getClass()));
 
     private final Predicate<Object> predicate;
 

@@ -17,7 +17,7 @@
 package com.noctarius.borabora.builder.query;
 
 public interface StreamQueryBuilder
-        extends QueryBuilder, StreamElementQueryBuilder<QueryBuilder>, SelectorQueryBuilder<QueryBuilder> {
+        extends QueryBuilder, StreamElementQueryBuilder<QueryBuilder>, ProjectionQueryBuilder<QueryBuilder> {
 
     QueryBuilder multiStream();
 

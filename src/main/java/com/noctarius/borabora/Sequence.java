@@ -101,6 +101,14 @@ public interface Sequence
     String asString();
 
     /**
+     * Returns <tt>true</tt> if the underlying CBOR stream is lazily evaluated and this dictionary is an indefinite
+     * marked data item, otherwise it will return <tt>false</tt>.
+     *
+     * @return true if the dictionary is indefinite and lazily evaluated, otherwise false
+     */
+    boolean isIndefinite();
+
+    /**
      * Creates a {@link Spliterator} over the elements in this list.
      *
      * @return a {@code Spliterator} over the elements in this list

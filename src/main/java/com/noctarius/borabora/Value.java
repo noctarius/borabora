@@ -133,6 +133,13 @@ public interface Value {
     long offset();
 
     /**
+     * Returns the internal stream representation if available, otherwise it will return <tt>null</tt>.
+     *
+     * @return the input stream if available, otherwise null
+     */
+    Input input();
+
+    /**
      * Returns a string-based representation of the internal CBOR bytestream as a human-readable version.
      * <p>Each known value type in CBOR can be represented that way. The structure follows one of the
      * following three types:</p>

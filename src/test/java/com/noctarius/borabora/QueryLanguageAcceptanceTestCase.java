@@ -206,17 +206,17 @@ public class QueryLanguageAcceptanceTestCase
     @Test
     public void test_sequence_select() {
         Query query = parser.newQueryBuilder().asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().stream(0).endEntry().endSequence().build();
+                            .putElement().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry().endSequence().build();
         evaluate(query, "(#, #)");
     }
 
     @Test
     public void test_sequence_select_subsequence() {
         Query query = parser.newQueryBuilder().asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().asSequence().putEntry().stream(0).endEntry() //
-                            .putEntry().stream(0).endEntry().endSequence().endEntry() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().asSequence().putElement().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry().endSequence().endEntry() //
                             .endSequence().build();
         evaluate(query, "(#, (#, #))");
     }
@@ -224,8 +224,8 @@ public class QueryLanguageAcceptanceTestCase
     @Test
     public void test_sequence_select_subdictionary_string() {
         Query query = parser.newQueryBuilder().asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().asDictionary() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().asDictionary() //
                             .putEntry("a").stream(0).endEntry() //
                             .putEntry("b").stream(0).endEntry() //
                             .endDictionary().endEntry() //
@@ -236,8 +236,8 @@ public class QueryLanguageAcceptanceTestCase
     @Test
     public void test_sequence_select_subdictionary_float() {
         Query query = parser.newQueryBuilder().asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().asDictionary() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().asDictionary() //
                             .putEntry(1.0).stream(0).endEntry() //
                             .putEntry(2.0).stream(0).endEntry() //
                             .endDictionary().endEntry() //
@@ -248,8 +248,8 @@ public class QueryLanguageAcceptanceTestCase
     @Test
     public void test_sequence_select_subdictionary_int() {
         Query query = parser.newQueryBuilder().asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().asDictionary() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().asDictionary() //
                             .putEntry(1).stream(0).endEntry() //
                             .putEntry(2).stream(0).endEntry() //
                             .endDictionary().endEntry() //
@@ -434,8 +434,8 @@ public class QueryLanguageAcceptanceTestCase
         Query query = parser.newQueryBuilder().asDictionary() //
                             .putEntry("a").stream(0).endEntry() //
                             .putEntry("b").asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
                             .endSequence().endEntry() //
                             .endDictionary().build();
         evaluate(query, "(a: #, b: (#, #))");
@@ -446,8 +446,8 @@ public class QueryLanguageAcceptanceTestCase
         Query query = parser.newQueryBuilder().asDictionary() //
                             .putEntry(1.0).stream(0).endEntry() //
                             .putEntry(2.0).asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
                             .endSequence().endEntry() //
                             .endDictionary().build();
         evaluate(query, "(1.0: #, 2.0: (#, #))");
@@ -458,8 +458,8 @@ public class QueryLanguageAcceptanceTestCase
         Query query = parser.newQueryBuilder().asDictionary() //
                             .putEntry(1).stream(0).endEntry() //
                             .putEntry(2).asSequence() //
-                            .putEntry().stream(0).endEntry() //
-                            .putEntry().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
+                            .putElement().stream(0).endEntry() //
                             .endSequence().endEntry() //
                             .endDictionary().build();
         evaluate(query, "(1: #, 2: (#, #))");

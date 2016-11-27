@@ -213,7 +213,7 @@ public class ParserBuilderTestCase {
     }
 
     @Test
-    public void test_asobjectselector() {
+    public void test_asobjectprojection() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
         parserBuilder.asObjectProjectionStrategy();
         Parser parser = parserBuilder.build();
@@ -221,7 +221,7 @@ public class ParserBuilderTestCase {
     }
 
     @Test
-    public void test_asbinaryselector() {
+    public void test_asbinaryprojection() {
         ParserBuilder parserBuilder = new ParserBuilderImpl();
         parserBuilder.asObjectProjectionStrategy().asBinaryProjectionStrategy();
         Parser parser = parserBuilder.build();

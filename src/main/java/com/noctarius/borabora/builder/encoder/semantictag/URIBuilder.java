@@ -41,6 +41,7 @@ public interface URIBuilder {
      * Writes the given <tt>uri</tt> value as a URI semantic tag. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param uri the {@link URI} value to write as a URI
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush
@@ -51,7 +52,9 @@ public interface URIBuilder {
      * is transformed to an {@link URI} instance first, then written. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param url the {@link URL} value to write as a URI
      * @return the semantic tag finalizing TagBuilder
+     * @throws URISyntaxException when the given {@link URL} is not a legal {@link URI}
      */
     @BuilderStackPush
     TagBuilder putURL(URL url)

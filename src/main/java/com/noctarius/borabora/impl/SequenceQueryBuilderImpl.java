@@ -18,7 +18,7 @@ package com.noctarius.borabora.impl;
 
 import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
-import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorEntryQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsSequenceProjectionEntryQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeSequenceEntryValueQueryStage;
 
 import java.util.Objects;
@@ -37,9 +37,9 @@ class SequenceQueryBuilderImpl<T>
     }
 
     @Override
-    public StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry() {
-        Tracer.traceCall("SequenceQueryBuilderImpl#putEntry", this);
-        QueryBuilderNode entry = parentTreeNode.pushChild(AsSequenceSelectorEntryQueryStage.INSTANCE);
+    public StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putElement() {
+        Tracer.traceCall("SequenceQueryBuilderImpl#putElement", this);
+        QueryBuilderNode entry = parentTreeNode.pushChild(AsSequenceProjectionEntryQueryStage.INSTANCE);
         return new StreamEntryQueryBuilderImpl<>(this, entry, ConsumeSequenceEntryValueQueryStage.INSTANCE);
     }
 

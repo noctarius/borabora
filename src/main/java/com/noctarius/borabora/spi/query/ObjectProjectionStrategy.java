@@ -235,6 +235,11 @@ public class ObjectProjectionStrategy
             }
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
         }
+
+        @Override
+        public boolean isIndefinite() {
+            return false;
+        }
     }
 
     static class MapBackedDictionary
@@ -313,6 +318,11 @@ public class ObjectProjectionStrategy
                 sb.append(key.asString()).append('=').append(value.asString()).append(", ");
             }
             return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
+        }
+
+        @Override
+        public boolean isIndefinite() {
+            return false;
         }
     }
 

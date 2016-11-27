@@ -16,43 +16,39 @@
  */
 package com.noctarius.borabora.impl.query.stages;
 
+import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
-import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
-
-public class AsSequenceSelectorEntryQueryStage
+public class AsSequenceProjectionQueryStage
         implements QueryStage {
 
-    public static final QueryStage INSTANCE = new AsSequenceSelectorEntryQueryStage();
+    public static final QueryStage INSTANCE = new AsSequenceProjectionQueryStage();
 
-    protected AsSequenceSelectorEntryQueryStage() {
+    protected AsSequenceProjectionQueryStage() {
     }
 
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
-        long offset = queryContext.offset();
-        queryContext.offset(0);
+        ProjectionStrategy projectionStrategy = queryContext.projectionStrategy();
+        projectionStrategy.beginSequence(queryContext);
 
-        // Try execution of the child query subtree
         VisitResult visitResult = pipelineStage.visitChildren(queryContext);
-        if (visitResult == VisitResult.Break || visitResult == VisitResult.Exit) {
-            if (queryContext.offset() == OFFSET_CODE_NULL) {
-                queryContext.projectionStrategy().putSequenceNullValue(queryContext);
-            }
-            // If break, move on with the next sibling, for exit: stop here
-            return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
+
+        // If exit is set, we ignore all further executions
+        if (VisitResult.Exit == visitResult) {
+            return visitResult;
         }
 
-        queryContext.offset(offset);
-        return VisitResult.Continue;
+        projectionStrategy.endSequence(queryContext);
+        return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
     }
 
     @Override
     public String toString() {
-        return "SEQ_ENTRY_BEGIN";
+        return "AS_SEQ";
     }
 
 }

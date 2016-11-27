@@ -357,6 +357,8 @@ public abstract class AbstractStreamValueBuilder<B>
 
     @Override
     public B putValue(Object value) {
+        // TODO Capture Dictionary and Sequence!
+
         validate();
         if (value == null) {
             encoderContext.encodeNull();

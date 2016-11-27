@@ -23,8 +23,8 @@ import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.query.QueryImpl;
-import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
-import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsDictionaryProjectionQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsSequenceProjectionQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumeSelectedQueryStage;
 import com.noctarius.borabora.impl.query.stages.ConsumerQueryStage;
 import com.noctarius.borabora.impl.query.stages.MultiStreamElementQueryStage;
@@ -85,7 +85,7 @@ final class QueryBuilderImpl
     public DictionaryQueryBuilder<QueryBuilder> asDictionary() {
         Tracer.traceCall("QueryBuilderImpl#asDictionary", this);
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
-        QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
+        QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionaryProjectionQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
         return new DictionaryQueryBuilderImpl<>(this, newNode);
     }
@@ -94,7 +94,7 @@ final class QueryBuilderImpl
     public SequenceQueryBuilder<QueryBuilder> asSequence() {
         Tracer.traceCall("QueryBuilderImpl#asSequence", this);
         currentTreeNode = currentTreeNode.pushChild(PrepareSelectionQueryStage.INSTANCE);
-        QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
+        QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceProjectionQueryStage.INSTANCE);
         currentTreeNode.pushChild(ConsumeSelectedQueryStage.INSTANCE);
         return new SequenceQueryBuilderImpl<>(this, newNode);
     }

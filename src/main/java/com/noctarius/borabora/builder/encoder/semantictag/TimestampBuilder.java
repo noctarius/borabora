@@ -40,6 +40,7 @@ public interface TimestampBuilder {
      * Writes the given <tt>timestamp</tt> value as a timestamp semantic tag. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param timestamp the <tt>long</tt> value to write as a timestamp
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush
@@ -50,16 +51,18 @@ public interface TimestampBuilder {
      * is transformed to an <tt>long</tt> value first, then written. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param timestamp the {@link Instant} value to write as a timestamp
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush
     TagBuilder putTimestamp(Instant timestamp);
 
     /**
-     * Writes the given {@link Instant} value as a timestamp semantic tag. The <tt>timestamp</tt> value
+     * Writes the given {@link Timestamp} value as a timestamp semantic tag. The <tt>timestamp</tt> value
      * is transformed to an <tt>long</tt> value first, then written. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param timestamp the {@link Timestamp} value to write as a timestamp
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush

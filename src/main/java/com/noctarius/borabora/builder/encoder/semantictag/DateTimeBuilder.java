@@ -41,6 +41,7 @@ public interface DateTimeBuilder {
      * is transformed to an {@link Instant} instance first, then written. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param date the {@link Date} value to write as date-time
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush
@@ -50,6 +51,7 @@ public interface DateTimeBuilder {
      * Writes the given <tt>date</tt>, time or date-time value as a semantic tag. The returned {@link TagBuilder}
      * instance must be used to finalize the building by calling {@link TagBuilder#endSemanticTag()}.
      *
+     * @param instant the {@link Instant} value to write as date-time
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush

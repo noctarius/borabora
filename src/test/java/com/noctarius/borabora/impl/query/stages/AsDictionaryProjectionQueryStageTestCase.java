@@ -29,18 +29,18 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class AsDictionarySelectorQueryStageTestCase
+public class AsDictionaryProjectionQueryStageTestCase
         extends AbstractQueryStageTestCase {
 
     @Test
     public void test_toString() {
-        assertEquals("AS_DIC", AsDictionarySelectorQueryStage.INSTANCE.toString());
+        assertEquals("AS_DIC", AsDictionaryProjectionQueryStage.INSTANCE.toString());
     }
 
     @Test
     public void test_evaluate() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
+        QueryStage queryStage = AsDictionaryProjectionQueryStage.INSTANCE;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
@@ -52,7 +52,7 @@ public class AsDictionarySelectorQueryStageTestCase
     @Test
     public void test_evaluate_exit() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
+        QueryStage queryStage = AsDictionaryProjectionQueryStage.INSTANCE;
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
@@ -65,7 +65,7 @@ public class AsDictionarySelectorQueryStageTestCase
     @Test
     public void test_evaluate_break() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorQueryStage.INSTANCE;
+        QueryStage queryStage = AsDictionaryProjectionQueryStage.INSTANCE;
         QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Break;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);

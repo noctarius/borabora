@@ -40,6 +40,7 @@ public interface FractionBuilder {
      * {@link TagBuilder} instance must be used to finalize the building by calling
      * {@link TagBuilder#endSemanticTag()}.
      *
+     * @param value the {@link BigDecimal} value to write as a fraction
      * @return the semantic tag finalizing TagBuilder
      */
     @BuilderStackPush

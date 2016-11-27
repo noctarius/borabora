@@ -22,18 +22,18 @@ import com.noctarius.borabora.spi.query.pipeline.PipelineStage;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 
-public class AsSequenceSelectorQueryStage
+public class AsDictionaryProjectionQueryStage
         implements QueryStage {
 
-    public static final QueryStage INSTANCE = new AsSequenceSelectorQueryStage();
+    public static final QueryStage INSTANCE = new AsDictionaryProjectionQueryStage();
 
-    protected AsSequenceSelectorQueryStage() {
+    protected AsDictionaryProjectionQueryStage() {
     }
 
     @Override
     public VisitResult evaluate(PipelineStage previousPipelineStage, PipelineStage pipelineStage, QueryContext queryContext) {
         ProjectionStrategy projectionStrategy = queryContext.projectionStrategy();
-        projectionStrategy.beginSequence(queryContext);
+        projectionStrategy.beginDictionary(queryContext);
 
         VisitResult visitResult = pipelineStage.visitChildren(queryContext);
 
@@ -42,13 +42,13 @@ public class AsSequenceSelectorQueryStage
             return visitResult;
         }
 
-        projectionStrategy.endSequence(queryContext);
+        projectionStrategy.endDictionary(queryContext);
         return visitResult == VisitResult.Break ? VisitResult.Continue : visitResult;
     }
 
     @Override
     public String toString() {
-        return "AS_SEQ";
+        return "AS_DIC";
     }
 
 }

@@ -18,9 +18,21 @@ package com.noctarius.borabora.builder.query;
 
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 
+/**
+ * The <tt>EntryQueryBuilder</tt> interface is used to create entries in a runtime
+ * defined new entry instance using the to be defined sub-query executed before the
+ * entry is finished.
+ *
+ * @param <T> the parent's builder type
+ */
 public interface EntryQueryBuilder<T>
         extends QueryTokenBuilder<EntryQueryBuilder<T>> {
 
+    /**
+     * Finalizes the runtime defined entry and returns to the parent builder
+     *
+     * @return the parent builder instance
+     */
     @BuilderStackPop
     T endEntry();
 

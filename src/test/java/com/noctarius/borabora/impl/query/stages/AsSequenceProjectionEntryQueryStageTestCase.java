@@ -23,56 +23,62 @@ import com.noctarius.borabora.spi.query.pipeline.QueryStage;
 import com.noctarius.borabora.spi.query.pipeline.VisitResult;
 import org.junit.Test;
 
+import static com.noctarius.borabora.spi.query.pipeline.PipelineStage.NIL;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class AsSequenceSelectorQueryStageTestCase
+public class AsSequenceProjectionEntryQueryStageTestCase
         extends AbstractQueryStageTestCase {
 
     @Test
     public void test_toString() {
-        assertEquals("AS_SEQ", AsSequenceSelectorQueryStage.INSTANCE.toString());
+        assertEquals("SEQ_ENTRY_BEGIN", AsSequenceProjectionEntryQueryStage.INSTANCE.toString());
     }
 
     @Test
     public void test_evaluate() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsSequenceSelectorQueryStage.INSTANCE;
+        QueryStage queryStage = AsSequenceProjectionEntryQueryStage.INSTANCE;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
-        evaluate(input, queryStage, null, null, null, true, null, spy);
-        verify(spy, times(1)).beginSequence(any(QueryContext.class));
-        verify(spy, times(1)).endSequence(any(QueryContext.class));
+        EvaluationResult evaluationResult = evaluate(input, queryStage, null, null, null, true, null, spy);
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putSequenceNullValue(any(QueryContext.class));
+        assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 
     @Test
     public void test_evaluate_exit() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsSequenceSelectorQueryStage.INSTANCE;
+        QueryStage queryStage = AsSequenceProjectionEntryQueryStage.INSTANCE;
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         evaluate(input, queryStage, null, exitStage, null, true, null, spy);
-        verify(spy, times(1)).beginSequence(any(QueryContext.class));
-        verify(spy, times(0)).endSequence(any(QueryContext.class));
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(0)).putSequenceNullValue(any(QueryContext.class));
     }
 
     @Test
     public void test_evaluate_break() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsSequenceSelectorQueryStage.INSTANCE;
-        QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Break;
+        QueryStage queryStage = AsSequenceProjectionEntryQueryStage.INSTANCE;
+        QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> {
+            queryContext.offset(-1);
+            return VisitResult.Break;
+        };
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
         EvaluationResult evaluationResult = evaluate(input, queryStage, null, breakStage, null, true, null, spy);
-        verify(spy, times(1)).beginSequence(any(QueryContext.class));
-        verify(spy, times(1)).endSequence(any(QueryContext.class));
+        verify(spy, times(0)).putSequenceValue(eq(NIL), any(QueryContext.class));
+        verify(spy, times(1)).putSequenceNullValue(any(QueryContext.class));
         assertEquals(VisitResult.Continue, evaluationResult.visitResult);
     }
 

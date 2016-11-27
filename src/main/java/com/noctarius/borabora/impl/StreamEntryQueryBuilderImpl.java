@@ -21,8 +21,8 @@ import com.noctarius.borabora.builder.query.DictionaryQueryBuilder;
 import com.noctarius.borabora.builder.query.EntryQueryBuilder;
 import com.noctarius.borabora.builder.query.SequenceQueryBuilder;
 import com.noctarius.borabora.builder.query.StreamEntryQueryBuilder;
-import com.noctarius.borabora.impl.query.stages.AsDictionarySelectorQueryStage;
-import com.noctarius.borabora.impl.query.stages.AsSequenceSelectorQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsDictionaryProjectionQueryStage;
+import com.noctarius.borabora.impl.query.stages.AsSequenceProjectionQueryStage;
 import com.noctarius.borabora.impl.query.stages.SingleStreamElementQueryStage;
 import com.noctarius.borabora.spi.query.TypeSpec;
 import com.noctarius.borabora.spi.query.pipeline.QueryStage;
@@ -55,14 +55,14 @@ class StreamEntryQueryBuilderImpl<T>
     @Override
     public DictionaryQueryBuilder<EntryQueryBuilder<T>> asDictionary() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asDictionary", this);
-        QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionarySelectorQueryStage.INSTANCE);
+        QueryBuilderNode newNode = currentTreeNode.pushChild(AsDictionaryProjectionQueryStage.INSTANCE);
         return new DictionaryQueryBuilderImpl<>(this, newNode);
     }
 
     @Override
     public SequenceQueryBuilder<EntryQueryBuilder<T>> asSequence() {
         Tracer.traceCall("StreamEntryQueryBuilderImpl#asSequence", this);
-        QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceSelectorQueryStage.INSTANCE);
+        QueryBuilderNode newNode = currentTreeNode.pushChild(AsSequenceProjectionQueryStage.INSTANCE);
         return new SequenceQueryBuilderImpl<>(this, newNode);
     }
 

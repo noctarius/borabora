@@ -158,7 +158,7 @@ void dictionaryType(): {
 }
 {
     {
-        DictionaryQueryBuilder dictionaryQueryBuilder = ((SelectorQueryBuilder) queryTokenBuilder()).asDictionary();
+        DictionaryQueryBuilder dictionaryQueryBuilder = ((ProjectionQueryBuilder) queryTokenBuilder()).asDictionary();
         generatorStack.addFirst(dictionaryQueryBuilder);
     }
     ( property() ( <COMMA> property() )* )
@@ -172,7 +172,7 @@ void sequenceType(): {
 }
 {
     {
-        SequenceQueryBuilder sequenceQueryBuilder = ((SelectorQueryBuilder) queryTokenBuilder()).asSequence();
+        SequenceQueryBuilder sequenceQueryBuilder = ((ProjectionQueryBuilder) queryTokenBuilder()).asSequence();
         generatorStack.addFirst(sequenceQueryBuilder);
     }
     ( entry() ( <COMMA> entry() )* )
@@ -186,7 +186,7 @@ void entry(): {
 }
 {
     {
-        StreamEntryQueryBuilder streamEntryQueryBuilder = ((SequenceQueryBuilder) queryTokenBuilder()).putEntry();
+        StreamEntryQueryBuilder streamEntryQueryBuilder = ((SequenceQueryBuilder) queryTokenBuilder()).putElement();
         generatorStack.addFirst(streamEntryQueryBuilder);
     }
     ( type() | streamElement() (expression())* )

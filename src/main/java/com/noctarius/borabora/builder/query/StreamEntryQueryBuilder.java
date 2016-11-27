@@ -19,7 +19,7 @@ package com.noctarius.borabora.builder.query;
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 
 public interface StreamEntryQueryBuilder<T>
-        extends StreamElementQueryBuilder<EntryQueryBuilder<T>>, SelectorQueryBuilder<EntryQueryBuilder<T>> {
+        extends StreamElementQueryBuilder<EntryQueryBuilder<T>>, ProjectionQueryBuilder<EntryQueryBuilder<T>> {
 
     @BuilderStackPop
     T endEntry();

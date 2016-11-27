@@ -26,10 +26,10 @@ import java.util.function.Consumer;
 
 import static com.noctarius.borabora.spi.io.Constants.OFFSET_CODE_NULL;
 
-public abstract class AsDictionarySelectorEntryQueryStage
+public abstract class AsDictionaryProjectionEntryQueryStage
         implements QueryStage {
 
-    protected AsDictionarySelectorEntryQueryStage() {
+    protected AsDictionaryProjectionEntryQueryStage() {
     }
 
     @Override
@@ -56,20 +56,20 @@ public abstract class AsDictionarySelectorEntryQueryStage
 
     protected abstract Consumer<QueryContext> keyWriter();
 
-    public static AsDictionarySelectorEntryQueryStage withStringKey(String key) {
+    public static AsDictionaryProjectionEntryQueryStage withStringKey(String key) {
         return new StringKey(key);
     }
 
-    public static AsDictionarySelectorEntryQueryStage withIntKey(long key) {
+    public static AsDictionaryProjectionEntryQueryStage withIntKey(long key) {
         return new IntKey(key);
     }
 
-    public static AsDictionarySelectorEntryQueryStage withFloatKey(double key) {
+    public static AsDictionaryProjectionEntryQueryStage withFloatKey(double key) {
         return new FloatKey(key);
     }
 
     private static class StringKey
-            extends AsDictionarySelectorEntryQueryStage {
+            extends AsDictionaryProjectionEntryQueryStage {
 
         private final String key;
 
@@ -111,7 +111,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
     }
 
     private static class IntKey
-            extends AsDictionarySelectorEntryQueryStage {
+            extends AsDictionaryProjectionEntryQueryStage {
 
         private final long key;
 
@@ -152,7 +152,7 @@ public abstract class AsDictionarySelectorEntryQueryStage
     }
 
     private static class FloatKey
-            extends AsDictionarySelectorEntryQueryStage {
+            extends AsDictionaryProjectionEntryQueryStage {
 
         private final double key;
 

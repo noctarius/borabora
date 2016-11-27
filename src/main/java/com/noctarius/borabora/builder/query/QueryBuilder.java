@@ -18,9 +18,21 @@ package com.noctarius.borabora.builder.query;
 
 import com.noctarius.borabora.Query;
 
+/**
+ * The <tt>QueryBuilder</tt> interface is used to define a query to search,
+ * read and extract a data item inside the CBOR encoded data stream or to
+ * execute a projection (runtime sequence or dictionary creation) to generate
+ * a new data structure during a query execution.
+ */
 public interface QueryBuilder
         extends QueryTokenBuilder<QueryBuilder> {
 
+    /**
+     * Finalizes the query definition and returns the final {@link Query} instance.
+     * This instance is fully thread-safe and can be stored and shared by multiple threads.
+     *
+     * @return the Query instance representing the actual query defined by the fluent builder
+     */
     Query build();
 
 }

@@ -16,18 +16,81 @@
  */
 package com.noctarius.borabora.spi.io;
 
+import com.noctarius.borabora.Dictionary;
+import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.Value;
+import com.noctarius.borabora.spi.AbstractStreamValue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 public final class Encoder
         implements Constants {
 
     private Encoder() {
+    }
+
+    public static long putValue(Value value, long offset, Output output) {
+        MajorType majorType = value.majorType();
+        if (majorType == MajorType.Dictionary) {
+            Dictionary dictionary = value.dictionary();
+            offset = encodeLengthAndValue(majorType, dictionary.size(), offset, output);
+            for (Map.Entry<Value, Value> entry : dictionary.entries()) {
+                offset = putValue(entry.getKey(), offset, output);
+                offset = putValue(entry.getValue(), offset, output);
+            }
+
+        } else if (majorType == MajorType.Sequence) {
+            Sequence sequence = value.sequence();
+            offset = encodeLengthAndValue(majorType, sequence.size(), offset, output);
+            for (Value entry : sequence) {
+                offset = putValue(entry, offset, output);
+            }
+
+        } else if (value instanceof AbstractStreamValue) {
+            AbstractStreamValue asv = (AbstractStreamValue) value;
+            Input itemInput = asv.input();
+            long itemOffset = asv.offset();
+            long itemLength = Decoder.length(itemInput, majorType, itemOffset);
+
+            int chunkSize = 1024;
+            byte[] chunk = new byte[chunkSize];
+            long sourceOffset = itemOffset;
+            long remaining = itemLength;
+            while (remaining > 0) {
+                long length = Math.min(chunkSize, remaining);
+                sourceOffset += itemInput.read(chunk, sourceOffset, (int) length);
+                output.write(chunk, offset, (int) length);
+                remaining -= length;
+                offset += length;
+            }
+
+        } else {
+            Object byValueType = value.byValueType();
+            if (byValueType instanceof String) {
+                offset = putString((String) byValueType, offset, output);
+            } else if (byValueType instanceof BigInteger) {
+                offset = putNumber((BigInteger) byValueType, offset, output);
+            } else if (byValueType instanceof BigDecimal) {
+                offset = putFraction((BigDecimal) byValueType, offset, output);
+            } else if (byValueType instanceof Float) {
+                offset = putFloat(((Number) byValueType).floatValue(), offset, output);
+            } else  if (byValueType instanceof Double) {
+                offset = putDouble(((Number) byValueType).doubleValue(), offset, output);
+            } else if (byValueType instanceof Number) {
+                offset = putNumber(((Number) byValueType).longValue(), offset, output);
+            } else {
+                throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
+            }
+
+        }
+        return offset;
     }
 
     public static long putString(String value, long offset, Output output) {

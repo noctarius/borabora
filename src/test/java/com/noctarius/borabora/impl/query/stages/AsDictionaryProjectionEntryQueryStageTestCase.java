@@ -34,20 +34,20 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class AsDictionarySelectorEntryQueryStageTestCase
+public class AsDictionaryProjectionEntryQueryStageTestCase
         extends AbstractQueryStageTestCase {
 
     @Test
     public void test_toString() {
-        assertEquals("DIC_ENTRY_BEGIN[ foo ]", AsDictionarySelectorEntryQueryStage.withStringKey("foo").toString());
-        assertEquals("DIC_ENTRY_BEGIN[ -1000 ]", AsDictionarySelectorEntryQueryStage.withIntKey(-1000).toString());
-        assertEquals("DIC_ENTRY_BEGIN[ -12.0 ]", AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d).toString());
+        assertEquals("DIC_ENTRY_BEGIN[ foo ]", AsDictionaryProjectionEntryQueryStage.withStringKey("foo").toString());
+        assertEquals("DIC_ENTRY_BEGIN[ -1000 ]", AsDictionaryProjectionEntryQueryStage.withIntKey(-1000).toString());
+        assertEquals("DIC_ENTRY_BEGIN[ -12.0 ]", AsDictionaryProjectionEntryQueryStage.withFloatKey(-12.d).toString());
     }
 
     @Test
     public void test_evaluate_string_key() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+        QueryStage queryStage = AsDictionaryProjectionEntryQueryStage.withStringKey("foo");
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
@@ -61,7 +61,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
     @Test
     public void test_evaluate_int_key() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
+        QueryStage queryStage = AsDictionaryProjectionEntryQueryStage.withIntKey(-1000);
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
@@ -75,7 +75,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
     @Test
     public void test_evaluate_float_key() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
+        QueryStage queryStage = AsDictionaryProjectionEntryQueryStage.withFloatKey(-12.d);
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
 
@@ -89,7 +89,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
     @Test
     public void test_evaluate_exit() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
+        QueryStage queryStage = AsDictionaryProjectionEntryQueryStage.withIntKey(-1000);
         QueryStage exitStage = (previousPipelineStage, pipelineStage, queryContext) -> VisitResult.Exit;
 
         ProjectionStrategy spy = spy(ProjectionStrategy.class);
@@ -102,7 +102,7 @@ public class AsDictionarySelectorEntryQueryStageTestCase
     @Test
     public void test_evaluate_break() {
         Input input = Input.fromByteArray(new byte[0]);
-        QueryStage queryStage = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
+        QueryStage queryStage = AsDictionaryProjectionEntryQueryStage.withIntKey(-1000);
         QueryStage breakStage = (previousPipelineStage, pipelineStage, queryContext) -> {
             queryContext.offset(-1);
             return VisitResult.Break;
@@ -118,9 +118,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_equals_string_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withStringKey("bar");
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withStringKey("foo");
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withStringKey("bar");
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withStringKey("foo");
 
         assertTrue(qs1.equals(qs1));
         assertFalse(qs1.equals(new Object()));
@@ -130,9 +130,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_hashcode_string_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withStringKey("bar");
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withStringKey("foo");
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withStringKey("foo");
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withStringKey("bar");
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withStringKey("foo");
 
         assertEquals(qs1.hashCode(), qs1.hashCode());
         assertNotEquals(qs1.hashCode(), qs2.hashCode());
@@ -141,9 +141,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_equals_int_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withIntKey(1000);
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withIntKey(-1000);
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withIntKey(1000);
 
         assertTrue(qs1.equals(qs1));
         assertFalse(qs1.equals(new Object()));
@@ -153,9 +153,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_hashcode_int_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withIntKey(-1000);
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withIntKey(1000);
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withIntKey(1000);
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withIntKey(-1000);
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withIntKey(1000);
 
         assertEquals(qs1.hashCode(), qs1.hashCode());
         assertNotEquals(qs1.hashCode(), qs2.hashCode());
@@ -164,9 +164,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_equals_float_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withFloatKey(-12.d);
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withFloatKey(12.d);
 
         assertTrue(qs1.equals(qs1));
         assertFalse(qs1.equals(new Object()));
@@ -176,9 +176,9 @@ public class AsDictionarySelectorEntryQueryStageTestCase
 
     @Test
     public void test_hashcode_float_key() {
-        QueryStage qs1 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
-        QueryStage qs2 = AsDictionarySelectorEntryQueryStage.withFloatKey(-12.d);
-        QueryStage qs3 = AsDictionarySelectorEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs1 = AsDictionaryProjectionEntryQueryStage.withFloatKey(12.d);
+        QueryStage qs2 = AsDictionaryProjectionEntryQueryStage.withFloatKey(-12.d);
+        QueryStage qs3 = AsDictionaryProjectionEntryQueryStage.withFloatKey(12.d);
 
         assertEquals(qs1.hashCode(), qs1.hashCode());
         assertNotEquals(qs1.hashCode(), qs2.hashCode());

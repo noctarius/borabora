@@ -124,6 +124,11 @@ public final class DictionaryImpl
         return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
     }
 
+    @Override
+    public boolean isIndefinite() {
+        return false;
+    }
+
     private Value get(long keyOffset) {
         if (keyOffset == -1) {
             return null;

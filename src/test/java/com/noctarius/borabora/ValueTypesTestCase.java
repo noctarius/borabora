@@ -18,7 +18,6 @@ package com.noctarius.borabora;
 import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.QueryContext;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -556,10 +555,8 @@ public class ValueTypesTestCase
     }
 
     @Test
-    @Ignore("Not yet implemented")
     public void test_valueType_obj_semtag_enccbor() {
-        Input input = semanticTag(ValueTypes.EncCBOR);
-        ValueType valueType = ValueTypes.valueType(input, 0);
+        ValueType valueType = valueType(Value.NULL_VALUE);
         assertEquals(ValueTypes.EncCBOR, valueType);
     }
 

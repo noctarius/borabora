@@ -19,11 +19,29 @@ package com.noctarius.borabora.builder.query;
 import com.noctarius.borabora.spi.builder.BuilderStackPop;
 import com.noctarius.borabora.spi.builder.BuilderStackPush;
 
+/**
+ * The <tt>SequenceQueryBuilder</tt> interface is used to create entries in a runtime
+ * defined new sequence instance projection. Each entry is defined by the given key and
+ * the sub-query executed before the entry is finished.
+ *
+ * @param <T> the parent's builder type
+ */
 public interface SequenceQueryBuilder<T> {
 
+    /**
+     * Defines a new element inside the projected sequence. The returned {@link StreamEntryQueryBuilder}
+     * is used to define the elements's value based on the defined sub-query.
+     *
+     * @return a builder to define the elements's value by a sub-query
+     */
     @BuilderStackPush
-    StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putEntry();
+    StreamEntryQueryBuilder<SequenceQueryBuilder<T>> putElement();
 
+    /**
+     * Finalizes the runtime defined sequence and returns to the parent builder
+     *
+     * @return the parent builder instance
+     */
     @BuilderStackPop
     T endSequence();
 

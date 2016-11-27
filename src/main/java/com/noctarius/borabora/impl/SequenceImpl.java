@@ -123,6 +123,11 @@ public final class SequenceImpl
         return sb.deleteCharAt(sb.length() - 1).deleteCharAt(sb.length() - 1).append(']').toString();
     }
 
+    @Override
+    public boolean isIndefinite() {
+        return false;
+    }
+
     private long calculateArrayIndex(long sequenceIndex) {
         int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
         int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);

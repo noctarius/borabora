@@ -103,7 +103,8 @@ public abstract class AbstractStreamValue
         return queryContext;
     }
 
-    protected Input input() {
+    @Override
+    public Input input() {
         return queryContext().input();
     }
 

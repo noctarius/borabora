@@ -80,6 +80,11 @@ final class NullValue
     }
 
     @Override
+    public Input input() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return "NullValue{valueType=Null, offset=-1, value=null}";
     }

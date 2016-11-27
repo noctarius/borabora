@@ -125,8 +125,8 @@ public enum TagStrategies
      * @see ValueTypes#EncCBOR
      * @see CBORBuilder
      */
-    EncCBOR(TAG_ENCCBOR, ValueTypes.EncCBOR, CBORBuilder.class, null, //
-            TagReaders.EncCBOR, TypeSpecs.EncCBOR, null, CBORBuilderImpl::new);
+    EncCBOR(TAG_ENCCBOR, ValueTypes.EncCBOR, CBORBuilder.class, TagWriters.EncCBOR, //
+            TagReaders.EncCBOR, TypeSpecs.EncCBOR, TypeMatchers.EncCBOR, CBORBuilderImpl::new);
 
     private static final TagStrategy[] TAG_STRATEGIES = TagStrategies.values();
 
