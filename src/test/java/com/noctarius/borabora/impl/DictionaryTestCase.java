@@ -542,11 +542,13 @@ public class DictionaryTestCase
 
         assertEquals(2, dictionary.size());
         assertEqualsNumber(1, dictionary.get((v) -> "a".equals(v.string())).number());
+        assertFalse(dictionary.isIndefinite());
 
         Sequence sequence = dictionary.get((v) -> "b".equals(v.string())).sequence();
         assertEquals(2, sequence.size());
         assertEqualsNumber(2, sequence.get(0).number());
         assertEqualsNumber(3, sequence.get(1).number());
+        assertFalse(sequence.isIndefinite());
     }
 
     private boolean matchNumber(Value value) {

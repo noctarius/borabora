@@ -42,64 +42,9 @@ public final class Encoder
     public static long putValue(Value value, long offset, Output output, EncoderContext encoderContext) {
         MajorType majorType = value.majorType();
         if (value instanceof AbstractStreamValue) {
-            AbstractStreamValue asv = (AbstractStreamValue) value;
-            Input itemInput = asv.input();
-            long itemOffset = asv.offset();
-            long itemLength = Decoder.length(itemInput, majorType, itemOffset);
-
-            int chunkSize = 1024;
-            byte[] chunk = new byte[chunkSize];
-            long sourceOffset = itemOffset;
-            long remaining = itemLength;
-            while (remaining > 0) {
-                long length = Math.min(chunkSize, remaining);
-                sourceOffset += itemInput.read(chunk, sourceOffset, (int) length);
-                output.write(chunk, offset, (int) length);
-                remaining -= length;
-                offset += length;
-            }
-
+            offset = copyStreamValue((AbstractStreamValue) value, offset, output, majorType);
         } else {
-            Object byValueType = value.byValueType();
-            if (majorType == MajorType.Dictionary) {
-                Dictionary dictionary = value.dictionary();
-                offset = encodeLengthAndValue(majorType, dictionary.size(), offset, output);
-                for (Map.Entry<Value, Value> entry : dictionary.entries()) {
-                    offset = putValue(entry.getKey(), offset, output, encoderContext);
-                    offset = putValue(entry.getValue(), offset, output, encoderContext);
-                }
-
-            } else if (majorType == MajorType.Sequence) {
-                Sequence sequence = value.sequence();
-                offset = encodeLengthAndValue(majorType, sequence.size(), offset, output);
-                for (Value entry : sequence) {
-                    offset = putValue(entry, offset, output, encoderContext);
-                }
-
-            } else if (byValueType instanceof String) {
-                offset = putString((String) byValueType, offset, output);
-            } else if (byValueType instanceof BigInteger) {
-                offset = putBigInteger((BigInteger) byValueType, offset, output);
-            } else if (byValueType instanceof BigDecimal) {
-                offset = putFraction((BigDecimal) byValueType, offset, output);
-            } else if (byValueType instanceof Float) {
-                offset = putFloat(((Number) byValueType).floatValue(), offset, output);
-            } else if (byValueType instanceof Double) {
-                offset = putDouble(((Number) byValueType).doubleValue(), offset, output);
-            } else if (byValueType instanceof Number) {
-                offset = putNumber(((Number) byValueType).longValue(), offset, output);
-            } else if (majorType == MajorType.SemanticTag) {
-                TagStrategy tagStrategy = TagStrategies.tagStrategy(value.valueType());
-                if (tagStrategy == null) {
-                    throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
-                }
-                encoderContext.offset(offset);
-                offset = tagStrategy.process(value.byValueType(), offset, encoderContext);
-
-            } else {
-                throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
-            }
-
+            offset = copyValue(value, offset, output, encoderContext, majorType);
         }
         return offset;
     }
@@ -313,6 +258,84 @@ public final class Encoder
             default:
                 return Bytes.putInt64(bits, offset, output);
         }
+    }
+
+    private static long copyValue(Value value, long offset, Output output, EncoderContext encoderContext, MajorType majorType) {
+        Object byValueType = value.byValueType();
+        if (majorType == MajorType.Dictionary) {
+            offset = copyDictionary(value, offset, output, encoderContext, majorType);
+        } else if (majorType == MajorType.Sequence) {
+            offset = copySequence(value, offset, output, encoderContext, majorType);
+        } else if (byValueType instanceof String) {
+            offset = putString((String) byValueType, offset, output);
+        } else if (byValueType instanceof BigInteger) {
+            offset = putBigInteger((BigInteger) byValueType, offset, output);
+        } else if (byValueType instanceof BigDecimal) {
+            offset = putFraction((BigDecimal) byValueType, offset, output);
+        } else if (byValueType instanceof Float) {
+            offset = putFloat(((Number) byValueType).floatValue(), offset, output);
+        } else if (byValueType instanceof Double) {
+            offset = putDouble(((Number) byValueType).doubleValue(), offset, output);
+        } else if (byValueType instanceof Number) {
+            offset = putNumber(((Number) byValueType).longValue(), offset, output);
+        } else if (majorType == MajorType.SemanticTag) {
+            offset = copySemanticTag(value, offset, encoderContext, byValueType);
+        } else {
+            throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
+        }
+        return offset;
+    }
+
+    private static long copySemanticTag(Value value, long offset, EncoderContext encoderContext, Object byValueType) {
+        TagStrategy tagStrategy = TagStrategies.tagStrategy(value.valueType());
+        if (tagStrategy == null) {
+            throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
+        }
+        encoderContext.offset(offset);
+        offset = tagStrategy.process(value.byValueType(), offset, encoderContext);
+        return offset;
+    }
+
+    private static long copySequence(Value value, long offset, Output output, //
+                                     EncoderContext encoderContext, MajorType majorType) {
+
+        Sequence sequence = value.sequence();
+        offset = encodeLengthAndValue(majorType, sequence.size(), offset, output);
+        for (Value entry : sequence) {
+            offset = putValue(entry, offset, output, encoderContext);
+        }
+        return offset;
+    }
+
+    private static long copyDictionary(Value value, long offset, Output output, //
+                                       EncoderContext encoderContext, MajorType majorType) {
+
+        Dictionary dictionary = value.dictionary();
+        offset = encodeLengthAndValue(majorType, dictionary.size(), offset, output);
+        for (Map.Entry<Value, Value> entry : dictionary.entries()) {
+            offset = putValue(entry.getKey(), offset, output, encoderContext);
+            offset = putValue(entry.getValue(), offset, output, encoderContext);
+        }
+        return offset;
+    }
+
+    private static long copyStreamValue(AbstractStreamValue value, long offset, Output output, MajorType majorType) {
+        Input itemInput = value.input();
+        long itemOffset = value.offset();
+        long itemLength = Decoder.length(itemInput, majorType, itemOffset);
+
+        int chunkSize = 1024;
+        byte[] chunk = new byte[chunkSize];
+        long sourceOffset = itemOffset;
+        long remaining = itemLength;
+        while (remaining > 0) {
+            long length = Math.min(chunkSize, remaining);
+            sourceOffset += itemInput.read(chunk, sourceOffset, (int) length);
+            output.write(chunk, offset, (int) length);
+            remaining -= length;
+            offset += length;
+        }
+        return offset;
     }
 
 }
