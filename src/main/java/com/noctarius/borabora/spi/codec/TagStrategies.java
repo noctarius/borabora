@@ -242,13 +242,30 @@ public enum TagStrategies
      * @return returns the according ValueType or <tt>null</tt> if no matching builtin
      * TagStrategy is found
      */
-    public static ValueType valueyType(Object value) {
+    public static ValueType valueType(Object value) {
         for (TagStrategy tagStrategy : TAG_STRATEGIES) {
             if (tagStrategy.handles(value)) {
                 return tagStrategy.valueType();
             }
         }
         return ValueTypes.Unknown;
+    }
+
+    /**
+     * Returns the TagStrategy based on the given <tt>valueType</tt> if there is
+     * a builtin implementation, otherwise <tt>null</tt>.
+     *
+     * @param valueType the <tt>ValueType</tt> to find the TagStrategy for
+     * @return the TagStrategy if found, otherwise <tt>null</tt> if no matching builtin
+     * TagStrategy is found
+     */
+    public static TagStrategy tagStrategy(ValueType valueType) {
+        for (TagStrategy tagStrategy : TAG_STRATEGIES) {
+            if (tagStrategy.valueType() == valueType) {
+                return tagStrategy;
+            }
+        }
+        return null;
     }
 
 }

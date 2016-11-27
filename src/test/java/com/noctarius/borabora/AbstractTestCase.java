@@ -28,6 +28,7 @@ import com.noctarius.borabora.spi.io.Constants;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.io.Encoder;
 import com.noctarius.borabora.spi.query.BinaryProjectionStrategy;
+import com.noctarius.borabora.spi.query.ObjectProjectionStrategy;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryContext;
 import com.noctarius.borabora.spi.query.QueryContextFactory;
@@ -38,6 +39,7 @@ import java.lang.reflect.Constructor;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -131,8 +133,36 @@ public abstract class AbstractTestCase {
         return queryContextFactory.newQueryContext(input, EMPTY_QUERY_CONSUMER, tagStrategies, projectionStrategy);
     }
 
-    public static Value asObjectValue(MajorType majorType, ValueType valueType, String value) {
+    public static Value asObjectValue(MajorType majorType, ValueType valueType, Object value) {
         return new ObjectValue(majorType, valueType, value);
+    }
+
+    public static Value asObjectValue(Map<Value, Value> value) {
+        try {
+            Class<? extends Dictionary> clazz = (Class<? extends Dictionary>) Class
+                    .forName("com.noctarius.borabora.spi.query.ObjectProjectionStrategy$MapBackedDictionary");
+
+            Constructor<? extends Dictionary> constructor = clazz.getDeclaredConstructor(Map.class);
+            constructor.setAccessible(true);
+
+            return new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, constructor.newInstance(value));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Value asObjectValue(List<Value> value) {
+        try {
+            Class<? extends Dictionary> clazz = (Class<? extends Dictionary>) Class
+                    .forName("com.noctarius.borabora.spi.query.ObjectProjectionStrategy$ListBackedSequence");
+
+            Constructor<? extends Dictionary> constructor = clazz.getDeclaredConstructor(List.class);
+            constructor.setAccessible(true);
+
+            return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, constructor.newInstance(value));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Value asStreamValue(Consumer<GraphBuilder> consumer) {

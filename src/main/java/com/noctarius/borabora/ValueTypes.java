@@ -269,7 +269,7 @@ public enum ValueTypes
         } else if (value instanceof Boolean) {
             return Bool;
         }
-        return TagStrategies.valueyType(value);
+        return TagStrategies.valueType(value);
     }
 
     private static ValueTypes floatNullOrBool(short head) {

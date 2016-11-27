@@ -28,9 +28,14 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
+import static com.noctarius.borabora.Predicates.matchString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -782,6 +787,195 @@ public class WriterTestCase
         assertEquals(expected.getEpochSecond(), (long) value1.tag());
         assertEquals(expected.getEpochSecond(), (long) value2.tag());
         assertNull(value3.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_value()
+            throws Exception {
+
+        SimplifiedTestParser parser = buildParser((sgb) -> {
+            sgb.putDictionary(1) //
+               .putEntry().putString("non-used-key1").putString("non-used-value-1").endEntry() //
+               .endDictionary()
+
+               .putDictionary(2) //
+               .putEntry().putString("key-1").putString("value-1").endEntry() //
+               .putEntry().putString("key-2").putString("value-2").endEntry() //
+               .endDictionary()
+
+               .putDictionary(1) //
+               .putEntry().putString("non-used-key2").putString("non-used-value-2").endEntry() //
+               .endDictionary();
+        });
+
+        Value expected = parser.read(parser.newQueryBuilder().stream(1).build());
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.Dictionary, value.majorType());
+
+        Dictionary dictionary = value.dictionary();
+        assertEquals(2, dictionary.size());
+        assertEquals("value-1", dictionary.get(matchString("key-1")).string());
+        assertEquals("value-2", dictionary.get(matchString("key-2")).string());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_dictionary()
+            throws Exception {
+
+        Map<Value, Value> values = new HashMap<Value, Value>() {
+            {
+                put(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "key-1"),
+                        asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-1"));
+                put(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "key-2"),
+                        asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-2"));
+            }
+        };
+        Value expected = asObjectValue(values);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.Dictionary, value.majorType());
+
+        Dictionary dictionary = value.dictionary();
+        assertEquals(2, dictionary.size());
+        assertEquals("value-1", dictionary.get(matchString("key-1")).string());
+        assertEquals("value-2", dictionary.get(matchString("key-2")).string());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_sequence()
+            throws Exception {
+
+        List<Value> values = new ArrayList<Value>() {
+            {
+                add(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-1"));
+                add(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-2"));
+            }
+        };
+        Value expected = asObjectValue(values);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.Sequence, value.majorType());
+
+        Sequence sequence = value.sequence();
+        assertEquals(2, sequence.size());
+        assertEquals("value-1", sequence.get(0).string());
+        assertEquals("value-2", sequence.get(1).string());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_biguint()
+            throws Exception {
+
+        Value expected = asObjectValue(MajorType.SemanticTag, ValueTypes.UBigNum, BigInteger.valueOf(123L));
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.SemanticTag, value.majorType());
+        assertEquals(ValueTypes.UBigNum, value.valueType());
+
+        assertEquals(BigInteger.valueOf(123L), value.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_fraction()
+            throws Exception {
+
+        Value expected = asObjectValue(MajorType.SemanticTag, ValueTypes.Fraction, BigDecimal.valueOf(123.f));
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.SemanticTag, value.majorType());
+        assertEquals(ValueTypes.Fraction, value.valueType());
+
+        assertEquals(BigDecimal.valueOf(123.f), value.tag());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_float()
+            throws Exception {
+
+        Value expected = asObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 123.f);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.FloatingPointOrSimple, value.majorType());
+        assertEquals(ValueTypes.Float, value.valueType());
+
+        assertEqualsNumber(123.f, value.number());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_double()
+            throws Exception {
+
+        Value expected = asObjectValue(MajorType.FloatingPointOrSimple, ValueTypes.Float, 123.d);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.FloatingPointOrSimple, value.majorType());
+        assertEquals(ValueTypes.Float, value.valueType());
+
+        assertEqualsNumber(123.d, value.number());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_uint()
+            throws Exception {
+
+        Value expected = asObjectValue(MajorType.UnsignedInteger, ValueTypes.UInt, 123);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(expected));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.UnsignedInteger, value.majorType());
+        assertEquals(ValueTypes.UInt, value.valueType());
+
+        assertEqualsNumber(123, value.number());
+    }
+
+    @Test
+    public void test_write_putvalue_puttag_object_value_date()
+            throws Exception {
+
+        Instant expected = Instant.now();
+        Value original = asObjectValue(MajorType.SemanticTag, ValueTypes.DateTime, expected);
+
+        SimplifiedTestParser result = buildParser((sgb) -> sgb.putValue(original));
+        Value value = result.read(result.newQueryBuilder().build()).byValueType();
+
+        assertEquals(MajorType.SemanticTag, value.majorType());
+        assertEquals(ValueTypes.DateTime, value.valueType());
+
+        assertEquals(expected, value.tag());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_putvalue_puttag_object_value_unknown()
+            throws Exception {
+
+        Value original = asObjectValue(MajorType.SemanticTag, ValueTypes.Unknown, new Object());
+
+        buildParser((sgb) -> sgb.putValue(original));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void test_write_putvalue_puttag_object_value_unknown_2()
+            throws Exception {
+
+        Value original = asObjectValue(MajorType.Unknown, ValueTypes.Unknown, new Object());
+
+        buildParser((sgb) -> sgb.putValue(original));
     }
 
     @Test

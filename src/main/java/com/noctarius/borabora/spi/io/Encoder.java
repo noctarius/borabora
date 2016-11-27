@@ -23,6 +23,9 @@ import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.spi.AbstractStreamValue;
+import com.noctarius.borabora.spi.builder.EncoderContext;
+import com.noctarius.borabora.spi.codec.TagStrategies;
+import com.noctarius.borabora.spi.codec.TagStrategy;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,24 +39,9 @@ public final class Encoder
     private Encoder() {
     }
 
-    public static long putValue(Value value, long offset, Output output) {
+    public static long putValue(Value value, long offset, Output output, EncoderContext encoderContext) {
         MajorType majorType = value.majorType();
-        if (majorType == MajorType.Dictionary) {
-            Dictionary dictionary = value.dictionary();
-            offset = encodeLengthAndValue(majorType, dictionary.size(), offset, output);
-            for (Map.Entry<Value, Value> entry : dictionary.entries()) {
-                offset = putValue(entry.getKey(), offset, output);
-                offset = putValue(entry.getValue(), offset, output);
-            }
-
-        } else if (majorType == MajorType.Sequence) {
-            Sequence sequence = value.sequence();
-            offset = encodeLengthAndValue(majorType, sequence.size(), offset, output);
-            for (Value entry : sequence) {
-                offset = putValue(entry, offset, output);
-            }
-
-        } else if (value instanceof AbstractStreamValue) {
+        if (value instanceof AbstractStreamValue) {
             AbstractStreamValue asv = (AbstractStreamValue) value;
             Input itemInput = asv.input();
             long itemOffset = asv.offset();
@@ -73,18 +61,41 @@ public final class Encoder
 
         } else {
             Object byValueType = value.byValueType();
-            if (byValueType instanceof String) {
+            if (majorType == MajorType.Dictionary) {
+                Dictionary dictionary = value.dictionary();
+                offset = encodeLengthAndValue(majorType, dictionary.size(), offset, output);
+                for (Map.Entry<Value, Value> entry : dictionary.entries()) {
+                    offset = putValue(entry.getKey(), offset, output, encoderContext);
+                    offset = putValue(entry.getValue(), offset, output, encoderContext);
+                }
+
+            } else if (majorType == MajorType.Sequence) {
+                Sequence sequence = value.sequence();
+                offset = encodeLengthAndValue(majorType, sequence.size(), offset, output);
+                for (Value entry : sequence) {
+                    offset = putValue(entry, offset, output, encoderContext);
+                }
+
+            } else if (byValueType instanceof String) {
                 offset = putString((String) byValueType, offset, output);
             } else if (byValueType instanceof BigInteger) {
-                offset = putNumber((BigInteger) byValueType, offset, output);
+                offset = putBigInteger((BigInteger) byValueType, offset, output);
             } else if (byValueType instanceof BigDecimal) {
                 offset = putFraction((BigDecimal) byValueType, offset, output);
             } else if (byValueType instanceof Float) {
                 offset = putFloat(((Number) byValueType).floatValue(), offset, output);
-            } else  if (byValueType instanceof Double) {
+            } else if (byValueType instanceof Double) {
                 offset = putDouble(((Number) byValueType).doubleValue(), offset, output);
             } else if (byValueType instanceof Number) {
                 offset = putNumber(((Number) byValueType).longValue(), offset, output);
+            } else if (majorType == MajorType.SemanticTag) {
+                TagStrategy tagStrategy = TagStrategies.tagStrategy(value.valueType());
+                if (tagStrategy == null) {
+                    throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
+                }
+                encoderContext.offset(offset);
+                offset = tagStrategy.process(value.byValueType(), offset, encoderContext);
+
             } else {
                 throw new IllegalStateException("Unsupported data type: " + byValueType.getClass());
             }

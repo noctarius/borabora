@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.spi.builder.EncoderContext;
@@ -35,7 +36,10 @@ enum TagWriters
 
     DateTime((value, offset, encoderContext) -> {
         Output output = encoderContext.output();
-        Instant instant = ((Date) value).toInstant();
+        if (value instanceof Date) {
+            value = ((Date) value).toInstant();
+        }
+        Instant instant = (Instant) value;
         ZonedDateTime zonedDateTime = instant.atZone(Constants.UTC);
         return Encoder.putDateTime(zonedDateTime, offset, output);
     }),
@@ -68,7 +72,8 @@ enum TagWriters
 
     EncCBOR((value, offset, encoderContext) -> {
         Output output = encoderContext.output();
-        return Encoder.putValue((Value) value, offset, output);
+        offset = Encoder.putSemanticTag(Constants.TAG_ENCCBOR, offset, output);
+        return Encoder.putValue((Value) value, offset, output, encoderContext);
     });
 
     private final TagWriter<Object> tagWriter;
