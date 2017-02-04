@@ -16,6 +16,13 @@
  */
 package com.noctarius.borabora.builder.query;
 
+/**
+ * The <tt>StreamElementQueryBuilder</tt> interface is used to select an element
+ * from the CBOR stream. CBOR supports multiple elements, one after another, inside
+ * the same stream to fully support data streaming.
+ *
+ * @param <T> the parent's builder type
+ */
 public interface StreamElementQueryBuilder<T> {
 
     T stream(long offset);
