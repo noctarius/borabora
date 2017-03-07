@@ -20,7 +20,11 @@
 
   <groupId>com.noctarius.borabora</groupId>
   <artifactId>borabora</artifactId>
-  <version>1.0.0-M2-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>borabora: CBOR Parser / Generator</name>
+  <description>borabora: The Skip-Scan CBOR Parser / Generator</description>
+  <url>https://github.com/noctarius/borabora</url>
 
   <properties>
     <!-- common project properties -->
