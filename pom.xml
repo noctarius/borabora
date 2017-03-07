@@ -20,7 +20,7 @@
 
   <groupId>com.noctarius.borabora</groupId>
   <artifactId>borabora</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-MS1</version>
 
   <name>borabora: CBOR Parser / Generator</name>
   <description>borabora: The Skip-Scan CBOR Parser / Generator</description>
@@ -59,7 +59,7 @@
     <connection>scm:git:git://github.com/noctarius/borabora.git</connection>
     <developerConnection>scm:git:git@github.com:noctarius/borabora.git</developerConnection>
     <url>https://github.com/noctarius/borabora/</url>
-    <tag>HEAD</tag>
+    <tag>borabora-1.0.0-MS1</tag>
   </scm>
 
   <developers>
