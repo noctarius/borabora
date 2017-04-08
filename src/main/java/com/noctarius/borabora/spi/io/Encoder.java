@@ -66,12 +66,12 @@ public final class Encoder
 
     public static long putTextString(String value, long offset, Output output) {
         byte[] data = StringEncoders.UTF8_ENCODER.encode(value);
-        return putString(data, MajorType.TextString, offset, output);
+        return putRaw(data, MajorType.TextString, offset, output);
     }
 
     public static long putByteString(String value, long offset, Output output) {
         byte[] data = StringEncoders.ASCII_ENCODER.encode(value);
-        return putString(data, MajorType.ByteString, offset, output);
+        return putRaw(data, MajorType.ByteString, offset, output);
     }
 
     public static long putNumber(long value, long offset, Output output) {
@@ -119,7 +119,7 @@ public final class Encoder
         } else {
             offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
         }
-        return putString(absValue.toByteArray(), MajorType.ByteString, offset, output);
+        return putRaw(absValue.toByteArray(), MajorType.ByteString, offset, output);
     }
 
     public static long putHalfPrecision(float value, long offset, Output output) {
@@ -144,13 +144,13 @@ public final class Encoder
     public static long putUri(URI uri, long offset, Output output) {
         offset = putSemanticTag(TAG_URI, offset, output);
         String string = uri.toString();
-        return putString(string.getBytes(UTF8), MajorType.TextString, offset, output);
+        return putRaw(string.getBytes(UTF8), MajorType.TextString, offset, output);
     }
 
     public static long putDateTime(ZonedDateTime dateTime, long offset, Output output) {
         offset = putSemanticTag(TAG_DATE_TIME, offset, output);
         String string = dateTime.format(DATE_TIME_FRACTION_OFFSET_FORMAT);
-        return putString(string.getBytes(UTF8), MajorType.TextString, offset, output);
+        return putRaw(string.getBytes(UTF8), MajorType.TextString, offset, output);
     }
 
     public static long putTimestamp(long timestamp, long offset, Output output) {
@@ -236,12 +236,12 @@ public final class Encoder
             } else {
                 offset = putSemanticTag(TAG_UNSIGNED_BIGNUM, offset, output);
             }
-            offset = putString(length.toByteArray(), MajorType.ByteString, offset, output);
+            offset = putRaw(length.toByteArray(), MajorType.ByteString, offset, output);
         }
         return offset;
     }
 
-    private static long putString(byte[] data, MajorType majorType, long offset, Output output) {
+    public static long putRaw(byte[] data, MajorType majorType, long offset, Output output) {
         offset = encodeLengthAndValue(majorType, data.length, offset, output);
         offset += output.write(data, offset, data.length);
         return offset;
