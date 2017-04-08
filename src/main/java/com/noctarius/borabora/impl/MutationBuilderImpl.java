@@ -134,7 +134,7 @@ class MutationBuilderImpl
                 value.sequence().forEach(v -> handleValue(v, sequenceBuilder, mutators));
                 sequenceBuilder.endSequence();
             } else {
-                builder.putValue(value.byValueType());
+                builder.putValue(value);
             }
         }
 

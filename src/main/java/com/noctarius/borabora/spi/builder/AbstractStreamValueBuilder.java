@@ -16,8 +16,11 @@
  */
 package com.noctarius.borabora.spi.builder;
 
+import com.noctarius.borabora.Dictionary;
 import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
+import com.noctarius.borabora.Value;
 import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
 import com.noctarius.borabora.builder.encoder.DictionaryEntryBuilder;
 import com.noctarius.borabora.builder.encoder.IndefiniteStringBuilder;
@@ -359,8 +362,8 @@ public abstract class AbstractStreamValueBuilder<B>
     public B putValue(Object value) {
         // TODO Capture Dictionary and Sequence!
 
-        validate();
         if (value == null) {
+            validate();
             encoderContext.encodeNull();
 
         } else if (value instanceof Number //
@@ -373,6 +376,17 @@ public abstract class AbstractStreamValueBuilder<B>
 
         } else if (value instanceof String) {
             return putString((String) value);
+
+        } else if (value instanceof Dictionary) {
+            return putValue(((Dictionary) value).asValue());
+
+        } else if (value instanceof Sequence) {
+            return putValue(((Sequence) value).asValue());
+
+        } else if (value instanceof Value) {
+            validate();
+            encoderContext.encode((offset, output) -> Encoder.putValue((Value) value, offset, output, encoderContext));
+            return builder;
 
         } else {
             return putTag(value);

@@ -21,7 +21,9 @@ import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
+import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.io.ByteSizes;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.io.ElementCounts;
@@ -34,17 +36,19 @@ import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.io.Bytes.readUInt8;
 
-public final class SequenceImpl
+public final class StreamSequenceImpl
         implements Sequence {
 
     private final Input input;
     private final long size;
+    private final long offset;
     private final long[][] elementIndexes;
     private final QueryContext queryContext;
 
-    SequenceImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+    StreamSequenceImpl(long offset, long size, long[][] elementIndexes, QueryContext queryContext) {
         Objects.requireNonNull(elementIndexes, "elementIndexes must not be null");
         Objects.requireNonNull(queryContext, "queryContext must not be null");
+        this.offset = offset;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -128,6 +132,11 @@ public final class SequenceImpl
         return false;
     }
 
+    @Override
+    public Value asValue() {
+        return new StreamValue(MajorType.Sequence, ValueTypes.Sequence, offset, queryContext);
+    }
+
     private long calculateArrayIndex(long sequenceIndex) {
         int baseIndex = (int) (sequenceIndex / Integer.MAX_VALUE);
         int elementIndex = (int) (sequenceIndex % Integer.MAX_VALUE);
@@ -165,7 +174,7 @@ public final class SequenceImpl
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.sequenceElementCount(input, offset);
         long[][] elementIndexes = Decoder.readElementIndexes(input, offset + headByteSize, size);
-        return new SequenceImpl(size, elementIndexes, queryContext);
+        return new StreamSequenceImpl(offset, size, elementIndexes, queryContext);
     }
 
 }

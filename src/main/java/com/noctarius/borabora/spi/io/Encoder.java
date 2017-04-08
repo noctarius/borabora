@@ -42,7 +42,7 @@ public final class Encoder
     public static long putValue(Value value, long offset, Output output, EncoderContext encoderContext) {
         MajorType majorType = value.majorType();
         if (value instanceof AbstractStreamValue) {
-            offset = copyStreamValue((AbstractStreamValue) value, offset, output, majorType);
+            offset = copyStreamValue(value, offset, output, majorType);
         } else {
             offset = copyValue(value, offset, output, encoderContext, majorType);
         }
@@ -319,7 +319,7 @@ public final class Encoder
         return offset;
     }
 
-    private static long copyStreamValue(AbstractStreamValue value, long offset, Output output, MajorType majorType) {
+    private static long copyStreamValue(Value value, long offset, Output output, MajorType majorType) {
         Input itemInput = value.input();
         long itemOffset = value.offset();
         long itemLength = Decoder.length(itemInput, majorType, itemOffset);

@@ -151,6 +151,13 @@ public interface Dictionary
     boolean isIndefinite();
 
     /**
+     * Returns the current <tt>Dictionary</tt> as an enclosing {@link Value} instance.
+     *
+     * @return an enclosing {@link Value} instance
+     */
+    Value asValue();
+
+    /**
      * Performs the given action for each entry in this map until all entries
      * have been processed or the action throws an exception.   Unless
      * otherwise specified by the implementing class, actions are performed in

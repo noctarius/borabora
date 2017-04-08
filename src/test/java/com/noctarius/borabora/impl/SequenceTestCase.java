@@ -250,7 +250,7 @@ public class SequenceTestCase
     public void sequence_to_array_size_to_large()
             throws Exception {
 
-        Sequence sequence = new SequenceImpl(Long.MAX_VALUE, new long[0][0], //
+        Sequence sequence = new StreamSequenceImpl(0, Long.MAX_VALUE, new long[0][0], //
                 newQueryContext(Input.fromByteArray(new byte[0]), Collections.emptyList(), ObjectProjectionStrategy.INSTANCE));
 
         sequence.toArray();

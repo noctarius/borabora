@@ -108,6 +108,14 @@ public interface Sequence
      */
     boolean isIndefinite();
 
+
+    /**
+     * Returns the current <tt>Sequence</tt> as an enclosing {@link Value} instance.
+     *
+     * @return an enclosing {@link Value} instance
+     */
+    Value asValue();
+
     /**
      * Creates a {@link Spliterator} over the elements in this list.
      *

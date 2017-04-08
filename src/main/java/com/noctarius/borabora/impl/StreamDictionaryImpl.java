@@ -21,7 +21,9 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
+import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
+import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.StreamableIterable;
 import com.noctarius.borabora.spi.io.ByteSizes;
 import com.noctarius.borabora.spi.io.Decoder;
@@ -36,17 +38,19 @@ import java.util.function.Predicate;
 
 import static com.noctarius.borabora.spi.io.Bytes.readUInt8;
 
-public final class DictionaryImpl
+public final class StreamDictionaryImpl
         implements Dictionary {
 
     private final long size;
     private final Input input;
+    private final long offset;
     private final long[][] elementIndexes;
     private final QueryContext queryContext;
 
-    private DictionaryImpl(long size, long[][] elementIndexes, QueryContext queryContext) {
+    private StreamDictionaryImpl(long offset, long size, long[][] elementIndexes, QueryContext queryContext) {
         Objects.requireNonNull(elementIndexes, "elementIndexes must not be null");
         Objects.requireNonNull(queryContext, "queryContext must not be null");
+        this.offset = offset;
         this.size = size;
         this.elementIndexes = elementIndexes;
         this.queryContext = queryContext;
@@ -129,6 +133,11 @@ public final class DictionaryImpl
         return false;
     }
 
+    @Override
+    public Value asValue() {
+        return new StreamValue(MajorType.Dictionary, ValueTypes.Dictionary, offset, queryContext);
+    }
+
     private Value get(long keyOffset) {
         if (keyOffset == -1) {
             return null;
@@ -165,7 +174,7 @@ public final class DictionaryImpl
         long headByteSize = ByteSizes.headByteSize(input, offset);
         long size = ElementCounts.dictionaryElementCount(input, offset);
         long[][] elementIndexes = Decoder.readElementIndexes(input, offset + headByteSize, size * 2);
-        return new DictionaryImpl(size, elementIndexes, queryContext);
+        return new StreamDictionaryImpl(offset, size, elementIndexes, queryContext);
     }
 
     private class DictionaryEntryIterable

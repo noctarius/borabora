@@ -24,8 +24,8 @@ import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
-import com.noctarius.borabora.impl.DictionaryImpl;
-import com.noctarius.borabora.impl.SequenceImpl;
+import com.noctarius.borabora.impl.StreamDictionaryImpl;
+import com.noctarius.borabora.impl.StreamSequenceImpl;
 import com.noctarius.borabora.spi.RelocatableStreamValue;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.query.QueryContext;
@@ -151,11 +151,11 @@ public final class Decoder
     }
 
     public static Sequence readSequence(long offset, QueryContext queryContext) {
-        return SequenceImpl.readSequence(offset, queryContext);
+        return StreamSequenceImpl.readSequence(offset, queryContext);
     }
 
     public static Dictionary readDictionary(long offset, QueryContext queryContext) {
-        return DictionaryImpl.readDictionary(offset, queryContext);
+        return StreamDictionaryImpl.readDictionary(offset, queryContext);
     }
 
     public static long length(Input input, MajorType majorType, long offset) {

@@ -240,6 +240,11 @@ public class ObjectProjectionStrategy
         public boolean isIndefinite() {
             return false;
         }
+
+        @Override
+        public Value asValue() {
+            return new ObjectValue(MajorType.Sequence, ValueTypes.Sequence, entries);
+        }
     }
 
     static class MapBackedDictionary
@@ -323,6 +328,11 @@ public class ObjectProjectionStrategy
         @Override
         public boolean isIndefinite() {
             return false;
+        }
+
+        @Override
+        public Value asValue() {
+            return new ObjectValue(MajorType.Dictionary, ValueTypes.Dictionary, entries);
         }
     }
 
