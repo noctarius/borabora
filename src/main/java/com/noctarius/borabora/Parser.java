@@ -20,6 +20,7 @@ import com.noctarius.borabora.builder.ParserBuilder;
 import com.noctarius.borabora.builder.query.QueryBuilder;
 import com.noctarius.borabora.builder.query.StreamQueryBuilder;
 import com.noctarius.borabora.impl.ParserBuilderImpl;
+import com.noctarius.borabora.spi.transformation.MutationBuilder;
 
 import java.util.function.Consumer;
 
@@ -190,6 +191,8 @@ public interface Parser {
      * @return the extracted byte-array containing the CBOR encoded object
      */
     byte[] extract(Input input, long offset);
+
+    MutationBuilder newMutationBuilder();
 
     /**
      * Parses and prepares a given query string into a {@link Query} instance. The returned query

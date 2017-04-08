@@ -85,4 +85,32 @@ public final class StreamValue
         return queryContext().applyDecoder(offset(), majorType(), valueType());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StreamValue)) {
+            return false;
+        }
+
+        StreamValue that = (StreamValue) o;
+
+        if (offset != that.offset) {
+            return false;
+        }
+        if (majorType != that.majorType) {
+            return false;
+        }
+        return valueType.equals(that.valueType);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = majorType.hashCode();
+        result = 31 * result + valueType.hashCode();
+        result = 31 * result + (int) (offset ^ (offset >>> 32));
+        return result;
+    }
+
 }

@@ -36,6 +36,7 @@ import com.noctarius.borabora.spi.query.optimizer.QueryOptimizerStrategyFactory;
 import com.noctarius.borabora.spi.query.pipeline.PipelineStageFactory;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipeline;
 import com.noctarius.borabora.spi.query.pipeline.QueryPipelineFactory;
+import com.noctarius.borabora.spi.transformation.MutationBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -131,6 +132,12 @@ final class ParserImpl
     public byte[] extract(Input input, long offset) {
         Objects.requireNonNull(input, "input must not be null");
         return read(input, offset).raw();
+    }
+
+    @Override
+    public MutationBuilder newMutationBuilder() {
+        return new MutationBuilderImpl(this, queryOptimizerStrategyFactory, queryOptimizers, //
+                pipelineStageFactory, queryPipelineFactory);
     }
 
     @Override

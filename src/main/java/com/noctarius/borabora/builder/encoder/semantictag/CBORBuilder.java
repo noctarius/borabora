@@ -28,7 +28,7 @@ import com.noctarius.borabora.spi.builder.TagBuilder;
  * <pre>
  *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
  *     graphBuilder.putTag(
- *         TagSupport.semanticTag( CBORBuilder.class ).putString( "foo" )
+ *         TagSupport.semanticTag( CBORBuilder.class ).putRaw( "foo" )
  *             .endCBOR().endSemanticTag() ).finishStream();
  * </pre>
  */
