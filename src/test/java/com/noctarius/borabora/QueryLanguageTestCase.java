@@ -35,7 +35,7 @@ public class QueryLanguageTestCase
     public void test_any_stream_element()
             throws Exception {
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
@@ -44,7 +44,7 @@ public class QueryLanguageTestCase
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Query query = parser.prepareQuery("$");
 
@@ -61,7 +61,7 @@ public class QueryLanguageTestCase
     public void test_first_stream_element()
             throws Exception {
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
@@ -70,7 +70,7 @@ public class QueryLanguageTestCase
 
         Input input = Input.fromByteArray(baos.toByteArray());
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Query query = parser.prepareQuery("#");
 
@@ -85,7 +85,7 @@ public class QueryLanguageTestCase
     public void test_select_statement()
             throws Exception {
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));

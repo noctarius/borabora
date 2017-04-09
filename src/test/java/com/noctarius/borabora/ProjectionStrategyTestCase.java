@@ -392,7 +392,7 @@ public class ProjectionStrategyTestCase
     }
 
     private static byte[] createDataSource(Consumer<GraphBuilder> consumer) {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));

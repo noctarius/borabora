@@ -29,7 +29,7 @@ public class StreamingParserTestCase
 
         byte[] array = new byte[]{0b001_11001, 0x0000_0001, (byte) 0b1111_0011};
         Input input = Input.fromByteArray(array);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().stream(0).build());
 
         assertEquals(MajorType.NegativeInteger, value.majorType());
@@ -42,7 +42,7 @@ public class StreamingParserTestCase
 
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().stream(1).build());
 
         assertEquals(MajorType.UnsignedInteger, value.majorType());
@@ -55,7 +55,7 @@ public class StreamingParserTestCase
 
         byte[] array = new byte[]{0b000_11001, 0x0000_0001, (byte) 0b1111_0100, 0b000_11001, 0x0000_0001, (byte) 0b1111_0101};
         Input input = Input.fromByteArray(array);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Query query = parser.newQueryBuilder().stream(1).build();
         Value value = parser.read(input, query);

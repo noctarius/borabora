@@ -31,7 +31,7 @@ import java.io.OutputStream;
  * <p>A common basic example for the usage of <tt>Output</tt> looks like:</p>
  * <pre>
  *     Output output = Output.toCompositeBuffer( ... );
- *     Writer writer = Writer.newBuilder().build();
+ *     Writer writer = Writer.newWriter();
  *     GraphBuilder graphBuilder = writer.newGraphBuilder( output );
  *     // generate the actual data stream
  * </pre>

@@ -100,7 +100,7 @@ public class StringTestCase
     public void test_multi_indefinite_bytestreams() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         writer.newGraphBuilder(output)
 
               .putIndefiniteByteString().putString("ab").putString("cd").endIndefiniteString()
@@ -110,7 +110,7 @@ public class StringTestCase
               .finishStream();
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
         Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
@@ -121,7 +121,7 @@ public class StringTestCase
 
     private void testString(ValueType valueType, TestValue<String> testValue) {
         Input input = Input.fromByteArray(testValue.getValue2());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().build());
 
         assertEquals(valueType, value.valueType());

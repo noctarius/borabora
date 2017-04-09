@@ -40,14 +40,14 @@ public class ParserImplTestCase
 
     @Test
     public void test_prepare_query() {
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Query query = parser.prepareQuery("#");
         assertEquals(parser.newQueryBuilder().build(), query);
     }
 
     @Test(expected = QueryParserException.class)
     public void fail_prepare_query_parser_error() {
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         parser.prepareQuery("1");
     }
 
@@ -63,7 +63,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_single_value_consumer_multiple_results() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1, (byte) 0x2});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().multiStream().build());
         assertEqualsNumber(1, value.number());
     }
@@ -71,7 +71,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_input_query() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().build());
         assertEqualsNumber(1, value.number());
     }
@@ -79,7 +79,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_input_query_string() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, "#");
         assertEqualsNumber(1, value.number());
     }
@@ -87,7 +87,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_input_offset() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Value value = parser.read(input, 0);
         assertEqualsNumber(1, value.number());
     }
@@ -95,7 +95,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_input_query_consumer() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         List<Value> values = new ArrayList<>();
         parser.read(input, parser.newQueryBuilder().build(), values::add);
         assertEquals(1, values.size());
@@ -105,7 +105,7 @@ public class ParserImplTestCase
     @Test
     public void test_read_input_query_string_consumer() {
         Input input = Input.fromByteArray(new byte[]{(byte) 0x1});
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         List<Value> values = new ArrayList<>();
         parser.read(input, "#", values::add);
         assertEquals(1, values.size());
@@ -118,7 +118,7 @@ public class ParserImplTestCase
         byte[] expected1 = new byte[]{(byte) 0x1};
         byte[] expected2 = new byte[]{(byte) 0x2};
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         byte[] actual1 = parser.extract(input, parser.newQueryBuilder().stream(0).build());
         byte[] actual2 = parser.extract(input, parser.newQueryBuilder().stream(1).build());
         assertArrayEquals(expected1, actual1);
@@ -131,7 +131,7 @@ public class ParserImplTestCase
         byte[] expected1 = new byte[]{(byte) 0x1};
         byte[] expected2 = new byte[]{(byte) 0x2};
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         byte[] actual1 = parser.extract(input, "#");
         byte[] actual2 = parser.extract(input, "#1");
         assertArrayEquals(expected1, actual1);
@@ -144,7 +144,7 @@ public class ParserImplTestCase
         byte[] expected1 = new byte[]{(byte) 0x1};
         byte[] expected2 = new byte[]{(byte) 0x2};
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         byte[] actual1 = parser.extract(input, 0);
         byte[] actual2 = parser.extract(input, 1);
         assertArrayEquals(expected1, actual1);

@@ -97,7 +97,7 @@ public class NumberTestCase
             throws Exception {
 
         Input input = Input.fromByteArray(this.value2);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Query query = parser.newQueryBuilder().build();
         Value value = parser.read(input, query);
@@ -112,7 +112,7 @@ public class NumberTestCase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         writer.newGraphBuilder(output).putNumber(value1).finishStream();
         assertArrayEquals(value2, baos.toByteArray());
     }

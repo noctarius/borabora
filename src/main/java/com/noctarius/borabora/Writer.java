@@ -53,4 +53,14 @@ public interface Writer {
         return new WriterBuilderImpl();
     }
 
+    /**
+     * Creates a new {@link Writer} instance with the default configuration. This method is a shorthand for
+     * <pre>Writer.newBuilder().build()</pre> and the result is equivalent.
+     *
+     * @return a new <tt>Writer</tt> instance with default configuration
+     */
+    static Writer newWriter() {
+        return newBuilder().build();
+    }
+
 }

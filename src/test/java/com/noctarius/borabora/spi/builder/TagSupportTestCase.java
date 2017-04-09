@@ -41,7 +41,7 @@ public class TagSupportTestCase
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_class_not_an_interface() {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         writer.newGraphBuilder(Output.toByteArray(EMPTY_BYTE_ARRAY)) //
               .putTag(semanticTag(NonInterface.class));
     }

@@ -36,7 +36,7 @@
  * or fluent-building a query and putting all parts together into an actual read
  * request. The following code snippet shows the basic flow of how borabora is used.</p>
  * <pre>
- *     Parser parser = Parser.newBuilder().build();
+ *     Parser parser = Parser.newParser();
  *     Input input = Input.fromByteArray( getByteArray() );
  *     Query query = parser.newQueryBuilder().build();
  *     Value value = parser.read(input, query);

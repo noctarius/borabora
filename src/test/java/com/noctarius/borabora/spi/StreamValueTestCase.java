@@ -53,7 +53,7 @@ public class StreamValueTestCase
 
     @Test
     public void test_relocatable_tostring() {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writer.newGraphBuilder(Output.toOutputStream(baos)).putBigInteger(BigInteger.ONE).finishStream();
         RelocatableStreamValue value = new RelocatableStreamValue();
@@ -69,7 +69,7 @@ public class StreamValueTestCase
 
     @Test
     public void test_relocatable_extract_tag() {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         writer.newGraphBuilder(Output.toOutputStream(baos)).putBigInteger(BigInteger.ONE).finishStream();
         RelocatableStreamValue value = new RelocatableStreamValue();

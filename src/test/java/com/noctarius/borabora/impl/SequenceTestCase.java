@@ -408,7 +408,7 @@ public class SequenceTestCase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         graphBuilder.putSequence()
@@ -426,7 +426,7 @@ public class SequenceTestCase
                     .endSequence().finishStream();
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Value value = parser.read(input, parser.newQueryBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
@@ -447,7 +447,7 @@ public class SequenceTestCase
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         graphBuilder.putSequence(2)
@@ -465,7 +465,7 @@ public class SequenceTestCase
                     .endSequence().finishStream();
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Value value = parser.read(input, parser.newQueryBuilder().build());
         assertTrue(value.valueType().matches(ValueTypes.Sequence));
@@ -484,7 +484,7 @@ public class SequenceTestCase
     public void test_match_any_sequence_element() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
         graphBuilder.putSequence()
@@ -494,7 +494,7 @@ public class SequenceTestCase
                     .endSequence().finishStream();
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Query query = parser.newQueryBuilder().sequenceMatch(Predicates.any()).build();
 

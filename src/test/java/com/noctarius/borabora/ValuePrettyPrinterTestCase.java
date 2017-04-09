@@ -27,7 +27,7 @@ public class ValuePrettyPrinterTestCase
     private static final byte[] bytes = buildBytes();
 
     private static byte[] buildBytes() {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 
@@ -54,7 +54,7 @@ public class ValuePrettyPrinterTestCase
             throws Exception {
 
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Value value = parser.read(input, parser.newQueryBuilder().build());
         ValuePrettyPrinter.toStringPrettyPrint(value);
@@ -65,7 +65,7 @@ public class ValuePrettyPrinterTestCase
             throws Exception {
 
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         Value value = parser.read(input, parser.newQueryBuilder().build());
         ValuePrettyPrinter.asStringPrettyPrint(value);

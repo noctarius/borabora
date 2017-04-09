@@ -64,7 +64,7 @@ public class TagBuilderTestCase
         Date expected2 = Date.from(expected1);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -78,7 +78,7 @@ public class TagBuilderTestCase
                 semanticTag(DateTimeBuilder.class).putDateTime((Date) null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -98,7 +98,7 @@ public class TagBuilderTestCase
         Timestamp expected3 = Timestamp.from(expected1);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -114,7 +114,7 @@ public class TagBuilderTestCase
                 semanticTag(TimestampBuilder.class).putTimestamp((Timestamp) null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -135,7 +135,7 @@ public class TagBuilderTestCase
         BigInteger expected = BigInteger.TEN;
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -145,7 +145,7 @@ public class TagBuilderTestCase
                 semanticTag(UBigNumberBuilder.class).putBigInteger(null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -159,7 +159,7 @@ public class TagBuilderTestCase
         BigInteger expected = BigInteger.valueOf(-10);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -169,7 +169,7 @@ public class TagBuilderTestCase
                 semanticTag(NBigNumberBuilder.class).putBigInteger(null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -183,7 +183,7 @@ public class TagBuilderTestCase
         BigDecimal expected = BigDecimal.valueOf(12.d);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -193,7 +193,7 @@ public class TagBuilderTestCase
                 semanticTag(FractionBuilder.class).putFraction(null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -210,7 +210,7 @@ public class TagBuilderTestCase
         URI expected2 = expected1.toURI();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -224,7 +224,7 @@ public class TagBuilderTestCase
                 semanticTag(URIBuilder.class).putURI(null).endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
@@ -242,7 +242,7 @@ public class TagBuilderTestCase
             throws Exception {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(Output.toOutputStream(baos));
 
@@ -252,7 +252,7 @@ public class TagBuilderTestCase
                                               .endSequence().endCBOR().endSemanticTag() //
         ).finishStream();
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Input input = Input.fromByteArray(baos.toByteArray());
 
         Value value = parser.read(input, parser.newQueryBuilder().build());

@@ -34,7 +34,7 @@ public class Test {
         }
 
         Input input = Input.fromByteArray(data);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         for (int i = 0; i < 500; i++) {
             long start = System.nanoTime();

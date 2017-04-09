@@ -24,7 +24,7 @@ import com.noctarius.borabora.spi.io.CompositeBuffer;
  * <p>A common basic example for the usage of <tt>Input</tt> looks like:</p>
  * <pre>
  * Input input = Input.fromByteArray( ... );
- * Parser parser = Parser.newBuilder().build();
+ * Parser parser = Parser.newParser();
  * Query query = parser.newQueryBuilder().build();
  * Value value = parser.read( input, query );
  * </pre>

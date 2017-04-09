@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  * can be shared and used concurrently by multiple threads.</p>
  * <p>A common example how to query an element from the CBOR stream is shown in the following snippet:</p>
  * <pre>
- *     Parser parser = Parser.newBuilder().build();
+ *     Parser parser = Parser.newParser();
  *     Input input = Input.fromByteArray( getByteArray() );
  *     Query query = parser.newQueryBuilder().stream( 0 ).sequence( 10 ).build();
  *     Value value = parser.read( input, query );
@@ -221,6 +221,16 @@ public interface Parser {
      */
     static ParserBuilder newBuilder() {
         return new ParserBuilderImpl();
+    }
+
+    /**
+     * Creates a new {@link Parser} instance with the default configuration. This method is a shorthand for
+     * <pre>Parser.newBuilder().build()</pre> and the result is equivalent.
+     *
+     * @return a new <tt>Parser</tt> instance with default configuration
+     */
+    static Parser newParser() {
+        return newBuilder().build();
     }
 
 }

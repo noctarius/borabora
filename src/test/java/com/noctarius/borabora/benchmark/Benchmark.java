@@ -58,7 +58,7 @@ public class Benchmark {
         try (FileOutputStream fos = new FileOutputStream(new File("target/benchmark.cbor"))) {
             Output output = Output.toOutputStream(fos);
 
-            Writer writer = Writer.newBuilder().build();
+            Writer writer = Writer.newWriter();
             GraphBuilder graphBuilder = writer.newGraphBuilder(output);
 
             generateDeterministicContent(graphBuilder, random, 100000);
@@ -74,7 +74,7 @@ public class Benchmark {
         int measure_cycles = 100;
         int samples = 10;
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Query query = parser.newQueryBuilder().multiStream().build();
 
         Input input;

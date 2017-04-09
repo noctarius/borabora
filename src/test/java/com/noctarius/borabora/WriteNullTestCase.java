@@ -54,7 +54,7 @@ public class WriteNullTestCase
                                             {"uri", consumer(gb -> gb.putURI(null))}});
     }
 
-    private static final Parser PARSER = Parser.newBuilder().build();
+    private static final Parser PARSER = Parser.newParser();
     private static final Query QUERY = PARSER.newQueryBuilder().build();
 
     private final Consumer<GraphBuilder> consumer;
@@ -67,7 +67,7 @@ public class WriteNullTestCase
     public void test_null()
             throws Exception {
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 

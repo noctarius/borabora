@@ -25,7 +25,7 @@ import static com.noctarius.borabora.Predicates.matchString;
 public class QueryLanguageAcceptanceTestCase
         extends AbstractTestCase {
 
-    private final Parser parser = Parser.newBuilder().build();
+    private final Parser parser = Parser.newParser();
 
     @Test(expected = QueryParserException.class)
     public void fail_empty_query()

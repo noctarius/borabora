@@ -73,7 +73,7 @@ public abstract class AbstractTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
 
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
 
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);
         test.accept(graphBuilder);
@@ -82,7 +82,7 @@ public abstract class AbstractTestCase {
         byte[] bytes = baos.toByteArray();
         Input input = Input.fromByteArray(bytes);
 
-        return new SimplifiedTestParser(Parser.newBuilder().build(), input);
+        return new SimplifiedTestParser(Parser.newParser(), input);
     }
 
     public static void assertEqualsNumber(Number n1, Number n2) {
@@ -107,7 +107,7 @@ public abstract class AbstractTestCase {
     public static SimplifiedTestParser buildParser(String hex) {
         byte[] data = hexToBytes(hex);
         Input input = Input.fromByteArray(data);
-        return new SimplifiedTestParser(Parser.newBuilder().build(), input);
+        return new SimplifiedTestParser(Parser.newParser(), input);
     }
 
     public static void assertQueryEquals(Query expected, Query actual) {
@@ -166,7 +166,7 @@ public abstract class AbstractTestCase {
     }
 
     public static Value asStreamValue(Consumer<GraphBuilder> consumer) {
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);

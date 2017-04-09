@@ -32,12 +32,12 @@ public class OutputTestCase
     public void test_output_bytearray() {
         byte[] bytes = new byte[3];
         Output output = Output.toByteArray(bytes);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);
         graphBuilder.putNumber(1).putNumber(2).putNumber(3).finishStream();
 
         Input input = Input.fromByteArray(bytes);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         List<Value> values = new ArrayList<>();
         parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
@@ -53,12 +53,12 @@ public class OutputTestCase
         long address = unsafe.allocateMemory(3);
 
         Output output = Output.toNative(address, 3);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);
         graphBuilder.putNumber(1).putNumber(2).putNumber(3).finishStream();
 
         Input input = Input.fromNative(address, 3);
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         List<Value> values = new ArrayList<>();
         parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
@@ -72,12 +72,12 @@ public class OutputTestCase
     public void test_output_outputstream() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);
         graphBuilder.putNumber(1).putNumber(2).putNumber(3).finishStream();
 
         Input input = Input.fromByteArray(baos.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         List<Value> values = new ArrayList<>();
         parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);
@@ -91,12 +91,12 @@ public class OutputTestCase
     public void test_output_compositebuffer() {
         CompositeBuffer compositeBuffer = CompositeBuffer.newCompositeBuffer();
         Output output = Output.toCompositeBuffer(compositeBuffer);
-        Writer writer = Writer.newBuilder().build();
+        Writer writer = Writer.newWriter();
         GraphBuilder graphBuilder = writer.newGraphBuilder(output);
         graphBuilder.putNumber(1).putNumber(2).putNumber(3).finishStream();
 
         Input input = Input.fromByteArray(compositeBuffer.toByteArray());
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
 
         List<Value> values = new ArrayList<>();
         parser.read(input, parser.newQueryBuilder().multiStream().build(), values::add);

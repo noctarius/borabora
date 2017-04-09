@@ -81,7 +81,7 @@ public class QueryTestCase
     public void code_coverage_for_unused_but_generated_methods()
             throws Exception {
 
-        Parser parser = Parser.newBuilder().build();
+        Parser parser = Parser.newParser();
         Query query = parser.newQueryBuilder().stream(1).dictionary("b").sequence(1).build();
         query.toString();
     }
