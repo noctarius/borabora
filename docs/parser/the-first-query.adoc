@@ -1,1 +1,51 @@
-TODO
+Reading information from CBOR streams using _borabora_ works different from most other libraries. This is because _borabora_ doesn't deserialize the information into an object model but provides queryable, lazy access to specific properties inside the data stream.
+
+To retrieve those properties a graph-like query is executed against the stream and matching elements are returned or passed to the given callback.
+
+Creating a `Parser` instance is the first step to be executed before we're able to read information, the builder pattern makes it easy to configure the instances and make it thread safe.
+
+For simplicity no configuration is set for now, therefore meaningful defaults are used when creating the instance.
+
+[source,java]
+----
+Parser parser = Parser.newParser();
+----
+
+This will create a simple parser to be used in the further process. The simplest query will just return whatever element is found in the stream.
+
+[source,java]
+----
+Query query = parser.newQueryBuilder().build();
+----
+
+As we see we need a `Parser` instance to create queries, this is because the initial configuration of the parser is passed along to the query while building it. The `Query` instance, however, is fully thread safe and can be used concurrently and from different threads. It is considered best practice to create queries once and keep them alive in the scope of the application.
+
+To tell the parser where the data stream to be read comes from, it is necessary to also have a source defined. In _borabora_ the `Input` implementations are used to do this. A common set of basic implementations is available right from the start.
+
+[source,java]
+----
+Input input = Input.fromByteArray(getByteArray());
+----
+
+Now that we have a source defined, we're ready to read the actual element from the stream.
+
+[source,java]
+----
+Value value = parser(input, query);
+----
+
+That's about it. It'll read the first element that is found in the CBOR stream and return a lazy view of this element. The lazy view is represented as the `Value` instance. Every item in the data stream, independent of it's datatype, will be a value at first. This is due to the fact, that CBOR is a schema-less data format and all deserialization happens lazily, that said only necessary information is extracted from the header to understand the underlying element.
+
+Now let's imagine the element we found was a string, that means we want to see the actual represented value of the stream. The `Value` class has specific extractor methods based on the expected element's type. For a string this obviously would be `Value::string`. So knowing that the following snippet is easy to understand.
+
+[source,java]
+----
+String content = value.string();
+----
+
+However sometimes we cannot guess the value's type since we don't know the schema but thanks to the type safety of CBOR the stream is self-describing and therefore _borabora_ is still able to extract the element the way it is supposed to be. The shorthand method to extract whatever is available in the stream is `Value::byValueType`.
+
+[source,java]
+----
+Object content = value.byValueType();
+----

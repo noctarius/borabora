@@ -1,5 +1,19 @@
-Welcome to the reference manual of borabora, a CBOR parser and generator with a slightly different touch than most of the others.
+Welcome to the reference manual of _borabora_, a CBOR parser and generator with a slightly different touch than most of the others.
 
 While most available parser libraries focus on serialization and deserialization, borabora has it's main use case on data extraction and analytical use cases.
 
 This reference manual will give an inside view of the APIs (external interfaces), as well as SPIs (extension points) and show how to use the library to the best possible way.
+
+For the hasty people, here's a first shot on how to use _borabora_ to read a CBOR data stream.
+
+[source,java]
+----
+Parser parser = Parser.newParser();
+Query query = parser.newQueryBuilder().build();
+
+Input input = Input.fromByteArray(...);
+
+Value value = parser.read(input, query);
+System.out.println(value.byValueType());
+----
+
