@@ -1,6 +1,6 @@
 = Table of Contents
 
-. link:README.adoc[Introduction]
+. link:introduction/README.adoc[CBOR - Concise Binary Object Representation]
 .. link:introduction/what-is-cbor.adoc[What is CBOR?]
 .. link:introduction/why-cbor.adoc[Why CBOR?]
 . link:borabora/README.adoc[borabora]
