@@ -6,12 +6,12 @@ The common data types are:
 
 | _0x00_
 | UInt
-| Unsigned integer which can hold any negative value up to 64 bits.
-| `byte`, `short`, `int`, `long` based on their given (negative) ranges. Larger values are represented as `java.math.BigInteger`.
+| Unsigned integer which can hold any positive value up to 64 bits.
+| `byte`, `short`, `int`, `long` based on their given (positive) ranges. Larger values are represented as `java.math.BigInteger`.
 
 | _0x01_
-| PInt
-| Positive integer which can hold any positive value up to 64 bits.
+| NInt
+| Negative integer which can hold any negative value up to 64 bits.
 | `byte`, `short`, `int`, `long` based on their given (negative) ranges. Larger values are represented as `java.math.BigInteger`.
 
 | _0x02_
