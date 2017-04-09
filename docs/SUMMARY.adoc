@@ -1,11 +1,12 @@
 = Table of Contents
 
-. link:introduction/README.adoc[CBOR - Concise Binary Object Representation]
+. link:introduction/README.adoc[CBOR - The Data Format]
 .. link:introduction/what-is-cbor.adoc[What is CBOR?]
 .. link:introduction/why-cbor.adoc[Why CBOR?]
 . link:borabora/README.adoc[borabora]
 .. link:borabora/in-a-nutshell.adoc[In A Nutshell]
 .. link:borabora/what-means-skip-scan-parser.adoc[What means Skip-Scan Parser?]
+.. link:borabora/lazy-parsing.adoc[Lazy Parsing]
 . link:datatypes/README.adoc[Data Types]
 .. link:datatypes/cbor-data-types.adoc[CBOR Data Types]
 .. link:datatypes/provided-extension-types.adoc[Provided Extension Types]
