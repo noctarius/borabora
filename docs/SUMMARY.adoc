@@ -1,8 +1,8 @@
 = Table of Contents
 
 . link:cbor-data-format/README.adoc[CBOR - The Data Format]
-.. link:cbor-data-format/README.adoc#what-is-cbor[What is CBOR?]
-.. link:cbor-data-format/README.adoc#why-cbor[Why CBOR?]
+.. link:cbor-data-format/README.adoc#_what_is_cbor[What is CBOR?]
+.. link:cbor-data-format/README.adoc#_why_cbor[Why CBOR?]
 . link:borabora/README.adoc[borabora]
 .. link:borabora/in-a-nutshell.adoc[In A Nutshell]
 .. link:borabora/what-means-skip-scan-parser.adoc[What means Skip-Scan Parser?]
