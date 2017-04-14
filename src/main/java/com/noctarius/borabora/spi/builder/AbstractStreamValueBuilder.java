@@ -20,6 +20,7 @@ import com.noctarius.borabora.HalfPrecisionFloat;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.builder.encoder.DictionaryBuilder;
 import com.noctarius.borabora.builder.encoder.DictionaryEntryBuilder;
+import com.noctarius.borabora.builder.encoder.IndefiniteByteStringBuilder;
 import com.noctarius.borabora.builder.encoder.IndefiniteStringBuilder;
 import com.noctarius.borabora.builder.encoder.SequenceBuilder;
 import com.noctarius.borabora.builder.encoder.ValueBuilder;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.Objects;
 
 import static com.noctarius.borabora.spi.io.Constants.OPCODE_BREAK_MASK;
+import static com.noctarius.borabora.spi.io.Constants.TAG_ASCII_STRING;
 import static com.noctarius.borabora.spi.io.Constants.UTC;
 
 /**
@@ -239,6 +241,17 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
+    public B putByteString(byte[] value) {
+        validate();
+        if (value == null) {
+            encoderContext.encodeNull();
+        } else {
+            encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
+        }
+        return builder;
+    }
+
+    @Override
     public B putString(String value) {
         validate();
         if (value == null) {
@@ -250,12 +263,12 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public B putByteString(String value) {
+    public B putAsciiString(String value) {
         validate();
         if (value == null) {
             encoderContext.encodeNull();
         } else {
-            encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
+            encoderContext.encode((offset, output) -> Encoder.putAsciiString(value, offset, output));
         }
         return builder;
     }
@@ -324,9 +337,17 @@ public abstract class AbstractStreamValueBuilder<B>
     }
 
     @Override
-    public IndefiniteStringBuilder<B> putIndefiniteByteString() {
+    public IndefiniteByteStringBuilder<B> putIndefiniteByteString() {
         validate();
         encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.ByteString, -1, offset, output));
+        return new IndefiniteByteStringBuilderImpl<>(encoderContext, builder);
+    }
+
+    @Override
+    public IndefiniteStringBuilder<B> putIndefiniteAsciiString() {
+        validate();
+        encoderContext.encode((offset, output) -> Encoder.putSemanticTag(TAG_ASCII_STRING, offset, output));
+        encoderContext.encode((offset, output) -> Encoder.encodeLengthAndValue(MajorType.Sequence, -1, offset, output));
         return new IndefiniteStringBuilderImpl<>(encoderContext, true, builder);
     }
 
@@ -429,6 +450,33 @@ public abstract class AbstractStreamValueBuilder<B>
         encoderContext.encodeNullOrType(value, (offset, output) -> Encoder.putNumber(value.longValue(), offset, output));
     }
 
+    private class IndefiniteByteStringBuilderImpl<B>
+            implements IndefiniteByteStringBuilder<B> {
+
+        private final EncoderContext encoderContext;
+        private final B builder;
+
+        IndefiniteByteStringBuilderImpl(EncoderContext encoderContext, B builder) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
+            Objects.requireNonNull(builder, "builder must not be null");
+            this.encoderContext = encoderContext;
+            this.builder = builder;
+        }
+
+        @Override
+        public IndefiniteByteStringBuilder<B> putByteString(byte[] value) {
+            Objects.requireNonNull(value, "null is not a legal value of an indefinite bytestring");
+            encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
+            return this;
+        }
+
+        @Override
+        public B endIndefiniteString() {
+            encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
+            return builder;
+        }
+    }
+
     private static class IndefiniteStringBuilderImpl<B>
             implements IndefiniteStringBuilder<B> {
 
@@ -451,7 +499,7 @@ public abstract class AbstractStreamValueBuilder<B>
                 if (!ASCII_ENCODER.canEncode(value)) {
                     throw new IllegalArgumentException("UTF8 string cannot be added to a CBOR ByteString");
                 }
-                encoderContext.encode((offset, output) -> Encoder.putByteString(value, offset, output));
+                encoderContext.encode((offset, output) -> Encoder.putAsciiString(value, offset, output));
 
             } else {
                 encoderContext.encode((offset, output) -> Encoder.putTextString(value, offset, output));

@@ -41,7 +41,6 @@ public final class RelocatableStreamValue
      * Creates a new RelocatableStreamValue.
      */
     public RelocatableStreamValue() {
-        super(null);
     }
 
     @Override

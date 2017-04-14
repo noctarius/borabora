@@ -50,9 +50,10 @@ public enum MajorType {
     NegativeInteger(MT_NEGATIVE_INT, 0b001, false),
 
     /**
-     * <tt>ByteString</tt> describes an ASCII char only containing string. The
-     * length of a string is defined as an {@link #UnsignedInteger} (up to 64
-     * bit), however Java cannot represent string of that size.
+     * <tt>ByteString</tt> describes a byte-array containing arbitrary byte data. The
+     * length of a byte-array is defined as an {@link #UnsignedInteger} (up to 64
+     * bit), however Java cannot represent a byte-array of that size which limits it
+     * to {@link Integer#MAX_VALUE}.
      */
     ByteString(MT_BYTESTRING, 0b010, true),
 

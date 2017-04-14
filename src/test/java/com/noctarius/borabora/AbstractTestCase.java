@@ -134,6 +134,10 @@ public abstract class AbstractTestCase {
     }
 
     public static Value asObjectValue(MajorType majorType, ValueType valueType, Object value) {
+        if (majorType == MajorType.ByteString && value instanceof String) {
+            value = ((String) value).getBytes();
+        }
+        
         return new ObjectValue(majorType, valueType, value);
     }
 

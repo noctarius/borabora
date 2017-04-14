@@ -110,6 +110,14 @@ public interface Value {
     Boolean bool();
 
     /**
+     * Returns the given Value as a <tt>byte[]</tt>. If the represented value is not possible to be
+     * represented as a byte-array (not a ByteString (MajorType 2)), a {@link WrongTypeException} is thrown.
+     *
+     * @return the extracted value
+     */
+    byte[] bytes();
+
+    /**
      * Extracts the given Value as a CBOR encoded byte-array. This doesn't transform the value in any way
      * but returns the actual value stream itself.
      *

@@ -172,10 +172,19 @@ public interface ValueBuilder<B> {
     B putBigInteger(BigInteger value);
 
     /**
+     * Encodes a <tt>byte[]</tt> at the current position into the CBOR stream. If <tt>value</tt>
+     * is <tt>null</tt>, a null-type will be written.
+     *
+     * @param value the value to encode
+     * @return the current builder
+     */
+    B putByteString(byte[] value);
+
+    /**
      * Encodes a {@link String} at the current position into the CBOR stream. If <tt>value</tt>
      * is <tt>null</tt>, a null-type will be written.
      * <p>The given string will be tested to only contain <tt>ASCII</tt> characters and will be, if
-     * possible, encoded using a <tt>ByteString</tt>, otherwise as a <tt>TextString</tt>.</p>
+     * possible, encoded using a <tt>ASCII</tt>-tagged ByteString, otherwise as a <tt>TextString</tt>.</p>
      *
      * @param value the value to encode
      * @return the current builder
@@ -191,7 +200,7 @@ public interface ValueBuilder<B> {
      * @param value the value to encode
      * @return the current builder
      */
-    B putByteString(String value);
+    B putAsciiString(String value);
 
     /**
      * Encodes a {@link String} at the current position into the CBOR stream. If <tt>value</tt>
@@ -263,6 +272,17 @@ public interface ValueBuilder<B> {
     B putFraction(BigDecimal value);
 
     /**
+     * Encodes an indefinite length <tt>byte[]</tt> at the current position into the CBOR stream. The
+     * returned builder can be used to write an arbitrary number of <tt>byte[]</tt> elements to the stream.
+     * Those, while parsing, will be concatenated into a single string. This is most practical when the string
+     * is not immediately available but will be generated in chunks.
+     *
+     * @return the current builder
+     */
+    @BuilderStackPush
+    IndefiniteByteStringBuilder<B> putIndefiniteByteString();
+
+    /**
      * Encodes an indefinite length <tt>ASCII</tt>-string at the current position into the CBOR stream. The
      * returned builder can be used to write an arbitrary number of {@link String} elements to the stream.
      * Those, while parsing, will be concatenated into a single string. This is most practical when the string
@@ -271,7 +291,7 @@ public interface ValueBuilder<B> {
      * @return the current builder
      */
     @BuilderStackPush
-    IndefiniteStringBuilder<B> putIndefiniteByteString();
+    IndefiniteStringBuilder<B> putIndefiniteAsciiString();
 
     /**
      * Encodes an indefinite length <tt>UTF-8</tt>-string at the current position into the CBOR stream. The

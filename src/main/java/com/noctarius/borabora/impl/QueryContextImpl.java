@@ -23,6 +23,7 @@ import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
 import com.noctarius.borabora.spi.codec.TagDecoder;
 import com.noctarius.borabora.spi.codec.TagStrategy;
+import com.noctarius.borabora.spi.io.ByteSizes;
 import com.noctarius.borabora.spi.io.Decoder;
 import com.noctarius.borabora.spi.query.ProjectionStrategy;
 import com.noctarius.borabora.spi.query.QueryConsumer;
@@ -122,6 +123,14 @@ final class QueryContextImpl
     public <T> T applyDecoder(long offset, MajorType majorType, ValueType valueType) {
         Objects.requireNonNull(majorType, "majorType must not be null");
         Objects.requireNonNull(valueType, "valueType must not be null");
+
+        /*long itemOffset = ByteSizes.intByteSize(input, offset);
+        MajorType itemMajorType = Decoder.getMajorType(itemOffset, input);
+        if (itemMajorType == MajorType.SemanticTag) {
+            ValueType itemValueType = valueType(itemOffset);
+            return applyDecoder(itemOffset, itemMajorType, itemValueType);
+        }*/
+
         TagDecoder<T> processor = findProcessor(offset);
         if (processor == null) {
             return null;

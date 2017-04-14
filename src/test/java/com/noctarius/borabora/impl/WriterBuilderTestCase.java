@@ -52,7 +52,7 @@ public class WriterBuilderTestCase {
     public void test_addtagstrategy_single() {
         Writer writer = Writer.newBuilder().addTagStrategy(TBF_1).build();
         List<TagStrategy> tagStrategies = extractTagStrategies(writer);
-        assertEquals(8, tagStrategies.size());
+        assertEquals(9, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
     }
 
@@ -60,14 +60,14 @@ public class WriterBuilderTestCase {
     public void test_addtagstrategy_prevent_double_registration() {
         Writer writer = Writer.newBuilder().addTagStrategy(TBF_1).addTagStrategy(TBF_1).build();
         List<TagStrategy> tagStrategies = extractTagStrategies(writer);
-        assertEquals(8, tagStrategies.size());
+        assertEquals(9, tagStrategies.size());
     }
 
     @Test
     public void test_addtagstrategies_double() {
         Writer writer = Writer.newBuilder().addTagStrategies(TBF_1, TBF_2).build();
         List<TagStrategy> tagStrategies = extractTagStrategies(writer);
-        assertEquals(9, tagStrategies.size());
+        assertEquals(10, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
     }
@@ -76,7 +76,7 @@ public class WriterBuilderTestCase {
     public void test_addtagstrategies_array() {
         Writer writer = Writer.newBuilder().addTagStrategies(TBF_1, TBF_2, TBF_3, TBF_4).build();
         List<TagStrategy> tagStrategies = extractTagStrategies(writer);
-        assertEquals(11, tagStrategies.size());
+        assertEquals(12, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
         assertTrue(tagStrategies.contains(TBF_3));
@@ -88,7 +88,7 @@ public class WriterBuilderTestCase {
         List<TagStrategy> strategies = Stream.of(TBF_1, TBF_2, TBF_3, TBF_4).collect(Collectors.toList());
         Writer writer = Writer.newBuilder().addTagStrategies(strategies).build();
         List<TagStrategy> tagStrategies = extractTagStrategies(writer);
-        assertEquals(11, tagStrategies.size());
+        assertEquals(12, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
         assertTrue(tagStrategies.contains(TBF_3));

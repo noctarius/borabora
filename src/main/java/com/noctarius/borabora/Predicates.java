@@ -105,14 +105,15 @@ public final class Predicates {
 
         // Predefine both possible matchers
         Predicate<Value> byteStringMatcher;
+        Predicate<Value> asciiStringMatcher;
         Predicate<Value> textStringMatcher;
 
         // Pre-encode matching value
-        byte[] expected = buildStringMatcherByteArray(value, Encoder::putString);
+        byte[] expected = buildStringMatcherByteArray(value, Encoder::putAsciiString);
 
         MajorType currentMajorType = MajorType.findMajorType((short) (expected[0] & 0xFF));
         switch (currentMajorType) {
-            case ByteString:
+            case SemanticTag:
                 byteStringMatcher = buildStringMatcher(expected);
 
                 // Encode specifically as TextString
@@ -128,7 +129,8 @@ public final class Predicates {
         }
 
         return (v) -> {
-            if (!v.valueType().matches(ValueTypes.String)) {
+            if (!v.valueType().matches(ValueTypes.String)
+                    && !v.valueType().matches(ValueTypes.ByteString)) {
                 return false;
             }
 

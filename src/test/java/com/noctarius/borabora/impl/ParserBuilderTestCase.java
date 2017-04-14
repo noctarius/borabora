@@ -161,7 +161,7 @@ public class ParserBuilderTestCase {
         parserBuilder.addTagStrategy(TBF_1);
         Parser parser = parserBuilder.build();
         List<TagStrategy> tagStrategies = extractTagStrategies(parser);
-        assertEquals(8, tagStrategies.size());
+        assertEquals(9, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
     }
 
@@ -172,7 +172,7 @@ public class ParserBuilderTestCase {
         parserBuilder.addTagStrategy(TBF_1);
         Parser parser = parserBuilder.build();
         List<TagStrategy> tagStrategies = extractTagStrategies(parser);
-        assertEquals(8, tagStrategies.size());
+        assertEquals(9, tagStrategies.size());
     }
 
     @Test
@@ -181,7 +181,7 @@ public class ParserBuilderTestCase {
         parserBuilder.addTagStrategies(TBF_1, TBF_2);
         Parser parser = parserBuilder.build();
         List<TagStrategy> tagStrategies = extractTagStrategies(parser);
-        assertEquals(9, tagStrategies.size());
+        assertEquals(10, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
     }
@@ -192,7 +192,7 @@ public class ParserBuilderTestCase {
         parserBuilder.addTagStrategies(TBF_1, TBF_2, TBF_3, TBF_4);
         Parser parser = parserBuilder.build();
         List<TagStrategy> tagStrategies = extractTagStrategies(parser);
-        assertEquals(11, tagStrategies.size());
+        assertEquals(12, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
         assertTrue(tagStrategies.contains(TBF_3));
@@ -205,7 +205,7 @@ public class ParserBuilderTestCase {
         parserBuilder.addTagStrategies(Stream.of(TBF_1, TBF_2, TBF_3, TBF_4).collect(Collectors.toList()));
         Parser parser = parserBuilder.build();
         List<TagStrategy> tagStrategies = extractTagStrategies(parser);
-        assertEquals(11, tagStrategies.size());
+        assertEquals(12, tagStrategies.size());
         assertTrue(tagStrategies.contains(TBF_1));
         assertTrue(tagStrategies.contains(TBF_2));
         assertTrue(tagStrategies.contains(TBF_3));

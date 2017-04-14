@@ -16,6 +16,7 @@
  */
 package com.noctarius.borabora.spi.codec;
 
+import com.noctarius.borabora.builder.encoder.semantictag.AsciiStringBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.CBORBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.DateTimeBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.FractionBuilder;
@@ -57,6 +58,23 @@ class TagBuilders {
         @Override
         public <B> TagBuilderConsumer<B> endSemanticTag() {
             return null;
+        }
+    }
+
+    static final class AsciiStringBuilderImpl
+            implements AsciiStringBuilder {
+
+        private final EncoderContext encoderContext;
+
+        AsciiStringBuilderImpl(EncoderContext encoderContext) {
+            Objects.requireNonNull(encoderContext, "encoderContext must not be null");
+            this.encoderContext = encoderContext;
+        }
+
+        @Override
+        public TagBuilder putAsciiString(String value) {
+            encoderContext.encodeNullOrType(value, ((offset, output) -> Encoder.putAsciiString(value, offset, output)));
+            return EmptyTagBuilder.INSTANCE;
         }
     }
 

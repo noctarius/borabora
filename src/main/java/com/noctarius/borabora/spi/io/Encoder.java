@@ -51,7 +51,7 @@ public final class Encoder
 
     public static long putString(String value, long offset, Output output) {
         if (StringEncoders.ASCII_ENCODER.canEncode(value)) {
-            return putByteString(value, offset, output);
+            return putAsciiString(value, offset, output);
         }
         return putTextString(value, offset, output);
     }
@@ -69,9 +69,14 @@ public final class Encoder
         return putRaw(data, MajorType.TextString, offset, output);
     }
 
-    public static long putByteString(String value, long offset, Output output) {
+    public static long putAsciiString(String value, long offset, Output output) {
         byte[] data = StringEncoders.ASCII_ENCODER.encode(value);
+        offset = putSemanticTag(TAG_ASCII_STRING, offset, output);
         return putRaw(data, MajorType.ByteString, offset, output);
+    }
+
+    public static long putByteString(byte[] value, long offset, Output output) {
+        return putRaw(value, MajorType.ByteString, offset, output);
     }
 
     public static long putNumber(long value, long offset, Output output) {
@@ -261,13 +266,17 @@ public final class Encoder
     }
 
     private static long copyValue(Value value, long offset, Output output, EncoderContext encoderContext, MajorType majorType) {
-        Object byValueType = value.byValueType();
         if (majorType == MajorType.Dictionary) {
-            offset = copyDictionary(value, offset, output, encoderContext, majorType);
+            return copyDictionary(value, offset, output, encoderContext, majorType);
         } else if (majorType == MajorType.Sequence) {
-            offset = copySequence(value, offset, output, encoderContext, majorType);
-        } else if (byValueType instanceof String) {
+            return copySequence(value, offset, output, encoderContext, majorType);
+        }
+
+        Object byValueType = value.byValueType();
+        if (byValueType instanceof String) {
             offset = putString((String) byValueType, offset, output);
+        } else if (byValueType instanceof byte[]) {
+            offset = putByteString((byte[]) byValueType, offset, output);
         } else if (byValueType instanceof BigInteger) {
             offset = putBigInteger((BigInteger) byValueType, offset, output);
         } else if (byValueType instanceof BigDecimal) {

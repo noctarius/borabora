@@ -18,6 +18,7 @@ package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
+import com.noctarius.borabora.Sequence;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.spi.StreamValue;
 import com.noctarius.borabora.spi.io.ByteSizes;
@@ -31,10 +32,27 @@ import java.net.URISyntaxException;
 enum TagReaders
         implements TagReader<Object> {
 
+    ASCII((valueType, offset, length, queryContext) -> {
+        Input input = queryContext.input();
+        offset += ByteSizes.intByteSize(input, offset);
+
+        short head = Decoder.readUInt8(input, offset);
+        MajorType majorType = MajorType.findMajorType(head);
+
+        if (majorType == MajorType.ByteString) {
+            return Decoder.readString(input, offset, queryContext);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Sequence sequence = Decoder.readSequence(offset, queryContext);
+        sequence.forEach(v -> sb.append(v.string()));
+        return sb.toString();
+    }),
+
     DateTime((valueType, offset, length, queryContext) -> {
         Input input = queryContext.input();
         int byteSize = ByteSizes.intByteSize(input, offset);
-        String date = Decoder.readString(input, offset + byteSize);
+        String date = Decoder.readString(input, offset + byteSize, queryContext);
         return Decoder.parseDate(date);
     }),
 
@@ -50,14 +68,13 @@ enum TagReaders
             BigInteger.valueOf(-1).xor((BigInteger) UBigNum.process(valueType, offset, length, queryContext))),
 
     Fraction((valueType, offset, length, queryContext) -> {
-        Input input = queryContext.input();
         return Decoder.readFraction(offset, queryContext);
     }),
 
     URI((valueType, offset, length, queryContext) -> {
         Input input = queryContext.input();
         int byteSize = ByteSizes.intByteSize(input, offset);
-        String uri = Decoder.readString(input, offset + byteSize);
+        String uri = Decoder.readString(input, offset + byteSize, queryContext);
         try {
             return new URI(uri);
         } catch (URISyntaxException e) {

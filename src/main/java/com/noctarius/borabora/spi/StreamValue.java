@@ -30,6 +30,7 @@ import java.util.Objects;
 public final class StreamValue
         extends AbstractStreamValue {
 
+    private final QueryContext queryContext;
     private final MajorType majorType;
     private final ValueType valueType;
     private final long offset;
@@ -46,8 +47,6 @@ public final class StreamValue
      * @throws IllegalArgumentException if offset is less than 0
      */
     public StreamValue(MajorType majorType, ValueType valueType, long offset, QueryContext queryContext) {
-        super(queryContext);
-
         Objects.requireNonNull(queryContext, "queryContext must not be null");
         Objects.requireNonNull(majorType, "majorType must not be null");
         Objects.requireNonNull(valueType, "valueType must not be null");
@@ -55,6 +54,7 @@ public final class StreamValue
             throw new IllegalArgumentException("No offset available for CBOR type, offset=" + offset);
         }
 
+        this.queryContext = queryContext;
         this.offset = offset;
         this.majorType = majorType;
         this.valueType = valueType;
@@ -85,4 +85,8 @@ public final class StreamValue
         return queryContext().applyDecoder(offset(), majorType(), valueType());
     }
 
+    @Override
+    public QueryContext queryContext() {
+        return queryContext;
+    }
 }

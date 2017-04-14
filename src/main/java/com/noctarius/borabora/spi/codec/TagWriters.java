@@ -16,7 +16,6 @@
  */
 package com.noctarius.borabora.spi.codec;
 
-import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.Output;
 import com.noctarius.borabora.Value;
 import com.noctarius.borabora.spi.builder.EncoderContext;
@@ -33,6 +32,11 @@ import java.util.Date;
 
 enum TagWriters
         implements TagWriter<Object> {
+
+    ASCII((value, offset, encoderContext) -> {
+        Output output = encoderContext.output();
+        return Encoder.putAsciiString((String) value, offset, output);
+    }),
 
     DateTime((value, offset, encoderContext) -> {
         Output output = encoderContext.output();

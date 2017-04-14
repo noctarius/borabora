@@ -20,6 +20,7 @@ import com.noctarius.borabora.Input;
 import com.noctarius.borabora.MajorType;
 import com.noctarius.borabora.ValueType;
 import com.noctarius.borabora.ValueTypes;
+import com.noctarius.borabora.builder.encoder.semantictag.AsciiStringBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.CBORBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.DateTimeBuilder;
 import com.noctarius.borabora.builder.encoder.semantictag.FractionBuilder;
@@ -37,6 +38,7 @@ import com.noctarius.borabora.spi.query.TypeSpecs;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.noctarius.borabora.spi.codec.TagBuilders.AsciiStringBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.CBORBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.DateTimeBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.FractionBuilderImpl;
@@ -44,6 +46,7 @@ import static com.noctarius.borabora.spi.codec.TagBuilders.NBigNumberBuilderImpl
 import static com.noctarius.borabora.spi.codec.TagBuilders.TimestampBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.UBigNumberBuilderImpl;
 import static com.noctarius.borabora.spi.codec.TagBuilders.URIBuilderImpl;
+import static com.noctarius.borabora.spi.io.Constants.TAG_ASCII_STRING;
 import static com.noctarius.borabora.spi.io.Constants.TAG_DATE_TIME;
 import static com.noctarius.borabora.spi.io.Constants.TAG_ENCCBOR;
 import static com.noctarius.borabora.spi.io.Constants.TAG_FRACTION;
@@ -57,6 +60,16 @@ import static com.noctarius.borabora.spi.io.Constants.TAG_URI;
  */
 public enum TagStrategies
         implements TagStrategy {
+
+    /**
+     * The ASCII string semantic tag implementation, semantic tag id: <tt>22099</tt>
+     * <p>Specification: TBD</p>
+     *
+     * @see ValueTypes#ASCII
+     * @see AsciiStringBuilder
+     */
+    ASCII(TAG_ASCII_STRING, ValueTypes.ASCII, AsciiStringBuilder.class, TagWriters.ASCII, //
+            TagReaders.ASCII, TypeSpecs.String, TypeMatchers.ASCII, AsciiStringBuilderImpl::new),
 
     /**
      * The Date and Time semantic tag implementation, semantic tag id: <tt>0</tt>
@@ -207,6 +220,8 @@ public enum TagStrategies
     public ValueType valueType(Input input, long offset) {
         int tagId = Decoder.readSemanticTagId(input, offset);
         switch (tagId) {
+            case Constants.TAG_ASCII_STRING:
+                return ValueTypes.ASCII;
             case Constants.TAG_DATE_TIME:
                 return ValueTypes.DateTime;
             case Constants.TAG_TIMESTAMP:

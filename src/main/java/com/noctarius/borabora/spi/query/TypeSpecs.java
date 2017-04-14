@@ -33,7 +33,8 @@ public enum TypeSpecs
     Int("int", Number, ValueTypes.UInt, ValueTypes.NInt, ValueTypes.UBigNum, ValueTypes.NBigNum, ValueTypes.Int), //
     UInt("uint", Int, ValueTypes.UInt, ValueTypes.UBigNum), NInt("nint", Int, ValueTypes.NInt, ValueTypes.NBigNum), //
     Float("float", Number, ValueTypes.Float), //
-    String("string", ValueTypes.ByteString, ValueTypes.TextString), //
+    Bytes("bytes", ValueTypes.ByteString), //
+    String("string", ValueTypes.ASCII, ValueTypes.TextString), //
     Dictionary("dictionary", ValueTypes.Dictionary), //
     Sequence("sequence", ValueTypes.Sequence), //
     SemanticTag("tag", ValueTypes.Unknown), //

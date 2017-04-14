@@ -426,7 +426,7 @@ public class WriterTestCase
         String expected = a + b + c + d + e;
 
         SimplifiedTestParser parser = buildParser((sgb) -> {
-            sgb.putIndefiniteByteString() //
+            sgb.putIndefiniteAsciiString() //
                .putString(a) //
                .putString(b) //
                .putString(c) //
@@ -444,7 +444,7 @@ public class WriterTestCase
             throws Exception {
 
         buildParser((sgb) -> {
-            sgb.putIndefiniteByteString() //
+            sgb.putIndefiniteAsciiString() //
                .putString("äöü");
         });
     }
@@ -827,10 +827,10 @@ public class WriterTestCase
 
         Map<Value, Value> values = new HashMap<Value, Value>() {
             {
-                put(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "key-1"),
-                        asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-1"));
-                put(asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "key-2"),
-                        asObjectValue(MajorType.ByteString, ValueTypes.ByteString, "value-2"));
+                put(asObjectValue(MajorType.SemanticTag, ValueTypes.ASCII, "key-1"),
+                        asObjectValue(MajorType.SemanticTag, ValueTypes.ASCII, "value-1"));
+                put(asObjectValue(MajorType.SemanticTag, ValueTypes.ASCII, "key-2"),
+                        asObjectValue(MajorType.SemanticTag, ValueTypes.ASCII, "value-2"));
             }
         };
         Value expected = asObjectValue(values);

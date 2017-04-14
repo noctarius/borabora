@@ -37,12 +37,6 @@ public abstract class AbstractStreamValue
         extends AbstractValue
         implements QueryContextAware {
 
-    private final QueryContext queryContext;
-
-    protected AbstractStreamValue(QueryContext queryContext) {
-        this.queryContext = queryContext;
-    }
-
     @Override
     public <V> V tag() {
         return extract(() -> matchMajorType(majorType(), MajorType.SemanticTag), () -> extractTag());
@@ -68,12 +62,18 @@ public abstract class AbstractStreamValue
 
     @Override
     public String string() {
-        return extract(() -> matchStringValueType(valueType()), () -> Decoder.readString(input(), offset()));
+        return extract(() -> matchStringValueType(valueType()), () -> Decoder.readString(input(), offset(), queryContext()));
     }
 
     @Override
     public Boolean bool() {
         return extract(() -> matchValueType(valueType(), ValueTypes.Bool), () -> Decoder.getBooleanValue(input(), offset()));
+    }
+
+    @Override
+    public byte[] bytes() {
+        return extract(() -> matchMajorType(majorType(), MajorType.ByteString), //
+                () -> Decoder.readRaw(input(), MajorType.ByteString, offset()));
     }
 
     @Override
@@ -91,16 +91,6 @@ public abstract class AbstractStreamValue
     @Override
     public <V> V byValueType() {
         return valueType().value(this);
-    }
-
-    /**
-     * Returns the bound {@link QueryContext}.
-     *
-     * @return the bound QueryContext
-     */
-    @Override
-    public QueryContext queryContext() {
-        return queryContext;
     }
 
     @Override

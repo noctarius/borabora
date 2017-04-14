@@ -103,6 +103,11 @@ public class ObjectValue
     }
 
     @Override
+    public byte[] bytes() {
+        return extract(() -> matchMajorType(majorType, MajorType.ByteString), (Supplier<byte[]>) supplier);
+    }
+
+    @Override
     public byte[] raw() {
         throw new WrongTypeException(offset(), "Current valueType is not a legal raw value");
     }

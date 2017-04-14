@@ -130,7 +130,7 @@ public final class Decoder
         return readInt(input, offset);
     }
 
-    public static String readString(Input input, long offset) {
+    public static String readString(Input input, long offset, QueryContext queryContext) {
         int addInfo = additionalInfo(input, offset);
         if (addInfo == 31) {
             // Concatenated string!
@@ -141,13 +141,13 @@ public final class Decoder
                 if ((h & OPCODE_BREAK_MASK) == OPCODE_BREAK_MASK) {
                     break;
                 }
-                sb.append(readString(input, position));
+                sb.append(readString(input, position, queryContext));
                 position += ByteSizes.stringByteSize(input, position);
             }
             return sb.toString();
         }
 
-        return readString0(input, offset);
+        return readString0(input, offset, queryContext);
     }
 
     public static Sequence readSequence(long offset, QueryContext queryContext) {
@@ -293,6 +293,11 @@ public final class Decoder
         return head & ADDITIONAL_INFORMATION_MASK;
     }
 
+    public static MajorType getMajorType(long offset, Input input) {
+        short head = Bytes.readUInt8(input, offset);
+        return MajorType.findMajorType(head);
+    }
+
     public static byte[] readRaw(Input input, MajorType majorType, long offset) {
         long length = length(input, majorType, offset);
         // Cannot be larger than Integer.MAX_VALUE as this is checked in Decoder
@@ -405,20 +410,15 @@ public final class Decoder
         return predicate.test(streamValue);
     }
 
-    private static MajorType getMajorType(long offset, Input input) {
-        short head = Bytes.readUInt8(input, offset);
-        return MajorType.findMajorType(head);
-    }
-
-    private static String readString0(Input input, long offset) {
+    private static String readString0(Input input, long offset, QueryContext queryContext) {
         byte[] bytes = extractStringBytes(input, offset);
         // Empty string
         if (bytes.length == 0) {
             return "";
         }
 
-        MajorType majorType = getMajorType(offset, input);
-        if (MajorType.ByteString == majorType) {
+        ValueType valueType = queryContext.valueType(offset);
+        if (ValueTypes.ASCII == valueType) {
             return new String(bytes, ASCII);
         }
         return new String(bytes, UTF8);

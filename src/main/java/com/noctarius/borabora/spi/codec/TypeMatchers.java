@@ -17,6 +17,8 @@
 package com.noctarius.borabora.spi.codec;
 
 import com.noctarius.borabora.Value;
+import com.noctarius.borabora.spi.io.Constants;
+import com.noctarius.borabora.spi.io.StringEncoders;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,6 +30,8 @@ import java.util.function.Predicate;
 
 enum TypeMatchers
         implements Predicate<Object> {
+
+    ASCII((v) -> v instanceof String && StringEncoders.ASCII_ENCODER.canEncode((String) v)),
 
     DateTime((v) -> !Timestamp.class.isAssignableFrom(v.getClass()) //
             && (Date.class.isAssignableFrom(v.getClass()) || java.sql.Date.class.isAssignableFrom(v.getClass()))),

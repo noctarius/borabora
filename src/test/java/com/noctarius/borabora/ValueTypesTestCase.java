@@ -76,7 +76,7 @@ public class ValueTypesTestCase
 
     @Test
     public void test_value_string_bytestring() {
-        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
+        Value value = asStreamValue(gb -> gb.putAsciiString("foo").finishStream());
         assertEquals("foo", ValueTypes.String.value(value, true));
     }
 
@@ -87,15 +87,15 @@ public class ValueTypesTestCase
     }
 
     @Test
-    public void test_value_bytestring() {
-        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
-        assertEquals("foo", ValueTypes.ByteString.value(value, true));
+    public void test_value_asciistring() {
+        Value value = asStreamValue(gb -> gb.putAsciiString("foo").finishStream());
+        assertEquals("foo", ValueTypes.ASCII.value(value, true));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void fail_value_bytestring_textstring() {
+    public void fail_value_asciistring_textstring() {
         Value value = asStreamValue(gb -> gb.putTextString("foo").finishStream());
-        assertEquals("foo", ValueTypes.ByteString.value(value, true));
+        assertEquals("foo", ValueTypes.ASCII.value(value, true));
     }
 
     @Test
@@ -105,8 +105,8 @@ public class ValueTypesTestCase
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void fail_value_textstring_bytestring() {
-        Value value = asStreamValue(gb -> gb.putByteString("foo").finishStream());
+    public void fail_value_textstring_asciistring() {
+        Value value = asStreamValue(gb -> gb.putAsciiString("foo").finishStream());
         assertEquals("foo", ValueTypes.TextString.value(value, true));
     }
 
@@ -268,7 +268,7 @@ public class ValueTypesTestCase
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
         long offset = Encoder.putSemanticTag(Constants.TAG_URI, 0, output);
-        Encoder.putString("BAM://", offset, output);
+        Encoder.putTextString("BAM://", offset, output);
 
         try {
             Value value = asStreamValue(baos.toByteArray());
@@ -292,7 +292,7 @@ public class ValueTypesTestCase
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Output output = Output.toOutputStream(baos);
         long offset = Encoder.putSemanticTag(128, 0, output);
-        Encoder.putByteString("foo", offset, output);
+        Encoder.putTextString("foo", offset, output);
         byte[] bytes = baos.toByteArray();
         byte[] expected = Arrays.copyOfRange(bytes, 2, 6);
         Value value = asStreamValue(bytes);
@@ -469,9 +469,9 @@ public class ValueTypesTestCase
     }
 
     @Test
-    public void test_valueType_obj_bytestring() {
+    public void test_valueType_obj_asciistring() {
         ValueType valueType = ValueTypes.valueType("foo");
-        assertEquals(ValueTypes.ByteString, valueType);
+        assertEquals(ValueTypes.ASCII, valueType);
     }
 
     @Test

@@ -59,6 +59,7 @@ public interface Constants {
     int TAG_URI = 32;
     int TAG_REGEX = 35;
     int TAG_MIME = 36;
+    int TAG_ASCII_STRING = 22099;
     int TAG_MAGIC_CBOR_HEADER = 55799;
 
     int ADD_INFO_ONE_BYTE = 24;

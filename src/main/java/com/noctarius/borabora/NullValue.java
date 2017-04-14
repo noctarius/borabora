@@ -65,6 +65,11 @@ final class NullValue
     }
 
     @Override
+    public byte[] bytes() {
+        return null;
+    }
+
+    @Override
     public byte[] raw() {
         return EMPTY_BYTE_ARRAY;
     }

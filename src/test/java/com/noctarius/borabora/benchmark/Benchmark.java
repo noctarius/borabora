@@ -175,7 +175,7 @@ public class Benchmark {
             case ByteString:
                 trace("ByteString", level);
                 String bs = generateByteString(random);
-                valueBuilder.putByteString(bs);
+                valueBuilder.putAsciiString(bs);
                 break;
 
             case DateTime:
@@ -224,7 +224,7 @@ public class Benchmark {
             case String:
                 trace("String", level);
                 if (random.nextBoolean()) {
-                    valueBuilder.putByteString(generateByteString(random));
+                    valueBuilder.putAsciiString(generateByteString(random));
                 } else {
                     valueBuilder.putTextString(generateTextString(random));
                 }

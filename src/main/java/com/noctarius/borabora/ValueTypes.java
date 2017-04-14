@@ -169,6 +169,12 @@ public enum ValueTypes
     URI(Value::tag),
 
     /**
+     * <tt>ASCII</tt> defines a value type for ASCII character only strings. It is also
+     * defined as part of the group {@link #String}.
+     */
+    ASCII(Value::tag, String),
+
+    /**
      * <tt>Unknown</tt> represents a value of an unknown type. The value can still be
      * extracted using {@link Parser#extract(Input, long)}. Unknown type can happen
      * for semantic tags which are not known to the parser, however this is valid to
@@ -260,8 +266,10 @@ public enum ValueTypes
             if (value instanceof BigDecimal) {
                 return Fraction;
             }
+        } else if (byte[].class.isAssignableFrom(type)) {
+            return ByteString;
         } else if (java.lang.String.class.isAssignableFrom(type)) {
-            return StringEncoders.ASCII_ENCODER.canEncode((String) value) ? ByteString : TextString;
+            return StringEncoders.ASCII_ENCODER.canEncode((String) value) ? ASCII : TextString;
         } else if (List.class.isAssignableFrom(type) || value.getClass().isArray()) {
             return Sequence;
         } else if (Map.class.isAssignableFrom(type)) {

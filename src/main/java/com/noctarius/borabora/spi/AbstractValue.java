@@ -26,6 +26,7 @@ import com.noctarius.borabora.WrongTypeException;
 
 import java.util.function.Supplier;
 
+import static com.noctarius.borabora.ValueTypes.ASCII;
 import static com.noctarius.borabora.ValueTypes.ByteString;
 import static com.noctarius.borabora.ValueTypes.TextString;
 
@@ -83,7 +84,7 @@ public abstract class AbstractValue
     protected void matchStringValueType(ValueType actual) {
         ValueType identity = actual.identity();
         if (ValueTypes.String != identity) {
-            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, ValueTypes.String, ByteString, TextString, identity);
+            String msg = String.format(VALUE_TYPE_NOT_A_TRIPPLE, ValueTypes.String, ASCII, TextString, identity);
             throw new WrongTypeException(offset(), msg);
         }
     }

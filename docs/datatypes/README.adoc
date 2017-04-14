@@ -22,8 +22,8 @@ The common data types are:
 
 | _0x02_
 | ByteString
-| A string that consists of ASCII characters only and does not need any encoding to be written or read.
-| `java.lang.String`
+| A fixed sized byte stream to contain arbitrary encoded or unencoded byte information.
+| `byte[]`
 
 | _0x03_
 | TextString
