@@ -11,7 +11,7 @@
 .. link:datatypes/README.adoc#_cbor_data_types[CBOR Data Types]
 .. link:datatypes/README.adoc#_provided_extension_types[Provided Extension Types]
 .. link:datatypes/README.adoc#_borabora_data_types[borabora Data Types]
-... link:datatypes/README.adoc#__value[The Value Class]
+... link:datatypes/README.adoc#__the_value_class[The Value Class]
 ... link:datatypes/README.adoc#__sequences[Sequences]
 ... link:datatypes/README.adoc#__dictionaries[Dictionaries]
 . link:parser/README.adoc[The borabora Parser]
