@@ -1,1 +1,19 @@
+# Extending borabora
+
+TODO
+
+## SPI Introduction
+
+TODO
+
+## Custom Semantic Tag
+
+TODO
+
+## Projection Strategy
+
+TODO
+
+## Query Optimizer
+
 TODO

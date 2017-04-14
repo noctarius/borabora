@@ -1,1 +1,19 @@
+# The borabora Writer
+
+TODO
+
+## Basic Stream Generator
+
+TODO
+
+## Writing Sequences
+
+TODO
+
+## Writing Dictionaries
+
+TODO
+
+## Writing Semantic Tags
+
 TODO

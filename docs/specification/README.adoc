@@ -1,1 +1,78 @@
+# Specification
+
 TODO
+
+## Grammar Definition
+
+Expression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _QueryExpression_ | _SelectExpression_
+
+SelectExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *(* _AsDictionaryExpression_ | _AsSequenceExpression_ *)*
+
+AsDictionaryExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _DictionaryPropertyExpression_ *,* _DictionaryPropertyExpression_*
+
+DictionaryPropertyExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _PropertyNameExpression_ *:* _SelectQueryExpression_
+
+PropertyNameExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _StringLiteral_ | _SignedIntLiteral_ | _FloatLiteral_
+
+AsSequenceExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _SequenceEntryExpression_ *,* _SequenceEntryExpression_*
+
+SequenceEntryExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _SelectQueryExpression_
+
+QueryExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} (_StreamSingleElementExpression_ | _StreamMultiElementExpression_) _QueryStageExpression_*
+
+QueryStageExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _DictionaryQueryExpression_ | _SequenceQueryExpression_ | _TypeMatchExpression_
+
+DictionaryQueryExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *{* (_StringLiteral_ | _SignedIntLiteral_ | _FloatLiteral_) *}*
+
+SequenceQueryExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *(* _SequenceIndexExpression_ *)*
+
+SequenceIndexExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _UnsignedIntLiteral_ | _AnyIndex_
+
+AnyIndex: +
+{nbsp}{nbsp}{nbsp}{nbsp} *?*
+
+StreamSingleElementExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *#* ([0-9][0-9]*)?
+
+StreamMultiElementExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *$*
+
+TypeMatchExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} _RequireTypeExpression_ | _TypeOrNullExpression_
+
+RequireTypeExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *->* _TypeSpecification_
+
+TypeOrNullExpression: +
+{nbsp}{nbsp}{nbsp}{nbsp} *->?* _TypeSpecification_
+
+TypeSpecifications: +
+{nbsp}{nbsp}{nbsp}{nbsp} *number*
+    | *int*
+    | *uint*
+    | *nint*
+    | *float*
+    | *string*
+    | *dictionary*
+    | *sequence*
+    | *tag*
+    | *tag$* [0-9][0-9]*
+    | *bool*
+    | *datetime*
+    | *timestamp*
+    | *uri*
+    | *enccbor*
+    | *unknown*
+    | *null*

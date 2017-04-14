@@ -1,1 +1,43 @@
+# Queries
+
+TODO
+
+## Graph Queries
+
+TODO
+
+### Stream Element Index Access
+
+TODO
+
+### Sequence Index Access
+
+TODO
+
+### Sequence Matcher
+
+TODO
+
+### Dictionary Lookup
+
+TODO
+
+### Type Matcher
+
+TODO
+
+## Projections
+
+TODO
+
+### As A Sequence
+
+TODO
+
+### As A Dictionary
+
+TODO
+
+## Mutations
+
 TODO

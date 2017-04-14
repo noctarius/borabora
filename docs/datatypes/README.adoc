@@ -1,1 +1,75 @@
+# Data Types
+
+TODO
+
+## CBOR Data Types
+
+CBOR in itself has 8 so-called major data types. Those data types represent all information stored in a data stream. Complex information, however, can combine elements in a more meaningful way, as well as tag them to give a clearer meaning.
+
+The common data types are:
+|===
+| Item Type | Data Type | Description | Java Representation
+
+| _0x00_
+| UInt
+| Unsigned integer which can hold any positive value up to 64 bits.
+| `byte`, `short`, `int`, `long` based on their given (positive) ranges. Larger values are represented as `java.math.BigInteger`.
+
+| _0x01_
+| NInt
+| Negative integer which can hold any negative value up to 64 bits.
+| `byte`, `short`, `int`, `long` based on their given (negative) ranges. Larger values are represented as `java.math.BigInteger`.
+
+| _0x02_
+| ByteString
+| A string that consists of ASCII characters only and does not need any encoding to be written or read.
+| `java.lang.String`
+
+| _0x03_
+| TextString
+| A string that contains non-ASCII characters and can be encoded in UTF-8. When writing these kinds of strings or reading them from a data stream encoding and decoding takes place.
+| `java.lang.String`
+
+| _0x04_
+| Sequence or Array or List
+| A container element that contains a stream of an either fixed or indefinite number of further elements.
+| `com.noctarius.borabora.Sequence` or `java.util.Iterable<Value>`.
+
+| _0x05_
+| Dictionary or Map
+| A container element that contains a stream of an either fixed or indefinite number of key-value pairs of elements.
+| `com.noctarius.borabora.Dictionary` or `java.util.Iterable<Map.Entry<Value, Value>>`
+
+| _0x06_
+| Semantic Tag
+| A semantic tag is used as an additional tagging in front of another element. The tag tells the parser that the following item is further specified. A classic example is a DateTime-Tag (TagId: _0_) to tell the parser that the following `ByteString` will represent a date and time element.
+| Depends on the semantic tag's id. A meaningful Java 8 representation of the CBOR's data item. That said date and time elements, for example, will return values of the new Java 8 DateTime API but understand Calendar and Date based values.
+
+| _0x07_
+| Floating Point or Simple Value
+| This data type is more complex, as some content encodes simple values like _null_, _true_ or _false_. On the other hand half, single or double precision float values will be stored. Values can be positive or negative.
+| `com.noctarius.borabora.HalfPrecisionFloat`, `float` or `double`, if the value is larger than the representation of those data types, a `java.math.BigDecimal` is used.
+
+|===
+
+Apart from those basic major types, _borabora_ has a number of built-in semantic tags to support a variety of additional data types.
+
+## Provided Extension Types
+
+TODO
+
+## borabora Data Types
+
+TODO
+
+### The Value Class
+
+TODO
+
+### Sequences
+
+TODO
+
+### Dictionaries
+
 TODO

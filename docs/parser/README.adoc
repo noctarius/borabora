@@ -1,1 +1,15 @@
+# A Parser's Life
+
+TODO
+
+## The First Query
+
+TODO
+
+## Continuous Query
+
+TODO
+
+## Data Extraction
+
 TODO

@@ -1,1 +1,15 @@
+# borabora - The CBOR Parser
+
+TODO
+
+## In A Nutshell
+
+TODO
+
+## What means Skip-Scan Parser?
+
+TODO
+
+## Lazy Parsing
+
 TODO
