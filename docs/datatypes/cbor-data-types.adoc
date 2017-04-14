@@ -25,7 +25,7 @@ The common data types are:
 | `java.lang.String`
 
 | _0x04_
-| Sequence or Array
+| Sequence or Array or List
 | A container element that contains a stream of an either fixed or indefinite number of further elements.
 | `com.noctarius.borabora.Sequence` or `java.util.Iterable<Value>`.
 
