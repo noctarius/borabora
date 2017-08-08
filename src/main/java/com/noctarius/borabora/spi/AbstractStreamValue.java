@@ -73,7 +73,7 @@ public abstract class AbstractStreamValue
     @Override
     public byte[] bytes() {
         return extract(() -> matchMajorType(majorType(), MajorType.ByteString), //
-                () -> Decoder.readRaw(input(), MajorType.ByteString, offset()));
+                () -> Decoder.extractStringBytes(input(), offset()));
     }
 
     @Override

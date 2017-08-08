@@ -471,7 +471,7 @@ public abstract class AbstractStreamValueBuilder<B>
         }
 
         @Override
-        public B endIndefiniteString() {
+        public B endIndefiniteByteString() {
             encoderContext.encode((offset, output) -> output.write(offset++, (byte) OPCODE_BREAK_MASK));
             return builder;
         }

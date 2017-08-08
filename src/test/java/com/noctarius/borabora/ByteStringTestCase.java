@@ -21,53 +21,56 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class ByteStringTestCase
         extends AbstractTestCase {
 
-    private static final TestValueCollection<String> BYTE_STRING_TEST_VALUES = new TestValueCollection<>(
-            new TestValue<>("", "0x40"), new TestValue<>("a", "0x4161"), new TestValue<>("IETF", "0x4449455446"),
-            new TestValue<>("\"\\", "0x42225c"));
-
     private static final Charset ASCII = Charset.forName("ASCII");
+
+    private static final TestValueCollection<byte[]> BYTE_STRING_TEST_VALUES = new TestValueCollection<>(
+            new TestValue<>("".getBytes(ASCII), "0x40"), //
+            new TestValue<>("a".getBytes(ASCII), "0x4161"), //
+            new TestValue<>("IETF".getBytes(ASCII), "0x4449455446"), //
+            new TestValue<>("\"\\".getBytes(ASCII), "0x42225c"));
 
     @Test
     public void test_byte_string()
             throws Exception {
 
-        String expected = new String(hexToBytes("0x01020304"), ASCII);
+        byte[] expected = hexToBytes("0x01020304");
         SimplifiedTestParser parser = buildParser("0x4401020304");
         Value value = parser.read(parser.newQueryBuilder().build());
-        assertEquals(expected, value.string());
+        assertArrayEquals(expected, value.bytes());
     }
 
     @Test
     public void test_indefinite_byte_string_1()
             throws Exception {
 
-        String expected = new String(hexToBytes("0x0102030405"), ASCII);
+        byte[] expected = hexToBytes("0x0102030405");
         SimplifiedTestParser parser = buildParser("0x5f42010243030405ff");
         Value value = parser.read(parser.newQueryBuilder().build());
-        assertEquals(expected, value.string());
+        assertArrayEquals(expected, value.bytes());
     }
 
     @Test
     public void test_indefinite_byte_string_2()
             throws Exception {
 
-        String expected = new String(hexToBytes("0xaabbccddeeff99"), ASCII);
+        byte[] expected = hexToBytes("0xaabbccddeeff99");
         SimplifiedTestParser parser = buildParser("0x5f44aabbccdd43eeff99ff");
         Value value = parser.read(parser.newQueryBuilder().build());
-        assertEquals(expected, value.string());
+        assertArrayEquals(expected, value.bytes());
     }
 
     @Test
     public void test_parse_majortype2_bytestring()
             throws Exception {
 
-        for (TestValue<String> testValue : BYTE_STRING_TEST_VALUES.getTestValues()) {
-            testString(ValueTypes.ByteString, testValue);
+        for (TestValue<byte[]> testValue : BYTE_STRING_TEST_VALUES.getTestValues()) {
+            testByteString(ValueTypes.ByteString, testValue);
         }
     }
 
@@ -78,9 +81,11 @@ public class ByteStringTestCase
         Writer writer = Writer.newWriter();
         writer.newGraphBuilder(output)
 
-              .putIndefiniteAsciiString().putString("ab").putString("cd").endIndefiniteString()
+              .putIndefiniteByteString() //
+              .putByteString(bytes("ab")).putByteString(bytes("cd")).endIndefiniteByteString()
 
-              .putIndefiniteAsciiString().putString("ef").putString("gh").endIndefiniteString()
+              .putIndefiniteByteString() //
+              .putByteString(bytes("ef")).putByteString(bytes("gh")).endIndefiniteByteString()
 
               .finishStream();
 
@@ -90,17 +95,21 @@ public class ByteStringTestCase
         Value value1 = parser.read(input, parser.newQueryBuilder().stream(0).build());
         Value value2 = parser.read(input, parser.newQueryBuilder().stream(1).build());
 
-        assertEquals("abcd", value1.string());
-        assertEquals("efgh", value2.string());
+        assertArrayEquals(bytes("abcd"), value1.bytes());
+        assertArrayEquals(bytes("efgh"), value2.bytes());
     }
 
-    private void testString(ValueType valueType, TestValue<String> testValue) {
+    private void testByteString(ValueType valueType, TestValue<byte[]> testValue) {
         Input input = Input.fromByteArray(testValue.getValue2());
         Parser parser = Parser.newParser();
         Value value = parser.read(input, parser.newQueryBuilder().build());
 
         assertEquals(valueType, value.valueType());
-        assertEquals(testValue.getValue1(), value.string());
+        assertArrayEquals(testValue.getValue1(), value.bytes());
+    }
+
+    private static byte[] bytes(String value) {
+        return value.getBytes(ASCII);
     }
 
 }

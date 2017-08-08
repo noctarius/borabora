@@ -46,12 +46,12 @@ public interface IndefiniteByteStringBuilder<B> {
     IndefiniteByteStringBuilder<B> putByteString(byte[] value);
 
     /**
-     * Ends the current indefinite string and write the closing tag to the generated CBOR
+     * Ends the current indefinite bytestring and write the closing tag to the generated CBOR
      * stream.
      *
      * @return the parent builder
      */
     @BuilderStackPop
-    B endIndefiniteString();
+    B endIndefiniteByteString();
 
 }
