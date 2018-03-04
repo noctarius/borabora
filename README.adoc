@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnoctarius%2Fborabora.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnoctarius%2Fborabora?ref=badge_shield)
+
 ////
 Copyright (c) 2016, Christoph Engelbert (aka noctarius) and
 contributors. All rights reserved.
@@ -37,3 +39,7 @@ image:https://img.shields.io/badge/license-Apache%20License%202-brightgreen.svg[
 link:https://noctarius.gitbooks.io/borabora/content/[Documentation Project]
 
 link:http://noctarius.github.io/borabora/[Project's Javadoc]
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnoctarius%2Fborabora.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnoctarius%2Fborabora?ref=badge_large)
