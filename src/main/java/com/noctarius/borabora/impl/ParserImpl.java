@@ -141,7 +141,7 @@ final class ParserImpl
             QueryParser.parse(query, queryBuilder, tagStrategies);
             return queryBuilder.build();
 
-        } catch (Exception | TokenMgrError e) {
+        } catch (Exception e) {
             throw new QueryParserException(e);
         }
     }

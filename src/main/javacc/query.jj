@@ -72,7 +72,7 @@ PARSER_BEGIN(QueryParser)
         }
 
         static void parse(String query, QueryBuilder queryBuilder, Collection<TagStrategy> tagStrategies)
-                throws ParseException, TokenMgrError {
+                throws ParseException, TokenMgrException {
 
             new QueryParser(new StringReader(query), queryBuilder, tagStrategies).select();
         }

@@ -17,18 +17,17 @@ package com.noctarius.borabora.impl;
 
 import org.junit.Test;
 
-public class TokenMgrErrorTestCase {
+public class TokenMgrExceptionTestCase {
 
     @Test
-    public void testcoverage_addEscapes()
-            throws Exception {
+    public void testcoverage_addEscapes() {
 
-        TokenMgrError.addEscapes("\b\t\n\f\r\"\'\\" + (char) 0x19 + (char) 0x7f);
+        TokenMgrException.addEscapes("\b\t\n\f\r\"\'\\" + (char) 0x19 + (char) 0x7f);
     }
 
     @Test
     public void testcoverage_useless_constructor() {
-        new TokenMgrError();
+        new TokenMgrException();
     }
 
 }
